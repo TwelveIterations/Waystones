@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public interface InternalMethods {
 
@@ -72,9 +74,15 @@ public interface InternalMethods {
 
     Collection<Waystone> getActivatedWaystones(Player player);
 
-    Optional<Waystone> getNearestWaystone(Player player);
-
     void activateWaystone(ServerPlayer player, Waystone waystone);
 
     void deactivateWaystone(ServerPlayer player, Waystone waystone);
+
+    Optional<Waystone> getNearestWaystone(Player player);
+
+    Stream<Waystone> getAllWaystones(MinecraftServer server);
+
+    Stream<Waystone> getWaystonesByType(MinecraftServer server, ResourceLocation type);
+
+    void removeWaystoneFromDatabase(MinecraftServer server, Waystone waystone);
 }
