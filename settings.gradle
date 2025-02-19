@@ -12,4 +12,4 @@ pluginManagement {
     }
 }
 
-include("shared", "fabric", "forge")
+include("common", "fabric", "forge")

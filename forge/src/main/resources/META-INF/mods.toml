@@ -5,7 +5,7 @@ issueTrackerURL="https://github.com/TwelveIterationMods/Waystones/issues"
 
 [[mods]]
 modId="waystones"
-version="${mod_version}"
+version="${version}"
 displayName="Waystones"
 displayURL="https://mods.twelveiterations.com/mc/waystones"
 logoFile="waystones-icon.png"
