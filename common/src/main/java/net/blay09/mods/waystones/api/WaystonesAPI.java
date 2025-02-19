@@ -4,11 +4,13 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneTeleportContext;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,11 +67,21 @@ public class WaystonesAPI {
         return __internalMethods.getWaystoneAt(level, pos);
     }
 
+    public static Optional<IWaystone> getWaystoneAt(MinecraftServer server, BlockGetter blockGetter, BlockPos pos) {
+        return __internalMethods.getWaystoneAt(server, blockGetter, pos);
+    }
+
     /**
      * @param level only used to access getServer() when on server, does not have to match the waystone's actual level
+     * @deprecated Use {@link #getWaystone(MinecraftServer, UUID)} instead.
      */
+    @Deprecated
     public static Optional<IWaystone> getWaystone(Level level, UUID uuid) {
         return __internalMethods.getWaystone(level, uuid);
+    }
+
+    public static Optional<IWaystone> getWaystone(MinecraftServer server, UUID uuid) {
+        return __internalMethods.getWaystone(server, uuid);
     }
 
     public static boolean isWaystoneActivated(Player player, IWaystone waystone) {

@@ -3,10 +3,12 @@ package net.blay09.mods.waystones.api;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +33,11 @@ public interface InternalMethods {
 
     Optional<IWaystone> getWaystoneAt(Level level, BlockPos pos);
 
+    Optional<IWaystone> getWaystoneAt(MinecraftServer server, BlockGetter level, BlockPos pos);
+
     Optional<IWaystone> getWaystone(Level level, UUID uuid);
+
+    Optional<IWaystone> getWaystone(MinecraftServer level, UUID uuid);
 
     ItemStack createAttunedShard(IWaystone warpPlate);
 

@@ -17,6 +17,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -92,8 +93,18 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
+    public Optional<IWaystone> getWaystoneAt(MinecraftServer server, BlockGetter level, BlockPos pos) {
+        return WaystoneManager.get(server).getWaystoneAt(level, pos);
+    }
+
+    @Override
     public Optional<IWaystone> getWaystone(Level level, UUID uuid) {
         return WaystoneManager.get(level.getServer()).getWaystoneById(uuid);
+    }
+
+    @Override
+    public Optional<IWaystone> getWaystone(MinecraftServer server, UUID uuid) {
+        return WaystoneManager.get(server).getWaystoneById(uuid);
     }
 
     @Override

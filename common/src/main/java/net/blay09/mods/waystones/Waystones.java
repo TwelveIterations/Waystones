@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
+import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.handler.ModEventHandlers;
 import net.blay09.mods.waystones.item.ModItems;
@@ -29,5 +30,7 @@ public class Waystones {
         ModMenus.initialize(Balm.getMenus());
         ModWorldGen.initialize(Balm.getWorldGen());
         ModRecipes.initialize(Balm.getRecipes());
+
+        Balm.initializeIfLoaded(Compat.UNBREAKABLES, "net.blay09.mods.waystones.compat.UnbreakablesIntegration");
     }
 }
