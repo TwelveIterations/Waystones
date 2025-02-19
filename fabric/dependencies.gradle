@@ -19,4 +19,6 @@ dependencies {
     }
     modCompileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:$bluemap_version"
     modCompileOnly "us.dynmap:DynmapCoreAPI:$dynmap_version"
+
+    modImplementation "net.blay09.mods:unbreakables-common:${unbreakables_version}"
 }

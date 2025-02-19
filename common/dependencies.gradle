@@ -7,4 +7,6 @@ dependencies {
     compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
     compileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:$bluemap_version"
     compileOnly "us.dynmap:DynmapCoreAPI:$dynmap_version"
+
+    compileOnly "net.blay09.mods:unbreakables-common:${unbreakables_version}"
 }
