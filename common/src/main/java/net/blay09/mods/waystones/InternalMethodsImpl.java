@@ -11,6 +11,7 @@ import net.blay09.mods.waystones.core.WaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneTeleportContext;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -27,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public class InternalMethodsImpl implements InternalMethods {
 
@@ -171,5 +173,21 @@ public class InternalMethodsImpl implements InternalMethods {
     @Override
     public Optional<IWaystone> getNearestWaystone(Player player) {
         return Optional.ofNullable(PlayerWaystoneManager.getNearestWaystone(player));
+    }
+
+    @Override
+    public Stream<IWaystone> getAllWaystones(MinecraftServer server) {
+        return WaystoneManager.get(server).getWaystones();
+    }
+
+    @Override
+    public Stream<IWaystone> getWaystonesByType(MinecraftServer server, ResourceLocation type) {
+        return WaystoneManager.get(server).getWaystonesByType(type);
+    }
+
+    @Override
+    public void removeWaystoneFromDatabase(MinecraftServer server, IWaystone waystone) {
+        WaystoneManager.get(server).removeWaystone(waystone);
+        PlayerWaystoneManager.removeKnownWaystone(server, waystone);
     }
 }

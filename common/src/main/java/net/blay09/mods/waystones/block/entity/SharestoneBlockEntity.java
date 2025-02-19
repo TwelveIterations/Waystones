@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,7 +52,9 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
                 SharestoneBlock block = ((SharestoneBlock) getBlockState().getBlock());
                 ResourceLocation waystoneType = WaystoneTypes.getSharestone(block.getColor());
-                List<IWaystone> waystones = WaystoneManager.get(player.server).getWaystonesByType(waystoneType).collect(Collectors.toList());
+                List<IWaystone> waystones = WaystoneManager.get(player.server).getWaystonesByType(waystoneType)
+                        .sorted(Comparator.comparing(IWaystone::getName))
+                        .toList();
 
                 Waystone.write(buf, getWaystone());
                 buf.writeShort(waystones.size());

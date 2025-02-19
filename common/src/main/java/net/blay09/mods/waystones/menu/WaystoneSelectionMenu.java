@@ -4,17 +4,16 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.core.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,7 +66,9 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
     public static WaystoneSelectionMenu createSharestoneSelection(MinecraftServer server, int windowId, IWaystone fromWaystone, BlockState state) {
         SharestoneBlock block = (SharestoneBlock) state.getBlock();
         ResourceLocation waystoneType = WaystoneTypes.getSharestone(block.getColor());
-        List<IWaystone> waystones = WaystoneManager.get(server).getWaystonesByType(waystoneType).collect(Collectors.toList());
+        List<IWaystone> waystones = WaystoneManager.get(server).getWaystonesByType(waystoneType)
+                .sorted(Comparator.comparing(IWaystone::getName))
+                .collect(Collectors.toList());
         return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId, waystones);
     }
 

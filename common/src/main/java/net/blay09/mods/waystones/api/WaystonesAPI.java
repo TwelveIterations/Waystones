@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneTeleportContext;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -18,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public class WaystonesAPI {
 
@@ -82,6 +84,24 @@ public class WaystonesAPI {
 
     public static Optional<IWaystone> getWaystone(MinecraftServer server, UUID uuid) {
         return __internalMethods.getWaystone(server, uuid);
+    }
+
+    /**
+     * Returns a stream of all waystones in the database. This includes regular waystones, sharestones and others.
+     */
+    public static Stream<IWaystone> getAllWaystones(MinecraftServer server) {
+        return __internalMethods.getAllWaystones(server);
+    }
+
+    public static Stream<IWaystone> getWaystonesByType(MinecraftServer server, ResourceLocation type) {
+        return __internalMethods.getWaystonesByType(server, type);
+    }
+
+    /**
+     * Removes a waystone from the database. This does not destroy the block, it only removes the data stored for the waystone.
+     */
+    public static void removeWaystoneFromDatabase(MinecraftServer server, IWaystone waystone) {
+        __internalMethods.removeWaystoneFromDatabase(server, waystone);
     }
 
     public static boolean isWaystoneActivated(Player player, IWaystone waystone) {

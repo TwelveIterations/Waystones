@@ -63,10 +63,13 @@ public class WaystoneManager extends SavedData {
         return waystones.values().stream().filter(it -> it.getName().equals(name)).findFirst();
     }
 
+    public Stream<IWaystone> getWaystones() {
+        return waystones.values().stream();
+    }
+
     public Stream<IWaystone> getWaystonesByType(ResourceLocation type) {
-        return waystones.values().stream()
-                .filter(it -> it.getWaystoneType().equals(type))
-                .sorted(Comparator.comparing(IWaystone::getName));
+        return getWaystones()
+                .filter(it -> it.getWaystoneType().equals(type));
     }
 
     public List<IWaystone> getGlobalWaystones() {

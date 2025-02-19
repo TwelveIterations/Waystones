@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.api;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -16,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public interface InternalMethods {
 
@@ -58,4 +60,10 @@ public interface InternalMethods {
     Collection<IWaystone> getActivatedWaystones(Player player);
 
     Optional<IWaystone> getNearestWaystone(Player player);
+
+    Stream<IWaystone> getAllWaystones(MinecraftServer server);
+
+    Stream<IWaystone> getWaystonesByType(MinecraftServer server, ResourceLocation type);
+
+    void removeWaystoneFromDatabase(MinecraftServer server, IWaystone waystone);
 }
