@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.compat;
 
 import net.blay09.mods.unbreakables.api.UnbreakablesAPI;
-import net.blay09.mods.unbreakables.rules.parameters.NoParameter;
+import net.blay09.mods.unbreakables.api.parameter.NoParameter;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 
