@@ -7,4 +7,5 @@ repositories {
 
 dependencies {
     compileOnly "info.journeymap:journeymap-api:${journeymap_api_common_version}"
+    compileOnly "net.blay09.mods:unbreakables-common:${unbreakables_version}"
 }

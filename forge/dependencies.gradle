@@ -8,4 +8,5 @@ repositories {
 dependencies {
     compileOnly fg.deobf(group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_forge_version, changing: true)
     //runtimeOnly fg.deobf("curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_forge_file_id}")
+    implementation fg.deobf("net.blay09.mods:unbreakables-common:${unbreakables_version}")
 }
