@@ -4,12 +4,13 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,7 +52,11 @@ public interface InternalMethods {
 
     void setBoundWaystone(ItemStack itemStack, @Nullable Waystone waystone);
 
+    Optional<Waystone> getWaystoneAt(MinecraftServer server, BlockGetter level, BlockPos pos);
+
     WarpRequirement resolveRequirements(WaystoneTeleportContext context);
+
+    Optional<Waystone> getWaystone(MinecraftServer level, UUID uuid);
 
     void registerRequirementType(RequirementType<?> requirementType);
 

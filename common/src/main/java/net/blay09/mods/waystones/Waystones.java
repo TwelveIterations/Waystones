@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.command.ModCommands;
 import net.blay09.mods.waystones.component.ModComponents;
+import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.requirement.RequirementRegistry;
 import net.blay09.mods.waystones.handler.ModEventHandlers;
@@ -46,5 +47,7 @@ public class Waystones {
         if (WaystonesConfig.getActive().compatibility.dynmap) {
             Balm.initializeIfLoaded("dynmap", "net.blay09.mods.waystones.compat.DynmapIntegration");
         }
+
+        Balm.initializeIfLoaded(Compat.UNBREAKABLES, "net.blay09.mods.waystones.compat.UnbreakablesIntegration");
     }
 }
