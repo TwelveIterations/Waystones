@@ -16,6 +16,7 @@ import net.blay09.mods.waystones.requirement.WarpRequirementsContextImpl;
 import net.blay09.mods.waystones.requirement.RequirementRegistry;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class InternalMethodsImpl implements InternalMethods {
 
@@ -236,5 +238,21 @@ public class InternalMethodsImpl implements InternalMethods {
     public void deactivateWaystone(ServerPlayer player, Waystone waystone) {
         PlayerWaystoneManager.deactivateWaystone(player, waystone);
         WaystoneSyncManager.sendActivatedWaystones(player);
+    }
+
+    @Override
+    public Stream<Waystone> getAllWaystones(MinecraftServer server) {
+        return WaystoneManagerImpl.get(server).getWaystones();
+    }
+
+    @Override
+    public Stream<Waystone> getWaystonesByType(MinecraftServer server, ResourceLocation type) {
+        return WaystoneManagerImpl.get(server).getWaystonesByType(type);
+    }
+
+    @Override
+    public void removeWaystoneFromDatabase(MinecraftServer server, Waystone waystone) {
+        WaystoneManagerImpl.get(server).removeWaystone(waystone);
+        PlayerWaystoneManager.removeKnownWaystone(server, waystone);
     }
 }
