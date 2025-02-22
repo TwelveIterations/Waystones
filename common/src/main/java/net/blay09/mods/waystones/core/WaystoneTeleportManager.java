@@ -251,4 +251,14 @@ public class WaystoneTeleportManager {
         return doTeleport(context).ifLeft(teleportedEntities -> Balm.getEvents().fireEvent(new WaystoneTeleportEvent.Post(context, teleportedEntities)));
     }
 
+    public static Collection<Entity> findPassengers(Entity entity) {
+        final var passengers = entity.getPassengers();
+        final var result = new ArrayList<>(passengers);
+        final var vehicle = entity.getVehicle();
+        if (vehicle != null) {
+            result.addAll(vehicle.getPassengers());
+        }
+        result.remove(entity);
+        return result;
+    }
 }
