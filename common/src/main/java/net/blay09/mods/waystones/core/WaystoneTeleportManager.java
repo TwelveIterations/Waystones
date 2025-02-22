@@ -35,7 +35,8 @@ public class WaystoneTeleportManager {
 
     public static Collection<? extends Entity> findPets(Entity entity) {
         return entity.level().getEntitiesOfClass(TamableAnimal.class, new AABB(entity.blockPosition()).inflate(10),
-                pet -> entity.getUUID().equals(pet.getOwnerUUID()) && !pet.isOrderedToSit() && !pet.isLeashed() && !WaystonePermissionManager.isEntityDeniedTeleports(pet)
+                pet -> entity.getUUID()
+                        .equals(pet.getOwnerUUID()) && !pet.isOrderedToSit() && !pet.isLeashed() && !WaystonePermissionManager.isEntityDeniedTeleports(pet)
         );
     }
 
@@ -254,4 +255,14 @@ public class WaystoneTeleportManager {
         return doTeleport(context).ifLeft(teleportedEntities -> Balm.getEvents().fireEvent(new WaystoneTeleportEvent.Post(context, teleportedEntities)));
     }
 
+    public static Collection<Entity> findPassengers(Entity entity) {
+        final var passengers = entity.getPassengers();
+        final var result = new ArrayList<>(passengers);
+        final var vehicle = entity.getVehicle();
+        if (vehicle != null) {
+            result.addAll(vehicle.getPassengers());
+        }
+        result.remove(entity);
+        return result;
+    }
 }

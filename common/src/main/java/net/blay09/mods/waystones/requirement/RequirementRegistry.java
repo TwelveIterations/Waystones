@@ -287,6 +287,7 @@ public class RequirementRegistry {
         registerConditionResolver("target_is_waystone",
                 NoParameter.class,
                 (context, parameters) -> context.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.WAYSTONE));
+        registerConditionResolver("is_with_passengers", NoParameter.class, (context, parameters) -> !WaystoneTeleportManager.findPassengers(context.getEntity()).isEmpty());
         registerConditionResolver("is_with_pets", NoParameter.class, (context, parameters) -> !WaystoneTeleportManager.findPets(context.getEntity()).isEmpty());
         registerConditionResolver("is_with_leashed",
                 NoParameter.class,
@@ -314,6 +315,7 @@ public class RequirementRegistry {
         registerVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getTargetWaystone().getPos().getCenter())));
         registerVariableResolver("leashed", it -> (float) WaystoneTeleportManager.findLeashedAnimals(it.getEntity()).size());
         registerVariableResolver("pets", it -> (float) WaystoneTeleportManager.findPets(it.getEntity()).size());
+        registerVariableResolver("passengers", it -> (float) WaystoneTeleportManager.findPassengers(it.getEntity()).size());
     }
 
     private static <T extends WarpRequirement> RequirementType<T> createDefaultType(String name, Class<T> requirementClass) {
