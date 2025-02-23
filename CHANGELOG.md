@@ -1,1 +1,5 @@
-- Fixed potential crash when opening waystone menus
+- Added `is_with_passengers` and `is_not_with_passengers` conditions for warp requirements, for vehicle passengers
+- Added `passengers` variable for warp requirements
+- Added support for multiple warp modifiers on a single line to avoid duplicate conditions
+- Added `removeWaystoneFromDatabase`, `getAllWaystones`, `getWaystonesByType` methods to API
+- Added `is_waystone_owner` and `is_waystone_global` conditions for Unbreakables integration
