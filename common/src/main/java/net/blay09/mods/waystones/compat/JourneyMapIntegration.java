@@ -116,7 +116,7 @@ public class JourneyMapIntegration implements IClientPlugin {
         try {
             String waystoneName = waystone.hasName() ? waystone.getName() : I18n.get("waystones.map.untitled_waystone");
             Waypoint oldWaypoint = api.getWaypoint(Waystones.MOD_ID, waystone.getWaystoneUid().toString());
-            Waypoint waypoint = new Waypoint(Waystones.MOD_ID, waystone.getWaystoneUid().toString(), waystoneName, waystone.getDimension(), waystone.getPos());
+            Waypoint waypoint = new Waypoint(Waystones.MOD_ID, waystone.getWaystoneUid().toString(), waystoneName, waystone.getDimension(), waystone.getPos().above(2));
             waypoint.setName(waystoneName);
             waypoint.setGroup(new WaypointGroup(Waystones.MOD_ID, WAYSTONE_GROUP_ID.toString(), "Waystones"));
             if (oldWaypoint != null) {
