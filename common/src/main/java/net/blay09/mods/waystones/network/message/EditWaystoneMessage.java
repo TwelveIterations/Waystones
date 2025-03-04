@@ -43,6 +43,11 @@ public class EditWaystoneMessage implements CustomPacketPayload {
 
     public static void handle(ServerPlayer player, EditWaystoneMessage message) {
         final var waystone = new WaystoneProxy(player.server, message.waystoneUid);
+        if (!waystone.isValid()) {
+            Waystones.logger.warn("{} tried to edit an invalid waystone with id {}", player.getName().getString(), message.waystoneUid);
+            return;
+        }
+
         final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), waystone);
         if (error.isPresent()) {
             return;
