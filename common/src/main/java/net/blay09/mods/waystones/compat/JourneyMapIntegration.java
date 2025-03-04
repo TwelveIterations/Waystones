@@ -185,13 +185,13 @@ public class JourneyMapIntegration implements IClientPlugin {
             final var waystoneName = waystone.hasName() ? waystone.getName() : Component.translatable("waystones.map.untitled_waystone");
             final var oldWaypoint = waypointId != null ? api.getWaypoint(Waystones.MOD_ID, waypointId) : null;
             final var waypoint = oldWaypoint != null ? oldWaypoint : WaypointFactory.createClientWaypoint(Waystones.MOD_ID,
-                    waystone.getPos(),
+                    waystone.getPos().above(2),
                     waystoneName.getString(),
                     waystone.getDimension(),
                     true);
             if (oldWaypoint != null) {
                 oldWaypoint.setName(waystoneName.getString());
-                waypoint.setPos(waystone.getPos().getX(), waystone.getPos().getY(), waystone.getPos().getZ());
+                waypoint.setPos(waystone.getPos().getX(), waystone.getPos().getY() + 2, waystone.getPos().getZ());
                 waypoint.setPrimaryDimension(waystone.getDimension());
             }
             waypoint.setCustomData(new WaystonesWaypointData(waystone.getWaystoneUid(), waystone.getWaystoneType()).encode());
