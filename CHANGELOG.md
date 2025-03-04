@@ -1,5 +1,2 @@
-- Added `is_with_passengers` and `is_not_with_passengers` conditions for warp requirements, for vehicle passengers
-- Added `passengers` variable for warp requirements
-- Added support for multiple warp modifiers on a single line to avoid duplicate conditions
-- Added `removeWaystoneFromDatabase`, `getAllWaystones`, `getWaystonesByType` methods to API
-- Added `is_waystone_owner` and `is_waystone_global` conditions for Unbreakables integration
+- Moved JourneyMap waypoints two blocks up so you don't end up inside the waystone if you use JourneyMap's teleport feature
+- Fixed delete button on sharestones not deleting the sharestone (for corrupt entries)
