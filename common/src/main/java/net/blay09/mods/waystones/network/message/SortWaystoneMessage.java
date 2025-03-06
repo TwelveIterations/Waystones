@@ -20,8 +20,8 @@ public class SortWaystoneMessage {
     }
 
     public static SortWaystoneMessage decode(FriendlyByteBuf buf) {
-        int index = buf.readByte();
-        int otherIndex = buf.readByte();
+        int index = buf.readVarInt();
+        int otherIndex = buf.readVarInt();
         return new SortWaystoneMessage(index, otherIndex);
     }
 
