@@ -55,7 +55,7 @@ public class WaystonePermissionManager {
 
     public static boolean isAllowedVisibility(WaystoneVisibility visibility) {
         final var config = WaystonesConfig.getActive();
-        return DEFAULT_VISIBILITIES.contains(visibility) || config.general.allowedVisibilities.contains(visibility);
+        return DEFAULT_VISIBILITIES.contains(visibility) || config.general.allowedVisibilities.contains(visibility) || config.general.defaultVisibility == visibility;
     }
 
     public static boolean skipsPermissions(Player player) {
