@@ -1,1 +1,2 @@
 - Moved JourneyMap waypoints two blocks up so you don't end up inside the waystone if you use JourneyMap's teleport feature
+- Fixed sorting not working correctly when you have more than 128 waystones activated
