@@ -15,8 +15,8 @@ public class SortWaystoneMessage {
     }
 
     public static void encode(SortWaystoneMessage message, FriendlyByteBuf buf) {
-        buf.writeByte(message.index);
-        buf.writeByte(message.otherIndex);
+        buf.writeVarInt(message.index);
+        buf.writeVarInt(message.otherIndex);
     }
 
     public static SortWaystoneMessage decode(FriendlyByteBuf buf) {
