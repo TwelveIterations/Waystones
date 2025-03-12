@@ -24,6 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -40,6 +41,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public abstract class WaystoneBlockBase extends BaseEntityBlock implements SimpleWaterloggedBlock {
 
@@ -87,7 +89,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
         return state.hasProperty(HALF);
     }
 
-    protected boolean canSilkTouch() {
+    protected boolean canSilkToucha() {
         return false;
     }
 
@@ -105,10 +107,8 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                 .get(Enchantments.SILK_TOUCH)
                 .map(it -> EnchantmentHelper.getEnchantmentLevel(it, player) > 0)
                 .orElse(false);
-        if (hasSilkTouch && canSilkTouch()) {
-            if (blockEntity instanceof WaystoneBlockEntityBase) {
-                ((WaystoneBlockEntityBase) blockEntity).setSilkTouched(true);
-            }
+        if (hasSilkTouch && blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity && waystoneBlockEntity.canSilkTouch()) {
+            waystoneBlockEntity.setSilkTouched(true);
             if (isDoubleBlock && offsetTileEntity instanceof WaystoneBlockEntityBase) {
                 ((WaystoneBlockEntityBase) offsetTileEntity).setSilkTouched(true);
             }
@@ -194,7 +194,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     protected InteractionResult handleEditActions(Level world, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide) {
-                blockEntity.getSettingsMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
+                blockEntity.getSettingsMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openMenu(player, menuProvider));
             }
             return InteractionResult.SUCCESS;
         }
@@ -211,31 +211,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
         return null;
     }
 
-    @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock())) {
-            final var blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-                final var waystone = waystoneBlockEntity.getWaystone();
-                final var wasNotSilkTouched = !canSilkTouch() || !waystoneBlockEntity.isSilkTouched();
-                WaystoneSyncManager.sendWaystoneRemovalToAll(world.getServer(), waystone, wasNotSilkTouched);
-                if (wasNotSilkTouched) {
-                    WaystoneManagerImpl.get(world.getServer()).removeWaystone(waystone);
-                    PlayerWaystoneManager.removeKnownWaystone(world.getServer(), waystone);
-                } else if (waystone instanceof MutableWaystone mutableWaystone) {
-                    mutableWaystone.setTransient(true);
-                    WaystoneManagerImpl.get(world.getServer()).updateWaystone(waystone);
-                }
-            }
-        }
-
-        super.onRemove(state, world, pos, newState, isMoving);
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
-        super.appendHoverText(stack, context, list, flag);
-
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
         final var waystoneUid = stack.get(ModComponents.waystone.get());
         if (waystoneUid != null) {
             WaystoneProxy waystone = new WaystoneProxy(null, waystoneUid);
@@ -245,8 +221,8 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
         }
     }
 
-    protected void addWaystoneNameToTooltip(List<Component> tooltip, WaystoneProxy waystone) {
-        tooltip.add(waystone.getName().copy().withStyle(ChatFormatting.AQUA));
+    protected void addWaystoneNameToTooltip(Consumer<Component> tooltip, WaystoneProxy waystone) {
+        tooltip.accept(waystone.getName().copy().withStyle(ChatFormatting.AQUA));
     }
 
     @Override
@@ -328,7 +304,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                 final ServerPlayer player = (ServerPlayer) placer;
                 final WaystoneBlockEntityBase waystoneTileEntity = (WaystoneBlockEntityBase) blockEntity;
                 if (shouldOpenMenuWhenPlaced()) {
-                    waystoneTileEntity.getSettingsMenuProvider().ifPresent(it -> Balm.getNetworking().openGui(player, it));
+                    waystoneTileEntity.getSettingsMenuProvider().ifPresent(it -> Balm.getNetworking().openMenu(player, it));
                 }
             }
         }

@@ -16,13 +16,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
-    public record Data(Waystone fromWaystone, Collection<Waystone> waystones) {
+    public record Data(Waystone fromWaystone, List<Waystone> waystones) {
     }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
@@ -33,12 +31,12 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
             Data::new);
 
     private final Waystone fromWaystone;
-    private final Collection<Waystone> waystones;
+    private final List<Waystone> waystones;
     private final Set<ResourceLocation> flags;
     private Consumer<WaystoneTeleportContext> postTeleportHandler = it -> {};
     private ItemStack warpItem = ItemStack.EMPTY;
 
-    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<Waystone> waystones, Set<ResourceLocation> flags) {
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, List<Waystone> waystones, Set<ResourceLocation> flags) {
         super(type, windowId);
         this.fromWaystone = fromWaystone;
         this.waystones = waystones;

@@ -22,11 +22,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
 
@@ -63,14 +59,14 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
             @Override
             public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
                 final var fromWaystone = getWaystone();
-                final var waystones = PlayerWaystoneManager.getTargetsForWaystone(player, fromWaystone);
+                final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(player, fromWaystone));
                 PlayerWaystoneManager.ensureSortingIndex(player, waystones);
                 return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), fromWaystone, windowId, waystones, Collections.emptySet());
             }
 
             @Override
             public WaystoneSelectionMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                return new WaystoneSelectionMenu.Data(getWaystone(), PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, getWaystone()));
+                return new WaystoneSelectionMenu.Data(getWaystone(), new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, getWaystone())));
             }
 
             @Override

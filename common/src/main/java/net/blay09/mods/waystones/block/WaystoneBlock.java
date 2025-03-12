@@ -61,11 +61,6 @@ public class WaystoneBlock extends WaystoneBlockBase {
     }
 
     @Override
-    protected boolean canSilkTouch() {
-        return true;
-    }
-
-    @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext context) {
         return state.getValue(HALF) == DoubleBlockHalf.UPPER ? UPPER_SHAPE : LOWER_SHAPE;
     }
@@ -81,7 +76,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
             if (!world.isClientSide) {
-                blockEntity.getSelectionMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
+                blockEntity.getSelectionMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openMenu(player, menuProvider));
             }
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);

@@ -12,6 +12,7 @@ import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
@@ -287,7 +288,9 @@ public class RequirementRegistry {
         registerConditionResolver("target_is_waystone",
                 NoParameter.class,
                 (context, parameters) -> context.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.WAYSTONE));
-        registerConditionResolver("is_with_pets", NoParameter.class, (context, parameters) -> !WaystoneTeleportManager.findPets(context.getEntity()).isEmpty());
+        registerConditionResolver("is_with_pets",
+                NoParameter.class,
+                (context, parameters) -> context.getEntity() instanceof LivingEntity livingEntity && !WaystoneTeleportManager.findPets(livingEntity).isEmpty());
         registerConditionResolver("is_with_leashed",
                 NoParameter.class,
                 (context, parameters) -> !WaystoneTeleportManager.findLeashedAnimals(context.getEntity()).isEmpty());
@@ -313,7 +316,8 @@ public class RequirementRegistry {
 
         registerVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getTargetWaystone().getPos().getCenter())));
         registerVariableResolver("leashed", it -> (float) WaystoneTeleportManager.findLeashedAnimals(it.getEntity()).size());
-        registerVariableResolver("pets", it -> (float) WaystoneTeleportManager.findPets(it.getEntity()).size());
+        registerVariableResolver("pets",
+                it -> it.getEntity() instanceof LivingEntity livingEntity ? (float) WaystoneTeleportManager.findPets(livingEntity).size() : 0);
     }
 
     private static <T extends WarpRequirement> RequirementType<T> createDefaultType(String name, Class<T> requirementClass) {

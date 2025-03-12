@@ -25,6 +25,7 @@ repositories {
     maven {
         url = "https://maven.bai.lol"
         content {
+            includeGroup "lol.bai"
             includeGroup "mcp.mobius.waila"
         }
     }
@@ -59,11 +60,26 @@ repositories {
             includeGroup "us.dynmap"
         }
     }
+
+    maven {
+        url = 'https://maven.ladysnake.org/releases'
+        content {
+            includeGroup "dev.onyxstudios.cardinal-components-api"
+            includeGroup "org.ladysnake.cardinal-components-api"
+        }
+    }
 	
 	maven {
         url "https://maven.siphalor.de/"
         content {
             includeGroup "de.siphalor"
+        }
+    }
+
+    maven {
+        url = "https://maven.theillusivec4.top/"
+        content {
+            includeGroup "top.theillusivec4.curios"
         }
     }
 

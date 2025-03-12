@@ -1,13 +1,13 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.core.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,25 +15,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.Objects;
 import java.util.UUID;
 
-public class RemoveWaystoneMessage implements CustomPacketPayload {
+import static net.blay09.mods.waystones.Waystones.id;
 
-    public static final CustomPacketPayload.Type<RemoveWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
-            "remove_waystone"));
+public record RemoveWaystoneMessage(UUID waystoneUid) implements CustomPacketPayload {
 
-    private final UUID waystoneUid;
-
-    public RemoveWaystoneMessage(UUID waystoneUid) {
-        this.waystoneUid = waystoneUid;
-    }
-
-    public static void encode(FriendlyByteBuf buf, RemoveWaystoneMessage message) {
-        buf.writeUUID(message.waystoneUid);
-    }
-
-    public static RemoveWaystoneMessage decode(FriendlyByteBuf buf) {
-        UUID waystoneUid = buf.readUUID();
-        return new RemoveWaystoneMessage(waystoneUid);
-    }
+    public static final CustomPacketPayload.Type<RemoveWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(id("remove_waystone"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, RemoveWaystoneMessage> STREAM_CODEC = StreamCodec.composite(
+            UUIDUtil.STREAM_CODEC,
+            RemoveWaystoneMessage::waystoneUid,
+            RemoveWaystoneMessage::new
+    );
 
     public static void handle(ServerPlayer player, RemoveWaystoneMessage message) {
         WaystoneProxy waystone = new WaystoneProxy(player.server, message.waystoneUid);

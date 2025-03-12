@@ -1,39 +1,32 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.event.WaystoneRemoveReceivedEvent;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.UUID;
 
-public class WaystoneRemovedMessage implements CustomPacketPayload {
+import static net.blay09.mods.waystones.Waystones.id;
 
-    public static final CustomPacketPayload.Type<WaystoneRemovedMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
-            "waystone_removed"));
+public record WaystoneRemovedMessage(ResourceLocation waystoneType, UUID waystoneId, boolean wasDestroyed) implements CustomPacketPayload {
 
-    private final ResourceLocation waystoneType;
-    private final UUID waystoneId;
-    private final boolean wasDestroyed;
+    public static final CustomPacketPayload.Type<WaystoneRemovedMessage> TYPE = new CustomPacketPayload.Type<>(id("waystone_removed"));
 
-    public WaystoneRemovedMessage(ResourceLocation waystoneType, UUID waystoneId, boolean wasDestroyed) {
-        this.waystoneType = waystoneType;
-        this.waystoneId = waystoneId;
-        this.wasDestroyed = wasDestroyed;
-    }
-
-    public static void encode(FriendlyByteBuf buf, WaystoneRemovedMessage message) {
-        buf.writeResourceLocation(message.waystoneType);
-        buf.writeUUID(message.waystoneId);
-        buf.writeBoolean(message.wasDestroyed);
-    }
-
-    public static WaystoneRemovedMessage decode(FriendlyByteBuf buf) {
-        return new WaystoneRemovedMessage(buf.readResourceLocation(), buf.readUUID(), buf.readBoolean());
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, WaystoneRemovedMessage> STREAM_CODEC = StreamCodec.composite(
+            ResourceLocation.STREAM_CODEC,
+            WaystoneRemovedMessage::waystoneType,
+            UUIDUtil.STREAM_CODEC,
+            WaystoneRemovedMessage::waystoneId,
+            ByteBufCodecs.BOOL,
+            WaystoneRemovedMessage::wasDestroyed,
+            WaystoneRemovedMessage::new
+    );
 
     public static void handle(Player player, WaystoneRemovedMessage message) {
         Balm.getEvents().fireEvent(new WaystoneRemoveReceivedEvent(message.waystoneType, message.waystoneId, message.wasDestroyed));

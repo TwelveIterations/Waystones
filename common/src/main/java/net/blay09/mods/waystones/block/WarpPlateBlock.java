@@ -18,6 +18,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -40,6 +41,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 public class WarpPlateBlock extends WaystoneBlockBase {
 
@@ -86,11 +88,6 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     @Override
-    protected boolean canSilkTouch() {
-        return true;
-    }
-
-    @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         return SHAPE;
     }
@@ -102,7 +99,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     @Override
-    public void entityInside(BlockState blockState, Level world, BlockPos pos, Entity entity) {
+    public void entityInside(BlockState blockState, Level world, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier) {
         if (entity.getX() >= pos.getX() && entity.getX() < pos.getX() + 1
                 && entity.getY() >= pos.getY() && entity.getY() < pos.getY() + 1
                 && entity.getZ() >= pos.getZ() && entity.getZ() < pos.getZ() + 1
@@ -184,7 +181,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         }
 
         if (level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
-            warpPlate.getSettingsMenuProvider().ifPresent(it -> Balm.getNetworking().openGui(player, it));
+            warpPlate.getSettingsMenuProvider().ifPresent(it -> Balm.getNetworking().openMenu(player, it));
             return InteractionResult.SUCCESS;
         }
 
@@ -192,8 +189,8 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     @Override
-    protected void addWaystoneNameToTooltip(List<Component> tooltip, WaystoneProxy waystone) {
-        tooltip.add(getGalacticName(waystone));
+    protected void addWaystoneNameToTooltip(Consumer<Component> tooltip, WaystoneProxy waystone) {
+        tooltip.accept(getGalacticName(waystone));
     }
 
     public static ChatFormatting getColorForName(String name) {

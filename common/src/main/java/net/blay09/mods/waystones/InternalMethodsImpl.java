@@ -16,11 +16,13 @@ import net.blay09.mods.waystones.requirement.WarpRequirementsContextImpl;
 import net.blay09.mods.waystones.requirement.RequirementRegistry;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -44,7 +46,9 @@ public class InternalMethodsImpl implements InternalMethods {
         return WaystonesAPI.createCustomTeleportContext(entity, waystone).ifLeft(context -> {
             final var shouldTransportPets = WaystonesConfig.getActive().teleports.transportPets;
             if (shouldTransportPets == WaystonesConfigData.TransportMobs.ENABLED || (shouldTransportPets == WaystonesConfigData.TransportMobs.SAME_DIMENSION && !context.isDimensionalTeleport())) {
-                context.getAdditionalEntities().addAll(WaystoneTeleportManager.findPets(entity));
+                if (entity instanceof LivingEntity livingEntity) {
+                    context.getAdditionalEntities().addAll(WaystoneTeleportManager.findPets(livingEntity));
+                }
             }
             context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(entity));
             init.accept(context);
@@ -131,7 +135,7 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public Optional<Waystone> placeWaystone(Level level, BlockPos pos, WaystoneStyle style) {
-        Block block = Balm.getRegistries().getBlock(style.getBlockRegistryName());
+        Block block = BuiltInRegistries.BLOCK.getValue(style.getBlockRegistryName());
         level.setBlock(pos, block.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER), 3);
         level.setBlock(pos.above(), block.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.UPPER), 3);
         return getWaystoneAt(level, pos);

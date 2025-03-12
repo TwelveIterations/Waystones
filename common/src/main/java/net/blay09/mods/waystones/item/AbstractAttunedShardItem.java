@@ -13,10 +13,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public abstract class AbstractAttunedShardItem extends ShardItem implements IAttunementItem {
 
@@ -31,24 +33,22 @@ public abstract class AbstractAttunedShardItem extends ShardItem implements IAtt
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flag) {
-        super.appendHoverText(stack, context, list, flag);
-
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
         final var attunedWaystone = getWaystoneAttunedTo(null, null, stack).orElse(InvalidWaystone.INSTANCE);
         if (!attunedWaystone.isValid()) {
             var textComponent = Component.translatable("tooltip.waystones.attuned_shard.attunement_lost");
             textComponent.withStyle(ChatFormatting.GRAY);
-            list.add(textComponent);
+            list.accept(textComponent);
             return;
         }
 
         if (attunedWaystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE)) {
-            list.add(WarpPlateBlock.getGalacticName(attunedWaystone));
+            list.accept(WarpPlateBlock.getGalacticName(attunedWaystone));
         } else {
-            list.add(attunedWaystone.getName().copy().withStyle(ChatFormatting.LIGHT_PURPLE));
+            list.accept(attunedWaystone.getName().copy().withStyle(ChatFormatting.LIGHT_PURPLE));
         }
 
-        list.add(Component.translatable("tooltip.waystones.attuned_shard.plug_into_warp_plate"));
+        list.accept(Component.translatable("tooltip.waystones.attuned_shard.plug_into_warp_plate"));
     }
 
     @Override

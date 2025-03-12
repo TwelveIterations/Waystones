@@ -1,8 +1,17 @@
 package net.blay09.mods.waystones.api;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 
-public enum WaystoneVisibility {
+import java.util.Locale;
+import java.util.function.IntFunction;
+
+public enum WaystoneVisibility implements StringRepresentable {
     ACTIVATION,
     GLOBAL,
     SHARD_ONLY,
@@ -21,6 +30,11 @@ public enum WaystoneVisibility {
     GREEN_SHARESTONE,
     RED_SHARESTONE,
     BLACK_SHARESTONE;
+
+    @Override
+    public String getSerializedName() {
+        return name().toLowerCase(Locale.ROOT);
+    }
 
     public static WaystoneVisibility fromWaystoneType(ResourceLocation waystoneType) {
         if (WaystoneTypes.isSharestone(waystoneType)) {
@@ -48,4 +62,8 @@ public enum WaystoneVisibility {
             return WaystoneVisibility.ACTIVATION;
         }
     }
+
+    private static final IntFunction<WaystoneVisibility> BY_ID = ByIdMap.continuous(WaystoneVisibility::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
+    public static Codec<WaystoneVisibility> CODEC = StringRepresentable.fromEnum(WaystoneVisibility::values);
+    public static final StreamCodec<ByteBuf, WaystoneVisibility> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, WaystoneVisibility::ordinal);
 }

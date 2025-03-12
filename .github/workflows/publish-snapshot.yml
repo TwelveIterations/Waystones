@@ -25,8 +25,11 @@ jobs:
             const includeFabric = includes.includes('fabric');
             const includeForge = includes.includes('forge');
             const includeNeoForge = includes.includes('neoforge');
+            const gradleProperties = fs.readFileSync('gradle.properties', 'utf8');
+            const mavenSnapshots = gradleProperties.match(/^(?!#)maven_snapshots\s*=\s*(.+)/m);
             return {
               loader: ['common', includeFabric ? 'fabric' : false, includeForge ? 'forge' : false, includeNeoForge ? 'neoforge' : false].filter(Boolean),
+              task: [mavenSnapshots ? 'publish' : 'build']
             };
   publish-snapshot:
     runs-on: ubuntu-latest
@@ -47,7 +50,7 @@ jobs:
         run: chmod +x ./gradlew
       - name: Extracting version from properties
         shell: bash
-        run: echo "version=$(cat gradle.properties | grep -w "\bversion" | cut -d= -f2)" >> $GITHUB_OUTPUT
+        run: echo "version=$(cat gradle.properties | grep -w "\bversion\s*=" | cut -d= -f2)" >> $GITHUB_OUTPUT
         id: extract-version
       - name: Bumping version
         uses: TwelveIterationMods/bump-version@v1
@@ -56,5 +59,5 @@ jobs:
           bump: patch
         id: bump-version
       - name: Publish
-        run: ./gradlew :${{ matrix.loader }}:publish '-Pversion=${{ steps.bump-version.outputs.version }}-SNAPSHOT' '-PtwelveIterationsNexusUsername=${{ secrets.NEXUS_USER }}' '-PtwelveIterationsNexusPassword=${{ secrets.NEXUS_PASSWORD }}'
+        run: ./gradlew :${{ matrix.loader }}:${{ matrix.task }} '-Pversion=${{ steps.bump-version.outputs.version }}-SNAPSHOT' '-PmavenUsername=${{ secrets.MAVEN_USER }}' '-PmavenPassword=${{ secrets.MAVEN_PASSWORD }}'
     needs: prepare-matrix

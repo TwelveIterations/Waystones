@@ -33,7 +33,7 @@ public class OpenPlayerWaystonesGuiCommand implements Command<CommandSourceStack
         ServerPlayer target = ctx.getArgument("player", EntitySelector.class).findSinglePlayer(ctx.getSource());
         ServerPlayer op = ctx.getSource().getPlayerOrException();
         final var waystones = PlayerWaystoneManager.getActivatedWaystones(target).stream().sorted(WaystoneComparators.forAdminInspection(op, target)).toList();
-        final var menuProvider = new BalmMenuProvider<Collection<Waystone>>() {
+        final var menuProvider = new BalmMenuProvider<List<Waystone>>() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable("container.waystones.waystone_admin_selection", target.getScoreboardName());
@@ -45,16 +45,16 @@ public class OpenPlayerWaystonesGuiCommand implements Command<CommandSourceStack
             }
 
             @Override
-            public Collection<Waystone> getScreenOpeningData(ServerPlayer serverPlayer) {
+            public List<Waystone> getScreenOpeningData(ServerPlayer serverPlayer) {
                 return waystones;
             }
 
             @Override
-            public StreamCodec<RegistryFriendlyByteBuf, Collection<Waystone>> getScreenStreamCodec() {
+            public StreamCodec<RegistryFriendlyByteBuf, List<Waystone>> getScreenStreamCodec() {
                 return WaystoneImpl.LIST_STREAM_CODEC;
             }
         };
-        Balm.getNetworking().openGui(op, menuProvider);
+        Balm.getNetworking().openMenu(op, menuProvider);
 
         return 0;
     }

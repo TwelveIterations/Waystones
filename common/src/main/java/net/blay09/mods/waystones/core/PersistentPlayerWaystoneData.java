@@ -27,7 +27,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
         ListTag activatedWaystones = getActivatedWaystonesData(getWaystonesData(player));
         String waystoneUid = waystone.getWaystoneUid().toString();
         for (Tag activatedWaystone : activatedWaystones) {
-            if (waystoneUid.equals(activatedWaystone.getAsString())) {
+            if (activatedWaystone.asString().map(waystoneUid::equals).orElse(false)) {
                 return true;
             }
         }
@@ -36,17 +36,19 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public Collection<Waystone> getWaystones(Player player) {
+    public List<Waystone> getWaystones(Player player) {
         final var activatedWaystonesTag = getActivatedWaystonesData(getWaystonesData(player));
         final var waystones = new ArrayList<Waystone>();
         for (final var iterator = activatedWaystonesTag.iterator(); iterator.hasNext(); ) {
             final var activatedWaystoneTag = iterator.next();
-            final var proxy = new WaystoneProxy(player.getServer(), UUID.fromString(activatedWaystoneTag.getAsString()));
-            if (proxy.isValid()) {
-                waystones.add(proxy);
-            } else {
-                iterator.remove();
-            }
+            activatedWaystoneTag.asString().map(UUID::fromString).ifPresentOrElse(waystoneId -> {
+                final var proxy = new WaystoneProxy(player.getServer(), waystoneId);
+                if (proxy.isValid()) {
+                    waystones.add(proxy);
+                } else {
+                    iterator.remove();
+                }
+            }, iterator::remove);
         }
 
         return waystones;
@@ -55,7 +57,11 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     @Override
     public List<UUID> getSortingIndex(Player player) {
         final var sortingIndex = getSortingIndexData(getWaystonesData(player));
-        return sortingIndex.stream().map(entry -> UUID.fromString(entry.getAsString())).toList();
+        final var result = new ArrayList<UUID>();
+        for (final var entry : sortingIndex) {
+            entry.asString().map(UUID::fromString).ifPresent(result::add);
+        }
+        return result;
     }
 
     @Override
@@ -73,10 +79,11 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
         final var sortingIndex = new ArrayList<UUID>();
         final var existing = new HashSet<UUID>();
         for (final var sortingIndexEntry : sortingIndexData) {
-            final var waystoneUid = UUID.fromString(sortingIndexEntry.getAsString());
-            if (existing.add(waystoneUid)) {
-                sortingIndex.add(waystoneUid);
-            }
+            sortingIndexEntry.asString().map(UUID::fromString).ifPresent(waystoneUid -> {
+                if (existing.add(waystoneUid)) {
+                    sortingIndex.add(waystoneUid);
+                }
+            });
         }
 
         for (final var waystone : waystones) {
@@ -95,7 +102,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
         final var sortingIndex = getSortingIndexData(getWaystonesData(player));
         for (int i = 0; i < sortingIndex.size(); i++) {
             final var sortingIndexEntry = sortingIndex.get(i);
-            if (waystoneUid.toString().equals(sortingIndexEntry.getAsString())) {
+            if (sortingIndexEntry.asString().map(it -> waystoneUid.toString().equals(it)).orElse(false)) {
                 sortingIndex.remove(i);
                 sortingIndex.add(0, sortingIndexEntry);
                 break;
@@ -108,7 +115,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
         final var sortingIndex = getSortingIndexData(getWaystonesData(player));
         for (int i = 0; i < sortingIndex.size(); i++) {
             final var sortingIndexEntry = sortingIndex.get(i);
-            if (waystoneUid.toString().equals(sortingIndexEntry.getAsString())) {
+            if (sortingIndexEntry.asString().map(it -> waystoneUid.toString().equals(it)).orElse(false)) {
                 sortingIndex.remove(i);
                 sortingIndex.add(sortingIndexEntry);
                 break;
@@ -123,9 +130,9 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
         int otherWaystoneIndex = -1;
         for (int i = 0; i < sortingIndex.size(); i++) {
             final var sortingIndexEntry = sortingIndex.get(i);
-            if (waystoneUid.toString().equals(sortingIndexEntry.getAsString())) {
+            if (sortingIndexEntry.asString().map(it -> waystoneUid.toString().equals(it)).orElse(false)) {
                 waystoneIndex = i;
-            } else if (otherWaystoneUid.toString().equals(sortingIndexEntry.getAsString())) {
+            } else if (sortingIndexEntry.asString().map(it -> otherWaystoneUid.toString().equals(it)).orElse(false)) {
                 otherWaystoneIndex = i;
             }
         }
@@ -142,7 +149,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
         String waystoneUid = waystone.getWaystoneUid().toString();
         for (int i = activatedWaystones.size() - 1; i >= 0; i--) {
             Tag activatedWaystone = activatedWaystones.get(i);
-            if (waystoneUid.equals(activatedWaystone.getAsString())) {
+            if (activatedWaystone.asString().map(waystoneUid::equals).orElse(false)) {
                 activatedWaystones.remove(i);
                 break;
             }
@@ -152,11 +159,12 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     @Override
     public Map<ResourceLocation, Long> getCooldowns(Player player) {
         final var waystonesData = getWaystonesData(player);
-        final var cooldowns = waystonesData.getCompound(COOLDOWNS);
         final var cooldownMap = new HashMap<ResourceLocation, Long>();
-        for (final var key : cooldowns.getAllKeys()) {
-            cooldownMap.put(ResourceLocation.parse(key), cooldowns.getLong(key));
-        }
+        waystonesData.getCompound(COOLDOWNS).ifPresent(cooldowns -> {
+            for (final var key : cooldowns.keySet()) {
+                cooldownMap.put(ResourceLocation.parse(key), cooldowns.getLongOr(key, 0));
+            }
+        });
 
         return cooldownMap;
     }
@@ -170,33 +178,34 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     @Override
     public long getCooldownUntil(Player player, ResourceLocation key) {
         final var waystonesData = getWaystonesData(player);
-        final var cooldowns = waystonesData.getCompound(COOLDOWNS);
-        return cooldowns.getLong(key.toString());
+        return waystonesData.getCompound(COOLDOWNS)
+                .flatMap(it -> it.getLong(key.toString()))
+                .orElse(0L);
     }
 
     @Override
     public void setCooldownUntil(Player player, ResourceLocation key, long timeStamp) {
         final var waystonesData = getWaystonesData(player);
-        final var cooldowns = waystonesData.getCompound(COOLDOWNS);
+        final var cooldowns = waystonesData.getCompoundOrEmpty(COOLDOWNS);
         cooldowns.putLong(key.toString(), timeStamp);
         waystonesData.put(COOLDOWNS, cooldowns);
     }
 
     private static ListTag getActivatedWaystonesData(CompoundTag data) {
-        ListTag list = data.getList(ACTIVATED_WAYSTONES, Tag.TAG_STRING);
+        ListTag list = data.getListOrEmpty(ACTIVATED_WAYSTONES);
         data.put(ACTIVATED_WAYSTONES, list);
         return list;
     }
 
     private static ListTag getSortingIndexData(CompoundTag data) {
-        ListTag list = data.contains(SORTING_INDEX) ? data.getList(SORTING_INDEX, Tag.TAG_STRING) : createSortingIndexFromLegacy(data);
+        ListTag list = data.getList(SORTING_INDEX).orElseGet(() -> createSortingIndexFromLegacy(data));
         data.put(SORTING_INDEX, list);
         return list;
     }
 
     private static CompoundTag getWaystonesData(Player player) {
         CompoundTag persistedData = Balm.getHooks().getPersistentData(player);
-        CompoundTag compound = persistedData.getCompound(TAG_NAME);
+        CompoundTag compound = persistedData.getCompoundOrEmpty(TAG_NAME);
         persistedData.put(TAG_NAME, compound);
         return compound;
     }

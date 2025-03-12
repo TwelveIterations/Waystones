@@ -1,34 +1,23 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class RequestManageWaystoneModifiersMessage implements CustomPacketPayload {
+import static net.blay09.mods.waystones.Waystones.id;
 
-    public static final Type<RequestManageWaystoneModifiersMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(
-            Waystones.MOD_ID,
-            "request_manage_waystone_modifiers"));
+public record RequestManageWaystoneModifiersMessage(BlockPos pos) implements CustomPacketPayload {
 
-    private final BlockPos pos;
-
-    public RequestManageWaystoneModifiersMessage(BlockPos pos) {
-        this.pos = pos;
-    }
-
-    public static void encode(FriendlyByteBuf buf, RequestManageWaystoneModifiersMessage message) {
-        buf.writeBlockPos(message.pos);
-    }
-
-    public static RequestManageWaystoneModifiersMessage decode(FriendlyByteBuf buf) {
-        final var pos = buf.readBlockPos();
-        return new RequestManageWaystoneModifiersMessage(pos);
-    }
+    public static final Type<RequestManageWaystoneModifiersMessage> TYPE = new Type<>(id("request_manage_waystone_modifiers"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, RequestManageWaystoneModifiersMessage> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC,
+            RequestManageWaystoneModifiersMessage::pos,
+            RequestManageWaystoneModifiersMessage::new
+    );
 
     public static void handle(ServerPlayer player, RequestManageWaystoneModifiersMessage message) {
         final var pos = message.pos;
@@ -38,7 +27,7 @@ public class RequestManageWaystoneModifiersMessage implements CustomPacketPayloa
 
         final var blockEntity = player.level().getBlockEntity(pos);
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-            waystoneBlockEntity.getModifierMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
+            waystoneBlockEntity.getModifierMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openMenu(player, menuProvider));
         }
     }
 

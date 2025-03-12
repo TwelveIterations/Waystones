@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.command;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.blay09.mods.balm.api.command.BalmCommands;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneStyle;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.comparator.WaystoneComparators;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -159,11 +158,11 @@ public class ModCommands {
 
         final var coordinates = Component.translatable("commands.waystones.list.coordinates", waystonePos.getX(), waystonePos.getY(), waystonePos.getZ())
                 .withStyle(ChatFormatting.YELLOW)
-                .withStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestedCommand)));
+                .withStyle(Style.EMPTY.withClickEvent(new ClickEvent.SuggestCommand(suggestedCommand)));
 
         final var waystoneName = waystone.getName().copy()
                 .withStyle(ChatFormatting.GREEN)
-                .withStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestedCommand)));
+                .withStyle(Style.EMPTY.withClickEvent(new ClickEvent.SuggestCommand(suggestedCommand)));
 
         final var entryKey = waystone.isOwner(target) ? "commands.waystones.list.entry.owned" : "commands.waystones.list.entry.activated";
         return Component.translatable(entryKey, location, coordinates, waystoneName);

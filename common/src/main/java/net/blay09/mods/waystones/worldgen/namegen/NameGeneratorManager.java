@@ -1,16 +1,13 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
 import com.google.common.collect.Sets;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.event.GenerateWaystoneNameEvent;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -19,18 +16,37 @@ import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 public class NameGeneratorManager extends SavedData {
 
     private static final String DATA_NAME = Waystones.MOD_ID + "_NameGenerator";
-    private static final String USED_NAMES = "UsedNames";
-    private static final NameGeneratorManager clientStorageCopy = new NameGeneratorManager();
+    private static final Codec<NameGeneratorManager> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.listOf().fieldOf("usedNames").forGetter(NameGeneratorManager::getUsedNames)
+    ).apply(instance, NameGeneratorManager::new));
+
+    public static final SavedDataType<NameGeneratorManager> TYPE = new SavedDataType<>(
+            DATA_NAME,
+            (context) -> new NameGeneratorManager(List.of()),
+            ctx -> CODEC,
+            null // TODO this can't be null but mod loaders will save us soon I'm sure
+    );
 
     private final Set<String> usedNames = Sets.newHashSet();
+
+    public NameGeneratorManager(List<String> usedNames) {
+        this.usedNames.addAll(usedNames);
+    }
+
+    public List<String> getUsedNames() {
+        return new ArrayList<>(usedNames);
+    }
 
     private NameGenerator getNameGenerator(NameGenerationMode nameGenerationMode) {
         final var randomGenerator = new TemplateNameGenerator(WaystonesConfig.getActive().worldGen.nameGenerationTemplate)
@@ -73,34 +89,13 @@ public class NameGeneratorManager extends SavedData {
         return tryName;
     }
 
-    public static NameGeneratorManager load(CompoundTag compound, HolderLookup.Provider provider) {
-        NameGeneratorManager nameGenerator = new NameGeneratorManager();
-        ListTag tagList = compound.getList(USED_NAMES, Tag.TAG_STRING);
-        for (Tag tag : tagList) {
-            nameGenerator.usedNames.add(tag.getAsString());
-        }
-        return nameGenerator;
-    }
-
-    @Override
-    public CompoundTag save(CompoundTag compound, HolderLookup.Provider provider) {
-        ListTag tagList = new ListTag();
-        for (String entry : usedNames) {
-            tagList.add(StringTag.valueOf(entry));
-        }
-        compound.put(USED_NAMES, tagList);
-        return compound;
-    }
-
     public static NameGeneratorManager get(@Nullable MinecraftServer server) {
         if (server != null) {
             ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(new Factory<>(NameGeneratorManager::new,
-                    NameGeneratorManager::load,
-                    DataFixTypes.SAVED_DATA_MAP_DATA), DATA_NAME); // TODO this is most likely wrong but I don't think Forge has a solution, Fabric allows null
+            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(TYPE);
         }
 
-        return clientStorageCopy;
+        throw new IllegalStateException("Server is null");
     }
 
 }

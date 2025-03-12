@@ -12,7 +12,6 @@ import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -23,20 +22,18 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+
+import static net.blay09.mods.waystones.Waystones.id;
 
 public class InventoryButtonMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<InventoryButtonMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
-            "inventory_button"));
-
-    public static void encode(FriendlyByteBuf buf, InventoryButtonMessage message) {
-    }
-
-    public static InventoryButtonMessage decode(FriendlyByteBuf buf) {
-        return new InventoryButtonMessage();
-    }
+    public static final InventoryButtonMessage INSTANCE = new InventoryButtonMessage();
+    public static final CustomPacketPayload.Type<InventoryButtonMessage> TYPE = new CustomPacketPayload.Type<>(id("inventory_button"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, InventoryButtonMessage> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     public static void handle(final ServerPlayer player, InventoryButtonMessage message) {
         InventoryButtonMode inventoryButtonMode = WaystonesConfig.getActive().getInventoryButtonMode();
@@ -58,9 +55,9 @@ public class InventoryButtonMessage implements CustomPacketPayload {
             WaystonesAPI.createDefaultTeleportContext(player, waystone.get(), it -> it.addFlag(TeleportFlags.INVENTORY_BUTTON))
                     .mapLeft(WaystonesAPI::tryTeleport);
         } else if (inventoryButtonMode.isReturnToAny()) {
-            final var waystones = PlayerWaystoneManager.getTargetsForInventoryButton(player);
+            final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForInventoryButton(player));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            final var containerProvider = new BalmMenuProvider<Collection<Waystone>>() {
+            final var containerProvider = new BalmMenuProvider<List<Waystone>>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("container.waystones.waystone_selection");
@@ -72,16 +69,16 @@ public class InventoryButtonMessage implements CustomPacketPayload {
                 }
 
                 @Override
-                public Collection<Waystone> getScreenOpeningData(ServerPlayer serverPlayer) {
+                public List<Waystone> getScreenOpeningData(ServerPlayer serverPlayer) {
                     return waystones;
                 }
 
                 @Override
-                public StreamCodec<RegistryFriendlyByteBuf, Collection<Waystone>> getScreenStreamCodec() {
+                public StreamCodec<RegistryFriendlyByteBuf, List<Waystone>> getScreenStreamCodec() {
                     return WaystoneImpl.LIST_STREAM_CODEC;
                 }
             };
-            Balm.getNetworking().openGui(player, containerProvider);
+            Balm.getNetworking().openMenu(player, containerProvider);
         }
     }
 

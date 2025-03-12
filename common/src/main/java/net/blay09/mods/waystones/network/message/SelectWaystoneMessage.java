@@ -5,32 +5,26 @@ import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
 
-public class SelectWaystoneMessage implements CustomPacketPayload {
+import static net.blay09.mods.waystones.Waystones.id;
 
-    public static final CustomPacketPayload.Type<SelectWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
-            "select_waystone"));
+public record SelectWaystoneMessage(UUID waystoneUid) implements CustomPacketPayload {
 
-    private final UUID waystoneUid;
-
-    public SelectWaystoneMessage(UUID waystoneUid) {
-        this.waystoneUid = waystoneUid;
-    }
-
-    public static void encode(FriendlyByteBuf buf, SelectWaystoneMessage message) {
-        buf.writeUUID(message.waystoneUid);
-    }
-
-    public static SelectWaystoneMessage decode(FriendlyByteBuf buf) {
-        final var waystoneUid = buf.readUUID();
-        return new SelectWaystoneMessage(waystoneUid);
-    }
+    public static final CustomPacketPayload.Type<SelectWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(id("select_waystone"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SelectWaystoneMessage> STREAM_CODEC = StreamCodec.composite(
+            UUIDUtil.STREAM_CODEC,
+            SelectWaystoneMessage::waystoneUid,
+            SelectWaystoneMessage::new
+    );
 
     public static void handle(final ServerPlayer player, SelectWaystoneMessage message) {
         if (!(player.containerMenu instanceof WaystoneSelectionMenu selectionMenu)) {

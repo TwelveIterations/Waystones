@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
@@ -22,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Objects;
 
@@ -37,7 +37,7 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
     }
 
     @Override
-    public void render(WaystoneBlockEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
+    public void render(WaystoneBlockEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn, Vec3 cameraPos) {
         BlockState state = tileEntity.getBlockState();
         if (state.getValue(WaystoneBlock.HALF) != DoubleBlockHalf.LOWER) {
             return;

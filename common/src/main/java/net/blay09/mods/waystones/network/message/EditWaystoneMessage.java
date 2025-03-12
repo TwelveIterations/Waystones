@@ -4,42 +4,31 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
 
-public class EditWaystoneMessage implements CustomPacketPayload {
+import static net.blay09.mods.waystones.Waystones.id;
 
-    public static final CustomPacketPayload.Type<EditWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
-            "edit_waystone"));
+public record EditWaystoneMessage(UUID waystoneUid, String name, WaystoneVisibility visibility) implements CustomPacketPayload {
 
-    private final UUID waystoneUid;
-    private final String name;
-    private final WaystoneVisibility visibility;
-
-    public EditWaystoneMessage(UUID waystoneUid, String name, WaystoneVisibility visibility) {
-        this.waystoneUid = waystoneUid;
-        this.name = name;
-        this.visibility = visibility;
-    }
-
-    public static void encode(FriendlyByteBuf buf, EditWaystoneMessage message) {
-        buf.writeUUID(message.waystoneUid);
-        buf.writeUtf(message.name);
-        buf.writeEnum(message.visibility);
-    }
-
-    public static EditWaystoneMessage decode(FriendlyByteBuf buf) {
-        final var waystoneUid = buf.readUUID();
-        final var name = buf.readUtf(255);
-        final var visibility = buf.readEnum(WaystoneVisibility.class);
-        return new EditWaystoneMessage(waystoneUid, name, visibility);
-    }
+    public static final CustomPacketPayload.Type<EditWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(id("edit_waystone"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, EditWaystoneMessage> STREAM_CODEC = StreamCodec.composite(
+            UUIDUtil.STREAM_CODEC,
+            EditWaystoneMessage::waystoneUid,
+            ByteBufCodecs.STRING_UTF8,
+            EditWaystoneMessage::name,
+            ByteBufCodecs.idMapper(it -> WaystoneVisibility.values()[it], WaystoneVisibility::ordinal),
+            EditWaystoneMessage::visibility,
+            EditWaystoneMessage::new
+    );
 
     public static void handle(ServerPlayer player, EditWaystoneMessage message) {
         final var waystone = new WaystoneProxy(player.server, message.waystoneUid);

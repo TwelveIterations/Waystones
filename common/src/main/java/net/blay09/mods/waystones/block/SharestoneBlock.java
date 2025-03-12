@@ -15,6 +15,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -29,6 +30,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class SharestoneBlock extends WaystoneBlockBase {
 
@@ -72,7 +74,7 @@ public class SharestoneBlock extends WaystoneBlockBase {
     @Override
     protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
         if (!world.isClientSide) {
-            blockEntity.getSelectionMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
+            blockEntity.getSelectionMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openMenu(player, menuProvider));
             return InteractionResult.SUCCESS;
         }
 
@@ -80,12 +82,12 @@ public class SharestoneBlock extends WaystoneBlockBase {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
         var component = Component.translatable(color != null ? "tooltip.waystones." + color.getSerializedName() + "_sharestone" : "tooltip.waystones.sharestone");
         component.withStyle(ChatFormatting.GRAY);
-        list.add(component);
+        list.accept(component);
 
-        super.appendHoverText(stack, context, list, flag);
+        super.appendHoverText(stack, context, display, list, flag);
     }
 
     @Override

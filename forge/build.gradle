@@ -11,6 +11,12 @@ mixin {
     config("${mod_id}.forge.mixins.json")
 }
 
+jar {
+    manifest {
+        attributes["MixinConfigs"] = "${mod_id}.mixins.json,${mod_id}.forge.mixins.json"
+    }
+}
+
 minecraft {
     mappings channel: 'official', version: minecraft_version
 
@@ -19,8 +25,6 @@ minecraft {
     copyIdeResources = true
 
     // Automatically enable forge AccessTransformers if the file exists
-    // This location is hardcoded in Forge and can not be changed.
-    // https://github.com/MinecraftForge/MinecraftForge/blob/be1698bb1554f9c8fa2f58e32b9ab70bc4385e60/fmlloader/src/main/java/net/minecraftforge/fml/loading/moddiscovery/ModFile.java#L123
     def at = file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {
         accessTransformer = at
@@ -97,17 +101,23 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 
     apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
 
-    def mainFile = upload(curseforge_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
-    mainFile.changelog = rootProject.file('CHANGELOG.md').text
-    mainFile.addRequirement("balm")
-    project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
-    mainFile.releaseType = "release"
+    def projectId = findProperty("curseforge_project_id")
+    onlyIf {
+        projectId != null
+    }
+    if (projectId) {
+        def mainFile = upload(findProperty("curseforge_project_id"), file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
+        mainFile.changelog = rootProject.file('CHANGELOG.md').text
+        mainFile.addRequirement("balm")
+        project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
+        mainFile.releaseType = "release"
+    }
 }
 
 modrinth {
     token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
-    projectId = project.modrinth_project_id
-    versionType = project.modrinth_release_type
+    projectId = findProperty("modrinth_project_id")
+    versionType = "release"
     versionNumber = project.version + "+forge-" + project.minecraft_version
     uploadFile = jar
     changelog = rootProject.file("CHANGELOG.md").text

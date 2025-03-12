@@ -4,6 +4,8 @@ policy:
       - id: [minecraftVersion]
         block-list: [other]
         label:
+          - name: Minecraft 1.21.5
+            keys: ['1.21.5']
           - name: Minecraft 1.21.4
             keys: ['1.21.4']
           - name: Minecraft 1.21.1 

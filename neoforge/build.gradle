@@ -14,7 +14,7 @@ neoForge {
     // Automatically enable neoforge AccessTransformers if the file exists
     def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {
-        accessTransformers.add(at.absolutePath)
+        accessTransformers.from(at.absolutePath)
     }
 
     parchment {
@@ -56,18 +56,24 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 
     apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
 
-    def mainFile = upload(curseforge_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
-    mainFile.changelog = rootProject.file('CHANGELOG.md').text
-    mainFile.addRequirement("balm")
-    project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
-    mainFile.releaseType = "release"
-    mainFile.addModLoader("NeoForge")
+    def projectId = findProperty("curseforge_project_id")
+    onlyIf {
+        projectId != null
+    }
+    if (projectId) {
+        def mainFile = upload(findProperty("curseforge_project_id"), file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
+        mainFile.changelog = rootProject.file('CHANGELOG.md').text
+        mainFile.addRequirement("balm")
+        project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
+        mainFile.releaseType = "release"
+        mainFile.addModLoader("NeoForge")
+    }
 }
 
 modrinth {
     token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
-    projectId = project.modrinth_project_id
-    versionType = project.modrinth_release_type
+    projectId = findProperty("modrinth_project_id")
+    versionType = "release"
     versionNumber = project.version + "+neoforge-" + project.minecraft_version
     uploadFile = jar
     changelog = rootProject.file("CHANGELOG.md").text
@@ -77,4 +83,9 @@ modrinth {
     dependencies {
         required.project "balm"
     }
+}
+
+configurations {
+    // This is a workaround for issues with certain dependencies. It may not be necessary in your case.
+    testCompileOnly.extendsFrom compileOnly
 }

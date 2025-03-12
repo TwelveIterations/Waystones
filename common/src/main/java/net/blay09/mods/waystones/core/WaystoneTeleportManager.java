@@ -33,9 +33,11 @@ import java.util.*;
 
 public class WaystoneTeleportManager {
 
-    public static Collection<? extends Entity> findPets(Entity entity) {
+    public static Collection<? extends Entity> findPets(LivingEntity entity) {
         return entity.level().getEntitiesOfClass(TamableAnimal.class, new AABB(entity.blockPosition()).inflate(10),
-                pet -> entity.getUUID().equals(pet.getOwnerUUID()) && !pet.isOrderedToSit() && !pet.isLeashed() && !WaystonePermissionManager.isEntityDeniedTeleports(pet)
+                pet -> Optional.ofNullable(pet.getOwnerReference())
+                        .map(it -> it.matches(entity))
+                        .orElse(false) && !pet.isOrderedToSit() && !pet.isLeashed() && !WaystonePermissionManager.isEntityDeniedTeleports(pet)
         );
     }
 
@@ -147,7 +149,7 @@ public class WaystoneTeleportManager {
         } else {
             float pitch = Mth.clamp(entity.getXRot(), -90.0F, 90.0F);
             if (targetWorld == entity.level()) {
-                entity.moveTo(x, y, z, yaw, pitch);
+                entity.snapTo(x, y, z, yaw, pitch);
                 entity.setYHeadRot(yaw);
             } else {
                 entity.unRide();
@@ -158,7 +160,7 @@ public class WaystoneTeleportManager {
                 }
 
                 entity.restoreFrom(oldEntity);
-                entity.moveTo(x, y, z, yaw, pitch);
+                entity.snapTo(x, y, z, yaw, pitch);
                 entity.setYHeadRot(yaw);
                 oldEntity.setRemoved(Entity.RemovalReason.CHANGED_DIMENSION);
                 targetWorld.addDuringTeleport(entity);

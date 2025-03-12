@@ -1,26 +1,23 @@
 package net.blay09.mods.waystones.core;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneRemovedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneUpdatedEvent;
-import net.blay09.mods.waystones.api.event.WaystonesLoadedEvent;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -30,10 +27,24 @@ import java.util.stream.Stream;
 public class WaystoneManagerImpl extends SavedData implements WaystoneManager {
 
     private static final String DATA_NAME = Waystones.MOD_ID;
-    private static final String TAG_WAYSTONES = "Waystones";
-    private static final WaystoneManagerImpl clientStorageCopy = new WaystoneManagerImpl();
+    private static final Codec<WaystoneManagerImpl> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            WaystoneImpl.CODEC.codec().listOf().fieldOf("waystones").forGetter(it -> it.getWaystones().toList())
+    ).apply(instance, WaystoneManagerImpl::new));
+
+    public static final SavedDataType<WaystoneManagerImpl> TYPE = new SavedDataType<>(
+            DATA_NAME,
+            (context) -> new WaystoneManagerImpl(List.of()),
+            ctx -> CODEC,
+            null // TODO this can't be null but mod loaders will save us soon I'm sure
+    );
 
     private final Map<UUID, Waystone> waystones = new HashMap<>();
+
+    public WaystoneManagerImpl(List<Waystone> waystones) {
+        for (final var waystone : waystones) {
+            this.waystones.put(waystone.getWaystoneUid(), waystone);
+        }
+    }
 
     public void addWaystone(Waystone waystone) {
         waystones.put(waystone.getWaystoneUid(), waystone);
@@ -92,35 +103,12 @@ public class WaystoneManagerImpl extends SavedData implements WaystoneManager {
         return waystones.values().stream().filter(it -> it.getVisibility() == WaystoneVisibility.GLOBAL).collect(Collectors.toList());
     }
 
-    public static WaystoneManagerImpl read(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        WaystoneManagerImpl waystoneManager = new WaystoneManagerImpl();
-        ListTag tagList = tagCompound.getList(TAG_WAYSTONES, Tag.TAG_COMPOUND);
-        for (Tag tag : tagList) {
-            CompoundTag compound = (CompoundTag) tag;
-            Waystone waystone = WaystoneImpl.read(compound, provider);
-            waystoneManager.waystones.put(waystone.getWaystoneUid(), waystone);
-        }
-        Balm.getEvents().fireEvent(new WaystonesLoadedEvent(waystoneManager));
-        return waystoneManager;
-    }
-
-    @Override
-    public CompoundTag save(CompoundTag tagCompound, HolderLookup.Provider provider) {
-        ListTag tagList = new ListTag();
-        for (Waystone waystone : waystones.values()) {
-            tagList.add(WaystoneImpl.write(waystone, new CompoundTag(), provider));
-        }
-        tagCompound.put(TAG_WAYSTONES, tagList);
-        return tagCompound;
-    }
-
     public static WaystoneManagerImpl get(@Nullable MinecraftServer server) {
         if (server != null) {
             ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(new Factory<>(WaystoneManagerImpl::new, WaystoneManagerImpl::read,
-                    DataFixTypes.SAVED_DATA_MAP_DATA), DATA_NAME); // TODO this is most likely wrong but I don't think Forge has a solution, Fabric allows null
+            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(TYPE);
         }
 
-        return clientStorageCopy;
+        throw new IllegalStateException("Cannot get WaystoneManager from client");
     }
 }

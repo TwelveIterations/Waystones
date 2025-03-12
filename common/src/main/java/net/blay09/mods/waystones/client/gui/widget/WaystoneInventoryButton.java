@@ -57,10 +57,8 @@ public class WaystoneInventoryButton extends Button {
                 guiGraphics.renderItem(icon, getX(), getY());
                 guiGraphics.renderItemDecorations(Minecraft.getInstance().font, icon, getX(), getY());
             } else {
-                RenderSystem.enableBlend();
                 guiGraphics.blitSprite(RenderType::guiTextured, INVENTORY_BUTTON_SPRITE, getX(), getY(), 16, 16, 0x80FFFFFF);
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-                RenderSystem.disableBlend();
             }
         }
     }

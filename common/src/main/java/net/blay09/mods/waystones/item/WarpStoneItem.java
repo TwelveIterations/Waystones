@@ -31,9 +31,7 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
+import java.util.*;
 
 public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
@@ -130,9 +128,9 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
     public ItemStack finishUsingItem(ItemStack itemStack, Level world, LivingEntity entity) {
         if (!world.isClientSide && entity instanceof ServerPlayer player) {
             final var hand = player.getUsedItemHand();
-            final var waystones = PlayerWaystoneManager.getTargetsForItem(player, itemStack);
+            final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForItem(player, itemStack));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            Balm.getNetworking().openGui(player, new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
+            Balm.getNetworking().openMenu(player, new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("container.waystones.waystone_selection");

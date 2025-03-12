@@ -13,7 +13,6 @@ public class RefuseRequirementRenderer implements RequirementRenderer<RefuseRequ
 
     @Override
     public void renderWidget(Player player, RefuseRequirement requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
-        RenderSystem.enableBlend();
         guiGraphics.blitSprite(RenderType::guiTextured, CANCEL_SPRITE, x, y, 16, 16, 0x80FFFFFF);
     }
 }

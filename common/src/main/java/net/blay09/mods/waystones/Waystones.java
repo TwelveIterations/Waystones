@@ -15,6 +15,7 @@ import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.network.ModNetworking;
 import net.blay09.mods.waystones.stats.ModStats;
 import net.blay09.mods.waystones.worldgen.ModWorldGen;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,5 +50,9 @@ public class Waystones {
         }
 
         Balm.initializeIfLoaded(Compat.UNBREAKABLES, "net.blay09.mods.waystones.compat.UnbreakablesIntegration");
+    }
+
+    public static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 }

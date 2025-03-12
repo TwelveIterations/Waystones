@@ -1,13 +1,12 @@
 package net.blay09.mods.waystones.core;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.waystones.api.*;
-import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.tag.ModBlockTags;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -25,8 +24,35 @@ import java.util.*;
 
 public class WaystoneImpl implements Waystone, MutableWaystone {
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, Waystone> STREAM_CODEC = StreamCodec.of(WaystoneImpl::write, WaystoneImpl::read);
-    public static final StreamCodec<RegistryFriendlyByteBuf, Collection<Waystone>> LIST_STREAM_CODEC = STREAM_CODEC.apply(ByteBufCodecs.collection(ArrayList::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, Waystone> STREAM_CODEC = StreamCodec.composite(
+            ResourceLocation.STREAM_CODEC,
+            Waystone::getWaystoneType,
+            UUIDUtil.STREAM_CODEC,
+            Waystone::getWaystoneUid,
+            ResourceKey.streamCodec(Registries.DIMENSION),
+            Waystone::getDimension,
+            BlockPos.STREAM_CODEC,
+            Waystone::getPos,
+            WaystoneOrigin.STREAM_CODEC,
+            Waystone::getOrigin,
+            ComponentSerialization.STREAM_CODEC,
+            Waystone::getName,
+            WaystoneVisibility.STREAM_CODEC,
+            Waystone::getVisibility,
+            WaystoneImpl::new
+    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, List<Waystone>> LIST_STREAM_CODEC = ByteBufCodecs.collection(ArrayList::new, STREAM_CODEC);
+
+    public static final MapCodec<Waystone> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            ResourceLocation.CODEC.fieldOf("type").forGetter(Waystone::getWaystoneType),
+            UUIDUtil.CODEC.fieldOf("uid").forGetter(Waystone::getWaystoneUid),
+            ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(Waystone::getDimension),
+            BlockPos.CODEC.fieldOf("pos").forGetter(Waystone::getPos),
+            WaystoneOrigin.CODEC.fieldOf("origin").forGetter(Waystone::getOrigin),
+            UUIDUtil.CODEC.optionalFieldOf("ownerUid", null).forGetter(Waystone::getOwnerUid),
+            ComponentSerialization.CODEC.fieldOf("name").forGetter(Waystone::getName),
+            WaystoneVisibility.CODEC.fieldOf("visibility").forGetter(Waystone::getVisibility)
+    ).apply(instance, WaystoneImpl::new));
 
     private final ResourceLocation waystoneType;
     private final UUID waystoneUid;
@@ -49,6 +75,27 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         this.origin = origin;
         this.ownerUid = ownerUid;
         this.visibility = WaystoneVisibility.fromWaystoneType(waystoneType);
+    }
+
+    public WaystoneImpl(ResourceLocation waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, Component name, WaystoneVisibility visibility) {
+        this.waystoneType = waystoneType;
+        this.waystoneUid = waystoneUid;
+        this.dimension = dimension;
+        this.pos = pos;
+        this.origin = origin;
+        this.name = name;
+        this.visibility = visibility;
+    }
+
+    public WaystoneImpl(ResourceLocation waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @Nullable UUID ownerUid, Component name, WaystoneVisibility visibility) {
+        this.waystoneType = waystoneType;
+        this.waystoneUid = waystoneUid;
+        this.dimension = dimension;
+        this.pos = pos;
+        this.origin = origin;
+        this.ownerUid = ownerUid;
+        this.name = name;
+        this.visibility = visibility;
     }
 
     @Override
@@ -138,95 +185,5 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     @Override
     public void setTransient(boolean isTransient) {
         this.isTransient = isTransient;
-    }
-
-    public static List<Waystone> readList(RegistryFriendlyByteBuf buf) {
-        int size = buf.readShort();
-        List<Waystone> waystones = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
-            waystones.add(read(buf));
-        }
-        return waystones;
-    }
-
-    public static Waystone read(RegistryFriendlyByteBuf buf) {
-        final var waystoneUid = buf.readUUID();
-        final var waystoneType = buf.readResourceLocation();
-        final var name = ComponentSerialization.STREAM_CODEC.decode(buf);
-        final var visibility = buf.readEnum(WaystoneVisibility.class);
-        final var dimension = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(buf.readUtf(250)));
-        final var pos = buf.readBlockPos();
-        final var origin = buf.readEnum(WaystoneOrigin.class);
-
-        final var waystone = new WaystoneImpl(waystoneType, waystoneUid, dimension, pos, origin, null);
-        waystone.setName(name);
-        waystone.setVisibility(visibility);
-        return waystone;
-    }
-
-    private static BlockPos readLegacyBlockPos(CompoundTag compound) {
-        return new BlockPos(compound.getInt("X"), compound.getInt("Y"), compound.getInt("Z"));
-    }
-
-    public static Waystone read(CompoundTag compound, HolderLookup.Provider provider) {
-        final var waystoneUid = NbtUtils.loadUUID(Objects.requireNonNull(compound.get("WaystoneUid")));
-        final var legacyName = compound.getString("Name");
-        final var name = compound.contains("NameV2")
-                ? Component.Serializer.fromJson(compound.getString("NameV2"), provider)
-                : Component.literal(legacyName);
-        final var dimensionType = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(compound.getString("World")));
-        final var pos = NbtUtils.readBlockPos(compound, "BlockPos").orElseGet(() -> readLegacyBlockPos(compound.getCompound("BlockPos")));
-        final var legacyWasGenerated = compound.getBoolean("WasGenerated");
-        var origin = legacyWasGenerated ? WaystoneOrigin.WILDERNESS : WaystoneOrigin.UNKNOWN;
-        if (compound.contains("Origin")) {
-            try {
-                origin = WaystoneOrigin.valueOf(compound.getString("Origin"));
-            } catch (IllegalArgumentException ignored) {
-            }
-        }
-        final var ownerUid = compound.contains("OwnerUid") ? NbtUtils.loadUUID(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
-        final var waystoneType = compound.contains("Type") ? ResourceLocation.parse(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
-        final var isTransient = compound.contains("Transient") && compound.getBoolean("Transient");
-        final var waystone = new WaystoneImpl(waystoneType, waystoneUid, dimensionType, pos, origin, ownerUid);
-        waystone.setName(name);
-        waystone.setTransient(isTransient);
-        if (compound.contains("Visibility")) {
-            waystone.setVisibility(WaystoneVisibility.valueOf(compound.getString("Visibility")));
-        } else {
-            waystone.setVisibility(compound.getBoolean("IsGlobal") ? WaystoneVisibility.GLOBAL : WaystoneVisibility.ACTIVATION);
-        }
-        return waystone;
-    }
-
-    public static void writeList(RegistryFriendlyByteBuf buf, Collection<Waystone> waystones) {
-        buf.writeShort(waystones.size());
-        for (Waystone waystone : waystones) {
-            write(buf, waystone);
-        }
-    }
-
-    public static void write(RegistryFriendlyByteBuf buf, Waystone waystone) {
-        buf.writeUUID(waystone.getWaystoneUid());
-        buf.writeResourceLocation(waystone.getWaystoneType());
-        ComponentSerialization.STREAM_CODEC.encode(buf, waystone.getName());
-        buf.writeEnum(waystone.getVisibility());
-        buf.writeResourceLocation(waystone.getDimension().location());
-        buf.writeBlockPos(waystone.getPos());
-        buf.writeEnum(waystone.getOrigin());
-    }
-
-    public static CompoundTag write(Waystone waystone, CompoundTag compound, HolderLookup.Provider provider) {
-        compound.put("WaystoneUid", NbtUtils.createUUID(waystone.getWaystoneUid()));
-        compound.putString("Type", waystone.getWaystoneType().toString());
-        compound.putString("NameV2", Component.Serializer.toJson(waystone.getName(), provider));
-        compound.putString("World", waystone.getDimension().location().toString());
-        compound.putBoolean("Transient", waystone.isTransient());
-        compound.put("BlockPos", NbtUtils.writeBlockPos(waystone.getPos()));
-        compound.putString("Origin", waystone.getOrigin().name());
-        if (waystone.getOwnerUid() != null) {
-            compound.put("OwnerUid", NbtUtils.createUUID(waystone.getOwnerUid()));
-        }
-        compound.putString("Visibility", waystone.getVisibility().name());
-        return compound;
     }
 }

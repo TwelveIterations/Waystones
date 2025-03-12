@@ -16,11 +16,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage, IFOVOnUse, IAttunementItem {
 
@@ -61,7 +62,7 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, TooltipContext context, List<Component> list, TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
         final var player = Balm.getProxy().getClientPlayer();
         if (player == null) {
             return;
@@ -70,7 +71,7 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
         final var boundTo = getWaystoneAttunedTo(player.getServer(), player, itemStack);
         boundTo.ifPresent(it -> {
             final var boundToValueComponent = it.getName().copy().withStyle(ChatFormatting.AQUA);
-            list.add(Component.translatable("tooltip.waystones.bound_to", boundToValueComponent).withStyle(ChatFormatting.GRAY));
+            list.accept(Component.translatable("tooltip.waystones.bound_to", boundToValueComponent).withStyle(ChatFormatting.GRAY));
         });
     }
 

@@ -30,7 +30,6 @@ public class SortWaystoneButton extends Button {
         if (mouseY >= visibleRegionStart && mouseY < visibleRegionStart + visibleRegionHeight) {
             this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
             int renderY = getY() - (sortDir == 1 ? 20 : 5);
-            RenderSystem.enableBlend();
             int color = 0x40FFFFFF;
             if (active && isHovered) {
                 color = 0xFFFFFFFF;
@@ -43,8 +42,6 @@ public class SortWaystoneButton extends Button {
             } else {
                 guiGraphics.blitSprite(RenderType::guiTextured, sortDir == 1 ? MOVE_DOWN_SPRITE : MOVE_UP_SPRITE, getX() - 5, renderY, 32, 32, color);
             }
-
-            RenderSystem.disableBlend();
         }
     }
 

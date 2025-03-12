@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -46,14 +47,14 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
 
             @Override
             public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-                final var waystones = PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone());
+                final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone()));
                 PlayerWaystoneManager.ensureSortingIndex(player, waystones);
                 return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), getWaystone(), windowId, waystones, Collections.emptySet());
             }
 
             @Override
             public WaystoneSelectionMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                return new WaystoneSelectionMenu.Data(getWaystone(), PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, getWaystone()));
+                return new WaystoneSelectionMenu.Data(getWaystone(), new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, getWaystone())));
             }
 
             @Override
@@ -63,4 +64,8 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
         });
     }
 
+    @Override
+    public boolean canSilkTouch() {
+        return true;
+    }
 }

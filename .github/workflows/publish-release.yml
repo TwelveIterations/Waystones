@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Extracting version from properties
         shell: bash
-        run: echo "version=$(cat gradle.properties | grep -w "\bversion" | cut -d= -f2)" >> $GITHUB_OUTPUT
+        run: echo "version=$(cat gradle.properties | grep -w "\bversion\s*=" | cut -d= -f2)" >> $GITHUB_OUTPUT
         id: extract-version
       - name: Bumping version
         uses: TwelveIterationMods/bump-version@v1
@@ -78,9 +78,13 @@ jobs:
             const includeFabric = includes.includes('fabric') && ${{inputs.fabric}};
             const includeForge = includes.includes('forge') && ${{inputs.forge}};
             const includeNeoForge = includes.includes('neoforge') && ${{inputs.neoforge}};
+            const gradleProperties = fs.readFileSync('gradle.properties', 'utf8');
+            const curseForgeProjectId = gradleProperties.match(/^(?!#)curseforge_project_id\s*=\s*(.+)/m);
+            const modrinthProjectId = gradleProperties.match(/^(?!#)modrinth_project_id\s*=\s*(.+)/m);
+            const mavenReleases = gradleProperties.match(/^(?!#)maven_releases\s*=\s*(.+)/m);
             return {
               loader: ['common', includeFabric ? 'fabric' : false, includeForge ? 'forge' : false, includeNeoForge ? 'neoforge' : false].filter(Boolean),
-              site: ['curseforge', 'modrinth', 'publish'],
+              site: [curseForgeProjectId ? 'curseforge' : '', modrinthProjectId ? 'modrinth' : '', mavenReleases ? 'publish' : ''].filter(Boolean),
               exclude: [
                 {loader: 'common', site: 'curseforge'},
                 {loader: 'common', site: 'modrinth'}
@@ -171,15 +175,11 @@ jobs:
           cache: 'gradle'
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
-      - name: Check current artifact hash TODO
-        run: sha1sum ${{ matrix.loader }}/build/libs/*
       - name: Publish
-        run: ./gradlew :${{ matrix.loader }}:${{ matrix.site }} '-Pversion=${{needs.create-release.outputs.version}}' '-PtwelveIterationsNexusUsername=${{ secrets.NEXUS_USER }}' '-PtwelveIterationsNexusPassword=${{ secrets.NEXUS_PASSWORD }}'
+        run: ./gradlew :${{ matrix.loader }}:${{ matrix.site }} '-Pversion=${{needs.create-release.outputs.version}}' '-PmavenUsername=${{ secrets.MAVEN_USER }}' '-PmavenPassword=${{ secrets.MAVEN_PASSWORD }}'
         env:
           CURSEFORGE_TOKEN: ${{secrets.CURSEFORGE_TOKEN}}
           MODRINTH_TOKEN: ${{secrets.MODRINTH_TOKEN}}
-      - name: Check new artifact hash TODO
-        run: sha1sum ${{ matrix.loader }}/build/libs/*
     needs:
       - create-release
       - build-common

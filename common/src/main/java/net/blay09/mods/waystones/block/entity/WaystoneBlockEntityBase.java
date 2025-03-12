@@ -7,6 +7,7 @@ import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.balm.api.container.DefaultContainer;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.balm.common.BalmBlockEntity;
+import net.blay09.mods.waystones.api.MutableWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystonesAPI;
@@ -20,6 +21,8 @@ import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -99,31 +102,28 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         tag.put("Items", container.serialize(provider));
 
         if (waystone.isValid()) {
-            tag.put("UUID", NbtUtils.createUUID(waystone.getWaystoneUid()));
+            tag.store("UUID", UUIDUtil.CODEC, waystone.getWaystoneUid());
         } else if (waystoneUid != null) {
-            tag.put("UUID", NbtUtils.createUUID(waystoneUid));
+            tag.store("UUID", UUIDUtil.CODEC, waystoneUid);
         }
     }
 
     @Override
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
         if (compound.contains("Items")) {
-            container.deserialize(compound.getCompound("Items"), provider);
+            compound.getCompound("Items").ifPresent(it -> container.deserialize(it, provider));
         }
 
-        if (compound.contains("UUID", Tag.TAG_INT_ARRAY)) {
-            waystoneUid = NbtUtils.loadUUID(Objects.requireNonNull(compound.get("UUID")));
-        }
+        compound.read("UUID", UUIDUtil.CODEC).ifPresent(uuid -> waystoneUid = uuid);
 
-        if (compound.contains("Waystone", Tag.TAG_COMPOUND)) {
-            var syncedWaystone = WaystoneImpl.read(compound.getCompound("Waystone"), provider);
-            WaystoneManagerImpl.get(null).updateWaystone(syncedWaystone);
-            waystone = new WaystoneProxy(null, syncedWaystone.getWaystoneUid());
-        }
+        compound.read("Waystone", WaystoneImpl.CODEC.codec()).ifPresent(loadedWaystone -> {
+            WaystoneManagerImpl.get(null).updateWaystone(loadedWaystone);
+            waystone = new WaystoneProxy(null, loadedWaystone.getWaystoneUid());
+        });
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         final var waystoneUidComponent = input.get(ModComponents.waystone.get());
         if (waystoneUidComponent != null) {
             waystoneUid = waystoneUidComponent;
@@ -137,7 +137,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @Override
     public void writeUpdateTag(CompoundTag tag) {
-        tag.put("Waystone", WaystoneImpl.write(getWaystone(), new CompoundTag(), level.registryAccess()));
+        tag.store("Waystone", WaystoneImpl.CODEC.codec(), getWaystone());
     }
 
     @Override
@@ -252,6 +252,10 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         this.silkTouched = silkTouched;
     }
 
+    public boolean canSilkTouch() {
+        return false;
+    }
+
     public boolean isSilkTouched() {
         return silkTouched;
     }
@@ -282,7 +286,10 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             @Override
             public WaystoneEditMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
                 final var error = WaystonePermissionManager.mayEditWaystone(serverPlayer, serverPlayer.level(), getWaystone());
-                return new WaystoneEditMenu.Data(worldPosition, getWaystone(), getModifierCount(), error.map(WaystoneEditError::getTranslationKey).map(Component::translatable));
+                return new WaystoneEditMenu.Data(worldPosition,
+                        getWaystone(),
+                        getModifierCount(),
+                        error.map(WaystoneEditError::getTranslationKey).map(Component::translatable));
             }
 
             @Override
@@ -413,5 +420,23 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             }
         }
         return modifiers;
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+
+        if (level != null) {
+            final var waystone = getWaystone();
+            final var wasNotSilkTouched = !canSilkTouch() || !isSilkTouched();
+            WaystoneSyncManager.sendWaystoneRemovalToAll(level.getServer(), waystone, wasNotSilkTouched);
+            if (wasNotSilkTouched) {
+                WaystoneManagerImpl.get(level.getServer()).removeWaystone(waystone);
+                PlayerWaystoneManager.removeKnownWaystone(level.getServer(), waystone);
+            } else if (waystone instanceof MutableWaystone mutableWaystone) {
+                mutableWaystone.setTransient(true);
+                WaystoneManagerImpl.get(level.getServer()).updateWaystone(waystone);
+            }
+        }
     }
 }

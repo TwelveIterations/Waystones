@@ -95,7 +95,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
         super.loadAdditional(compound, provider);
 
-        lastAttunementSlot = compound.getInt("LastAttunementSlot");
+        lastAttunementSlot = compound.getIntOr("LastAttunementSlot", 0);
     }
 
     public boolean hasPotentialWarpTarget() {
@@ -322,5 +322,10 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
 
     public int getMaxAttunementTicks() {
         return 30;
+    }
+
+    @Override
+    public boolean canSilkTouch() {
+        return true;
     }
 }

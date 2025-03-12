@@ -21,6 +21,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -39,9 +40,9 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
     @Override
     public ItemStack finishUsingItem(ItemStack itemStack, Level world, LivingEntity entity) {
         if (!world.isClientSide && entity instanceof ServerPlayer player) {
-            final var waystones = PlayerWaystoneManager.getTargetsForItem(player, itemStack);
+            final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForItem(player, itemStack));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            Balm.getNetworking().openGui(((ServerPlayer) entity), new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
+            Balm.getNetworking().openMenu(((ServerPlayer) entity), new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("container.waystones.waystone_selection");

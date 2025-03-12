@@ -25,6 +25,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.phys.Vec3;
 
 public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEntity> {
 
@@ -39,7 +40,7 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
     }
 
     @Override
-    public void render(SharestoneBlockEntity tileEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
+    public void render(SharestoneBlockEntity tileEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn, Vec3 cameraPos) {
         Level level = tileEntity.getLevel();
         BlockState state = tileEntity.getBlockState();
         if (level == null || state.getValue(SharestoneBlock.HALF) != DoubleBlockHalf.LOWER) {

@@ -2,7 +2,6 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneCooldowns;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.network.message.*;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +45,7 @@ public class WaystoneSyncManager {
     }
 
     public static void sendActivatedWaystones(Player player) {
-        final var waystones = PlayerWaystoneManager.getActivatedWaystones(player);
+        final var waystones = new ArrayList<>(PlayerWaystoneManager.getActivatedWaystones(player));
         Balm.getNetworking().sendTo(player, new KnownWaystonesMessage(WaystoneTypes.WAYSTONE, waystones));
     }
 

@@ -8,9 +8,11 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class BlankScrollItem extends Item {
     public BlankScrollItem(Properties properties) {
@@ -41,7 +43,7 @@ public class BlankScrollItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, TooltipContext context, List<Component> list, TooltipFlag flag) {
-        list.add(Component.translatable("tooltip.waystones.blank_scroll").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
+        list.accept(Component.translatable("tooltip.waystones.blank_scroll").withStyle(ChatFormatting.GRAY));
     }
 }

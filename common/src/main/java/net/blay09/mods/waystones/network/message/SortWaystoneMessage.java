@@ -1,39 +1,29 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
 
-public class SortWaystoneMessage implements CustomPacketPayload {
+import static net.blay09.mods.waystones.Waystones.id;
 
-        public static final CustomPacketPayload.Type<SortWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "sort_waystone"));
+public record SortWaystoneMessage(UUID waystoneUid, UUID otherWaystoneUid) implements CustomPacketPayload {
+
+    public static final CustomPacketPayload.Type<SortWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(id("sort_waystone"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SortWaystoneMessage> STREAM_CODEC = StreamCodec.composite(
+            UUIDUtil.STREAM_CODEC,
+            SortWaystoneMessage::waystoneUid,
+            UUIDUtil.STREAM_CODEC,
+            SortWaystoneMessage::otherWaystoneUid,
+            SortWaystoneMessage::new
+    );
 
     public static final UUID SORT_FIRST = UUID.fromString("00000000-0000-0000-0000-000000000000");
     public static final UUID SORT_LAST = UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff");
-
-    private final UUID waystoneUid;
-    private final UUID otherWaystoneUid;
-
-    public SortWaystoneMessage(UUID waystoneUid, UUID otherWaystoneUid) {
-        this.waystoneUid = waystoneUid;
-        this.otherWaystoneUid = otherWaystoneUid;
-    }
-
-    public static void encode(FriendlyByteBuf buf, SortWaystoneMessage message) {
-        buf.writeUUID(message.waystoneUid);
-        buf.writeUUID(message.otherWaystoneUid);
-    }
-
-    public static SortWaystoneMessage decode(FriendlyByteBuf buf) {
-        final var waystoneUid = buf.readUUID();
-        final var otherWaystoneUid = buf.readUUID();
-        return new SortWaystoneMessage(waystoneUid, otherWaystoneUid);
-    }
 
     public static void handle(ServerPlayer player, SortWaystoneMessage message) {
         if (player == null) {

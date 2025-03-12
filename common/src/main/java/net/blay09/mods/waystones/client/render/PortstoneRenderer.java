@@ -23,6 +23,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.phys.Vec3;
 
 public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEntity> {
     private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.withDefaultNamespace("waystone_overlays/portstone"));
@@ -35,7 +36,7 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
     }
 
     @Override
-    public void render(PortstoneBlockEntity tileEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
+    public void render(PortstoneBlockEntity tileEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn, Vec3 cameraPos) {
         final var level = tileEntity.getLevel();
         final var state = tileEntity.getBlockState();
         if (level == null || state.getValue(PortstoneBlock.HALF) != DoubleBlockHalf.LOWER) {

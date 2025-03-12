@@ -1,35 +1,23 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.waystones.Waystones;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public class WarpPlateEjectEffectMessage implements CustomPacketPayload {
+import static net.blay09.mods.waystones.Waystones.id;
 
-    public static final Type<WarpPlateEjectEffectMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
-            "warp_plate_eject_effect"));
+public record WarpPlateEjectEffectMessage(BlockPos pos) implements CustomPacketPayload {
 
-    private final BlockPos pos;
-
-    public WarpPlateEjectEffectMessage(BlockPos pos) {
-        this.pos = pos;
-    }
-
-    public static void encode(FriendlyByteBuf buf, WarpPlateEjectEffectMessage message) {
-        buf.writeBlockPos(message.pos);
-    }
-
-    public static WarpPlateEjectEffectMessage decode(FriendlyByteBuf buf) {
-        BlockPos pos = buf.readBlockPos();
-        return new WarpPlateEjectEffectMessage(pos);
-    }
+    public static final Type<WarpPlateEjectEffectMessage> TYPE = new Type<>(id("warp_plate_eject_effect"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, WarpPlateEjectEffectMessage> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC,
+            WarpPlateEjectEffectMessage::pos,
+            WarpPlateEjectEffectMessage::new
+    );
 
     public static void handle(Player player, WarpPlateEjectEffectMessage message) {
         Level level = player.level();
