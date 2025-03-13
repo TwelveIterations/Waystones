@@ -1,4 +1,4 @@
-package net.blay09.mods.waystones.core;
+package net.blay09.mods.waystones.store;
 
 import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.resources.ResourceLocation;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public interface IPlayerWaystoneData {
+public interface WaystonesPlayerStore {
     void activateWaystone(Player player, Waystone waystone);
     boolean isWaystoneActivated(Player player, Waystone waystone);
     void deactivateWaystone(Player player, Waystone waystone);

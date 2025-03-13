@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.balm.api.BalmEnvironment;
-import net.blay09.mods.waystones.core.InMemoryPlayerWaystoneData;
+import net.blay09.mods.waystones.store.InMemoryWaystonesPlayerStore;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -26,7 +26,7 @@ public record ClientboundSortingIndexPacket(List<UUID> sortingIndex) implements 
     );
 
     public static void handle(Player player, ClientboundSortingIndexPacket message) {
-        final var playerWaystoneData = (InMemoryPlayerWaystoneData) PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
+        final var playerWaystoneData = (InMemoryWaystonesPlayerStore) PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
         playerWaystoneData.setSortingIndex(player, message.sortingIndex);
     }
 

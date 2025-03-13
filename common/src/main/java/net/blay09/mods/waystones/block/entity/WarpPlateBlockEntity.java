@@ -66,7 +66,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
         // Warp Plates generate a name on placement always
         final var waystone = getWaystone();
         if (waystone instanceof MutableWaystone) {
-            final var name = NameGeneratorManager.get(level.getServer()).getName(level, waystone, level.getRandom(), NameGenerationMode.RANDOM_ONLY);
+            final var name = NameGeneratorManager.get(level.getLevel().getServer()).getName(level, waystone, level.getRandom(), NameGenerationMode.RANDOM_ONLY);
             ((MutableWaystone) waystone).setName(name);
         }
 

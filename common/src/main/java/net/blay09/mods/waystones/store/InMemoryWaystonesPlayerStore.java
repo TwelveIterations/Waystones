@@ -1,4 +1,4 @@
-package net.blay09.mods.waystones.core;
+package net.blay09.mods.waystones.store;
 
 import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.resources.ResourceLocation;
@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
 
-public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
+public class InMemoryWaystonesPlayerStore implements WaystonesPlayerStore {
     private final List<UUID> sortingIndex = new ArrayList<>();
     private final Map<UUID, Waystone> waystones = new HashMap<>();
     private final Map<ResourceLocation, Long> cooldowns = new HashMap<>();

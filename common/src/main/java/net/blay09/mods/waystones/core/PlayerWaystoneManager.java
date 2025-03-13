@@ -8,11 +8,17 @@ import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.store.InMemoryWaystonesPlayerStore;
+import net.blay09.mods.waystones.store.PersistentWaystonesPlayerStore;
+import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
+import net.blay09.mods.waystones.store.WaystonesPlayerStore;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -22,27 +28,30 @@ import java.util.*;
 
 public class PlayerWaystoneManager {
 
-    private static final IPlayerWaystoneData persistentPlayerWaystoneData = new PersistentPlayerWaystoneData();
-    private static final IPlayerWaystoneData inMemoryPlayerWaystoneData = new InMemoryPlayerWaystoneData();
+    private static final RandomSource random = RandomSource.create();
+    private static final WaystonesPlayerStore persistentPlayerWaystoneData = new PersistentWaystonesPlayerStore();
+    private static final WaystonesPlayerStore inMemoryPlayerWaystoneData = new InMemoryWaystonesPlayerStore();
 
     public static boolean isWaystoneActivated(Player player, Waystone waystone) {
         return getPlayerWaystoneData(player.level()).isWaystoneActivated(player, waystone);
     }
 
     public static void activateWaystone(Player player, Waystone waystone) {
-        if (!waystone.hasName() && waystone instanceof MutableWaystone && waystone.wasGenerated()) {
-            NameGenerationMode nameGenerationMode = WaystonesConfig.getActive().worldGen.nameGenerationMode;
-            final var name = NameGeneratorManager.get(player.getServer()).getName(player.level(), waystone, player.level().random, nameGenerationMode);
-            ((MutableWaystone) waystone).setName(name);
-        }
+        if (player.level() instanceof ServerLevel serverLevel) {
+            if (waystone instanceof MutableWaystone mutableWaystone) {
+                if (!waystone.hasName() && waystone.wasGenerated()) {
+                    NameGenerationMode nameGenerationMode = WaystonesConfig.getActive().worldGen.nameGenerationMode;
+                    final var name = NameGeneratorManager.get(serverLevel.getServer()).getName(player.level(), waystone, random, nameGenerationMode);
+                    mutableWaystone.setName(name);
+                }
 
-        if (!waystone.hasOwner() && waystone instanceof MutableWaystone mutableWaystone) {
-            mutableWaystone.setOwnerUid(player.getUUID());
-            mutableWaystone.setVisibility(WaystonesConfig.getActive().general.defaultVisibility);
-        }
+                if (!waystone.hasOwner()) {
+                    mutableWaystone.setOwnerUid(player.getUUID());
+                    mutableWaystone.setVisibility(WaystonesConfig.getActive().general.defaultVisibility);
+                }
+            }
 
-        if (player.getServer() != null) {
-            SavedDataWaystonesStore.get(player.getServer()).setDirty();
+            SavedDataWaystonesStore.get(serverLevel.getServer()).setDirty();
         }
 
         if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
@@ -102,11 +111,11 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.level()).getWaystones(player);
     }
 
-    public static IPlayerWaystoneData getPlayerWaystoneData(@Nullable Level world) {
+    public static WaystonesPlayerStore getPlayerWaystoneData(@Nullable Level world) {
         return world == null || world.isClientSide ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
     }
 
-    public static IPlayerWaystoneData getPlayerWaystoneData(BalmEnvironment side) {
+    public static WaystonesPlayerStore getPlayerWaystoneData(BalmEnvironment side) {
         return side.isClient() ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
     }
 

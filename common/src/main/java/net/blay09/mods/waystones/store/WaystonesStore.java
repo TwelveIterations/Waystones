@@ -1,4 +1,4 @@
-package net.blay09.mods.waystones.core;
+package net.blay09.mods.waystones.store;
 
 import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.core.BlockPos;

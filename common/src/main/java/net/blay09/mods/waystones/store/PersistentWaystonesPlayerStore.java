@@ -1,8 +1,9 @@
 
-package net.blay09.mods.waystones.core;
+package net.blay09.mods.waystones.store;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.nbt.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -10,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
 
-public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
+public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     private static final String TAG_NAME = "WaystonesData";
     private static final String ACTIVATED_WAYSTONES = "Waystones";
     private static final String SORTING_INDEX = "SortingIndex";

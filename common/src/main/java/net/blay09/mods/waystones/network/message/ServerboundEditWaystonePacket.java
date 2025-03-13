@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;

@@ -88,13 +88,9 @@ public class NameGeneratorManager extends SavedData {
         return tryName;
     }
 
-    public static NameGeneratorManager get(@Nullable MinecraftServer server) {
-        if (server != null) {
-            ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(TYPE);
-        }
-
-        throw new IllegalStateException("Server is null");
+    public static NameGeneratorManager get(MinecraftServer server) {
+        final var overworld = server.getLevel(Level.OVERWORLD);
+        return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(TYPE);
     }
 
 }

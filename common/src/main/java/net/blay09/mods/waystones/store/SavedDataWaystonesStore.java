@@ -1,9 +1,10 @@
-package net.blay09.mods.waystones.core;
+package net.blay09.mods.waystones.store;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;

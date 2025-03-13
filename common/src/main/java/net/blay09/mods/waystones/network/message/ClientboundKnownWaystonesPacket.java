@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.api.event.WaystonesListReceivedEvent;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.client.WaystonesClient;
 import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.store.InMemoryWaystonesPlayerStore;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -30,7 +31,7 @@ public record ClientboundKnownWaystonesPacket(ResourceLocation waystoneType, Lis
 
     public static void handle(Player player, ClientboundKnownWaystonesPacket message) {
         if (message.waystoneType.equals(WaystoneTypes.WAYSTONE)) {
-            InMemoryPlayerWaystoneData playerWaystoneData = (InMemoryPlayerWaystoneData) PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
+            InMemoryWaystonesPlayerStore playerWaystoneData = (InMemoryWaystonesPlayerStore) PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
             playerWaystoneData.setWaystones(message.waystones);
         }
 

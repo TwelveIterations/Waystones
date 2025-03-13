@@ -5,9 +5,9 @@ import net.blay09.mods.waystones.InternalClientMethodsImpl;
 import net.blay09.mods.waystones.api.client.WaystonesClientAPI;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
 import net.blay09.mods.waystones.compat.Compat;
-import net.blay09.mods.waystones.core.EventfulWaystonesStore;
-import net.blay09.mods.waystones.core.InMemoryWaystonesStore;
-import net.blay09.mods.waystones.core.WaystonesStore;
+import net.blay09.mods.waystones.store.EventfulWaystonesStore;
+import net.blay09.mods.waystones.store.InMemoryWaystonesStore;
+import net.blay09.mods.waystones.store.WaystonesStore;
 import net.minecraft.client.ClientBrandRetriever;
 
 import java.util.List;
