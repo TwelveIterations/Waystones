@@ -2,9 +2,9 @@ package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.component.DescriptionComponent;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ModBlocks {
@@ -84,14 +83,14 @@ public class ModBlocks {
             blocks.register((identifier) -> portstones[color.ordinal()] = new PortstoneBlock(color, defaultProperties(identifier)),
                     (block, name) -> itemBlock(block, name, properties ->
                             properties.component(ModComponents.description.get(),
-                                    Component.translatable("tooltip.waystones.portstone").withStyle(ChatFormatting.GRAY))),
+                                    new DescriptionComponent(Component.translatable("tooltip.waystones.portstone").withStyle(ChatFormatting.GRAY)))),
                     id(color.getSerializedName() + "_portstone"));
         }
 
         for (final var color : sharestoneColors) {
             blocks.register((identifier) -> sharestones[color.ordinal() - 1] = new SharestoneBlock(color, defaultProperties(identifier)),
                     (block, name) -> itemBlock(block, name, properties -> properties.component(ModComponents.description.get(),
-                            Component.translatable("tooltip.waystones." + name.getPath()))),
+                            new DescriptionComponent(Component.translatable("tooltip.waystones." + name.getPath())))),
                     id(color.getSerializedName() + "_sharestone"));
         }
     }
