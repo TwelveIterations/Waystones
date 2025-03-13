@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -12,7 +13,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public interface InternalMethods {
 
@@ -36,19 +35,17 @@ public interface InternalMethods {
 
     Either<List<Entity>, WaystoneTeleportError> forceTeleport(WaystoneTeleportContext context);
 
-    Optional<Waystone> getWaystoneAt(Level level, BlockPos pos);
-
-    Optional<Waystone> getWaystone(Level level, UUID uuid);
+    Optional<Waystone> getWaystoneAt(ServerLevel level, BlockPos pos);
 
     ItemStack createAttunedShard(Waystone warpPlate);
 
     ItemStack createBoundScroll(Waystone waystone);
 
-    Optional<Waystone> placeWaystone(Level level, BlockPos pos, WaystoneStyle style);
+    Optional<Waystone> placeWaystone(ServerLevel level, BlockPos pos, WaystoneStyle style);
 
-    Optional<Waystone> placeSharestone(Level level, BlockPos pos, DyeColor color);
+    Optional<Waystone> placeSharestone(ServerLevel level, BlockPos pos, DyeColor color);
 
-    Optional<Waystone> placeWarpPlate(Level level, BlockPos pos);
+    Optional<Waystone> placeWarpPlate(ServerLevel level, BlockPos pos);
 
     Optional<Waystone> getBoundWaystone(Player player, ItemStack itemStack);
 
@@ -80,9 +77,9 @@ public interface InternalMethods {
 
     Optional<Waystone> getNearestWaystone(Player player);
 
-    Stream<Waystone> getAllWaystones(MinecraftServer server);
+    Collection<Waystone> getAllWaystones(MinecraftServer server);
 
-    Stream<Waystone> getWaystonesByType(MinecraftServer server, ResourceLocation type);
+    Collection<Waystone> getWaystonesByType(MinecraftServer server, ResourceLocation type);
 
     void removeWaystoneFromDatabase(MinecraftServer server, Waystone waystone);
 }

@@ -10,16 +10,16 @@ import net.minecraft.server.level.ServerPlayer;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record RequestEditWaystoneMessage(BlockPos pos) implements CustomPacketPayload {
+public record ServerboundRequestEditWaystonePacket(BlockPos pos) implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<RequestEditWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(id("request_edit_waystone"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, RequestEditWaystoneMessage> STREAM_CODEC = StreamCodec.composite(
+    public static final CustomPacketPayload.Type<ServerboundRequestEditWaystonePacket> TYPE = new CustomPacketPayload.Type<>(id("request_edit_waystone"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundRequestEditWaystonePacket> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC,
-            RequestEditWaystoneMessage::pos,
-            RequestEditWaystoneMessage::new
+            ServerboundRequestEditWaystonePacket::pos,
+            ServerboundRequestEditWaystonePacket::new
     );
 
-    public static void handle(ServerPlayer player, RequestEditWaystoneMessage message) {
+    public static void handle(ServerPlayer player, ServerboundRequestEditWaystonePacket message) {
         final var pos = message.pos;
         if (player.distanceToSqr(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) > 64) {
             return;

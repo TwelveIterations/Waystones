@@ -8,21 +8,21 @@ import net.blay09.mods.waystones.network.message.*;
 public class ModNetworking {
 
     public static void initialize(BalmNetworking networking) {
-        networking.registerServerboundPacket(InventoryButtonMessage.TYPE, InventoryButtonMessage.class, InventoryButtonMessage.STREAM_CODEC, InventoryButtonMessage::handle);
-        networking.registerServerboundPacket(EditWaystoneMessage.TYPE, EditWaystoneMessage.class, EditWaystoneMessage.STREAM_CODEC, EditWaystoneMessage::handle);
-        networking.registerServerboundPacket(SelectWaystoneMessage.TYPE, SelectWaystoneMessage.class, SelectWaystoneMessage.STREAM_CODEC, SelectWaystoneMessage::handle);
-        networking.registerServerboundPacket(SortWaystoneMessage.TYPE, SortWaystoneMessage.class, SortWaystoneMessage.STREAM_CODEC, SortWaystoneMessage::handle);
-        networking.registerServerboundPacket(RemoveWaystoneMessage.TYPE, RemoveWaystoneMessage.class, RemoveWaystoneMessage.STREAM_CODEC, RemoveWaystoneMessage::handle);
-        networking.registerServerboundPacket(RequestEditWaystoneMessage.TYPE, RequestEditWaystoneMessage.class, RequestEditWaystoneMessage.STREAM_CODEC, RequestEditWaystoneMessage::handle);
-        networking.registerServerboundPacket(RequestManageWaystoneModifiersMessage.TYPE, RequestManageWaystoneModifiersMessage.class, RequestManageWaystoneModifiersMessage.STREAM_CODEC, RequestManageWaystoneModifiersMessage::handle);
+        networking.registerServerboundPacket(ServerboundInventoryButtonPacket.TYPE, ServerboundInventoryButtonPacket.class, ServerboundInventoryButtonPacket.STREAM_CODEC, ServerboundInventoryButtonPacket::handle);
+        networking.registerServerboundPacket(ServerboundEditWaystonePacket.TYPE, ServerboundEditWaystonePacket.class, ServerboundEditWaystonePacket.STREAM_CODEC, ServerboundEditWaystonePacket::handle);
+        networking.registerServerboundPacket(ServerboundSelectWaystonePacket.TYPE, ServerboundSelectWaystonePacket.class, ServerboundSelectWaystonePacket.STREAM_CODEC, ServerboundSelectWaystonePacket::handle);
+        networking.registerServerboundPacket(ServerboundSortWaystonePacket.TYPE, ServerboundSortWaystonePacket.class, ServerboundSortWaystonePacket.STREAM_CODEC, ServerboundSortWaystonePacket::handle);
+        networking.registerServerboundPacket(ServerboundRemoveWaystonePacket.TYPE, ServerboundRemoveWaystonePacket.class, ServerboundRemoveWaystonePacket.STREAM_CODEC, ServerboundRemoveWaystonePacket::handle);
+        networking.registerServerboundPacket(ServerboundRequestEditWaystonePacket.TYPE, ServerboundRequestEditWaystonePacket.class, ServerboundRequestEditWaystonePacket.STREAM_CODEC, ServerboundRequestEditWaystonePacket::handle);
+        networking.registerServerboundPacket(ServerboundRequestManageWaystoneModifiersPacket.TYPE, ServerboundRequestManageWaystoneModifiersPacket.class, ServerboundRequestManageWaystoneModifiersPacket.STREAM_CODEC, ServerboundRequestManageWaystoneModifiersPacket::handle);
 
-        networking.registerClientboundPacket(UpdateWaystoneMessage.TYPE, UpdateWaystoneMessage.class, UpdateWaystoneMessage.STREAM_CODEC, UpdateWaystoneMessage::handle);
-        networking.registerClientboundPacket(WaystoneRemovedMessage.TYPE, WaystoneRemovedMessage.class, WaystoneRemovedMessage.STREAM_CODEC, WaystoneRemovedMessage::handle);
-        networking.registerClientboundPacket(KnownWaystonesMessage.TYPE, KnownWaystonesMessage.class, KnownWaystonesMessage.STREAM_CODEC, KnownWaystonesMessage::handle);
-        networking.registerClientboundPacket(SortingIndexMessage.TYPE, SortingIndexMessage.class, SortingIndexMessage.STREAM_CODEC, SortingIndexMessage::handle);
-        networking.registerClientboundPacket(TeleportEffectMessage.TYPE, TeleportEffectMessage.class, TeleportEffectMessage.STREAM_CODEC, TeleportEffectMessage::handle);
-        networking.registerClientboundPacket(PlayerWaystoneCooldownsMessage.TYPE, PlayerWaystoneCooldownsMessage.class, PlayerWaystoneCooldownsMessage.STREAM_CODEC, PlayerWaystoneCooldownsMessage::handle);
-        networking.registerClientboundPacket(WarpPlateEjectEffectMessage.TYPE, WarpPlateEjectEffectMessage.class, WarpPlateEjectEffectMessage.STREAM_CODEC, WarpPlateEjectEffectMessage::handle);
+        networking.registerClientboundPacket(ClientboundUpdateWaystonePacket.TYPE, ClientboundUpdateWaystonePacket.class, ClientboundUpdateWaystonePacket.STREAM_CODEC, ClientboundUpdateWaystonePacket::handle);
+        networking.registerClientboundPacket(ClientboundWaystoneRemovedPacket.TYPE, ClientboundWaystoneRemovedPacket.class, ClientboundWaystoneRemovedPacket.STREAM_CODEC, ClientboundWaystoneRemovedPacket::handle);
+        networking.registerClientboundPacket(ClientboundKnownWaystonesPacket.TYPE, ClientboundKnownWaystonesPacket.class, ClientboundKnownWaystonesPacket.STREAM_CODEC, ClientboundKnownWaystonesPacket::handle);
+        networking.registerClientboundPacket(ClientboundSortingIndexPacket.TYPE, ClientboundSortingIndexPacket.class, ClientboundSortingIndexPacket.STREAM_CODEC, ClientboundSortingIndexPacket::handle);
+        networking.registerClientboundPacket(ClientboundTeleportEffectPacket.TYPE, ClientboundTeleportEffectPacket.class, ClientboundTeleportEffectPacket.STREAM_CODEC, ClientboundTeleportEffectPacket::handle);
+        networking.registerClientboundPacket(ClientboundPlayerWaystoneCooldownsPacket.TYPE, ClientboundPlayerWaystoneCooldownsPacket.class, ClientboundPlayerWaystoneCooldownsPacket.STREAM_CODEC, ClientboundPlayerWaystoneCooldownsPacket::handle);
+        networking.registerClientboundPacket(ClientboundWarpPlateEjectEffectPacket.TYPE, ClientboundWarpPlateEjectEffectPacket.class, ClientboundWarpPlateEjectEffectPacket.STREAM_CODEC, ClientboundWarpPlateEjectEffectPacket::handle);
 
         SyncConfigMessage.register(SyncWaystonesConfigMessage.TYPE, SyncWaystonesConfigMessage.class, SyncWaystonesConfigMessage::new, WaystonesConfigData.class, WaystonesConfigData::new);
     }

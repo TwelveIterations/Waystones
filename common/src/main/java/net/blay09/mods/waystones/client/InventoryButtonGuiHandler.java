@@ -6,13 +6,12 @@ import net.blay09.mods.balm.api.event.client.screen.ScreenDrawEvent;
 import net.blay09.mods.balm.api.event.client.screen.ScreenInitEvent;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.core.InvalidWaystone;
-import net.blay09.mods.waystones.requirement.NoRequirement;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.network.message.InventoryButtonMessage;
+import net.blay09.mods.waystones.network.message.ServerboundInventoryButtonPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -70,7 +69,7 @@ public class InventoryButtonGuiHandler {
                             mc.setScreen(new InventoryButtonReturnConfirmScreen());
                         }
                     } else if (inventoryButtonMode.isReturnToAny()) {
-                        Balm.getNetworking().sendToServer(new InventoryButtonMessage());
+                        Balm.getNetworking().sendToServer(new ServerboundInventoryButtonPacket());
                     }
                 } else {
                     mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 0.5f));

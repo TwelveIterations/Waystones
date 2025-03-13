@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class InternalMethodsImpl implements InternalMethods {
 
@@ -100,23 +99,18 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Optional<Waystone> getWaystoneAt(Level level, BlockPos pos) {
-        return WaystoneManagerImpl.get(level.getServer()).getWaystoneAt(level, pos);
+    public Optional<Waystone> getWaystoneAt(ServerLevel level, BlockPos pos) {
+        return SavedDataWaystonesStore.get(level.getServer()).getWaystoneAt(level, pos);
     }
 
     @Override
     public Optional<Waystone> getWaystoneAt(MinecraftServer server, BlockGetter level, BlockPos pos) {
-        return WaystoneManagerImpl.get(server).getWaystoneAt(level, pos);
-    }
-
-    @Override
-    public Optional<Waystone> getWaystone(Level level, UUID uuid) {
-        return WaystoneManagerImpl.get(level.getServer()).getWaystoneById(uuid);
+        return SavedDataWaystonesStore.get(server).getWaystoneAt(level, pos);
     }
 
     @Override
     public Optional<Waystone> getWaystone(MinecraftServer server, UUID uuid) {
-        return WaystoneManagerImpl.get(server).getWaystoneById(uuid);
+        return SavedDataWaystonesStore.get(server).getWaystoneById(uuid);
     }
 
     @Override
@@ -134,7 +128,7 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Optional<Waystone> placeWaystone(Level level, BlockPos pos, WaystoneStyle style) {
+    public Optional<Waystone> placeWaystone(ServerLevel level, BlockPos pos, WaystoneStyle style) {
         Block block = BuiltInRegistries.BLOCK.getValue(style.getBlockRegistryName());
         level.setBlock(pos, block.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER), 3);
         level.setBlock(pos.above(), block.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.UPPER), 3);
@@ -142,7 +136,7 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Optional<Waystone> placeSharestone(Level level, BlockPos pos, DyeColor color) {
+    public Optional<Waystone> placeSharestone(ServerLevel level, BlockPos pos, DyeColor color) {
         final var sharestone = ModBlocks.getSharestone(color);
         if (sharestone == null) {
             return Optional.empty();
@@ -154,7 +148,7 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Optional<Waystone> placeWarpPlate(Level level, BlockPos pos) {
+    public Optional<Waystone> placeWarpPlate(ServerLevel level, BlockPos pos) {
         level.setBlock(pos, ModBlocks.warpPlate.defaultBlockState(), 3);
         return getWaystoneAt(level, pos);
     }
@@ -245,18 +239,18 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Stream<Waystone> getAllWaystones(MinecraftServer server) {
-        return WaystoneManagerImpl.get(server).getWaystones();
+    public Collection<Waystone> getAllWaystones(MinecraftServer server) {
+        return SavedDataWaystonesStore.get(server).getWaystones();
     }
 
     @Override
-    public Stream<Waystone> getWaystonesByType(MinecraftServer server, ResourceLocation type) {
-        return WaystoneManagerImpl.get(server).getWaystonesByType(type);
+    public Collection<Waystone> getWaystonesByType(MinecraftServer server, ResourceLocation type) {
+        return SavedDataWaystonesStore.get(server).getWaystonesByType(type);
     }
 
     @Override
     public void removeWaystoneFromDatabase(MinecraftServer server, Waystone waystone) {
-        WaystoneManagerImpl.get(server).removeWaystone(waystone);
+        SavedDataWaystonesStore.get(server).removeWaystone(waystone);
         PlayerWaystoneManager.removeKnownWaystone(server, waystone);
     }
 }

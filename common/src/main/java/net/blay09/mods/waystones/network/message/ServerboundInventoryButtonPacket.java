@@ -2,7 +2,6 @@ package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.WaystonesAPI;
@@ -16,26 +15,24 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public class InventoryButtonMessage implements CustomPacketPayload {
+public class ServerboundInventoryButtonPacket implements CustomPacketPayload {
 
-    public static final InventoryButtonMessage INSTANCE = new InventoryButtonMessage();
-    public static final CustomPacketPayload.Type<InventoryButtonMessage> TYPE = new CustomPacketPayload.Type<>(id("inventory_button"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, InventoryButtonMessage> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+    public static final ServerboundInventoryButtonPacket INSTANCE = new ServerboundInventoryButtonPacket();
+    public static final CustomPacketPayload.Type<ServerboundInventoryButtonPacket> TYPE = new CustomPacketPayload.Type<>(id("inventory_button"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundInventoryButtonPacket> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
-    public static void handle(final ServerPlayer player, InventoryButtonMessage message) {
+    public static void handle(final ServerPlayer player, ServerboundInventoryButtonPacket message) {
         InventoryButtonMode inventoryButtonMode = WaystonesConfig.getActive().getInventoryButtonMode();
         if (!inventoryButtonMode.isEnabled()) {
             return;

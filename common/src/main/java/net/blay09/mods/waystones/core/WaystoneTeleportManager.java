@@ -11,20 +11,18 @@ import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesConfigData;
-import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
+import net.blay09.mods.waystones.network.message.ClientboundTeleportEffectPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -77,8 +75,8 @@ public class WaystoneTeleportManager {
         }
 
         if (context.playsEffect()) {
-            teleportedEntities.forEach(additionalEntity -> Balm.getNetworking().sendToTracking(sourceLevel, sourcePos, new TeleportEffectMessage(sourcePos)));
-            Balm.getNetworking().sendToTracking(targetLevel, targetPos, new TeleportEffectMessage(targetPos));
+            teleportedEntities.forEach(additionalEntity -> Balm.getNetworking().sendToTracking(sourceLevel, sourcePos, new ClientboundTeleportEffectPacket(sourcePos)));
+            Balm.getNetworking().sendToTracking(targetLevel, targetPos, new ClientboundTeleportEffectPacket(targetPos));
         }
 
         if (targetTileEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {

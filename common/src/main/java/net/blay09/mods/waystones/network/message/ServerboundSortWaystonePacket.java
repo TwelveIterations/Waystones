@@ -11,21 +11,21 @@ import java.util.UUID;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record SortWaystoneMessage(UUID waystoneUid, UUID otherWaystoneUid) implements CustomPacketPayload {
+public record ServerboundSortWaystonePacket(UUID waystoneUid, UUID otherWaystoneUid) implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<SortWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(id("sort_waystone"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SortWaystoneMessage> STREAM_CODEC = StreamCodec.composite(
+    public static final CustomPacketPayload.Type<ServerboundSortWaystonePacket> TYPE = new CustomPacketPayload.Type<>(id("sort_waystone"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundSortWaystonePacket> STREAM_CODEC = StreamCodec.composite(
             UUIDUtil.STREAM_CODEC,
-            SortWaystoneMessage::waystoneUid,
+            ServerboundSortWaystonePacket::waystoneUid,
             UUIDUtil.STREAM_CODEC,
-            SortWaystoneMessage::otherWaystoneUid,
-            SortWaystoneMessage::new
+            ServerboundSortWaystonePacket::otherWaystoneUid,
+            ServerboundSortWaystonePacket::new
     );
 
     public static final UUID SORT_FIRST = UUID.fromString("00000000-0000-0000-0000-000000000000");
     public static final UUID SORT_LAST = UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff");
 
-    public static void handle(ServerPlayer player, SortWaystoneMessage message) {
+    public static void handle(ServerPlayer player, ServerboundSortWaystonePacket message) {
         if (player == null) {
             return;
         }

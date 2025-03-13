@@ -12,6 +12,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.api.error.WaystoneEditError;
+import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.component.ModComponents;
@@ -25,12 +26,12 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
@@ -117,8 +118,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         compound.read("UUID", UUIDUtil.CODEC).ifPresent(uuid -> waystoneUid = uuid);
 
         compound.read("Waystone", WaystoneImpl.CODEC.codec()).ifPresent(loadedWaystone -> {
-            WaystoneManagerImpl.get(null).updateWaystone(loadedWaystone);
-            waystone = new WaystoneProxy(null, loadedWaystone.getWaystoneUid());
+            // TODO WaystoneManagerImpl.get(null).updateWaystone(loadedWaystone);
+            // TODO waystone = new WaystoneProxy(null, loadedWaystone.getWaystoneUid());
         });
     }
 
@@ -132,7 +133,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
-        builder.set(ModComponents.waystone.get(), waystone.isValid() ? waystone.getWaystoneUid() : waystoneUid);
+        builder.set(ModComponents.waystone.get(), waystone.isValid() ? waystone.getWaystoneUid() : waystoneUid)
+                .set(ModComponents.waystoneName.get(), waystone.getName());
     }
 
     @Override
@@ -196,25 +198,26 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     protected abstract ResourceLocation getWaystoneType();
 
-    public void initializeWaystone(ServerLevelAccessor world, @Nullable LivingEntity player, WaystoneOrigin origin) {
+    public void initializeWaystone(ServerLevelAccessor level, @Nullable LivingEntity player, WaystoneOrigin origin) {
         WaystoneImpl waystone = new WaystoneImpl(getWaystoneType(),
                 UUID.randomUUID(),
-                world.getLevel().dimension(),
+                level.getLevel().dimension(),
                 worldPosition,
                 origin,
                 player != null ? player.getUUID() : null);
-        WaystoneManagerImpl.get(world.getServer()).addWaystone(waystone);
+        SavedDataWaystonesStore.get(level.getLevel().getServer()).addWaystone(waystone);
+        Balm.getEvents().fireEvent(new WaystoneInitializedEvent(waystone));
         this.waystone = waystone;
         setChanged();
         sync();
     }
 
-    public void initializeFromExisting(ServerLevelAccessor world, WaystoneImpl existingWaystone, ItemStack itemStack) {
+    public void initializeFromExisting(ServerLevelAccessor level, WaystoneImpl existingWaystone, ItemStack itemStack) {
         waystone = existingWaystone;
-        existingWaystone.setDimension(world.getLevel().dimension());
+        existingWaystone.setDimension(level.getLevel().dimension());
         existingWaystone.setPos(worldPosition);
         existingWaystone.setTransient(false);
-        WaystoneManagerImpl.get(world.getServer()).updateWaystone(waystone);
+        SavedDataWaystonesStore.get(level.getLevel().getServer()).updateWaystone(waystone);
         setChanged();
         sync();
     }
@@ -226,26 +229,28 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     }
 
     public void uninitializeWaystone() {
-        if (waystone.isValid()) {
-            WaystoneManagerImpl.get(level.getServer()).removeWaystone(waystone);
-            PlayerWaystoneManager.removeKnownWaystone(level.getServer(), waystone);
-            WaystoneSyncManager.sendWaystoneRemovalToAll(level.getServer(), waystone, true);
+        if (level instanceof ServerLevel serverLevel) {
+            if (waystone.isValid()) {
+                final var server = serverLevel.getServer();
+                SavedDataWaystonesStore.get(server).removeWaystone(waystone);
+                PlayerWaystoneManager.removeKnownWaystone(server, waystone);
+                WaystoneSyncManager.sendWaystoneRemovalToAll(server, waystone, true);
+            }
+
+            waystone = InvalidWaystone.INSTANCE;
+            shouldNotInitialize = true;
+
+            DoubleBlockHalf half = getBlockState().getValue(WaystoneBlock.HALF);
+            BlockPos otherPos = half == DoubleBlockHalf.UPPER ? worldPosition.below() : worldPosition.above();
+            BlockEntity blockEntity = Objects.requireNonNull(level).getBlockEntity(otherPos);
+            if (blockEntity instanceof WaystoneBlockEntityBase waystoneTile) {
+                waystoneTile.waystone = InvalidWaystone.INSTANCE;
+                waystoneTile.shouldNotInitialize = true;
+            }
+
+            setChanged();
+            sync();
         }
-
-        waystone = InvalidWaystone.INSTANCE;
-        shouldNotInitialize = true;
-
-        DoubleBlockHalf half = getBlockState().getValue(WaystoneBlock.HALF);
-        BlockPos otherPos = half == DoubleBlockHalf.UPPER ? worldPosition.below() : worldPosition.above();
-        BlockEntity blockEntity = Objects.requireNonNull(level).getBlockEntity(otherPos);
-        if (blockEntity instanceof WaystoneBlockEntityBase) {
-            WaystoneBlockEntityBase waystoneTile = (WaystoneBlockEntityBase) blockEntity;
-            waystoneTile.waystone = InvalidWaystone.INSTANCE;
-            waystoneTile.shouldNotInitialize = true;
-        }
-
-        setChanged();
-        sync();
     }
 
     public void setSilkTouched(boolean silkTouched) {
@@ -426,16 +431,16 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
 
-        if (level != null) {
+        if (level instanceof ServerLevel serverLevel) {
             final var waystone = getWaystone();
             final var wasNotSilkTouched = !canSilkTouch() || !isSilkTouched();
-            WaystoneSyncManager.sendWaystoneRemovalToAll(level.getServer(), waystone, wasNotSilkTouched);
+            WaystoneSyncManager.sendWaystoneRemovalToAll(serverLevel.getServer(), waystone, wasNotSilkTouched);
             if (wasNotSilkTouched) {
-                WaystoneManagerImpl.get(level.getServer()).removeWaystone(waystone);
-                PlayerWaystoneManager.removeKnownWaystone(level.getServer(), waystone);
+                SavedDataWaystonesStore.get(serverLevel.getServer()).removeWaystone(waystone);
+                PlayerWaystoneManager.removeKnownWaystone(serverLevel.getServer(), waystone);
             } else if (waystone instanceof MutableWaystone mutableWaystone) {
                 mutableWaystone.setTransient(true);
-                WaystoneManagerImpl.get(level.getServer()).updateWaystone(waystone);
+                SavedDataWaystonesStore.get(serverLevel.getServer()).updateWaystone(waystone);
             }
         }
     }

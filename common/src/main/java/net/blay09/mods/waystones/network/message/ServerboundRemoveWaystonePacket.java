@@ -17,16 +17,16 @@ import java.util.UUID;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record RemoveWaystoneMessage(UUID waystoneUid) implements CustomPacketPayload {
+public record ServerboundRemoveWaystonePacket(UUID waystoneUid) implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<RemoveWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(id("remove_waystone"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, RemoveWaystoneMessage> STREAM_CODEC = StreamCodec.composite(
+    public static final CustomPacketPayload.Type<ServerboundRemoveWaystonePacket> TYPE = new CustomPacketPayload.Type<>(id("remove_waystone"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundRemoveWaystonePacket> STREAM_CODEC = StreamCodec.composite(
             UUIDUtil.STREAM_CODEC,
-            RemoveWaystoneMessage::waystoneUid,
-            RemoveWaystoneMessage::new
+            ServerboundRemoveWaystonePacket::waystoneUid,
+            ServerboundRemoveWaystonePacket::new
     );
 
-    public static void handle(ServerPlayer player, RemoveWaystoneMessage message) {
+    public static void handle(ServerPlayer player, ServerboundRemoveWaystonePacket message) {
         WaystoneProxy waystone = new WaystoneProxy(player.server, message.waystoneUid);
         PlayerWaystoneManager.deactivateWaystone(player, waystone);
 
@@ -34,7 +34,7 @@ public record RemoveWaystoneMessage(UUID waystoneUid) implements CustomPacketPay
         if (player.getAbilities().instabuild) {
             if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
                 // If this is a sharestone and the player is in creative mode, remove the sharestone from the database
-                WaystoneManagerImpl.get(player.server).removeWaystone(waystone);
+                SavedDataWaystonesStore.get(player.server).removeWaystone(waystone);
             } else if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
                 // If the waystone is global and the player is in creative mode, remove the global-ness
                 final var backingWaystone = waystone.getBackingWaystone();
@@ -47,7 +47,7 @@ public record RemoveWaystoneMessage(UUID waystoneUid) implements CustomPacketPay
                     BlockPos pos = backingWaystone.getPos();
                     BlockState state = targetWorld != null ? targetWorld.getBlockState(pos) : null;
                     if (targetWorld == null || !(state.getBlock() instanceof WaystoneBlock)) {
-                        WaystoneManagerImpl.get(player.server).removeWaystone(backingWaystone);
+                        SavedDataWaystonesStore.get(player.server).removeWaystone(backingWaystone);
                         PlayerWaystoneManager.removeKnownWaystone(player.server, backingWaystone);
                         WaystoneSyncManager.sendWaystoneRemovalToAll(player.server, backingWaystone, true);
                     }

@@ -43,7 +43,7 @@ public abstract class AbstractAttunedShardItem extends ShardItem implements IAtt
         }
 
         if (attunedWaystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE)) {
-            list.accept(WarpPlateBlock.getGalacticName(attunedWaystone));
+            list.accept(WarpPlateBlock.getGalacticName(attunedWaystone.getWaystoneUid()));
         } else {
             list.accept(attunedWaystone.getName().copy().withStyle(ChatFormatting.LIGHT_PURPLE));
         }

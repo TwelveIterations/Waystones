@@ -16,16 +16,16 @@ import java.util.UUID;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record SortingIndexMessage(List<UUID> sortingIndex) implements CustomPacketPayload {
+public record ClientboundSortingIndexPacket(List<UUID> sortingIndex) implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<SortingIndexMessage> TYPE = new CustomPacketPayload.Type<>(id("sorting_index"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SortingIndexMessage> STREAM_CODEC = StreamCodec.composite(
+    public static final CustomPacketPayload.Type<ClientboundSortingIndexPacket> TYPE = new CustomPacketPayload.Type<>(id("sorting_index"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundSortingIndexPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.collection(ArrayList::new, UUIDUtil.STREAM_CODEC),
-            SortingIndexMessage::sortingIndex,
-            SortingIndexMessage::new
+            ClientboundSortingIndexPacket::sortingIndex,
+            ClientboundSortingIndexPacket::new
     );
 
-    public static void handle(Player player, SortingIndexMessage message) {
+    public static void handle(Player player, ClientboundSortingIndexPacket message) {
         final var playerWaystoneData = (InMemoryPlayerWaystoneData) PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
         playerWaystoneData.setSortingIndex(player, message.sortingIndex);
     }

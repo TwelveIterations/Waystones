@@ -10,16 +10,16 @@ import net.minecraft.world.level.Level;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record WarpPlateEjectEffectMessage(BlockPos pos) implements CustomPacketPayload {
+public record ClientboundWarpPlateEjectEffectPacket(BlockPos pos) implements CustomPacketPayload {
 
-    public static final Type<WarpPlateEjectEffectMessage> TYPE = new Type<>(id("warp_plate_eject_effect"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, WarpPlateEjectEffectMessage> STREAM_CODEC = StreamCodec.composite(
+    public static final Type<ClientboundWarpPlateEjectEffectPacket> TYPE = new Type<>(id("warp_plate_eject_effect"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundWarpPlateEjectEffectPacket> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC,
-            WarpPlateEjectEffectMessage::pos,
-            WarpPlateEjectEffectMessage::new
+            ClientboundWarpPlateEjectEffectPacket::pos,
+            ClientboundWarpPlateEjectEffectPacket::new
     );
 
-    public static void handle(Player player, WarpPlateEjectEffectMessage message) {
+    public static void handle(Player player, ClientboundWarpPlateEjectEffectPacket message) {
         Level level = player.level();
         if (level != null) {
             for (int i = 0; i < 10; i++) {

@@ -101,7 +101,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     }
 
     private void onWaystonesLoaded(WaystonesLoadedEvent event) {
-        final var waystones = event.getWaystoneManager().getWaystones()
+        final var waystones = event.getWaystoneManager().getWaystones().stream()
                 .filter(DynmapIntegration::isSupportedWaystoneType)
                 .toList();
         runWhenDynmapIsReady(() -> createFromWaystones(waystones));

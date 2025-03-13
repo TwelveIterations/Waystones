@@ -37,10 +37,10 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    public void initializeWaystone(ServerLevelAccessor world, @Nullable LivingEntity player, WaystoneOrigin origin) {
-        super.initializeWaystone(world, player, origin);
+    public void initializeWaystone(ServerLevelAccessor level, @Nullable LivingEntity player, WaystoneOrigin origin) {
+        super.initializeWaystone(level, player, origin);
 
-        WaystoneSyncManager.sendWaystoneUpdateToAll(world.getServer(), getWaystone());
+        WaystoneSyncManager.sendWaystoneUpdateToAll(level.getServer(), getWaystone());
     }
 
     @Override

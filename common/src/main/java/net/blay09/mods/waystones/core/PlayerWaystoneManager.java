@@ -8,7 +8,6 @@ import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
 import net.minecraft.resources.ResourceLocation;
@@ -43,7 +42,7 @@ public class PlayerWaystoneManager {
         }
 
         if (player.getServer() != null) {
-            WaystoneManagerImpl.get(player.getServer()).setDirty();
+            SavedDataWaystonesStore.get(player.getServer()).setDirty();
         }
 
         if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
@@ -58,7 +57,7 @@ public class PlayerWaystoneManager {
         if (inventoryButtonMode.isReturnToNearest()) {
             return PlayerWaystoneManager.getNearestWaystone(player);
         } else if (inventoryButtonMode.hasNamedTarget()) {
-            return WaystoneManagerImpl.get(player.getServer()).findWaystoneByName(inventoryButtonMode.getNamedTarget());
+            return SavedDataWaystonesStore.get(player.getServer()).findWaystoneByName(inventoryButtonMode.getNamedTarget());
         }
 
         return Optional.empty();
@@ -178,7 +177,7 @@ public class PlayerWaystoneManager {
     public static Collection<Waystone> getTargetsForWaystoneType(Player player, ResourceLocation waystoneType) {
         final var result = new ArrayList<Waystone>();
         if (WaystoneTypes.isSharestone(waystoneType)) {
-            result.addAll(WaystoneManagerImpl.get(player.getServer()).getWaystonesByType(waystoneType).toList());
+            result.addAll(SavedDataWaystonesStore.get(player.getServer()).getWaystonesByType(waystoneType));
         } else {
             result.addAll(PlayerWaystoneManager.getActivatedWaystones(player));
         }

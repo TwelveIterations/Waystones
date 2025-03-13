@@ -9,13 +9,12 @@ import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneButton;
 import net.blay09.mods.waystones.comparator.UserSortingComparator;
-import net.blay09.mods.waystones.requirement.NoRequirement;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.network.message.RemoveWaystoneMessage;
-import net.blay09.mods.waystones.network.message.RequestEditWaystoneMessage;
-import net.blay09.mods.waystones.network.message.SelectWaystoneMessage;
-import net.blay09.mods.waystones.network.message.SortWaystoneMessage;
+import net.blay09.mods.waystones.network.message.ServerboundRemoveWaystonePacket;
+import net.blay09.mods.waystones.network.message.ServerboundRequestEditWaystonePacket;
+import net.blay09.mods.waystones.network.message.ServerboundSelectWaystonePacket;
+import net.blay09.mods.waystones.network.message.ServerboundSortWaystonePacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -169,7 +168,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                         Player player = Minecraft.getInstance().player;
                         PlayerWaystoneManager.deactivateWaystone(Objects.requireNonNull(player), waystone);
                         waystones.remove(waystone);
-                        Balm.getNetworking().sendToServer(new RemoveWaystoneMessage(waystone.getWaystoneUid()));
+                        Balm.getNetworking().sendToServer(new ServerboundRemoveWaystonePacket(waystone.getWaystoneUid()));
                         updateList();
                     });
                     addRenderableWidget(removeButton);
@@ -213,7 +212,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     protected void onWaystoneSelected(Waystone waystone) {
-        Balm.getNetworking().sendToServer(new SelectWaystoneMessage(waystone.getWaystoneUid()));
+        Balm.getNetworking().sendToServer(new ServerboundSelectWaystonePacket(waystone.getWaystoneUid()));
     }
 
     private void sortWaystone(Waystone waystone, int sortDir) {
@@ -221,10 +220,10 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         if (Screen.hasShiftDown()) {
             if (sortDir == -1) {
                 PlayerWaystoneManager.sortWaystoneAsFirst(Minecraft.getInstance().player, waystoneUid);
-                Balm.getNetworking().sendToServer(new SortWaystoneMessage(waystoneUid, SortWaystoneMessage.SORT_FIRST));
+                Balm.getNetworking().sendToServer(new ServerboundSortWaystonePacket(waystoneUid, ServerboundSortWaystonePacket.SORT_FIRST));
             } else if (sortDir == 1) {
                 PlayerWaystoneManager.sortWaystoneAsLast(Minecraft.getInstance().player, waystoneUid);
-                Balm.getNetworking().sendToServer(new SortWaystoneMessage(waystoneUid, SortWaystoneMessage.SORT_LAST));
+                Balm.getNetworking().sendToServer(new ServerboundSortWaystonePacket(waystoneUid, ServerboundSortWaystonePacket.SORT_LAST));
             }
         } else {
             final var index = filteredWaystones.indexOf(waystone);
@@ -236,7 +235,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
             final var otherWaystoneUid = otherWaystone.getWaystoneUid();
 
             PlayerWaystoneManager.sortWaystoneSwap(Minecraft.getInstance().player, waystoneUid, otherWaystoneUid);
-            Balm.getNetworking().sendToServer(new SortWaystoneMessage(waystoneUid, otherWaystoneUid));
+            Balm.getNetworking().sendToServer(new ServerboundSortWaystonePacket(waystoneUid, otherWaystoneUid));
         }
 
         updateList();
@@ -245,7 +244,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         if (isLocationHeaderHovered && menu.getWaystoneFrom() != null) {
-            Balm.getNetworking().sendToServer(new RequestEditWaystoneMessage(menu.getWaystoneFrom().getPos()));
+            Balm.getNetworking().sendToServer(new ServerboundRequestEditWaystonePacket(menu.getWaystoneFrom().getPos()));
             return true;
         }
 

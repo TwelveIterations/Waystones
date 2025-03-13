@@ -13,13 +13,14 @@ import java.util.Map;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record PlayerWaystoneCooldownsMessage(Map<ResourceLocation, Long> cooldowns) implements CustomPacketPayload {
+public record ClientboundPlayerWaystoneCooldownsPacket(Map<ResourceLocation, Long> cooldowns) implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<PlayerWaystoneCooldownsMessage> TYPE = new CustomPacketPayload.Type<>(id("player_waystone_cooldowns"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, PlayerWaystoneCooldownsMessage> STREAM_CODEC = StreamCodec.of(PlayerWaystoneCooldownsMessage::encode,
-            PlayerWaystoneCooldownsMessage::decode);
+    public static final CustomPacketPayload.Type<ClientboundPlayerWaystoneCooldownsPacket> TYPE = new CustomPacketPayload.Type<>(id("player_waystone_cooldowns"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundPlayerWaystoneCooldownsPacket> STREAM_CODEC = StreamCodec.of(
+            ClientboundPlayerWaystoneCooldownsPacket::encode,
+            ClientboundPlayerWaystoneCooldownsPacket::decode);
 
-    public static void encode(FriendlyByteBuf buf, PlayerWaystoneCooldownsMessage message) {
+    public static void encode(FriendlyByteBuf buf, ClientboundPlayerWaystoneCooldownsPacket message) {
         buf.writeByte(message.cooldowns.size());
         for (Map.Entry<ResourceLocation, Long> entry : message.cooldowns.entrySet()) {
             buf.writeResourceLocation(entry.getKey());
@@ -27,16 +28,16 @@ public record PlayerWaystoneCooldownsMessage(Map<ResourceLocation, Long> cooldow
         }
     }
 
-    public static PlayerWaystoneCooldownsMessage decode(FriendlyByteBuf buf) {
+    public static ClientboundPlayerWaystoneCooldownsPacket decode(FriendlyByteBuf buf) {
         final var size = buf.readByte();
         final var cooldowns = new HashMap<ResourceLocation, Long>(size);
         for (var i = 0; i < size; i++) {
             cooldowns.put(buf.readResourceLocation(), buf.readLong());
         }
-        return new PlayerWaystoneCooldownsMessage(cooldowns);
+        return new ClientboundPlayerWaystoneCooldownsPacket(cooldowns);
     }
 
-    public static void handle(Player player, PlayerWaystoneCooldownsMessage message) {
+    public static void handle(Player player, ClientboundPlayerWaystoneCooldownsPacket message) {
         message.cooldowns.forEach((key, timestamp) -> PlayerWaystoneManager.setCooldownUntil(player, key, timestamp));
     }
 

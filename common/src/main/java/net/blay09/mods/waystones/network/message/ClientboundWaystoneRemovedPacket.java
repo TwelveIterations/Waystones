@@ -14,21 +14,21 @@ import java.util.UUID;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record WaystoneRemovedMessage(ResourceLocation waystoneType, UUID waystoneId, boolean wasDestroyed) implements CustomPacketPayload {
+public record ClientboundWaystoneRemovedPacket(ResourceLocation waystoneType, UUID waystoneId, boolean wasDestroyed) implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<WaystoneRemovedMessage> TYPE = new CustomPacketPayload.Type<>(id("waystone_removed"));
+    public static final CustomPacketPayload.Type<ClientboundWaystoneRemovedPacket> TYPE = new CustomPacketPayload.Type<>(id("waystone_removed"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, WaystoneRemovedMessage> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundWaystoneRemovedPacket> STREAM_CODEC = StreamCodec.composite(
             ResourceLocation.STREAM_CODEC,
-            WaystoneRemovedMessage::waystoneType,
+            ClientboundWaystoneRemovedPacket::waystoneType,
             UUIDUtil.STREAM_CODEC,
-            WaystoneRemovedMessage::waystoneId,
+            ClientboundWaystoneRemovedPacket::waystoneId,
             ByteBufCodecs.BOOL,
-            WaystoneRemovedMessage::wasDestroyed,
-            WaystoneRemovedMessage::new
+            ClientboundWaystoneRemovedPacket::wasDestroyed,
+            ClientboundWaystoneRemovedPacket::new
     );
 
-    public static void handle(Player player, WaystoneRemovedMessage message) {
+    public static void handle(Player player, ClientboundWaystoneRemovedPacket message) {
         Balm.getEvents().fireEvent(new WaystoneRemoveReceivedEvent(message.waystoneType, message.waystoneId, message.wasDestroyed));
     }
 

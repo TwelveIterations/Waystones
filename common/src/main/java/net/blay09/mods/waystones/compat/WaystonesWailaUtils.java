@@ -24,7 +24,7 @@ public class WaystonesWailaUtils {
     public static void appendTooltip(BlockEntity blockEntity, Player player, Consumer<Component> tooltipConsumer) {
         if (blockEntity instanceof WarpPlateBlockEntity warpPlate) {
             Waystone waystone = warpPlate.getWaystone();
-            tooltipConsumer.accept(WarpPlateBlock.getGalacticName(waystone));
+            tooltipConsumer.accept(WarpPlateBlock.getGalacticName(waystone.getWaystoneUid()));
         } else if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
             Waystone waystone = waystoneBlockEntity.getWaystone();
             boolean isActivated = !waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone);

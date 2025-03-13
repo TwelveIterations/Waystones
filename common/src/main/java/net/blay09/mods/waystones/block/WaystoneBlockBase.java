@@ -1,9 +1,6 @@
 package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.api.MutableWaystone;
-import net.blay09.mods.waystones.api.WaystoneManager;
-import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
@@ -40,7 +37,6 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public abstract class WaystoneBlockBase extends BaseEntityBlock implements SimpleWaterloggedBlock {
@@ -211,18 +207,11 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
         return null;
     }
 
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
-        final var waystoneUid = stack.get(ModComponents.waystone.get());
-        if (waystoneUid != null) {
-            WaystoneProxy waystone = new WaystoneProxy(null, waystoneUid);
-            if (waystone.isValid()) {
-                addWaystoneNameToTooltip(list, waystone);
-            }
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        final var waystoneName = stack.get(ModComponents.waystoneName.get());
+        if (waystoneName != null) {
+            tooltip.accept(waystoneName.copy().withStyle(ChatFormatting.AQUA));
         }
-    }
-
-    protected void addWaystoneNameToTooltip(Consumer<Component> tooltip, WaystoneProxy waystone) {
-        tooltip.accept(waystone.getName().copy().withStyle(ChatFormatting.AQUA));
     }
 
     @Override
@@ -255,35 +244,35 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     }
 
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        BlockEntity blockEntity = world.getBlockEntity(pos);
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
 
         BlockPos posAbove = pos.above();
         boolean isDoubleBlock = isDoubleBlock(state);
         if (isDoubleBlock) {
-            FluidState fluidStateAbove = world.getFluidState(posAbove);
-            world.setBlockAndUpdate(posAbove,
+            FluidState fluidStateAbove = level.getFluidState(posAbove);
+            level.setBlockAndUpdate(posAbove,
                     state.setValue(HALF, DoubleBlockHalf.UPPER)
                             .setValue(WATERLOGGED, fluidStateAbove.getType() == Fluids.WATER)
                             .setValue(ORIGIN, WaystoneOrigin.PLAYER));
         }
 
         if (blockEntity instanceof WaystoneBlockEntityBase) {
-            if (!world.isClientSide) {
+            if (!level.isClientSide) {
                 final var waystoneUid = stack.get(ModComponents.waystone.get());
                 WaystoneProxy existingWaystone = null;
                 if (waystoneUid != null) {
-                    existingWaystone = new WaystoneProxy(world.getServer(), waystoneUid);
+                    existingWaystone = new WaystoneProxy(level.getServer(), waystoneUid);
                 }
 
                 if (existingWaystone != null && existingWaystone.isValid() && existingWaystone.getBackingWaystone() instanceof WaystoneImpl backingWaystone) {
-                    ((WaystoneBlockEntityBase) blockEntity).initializeFromExisting((ServerLevelAccessor) world, backingWaystone, stack);
+                    ((WaystoneBlockEntityBase) blockEntity).initializeFromExisting((ServerLevelAccessor) level, backingWaystone, stack);
                 } else {
-                    ((WaystoneBlockEntityBase) blockEntity).initializeWaystone((ServerLevelAccessor) world, placer, WaystoneOrigin.PLAYER);
+                    ((WaystoneBlockEntityBase) blockEntity).initializeWaystone((ServerLevelAccessor) level, placer, WaystoneOrigin.PLAYER);
                 }
 
                 if (isDoubleBlock) {
-                    BlockEntity waystoneEntityAbove = world.getBlockEntity(posAbove);
+                    BlockEntity waystoneEntityAbove = level.getBlockEntity(posAbove);
                     if (waystoneEntityAbove instanceof WaystoneBlockEntityBase) {
                         ((WaystoneBlockEntityBase) waystoneEntityAbove).initializeFromBase(((WaystoneBlockEntityBase) blockEntity));
                     }
@@ -294,13 +283,13 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                 Waystone waystone = ((WaystoneBlockEntityBase) blockEntity).getWaystone();
                 PlayerWaystoneManager.activateWaystone(((Player) placer), waystone);
 
-                if (!world.isClientSide) {
+                if (!level.isClientSide) {
                     WaystoneSyncManager.sendActivatedWaystones(((Player) placer));
                 }
             }
 
             // Open settings screen on placement since people don't realize you can shift-click waystones to edit them
-            if (!world.isClientSide && placer instanceof ServerPlayer) {
+            if (!level.isClientSide && placer instanceof ServerPlayer) {
                 final ServerPlayer player = (ServerPlayer) placer;
                 final WaystoneBlockEntityBase waystoneTileEntity = (WaystoneBlockEntityBase) blockEntity;
                 if (shouldOpenMenuWhenPlaced()) {

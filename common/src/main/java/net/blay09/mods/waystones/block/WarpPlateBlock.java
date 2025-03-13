@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
+import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.ChatFormatting;
@@ -21,7 +22,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -41,6 +45,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class WarpPlateBlock extends WaystoneBlockBase {
@@ -52,7 +57,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
             return 0xFFFFFFFF;
         }
 
-        final var name = getGalacticIdentifier(warpPlate.getWaystone());
+        final var name = getGalacticIdentifier(warpPlate.getWaystone().getWaystoneUid());
         final var color = getColorForName(name).getColor();
         return color != null ? color : 0xFFFFFFFF;
     }
@@ -189,8 +194,11 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     @Override
-    protected void addWaystoneNameToTooltip(Consumer<Component> tooltip, WaystoneProxy waystone) {
-        tooltip.accept(getGalacticName(waystone));
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        final var waystoneUid = stack.get(ModComponents.waystone.get());
+        if (waystoneUid != null) {
+            tooltip.accept(getGalacticName(waystoneUid));
+        }
     }
 
     public static ChatFormatting getColorForName(String name) {
@@ -206,13 +214,13 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         return textFormatting != null ? textFormatting : ChatFormatting.GRAY;
     }
 
-    public static String getGalacticIdentifier(Waystone waystone) {
-        final var intermediate = waystone.getWaystoneUid().toString().replaceAll("[0-9\\-]", "");
+    public static String getGalacticIdentifier(UUID waystoneUid) {
+        final var intermediate = waystoneUid.toString().replaceAll("[0-9\\-]", "");
         return intermediate.substring(0, Math.min(8, intermediate.length()));
     }
 
-    public static Component getGalacticName(Waystone waystone) {
-        final var name = getGalacticIdentifier(waystone);
+    public static Component getGalacticName(UUID waystoneUid) {
+        final var name = getGalacticIdentifier(waystoneUid);
         return Component.literal(name).withStyle(WarpPlateBlock.getColorForName(name)).withStyle(GALACTIC_STYLE);
     }
 

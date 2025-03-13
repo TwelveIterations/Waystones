@@ -8,7 +8,7 @@ import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
-import net.blay09.mods.waystones.network.message.WarpPlateEjectEffectMessage;
+import net.blay09.mods.waystones.network.message.ClientboundWarpPlateEjectEffectPacket;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
@@ -60,17 +60,17 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    public void initializeWaystone(ServerLevelAccessor world, @Nullable LivingEntity player, WaystoneOrigin origin) {
-        super.initializeWaystone(world, player, origin);
+    public void initializeWaystone(ServerLevelAccessor level, @Nullable LivingEntity player, WaystoneOrigin origin) {
+        super.initializeWaystone(level, player, origin);
 
         // Warp Plates generate a name on placement always
         final var waystone = getWaystone();
         if (waystone instanceof MutableWaystone) {
-            final var name = NameGeneratorManager.get(world.getServer()).getName(world, waystone, world.getRandom(), NameGenerationMode.RANDOM_ONLY);
+            final var name = NameGeneratorManager.get(level.getServer()).getName(level, waystone, level.getRandom(), NameGenerationMode.RANDOM_ONLY);
             ((MutableWaystone) waystone).setName(name);
         }
 
-        WaystoneSyncManager.sendWaystoneUpdateToAll(world.getServer(), waystone);
+        WaystoneSyncManager.sendWaystoneUpdateToAll(level.getServer(), waystone);
 
         initializeInventory();
     }
@@ -310,7 +310,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
                     level.addFreshEntity(shardEntity);
                     setShardItem(ItemStack.EMPTY);
                     if (level instanceof ServerLevel serverLevel) {
-                        Balm.getNetworking().sendToTracking(serverLevel, worldPosition, new WarpPlateEjectEffectMessage(worldPosition));
+                        Balm.getNetworking().sendToTracking(serverLevel, worldPosition, new ClientboundWarpPlateEjectEffectPacket(worldPosition));
                         level.playSound(null, worldPosition, SoundEvents.CHICKEN_EGG, SoundSource.PLAYERS, 1f, 1f);
                     }
                 }

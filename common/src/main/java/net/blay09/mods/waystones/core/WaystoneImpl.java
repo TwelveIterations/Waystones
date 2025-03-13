@@ -49,7 +49,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
             ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(Waystone::getDimension),
             BlockPos.CODEC.fieldOf("pos").forGetter(Waystone::getPos),
             WaystoneOrigin.CODEC.fieldOf("origin").forGetter(Waystone::getOrigin),
-            UUIDUtil.CODEC.optionalFieldOf("ownerUid", null).forGetter(Waystone::getOwnerUid),
+            UUIDUtil.CODEC.optionalFieldOf("ownerUid").forGetter(Waystone::getOwnerUid),
             ComponentSerialization.CODEC.fieldOf("name").forGetter(Waystone::getName),
             WaystoneVisibility.CODEC.fieldOf("visibility").forGetter(Waystone::getVisibility)
     ).apply(instance, WaystoneImpl::new));
@@ -87,13 +87,13 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         this.visibility = visibility;
     }
 
-    public WaystoneImpl(ResourceLocation waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @Nullable UUID ownerUid, Component name, WaystoneVisibility visibility) {
+    public WaystoneImpl(ResourceLocation waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<UUID> ownerUid, Component name, WaystoneVisibility visibility) {
         this.waystoneType = waystoneType;
         this.waystoneUid = waystoneUid;
         this.dimension = dimension;
         this.pos = pos;
         this.origin = origin;
-        this.ownerUid = ownerUid;
+        this.ownerUid = ownerUid.orElse(null);
         this.name = name;
         this.visibility = visibility;
     }
@@ -154,8 +154,8 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     }
 
     @Override
-    public UUID getOwnerUid() {
-        return ownerUid;
+    public Optional<UUID> getOwnerUid() {
+        return Optional.ofNullable(ownerUid);
     }
 
     public void setDimension(ResourceKey<Level> dimension) {

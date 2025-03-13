@@ -59,15 +59,6 @@ public class WaystonesAPI {
         return __internalMethods.getWaystoneAt(server, blockGetter, pos);
     }
 
-    /**
-     * @param level only used to access getServer() when on server, does not have to match the waystone's actual level
-     * @deprecated Use {@link #getWaystone(MinecraftServer, UUID)} instead.
-     */
-    @Deprecated
-    public static Optional<Waystone> getWaystone(Level level, UUID uuid) {
-        return __internalMethods.getWaystone(level, uuid);
-    }
-
     public static Optional<Waystone> getWaystone(MinecraftServer server, UUID uuid) {
         return __internalMethods.getWaystone(server, uuid);
     }
@@ -77,13 +68,13 @@ public class WaystonesAPI {
     }
 
     /**
-     * Returns a stream of all waystones in the database. This includes regular waystones, sharestones and others.
+     * Returns a collection of all waystones in the database. This includes regular waystones, sharestones and others.
      */
-    public static Stream<Waystone> getAllWaystones(MinecraftServer server) {
+    public static Collection<Waystone> getAllWaystones(MinecraftServer server) {
         return __internalMethods.getAllWaystones(server);
     }
 
-    public static Stream<Waystone> getWaystonesByType(MinecraftServer server, ResourceLocation type) {
+    public static Collection<Waystone> getWaystonesByType(MinecraftServer server, ResourceLocation type) {
         return __internalMethods.getWaystonesByType(server, type);
     }
 
@@ -102,15 +93,15 @@ public class WaystonesAPI {
         return __internalMethods.getNearestWaystone(player);
     }
 
-    public static Optional<Waystone> placeWaystone(Level level, BlockPos pos, WaystoneStyle style) {
+    public static Optional<Waystone> placeWaystone(ServerLevel level, BlockPos pos, WaystoneStyle style) {
         return __internalMethods.placeWaystone(level, pos, style);
     }
 
-    public static Optional<Waystone> placeSharestone(Level level, BlockPos pos, @Nullable DyeColor color) {
+    public static Optional<Waystone> placeSharestone(ServerLevel level, BlockPos pos, @Nullable DyeColor color) {
         return __internalMethods.placeSharestone(level, pos, color);
     }
 
-    public static Optional<Waystone> placeWarpPlate(Level level, BlockPos pos) {
+    public static Optional<Waystone> placeWarpPlate(ServerLevel level, BlockPos pos) {
         return __internalMethods.placeWarpPlate(level, pos);
     }
 

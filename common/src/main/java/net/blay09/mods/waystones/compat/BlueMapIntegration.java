@@ -119,7 +119,7 @@ public class BlueMapIntegration {
     }
 
     private void onWaystonesLoaded(WaystonesLoadedEvent event) {
-        final var waystonesByDimension = event.getWaystoneManager().getWaystones()
+        final var waystonesByDimension = event.getWaystoneManager().getWaystones().stream()
                 .filter(BlueMapIntegration::isSupportedWaystoneType)
                 .collect(Collectors.groupingBy(Waystone::getDimension));
         for (final var entry : waystonesByDimension.entrySet()) {

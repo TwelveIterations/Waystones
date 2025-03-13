@@ -29,7 +29,7 @@ public class WaystoneModifierScreen extends AbstractContainerScreen<WaystoneModi
     protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
         super.renderLabels(guiGraphics, x, y);
 
-        Component galacticName = WarpPlateBlock.getGalacticName(menu.getWaystone());
+        Component galacticName = WarpPlateBlock.getGalacticName(menu.getWaystone().getWaystoneUid());
         int width = font.width(galacticName);
         guiGraphics.drawString(font, galacticName, imageWidth - width - 5, 5, 0xFFFFFFFF);
     }

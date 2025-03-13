@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class InvalidWaystone implements Waystone {
@@ -25,8 +26,8 @@ public class InvalidWaystone implements Waystone {
 
     @Nullable
     @Override
-    public UUID getOwnerUid() {
-        return null;
+    public Optional<UUID> getOwnerUid() {
+        return Optional.empty();
     }
 
     @Override

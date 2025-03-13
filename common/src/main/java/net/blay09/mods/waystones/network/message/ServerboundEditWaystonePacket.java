@@ -17,20 +17,20 @@ import java.util.UUID;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record EditWaystoneMessage(UUID waystoneUid, String name, WaystoneVisibility visibility) implements CustomPacketPayload {
+public record ServerboundEditWaystonePacket(UUID waystoneUid, String name, WaystoneVisibility visibility) implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<EditWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(id("edit_waystone"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, EditWaystoneMessage> STREAM_CODEC = StreamCodec.composite(
+    public static final CustomPacketPayload.Type<ServerboundEditWaystonePacket> TYPE = new CustomPacketPayload.Type<>(id("edit_waystone"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundEditWaystonePacket> STREAM_CODEC = StreamCodec.composite(
             UUIDUtil.STREAM_CODEC,
-            EditWaystoneMessage::waystoneUid,
+            ServerboundEditWaystonePacket::waystoneUid,
             ByteBufCodecs.STRING_UTF8,
-            EditWaystoneMessage::name,
+            ServerboundEditWaystonePacket::name,
             ByteBufCodecs.idMapper(it -> WaystoneVisibility.values()[it], WaystoneVisibility::ordinal),
-            EditWaystoneMessage::visibility,
-            EditWaystoneMessage::new
+            ServerboundEditWaystonePacket::visibility,
+            ServerboundEditWaystonePacket::new
     );
 
-    public static void handle(ServerPlayer player, EditWaystoneMessage message) {
+    public static void handle(ServerPlayer player, ServerboundEditWaystonePacket message) {
         final var waystone = new WaystoneProxy(player.server, message.waystoneUid);
         if (!waystone.isValid()) {
             Waystones.logger.warn("{} tried to edit an invalid waystone with id {}", player.getName().getString(), message.waystoneUid);
@@ -71,7 +71,7 @@ public record EditWaystoneMessage(UUID waystoneUid, String name, WaystoneVisibil
         }
         backingWaystone.setVisibility(visibility);
 
-        WaystoneManagerImpl.get(player.server).setDirty();
+        SavedDataWaystonesStore.get(player.server).setDirty();
         WaystoneSyncManager.sendWaystoneUpdateToAll(player.server, backingWaystone);
 
         player.closeContainer();
@@ -82,7 +82,7 @@ public record EditWaystoneMessage(UUID waystoneUid, String name, WaystoneVisibil
             return Component.translatable("waystones.untitled_waystone");
         }
         final var inventoryButtonMode = WaystonesConfig.getActive().inventoryButton.inventoryButton;
-        if (inventoryButtonMode.equals(input) && WaystoneManagerImpl.get(server).findWaystoneByName(input).isPresent()) {
+        if (inventoryButtonMode.equals(input) && SavedDataWaystonesStore.get(server).findWaystoneByName(input).isPresent()) {
             return Component.literal(input + "*");
         }
 

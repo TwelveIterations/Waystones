@@ -9,8 +9,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public class WaystoneProxy implements Waystone, MutableWaystone {
@@ -19,7 +20,8 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
     private final UUID waystoneUid;
     private Waystone backingWaystone;
 
-    public WaystoneProxy(@Nullable MinecraftServer server, UUID waystoneUid) {
+    public WaystoneProxy(MinecraftServer server, UUID waystoneUid) {
+        Objects.requireNonNull(server);
         this.server = server;
         this.waystoneUid = waystoneUid;
     }
@@ -36,19 +38,19 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
 
     @Override
     public boolean isValid() {
-        return WaystoneManagerImpl.get(server).getWaystoneById(waystoneUid).isPresent();
+        return SavedDataWaystonesStore.get(server).getWaystoneById(waystoneUid).isPresent();
     }
 
     public Waystone getBackingWaystone() {
         if (backingWaystone == null) {
-            backingWaystone = WaystoneManagerImpl.get(server).getWaystoneById(waystoneUid).orElse(InvalidWaystone.INSTANCE);
+            backingWaystone = SavedDataWaystonesStore.get(server).getWaystoneById(waystoneUid).orElse(InvalidWaystone.INSTANCE);
         }
 
         return backingWaystone;
     }
 
     @Override
-    public UUID getOwnerUid() {
+    public Optional<UUID> getOwnerUid() {
         return getBackingWaystone().getOwnerUid();
     }
 

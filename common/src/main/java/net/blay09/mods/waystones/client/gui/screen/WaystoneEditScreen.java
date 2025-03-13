@@ -4,8 +4,8 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
 import net.blay09.mods.waystones.core.WaystoneVisibilities;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
-import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
-import net.blay09.mods.waystones.network.message.RequestManageWaystoneModifiersMessage;
+import net.blay09.mods.waystones.network.message.ServerboundEditWaystonePacket;
+import net.blay09.mods.waystones.network.message.ServerboundRequestManageWaystoneModifiersPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -75,8 +75,8 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
                 modifierSprites,
                 (button) -> {
                     Balm.getNetworking()
-                            .sendToServer(new EditWaystoneMessage(menu.getWaystone().getWaystoneUid(), textField.getValue(), visibilityButton.getVisibility()));
-                    Balm.getNetworking().sendToServer(new RequestManageWaystoneModifiersMessage(menu.getWaystone().getPos()));
+                            .sendToServer(new ServerboundEditWaystonePacket(menu.getWaystone().getWaystoneUid(), textField.getValue(), visibilityButton.getVisibility()));
+                    Balm.getNetworking().sendToServer(new ServerboundRequestManageWaystoneModifiersPacket(menu.getWaystone().getPos()));
                 },
                 Component.literal("gui.waystones.waystone_settings.manage_modifiers"));
         modifierButton.setPosition(leftPos, y);
@@ -162,7 +162,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
     public void onClose() {
         if (textField != null && visibilityButton != null) {
             Balm.getNetworking()
-                    .sendToServer(new EditWaystoneMessage(menu.getWaystone().getWaystoneUid(), textField.getValue(), visibilityButton.getVisibility()));
+                    .sendToServer(new ServerboundEditWaystonePacket(menu.getWaystone().getWaystoneUid(), textField.getValue(), visibilityButton.getVisibility()));
         }
 
         super.onClose();
