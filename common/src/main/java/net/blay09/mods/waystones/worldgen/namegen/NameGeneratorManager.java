@@ -12,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -26,7 +25,7 @@ import java.util.Set;
 
 public class NameGeneratorManager extends SavedData {
 
-    private static final String DATA_NAME = Waystones.MOD_ID + "_NameGenerator";
+    private static final String DATA_NAME = Waystones.MOD_ID + "_name_generator";
     private static final Codec<NameGeneratorManager> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.listOf().fieldOf("usedNames").forGetter(NameGeneratorManager::getUsedNames)
     ).apply(instance, NameGeneratorManager::new));

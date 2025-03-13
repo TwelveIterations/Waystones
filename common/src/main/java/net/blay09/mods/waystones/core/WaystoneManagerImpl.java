@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 public class WaystoneManagerImpl extends SavedData implements WaystoneManager {
 
-    private static final String DATA_NAME = Waystones.MOD_ID;
+    private static final String DATA_NAME = Waystones.MOD_ID + "_waystones";
     private static final Codec<WaystoneManagerImpl> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             WaystoneImpl.CODEC.codec().listOf().fieldOf("waystones").forGetter(it -> it.getWaystones().toList())
     ).apply(instance, WaystoneManagerImpl::new));

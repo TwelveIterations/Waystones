@@ -12,25 +12,38 @@ import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.renderer.block.model.VariantMutator;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
+import static net.blay09.mods.waystones.Waystones.id;
+import static net.minecraft.client.data.models.BlockModelGenerators.*;
+
 public class ModModelProvider extends FabricModelProvider {
+
+    private static final PropertyDispatch<VariantMutator> ROTATION_HORIZONTAL_FACING = PropertyDispatch.modify(BlockStateProperties.HORIZONTAL_FACING)
+            .select(Direction.EAST, Y_ROT_90)
+            .select(Direction.SOUTH, Y_ROT_180)
+            .select(Direction.WEST, Y_ROT_270)
+            .select(Direction.NORTH, NOP);
+
     public ModModelProvider(FabricDataOutput output) {
         super(output);
     }
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
-        blockStateModelGenerator.blockStateOutput.accept(MultiVariantGenerator.multiVariant(ModBlocks.warpPlate)
-                .with(PropertyDispatch.property(WarpPlateBlock.STATUS)
-                        .select(WarpPlateBlock.WarpPlateStatus.EMPTY, Variant.variant().with(VariantProperties.MODEL, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_plate_empty")))
-                        .select(WarpPlateBlock.WarpPlateStatus.IDLE, Variant.variant().with(VariantProperties.MODEL, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_plate")))
-                        .select(WarpPlateBlock.WarpPlateStatus.ATTUNING, Variant.variant().with(VariantProperties.MODEL, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_plate")))
-                        .select(WarpPlateBlock.WarpPlateStatus.WARPING, Variant.variant().with(VariantProperties.MODEL, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_plate")))
-                        .select(WarpPlateBlock.WarpPlateStatus.WARPING_INVALID, Variant.variant().with(VariantProperties.MODEL, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_plate")))
-                        .select(WarpPlateBlock.WarpPlateStatus.LOCKED, Variant.variant().with(VariantProperties.MODEL, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_plate_locked")))
+        blockStateModelGenerator.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.warpPlate)
+                .with(PropertyDispatch.initial(WarpPlateBlock.STATUS)
+                        .select(WarpPlateBlock.WarpPlateStatus.EMPTY, plainVariant(id("block/warp_plate_empty")))
+                        .select(WarpPlateBlock.WarpPlateStatus.IDLE, plainVariant(id("block/warp_plate")))
+                        .select(WarpPlateBlock.WarpPlateStatus.ATTUNING, plainVariant(id("block/warp_plate")))
+                        .select(WarpPlateBlock.WarpPlateStatus.WARPING, plainVariant(id("block/warp_plate")))
+                        .select(WarpPlateBlock.WarpPlateStatus.WARPING_INVALID, plainVariant(id("block/warp_plate")))
+                        .select(WarpPlateBlock.WarpPlateStatus.LOCKED, plainVariant(id("block/warp_plate_locked")))
                 ));
         blockStateModelGenerator.registerSimpleTintedItemModel(ModBlocks.warpPlate, ModelLocationUtils.getModelLocation(ModBlocks.warpPlate), new Constant(0xffc456bd));
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.waystone);
@@ -68,11 +81,11 @@ public class ModModelProvider extends FabricModelProvider {
     private void createDoubleBlockWaystone(BlockModelGenerators blockStateModelGenerator, Block block, Block modelBlock) {
         final var topModelLocation = ModelLocationUtils.getModelLocation(modelBlock, "_top");
         final var bottomModelLocation = ModelLocationUtils.getModelLocation(modelBlock, "_bottom");
-        final var generator = MultiVariantGenerator.multiVariant(block)
-                .with(createHorizontalFacingDispatch())
-                .with(PropertyDispatch.property(WaystoneBlockBase.HALF)
-                        .select(DoubleBlockHalf.LOWER, Variant.variant().with(VariantProperties.MODEL, bottomModelLocation))
-                        .select(DoubleBlockHalf.UPPER, Variant.variant().with(VariantProperties.MODEL, topModelLocation)));
+        final var generator = MultiVariantGenerator.dispatch(block)
+                .with(PropertyDispatch.initial(WaystoneBlockBase.HALF)
+                        .select(DoubleBlockHalf.LOWER, plainVariant(bottomModelLocation))
+                        .select(DoubleBlockHalf.UPPER, plainVariant(topModelLocation)))
+                .with(ROTATION_HORIZONTAL_FACING);
         blockStateModelGenerator.blockStateOutput.accept(generator);
         blockStateModelGenerator.registerSimpleItemModel(block, ModelLocationUtils.getModelLocation(block.asItem()));
     }
@@ -80,11 +93,11 @@ public class ModModelProvider extends FabricModelProvider {
     private void createSharestone(BlockModelGenerators blockStateModelGenerator, SharestoneBlock block) {
         final var topModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/sharestone_top");
         final var bottomModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/sharestone_bottom");
-        final var generator = MultiVariantGenerator.multiVariant(block)
-                .with(createHorizontalFacingDispatch())
-                .with(PropertyDispatch.property(WaystoneBlockBase.HALF)
-                        .select(DoubleBlockHalf.LOWER, Variant.variant().with(VariantProperties.MODEL, bottomModelLocation))
-                        .select(DoubleBlockHalf.UPPER, Variant.variant().with(VariantProperties.MODEL, topModelLocation)));
+        final var generator = MultiVariantGenerator.dispatch(block)
+                .with(PropertyDispatch.initial(WaystoneBlockBase.HALF)
+                        .select(DoubleBlockHalf.LOWER, plainVariant(bottomModelLocation))
+                        .select(DoubleBlockHalf.UPPER, plainVariant(topModelLocation)))
+                .with(ROTATION_HORIZONTAL_FACING);
         blockStateModelGenerator.blockStateOutput.accept(generator);
         final var itemModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "item/sharestone");
         blockStateModelGenerator.registerSimpleTintedItemModel(block, itemModelLocation, new Constant(block.getColor().getTextColor()));
@@ -93,11 +106,11 @@ public class ModModelProvider extends FabricModelProvider {
     private void createPortstone(BlockModelGenerators blockStateModelGenerator, PortstoneBlock block) {
         final var topModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_top");
         final var bottomModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_bottom");
-        final var generator = MultiVariantGenerator.multiVariant(block)
-                .with(createHorizontalFacingDispatch())
-                .with(PropertyDispatch.property(WaystoneBlockBase.HALF)
-                        .select(DoubleBlockHalf.LOWER, Variant.variant().with(VariantProperties.MODEL, bottomModelLocation))
-                        .select(DoubleBlockHalf.UPPER, Variant.variant().with(VariantProperties.MODEL, topModelLocation)));
+        final var generator = MultiVariantGenerator.dispatch(block)
+                .with(PropertyDispatch.initial(WaystoneBlockBase.HALF)
+                        .select(DoubleBlockHalf.LOWER, plainVariant(bottomModelLocation))
+                        .select(DoubleBlockHalf.UPPER, plainVariant(topModelLocation)))
+                .with(ROTATION_HORIZONTAL_FACING);
         blockStateModelGenerator.blockStateOutput.accept(generator);
         final var itemModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "item/portstone");
         blockStateModelGenerator.registerSimpleTintedItemModel(block, itemModelLocation, new Constant(block.getColor().getTextColor()));
