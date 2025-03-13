@@ -207,13 +207,6 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
         return null;
     }
 
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
-        final var waystoneName = stack.get(ModComponents.waystoneName.get());
-        if (waystoneName != null) {
-            tooltip.accept(waystoneName.copy().withStyle(ChatFormatting.AQUA));
-        }
-    }
-
     @Override
     protected InteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         if (itemStack.is(ModItems.blankScroll)) {

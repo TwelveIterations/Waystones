@@ -5,6 +5,8 @@ import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
+import net.blay09.mods.waystones.component.ModComponents;
+import net.blay09.mods.waystones.component.WaystoneNameComponent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
@@ -15,6 +17,7 @@ import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -327,5 +330,11 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     @Override
     public boolean canSilkTouch() {
         return true;
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(ModComponents.waystoneName.get(), new WaystoneNameComponent(WarpPlateBlock.getGalacticName(getWaystone().getWaystoneUid())));
     }
 }

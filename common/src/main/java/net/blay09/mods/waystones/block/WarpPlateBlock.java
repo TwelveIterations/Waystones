@@ -193,14 +193,6 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         return InteractionResult.PASS;
     }
 
-    @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
-        final var waystoneUid = stack.get(ModComponents.waystone.get());
-        if (waystoneUid != null) {
-            tooltip.accept(getGalacticName(waystoneUid));
-        }
-    }
-
     public static ChatFormatting getColorForName(String name) {
         int colorIndex = Math.abs(name.hashCode()) % 15;
         ChatFormatting textFormatting = ChatFormatting.getById(colorIndex);

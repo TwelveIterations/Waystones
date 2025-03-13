@@ -188,15 +188,6 @@ public class PortstoneBlock extends WaystoneBlockBase {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
-        var component = Component.translatable("tooltip.waystones.portstone");
-        component.withStyle(ChatFormatting.GRAY);
-        list.accept(component);
-
-        super.appendHoverText(stack, context, display, list, flag);
-    }
-
-    @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }

@@ -16,6 +16,7 @@ import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.component.ModComponents;
+import net.blay09.mods.waystones.component.WaystoneNameComponent;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
@@ -133,7 +134,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         builder.set(ModComponents.waystone.get(), waystone.isValid() ? waystone.getWaystoneUid() : waystoneUid)
-                .set(ModComponents.waystoneName.get(), waystone.getName());
+                .set(ModComponents.waystoneName.get(), new WaystoneNameComponent(waystone.getName()));
     }
 
     @Override

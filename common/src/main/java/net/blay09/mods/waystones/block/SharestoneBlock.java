@@ -82,15 +82,6 @@ public class SharestoneBlock extends WaystoneBlockBase {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
-        var component = Component.translatable(color != null ? "tooltip.waystones." + color.getSerializedName() + "_sharestone" : "tooltip.waystones.sharestone");
-        component.withStyle(ChatFormatting.GRAY);
-        list.accept(component);
-
-        super.appendHoverText(stack, context, display, list, flag);
-    }
-
-    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(HALF);
