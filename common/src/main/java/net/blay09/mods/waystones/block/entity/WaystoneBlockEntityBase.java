@@ -118,8 +118,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         compound.read("UUID", UUIDUtil.CODEC).ifPresent(uuid -> waystoneUid = uuid);
 
         compound.read("Waystone", WaystoneImpl.CODEC.codec()).ifPresent(loadedWaystone -> {
-            // TODO WaystoneManagerImpl.get(null).updateWaystone(loadedWaystone);
-            // TODO waystone = new WaystoneProxy(null, loadedWaystone.getWaystoneUid());
+            waystone = loadedWaystone;
         });
     }
 
