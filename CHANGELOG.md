@@ -1,4 +1,1 @@
-- Moved JourneyMap waypoints two blocks up so you don't end up inside the waystone if you use JourneyMap's teleport feature
-- Fixed delete button on sharestones not deleting the sharestone (for corrupt entries)
-- Fixed missing translations for NeoForge default config screen
-- Changed allowedVisibilities to always implicitly contain the configured defaultVisibility
+- Added missing `chat.waystones.cannot_break_waystone` message
