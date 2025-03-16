@@ -12,13 +12,32 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public class ModBlocks {
 
+    private static final DyeColor[] sharestoneColors = new DyeColor[]{
+            DyeColor.WHITE,
+            DyeColor.ORANGE,
+            DyeColor.MAGENTA,
+            DyeColor.LIGHT_BLUE,
+            DyeColor.YELLOW,
+            DyeColor.LIME,
+            DyeColor.PINK,
+            DyeColor.GRAY,
+            DyeColor.LIGHT_GRAY,
+            DyeColor.CYAN,
+            DyeColor.PURPLE,
+            DyeColor.BLUE,
+            DyeColor.BROWN,
+            DyeColor.GREEN,
+            DyeColor.RED,
+            DyeColor.BLACK
+    };
+
     public static Block waystone;
     public static Block mossyWaystone;
     public static Block sandyWaystone;
     public static Block sharestone;
     public static Block warpPlate;
     public static Block portstone;
-    public static Block[] scopedSharestones = new SharestoneBlock[DyeColor.values().length];
+    public static Block[] scopedSharestones = new SharestoneBlock[sharestoneColors.length];
 
     public static void initialize(BalmBlocks blocks) {
         blocks.register(() -> waystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(waystone), id("waystone"));
@@ -28,8 +47,7 @@ public class ModBlocks {
         blocks.register(() -> warpPlate = new WarpPlateBlock(defaultProperties()), () -> itemBlock(warpPlate), id("warp_plate"));
         blocks.register(() -> portstone = new PortstoneBlock(defaultProperties()), () -> itemBlock(portstone), id("portstone"));
 
-        DyeColor[] colors = DyeColor.values();
-        for (DyeColor color : colors) {
+        for (DyeColor color : sharestoneColors) {
             blocks.register(() -> scopedSharestones[color.ordinal()] = new SharestoneBlock(defaultProperties(), color), () -> itemBlock(scopedSharestones[color.ordinal()]), id(color.getSerializedName() + "_sharestone"));
         }
     }
