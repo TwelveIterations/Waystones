@@ -1,8 +1,6 @@
 package net.blay09.mods.waystones.network;
 
 import net.blay09.mods.balm.api.network.BalmNetworking;
-import net.blay09.mods.balm.api.network.SyncConfigMessage;
-import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.network.message.*;
 
 public class ModNetworking {
@@ -23,8 +21,6 @@ public class ModNetworking {
         networking.registerClientboundPacket(ClientboundTeleportEffectPacket.TYPE, ClientboundTeleportEffectPacket.class, ClientboundTeleportEffectPacket.STREAM_CODEC, ClientboundTeleportEffectPacket::handle);
         networking.registerClientboundPacket(ClientboundPlayerWaystoneCooldownsPacket.TYPE, ClientboundPlayerWaystoneCooldownsPacket.class, ClientboundPlayerWaystoneCooldownsPacket.STREAM_CODEC, ClientboundPlayerWaystoneCooldownsPacket::handle);
         networking.registerClientboundPacket(ClientboundWarpPlateEjectEffectPacket.TYPE, ClientboundWarpPlateEjectEffectPacket.class, ClientboundWarpPlateEjectEffectPacket.STREAM_CODEC, ClientboundWarpPlateEjectEffectPacket::handle);
-
-        SyncConfigMessage.register(SyncWaystonesConfigMessage.TYPE, SyncWaystonesConfigMessage.class, SyncWaystonesConfigMessage::new, WaystonesConfigData.class, WaystonesConfigData::new);
     }
 
 }

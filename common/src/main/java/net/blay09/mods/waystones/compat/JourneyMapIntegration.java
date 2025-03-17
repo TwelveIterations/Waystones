@@ -19,7 +19,6 @@ import net.blay09.mods.waystones.api.event.WaystoneRemoveReceivedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneUpdateReceivedEvent;
 import net.blay09.mods.waystones.api.event.WaystonesListReceivedEvent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -121,7 +120,7 @@ public class JourneyMapIntegration implements IClientPlugin {
     }
 
     private static boolean shouldManageWaypoints() {
-        WaystonesConfigData config = WaystonesConfig.getActive();
+        WaystonesConfig config = WaystonesConfig.getActive();
         if (config.compatibility.preferJourneyMapIntegrationMod && Balm.isModLoaded("jmi")) {
             return false;
         }

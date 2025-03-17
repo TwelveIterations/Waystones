@@ -9,7 +9,6 @@ import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.requirement.RequirementModifierParser;
 import net.blay09.mods.waystones.requirement.WarpRequirementsContextImpl;
@@ -44,7 +43,7 @@ public class InternalMethodsImpl implements InternalMethods {
     public Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init) {
         return WaystonesAPI.createCustomTeleportContext(entity, waystone).ifLeft(context -> {
             final var shouldTransportPets = WaystonesConfig.getActive().teleports.transportPets;
-            if (shouldTransportPets == WaystonesConfigData.TransportMobs.ENABLED || (shouldTransportPets == WaystonesConfigData.TransportMobs.SAME_DIMENSION && !context.isDimensionalTeleport())) {
+            if (shouldTransportPets == WaystonesConfig.TransportMobs.ENABLED || (shouldTransportPets == WaystonesConfig.TransportMobs.SAME_DIMENSION && !context.isDimensionalTeleport())) {
                 if (entity instanceof LivingEntity livingEntity) {
                     context.getAdditionalEntities().addAll(WaystoneTeleportManager.findPets(livingEntity));
                 }

@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.compat;
 
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +14,6 @@ public class RepurposedStructuresIntegration {
                 .ifPresent(registry -> Registry.register(
                         (Registry<Supplier<Boolean>>) registry,
                         ResourceLocation.fromNamespaceAndPath("waystones", "config"),
-                        () -> WaystonesConfig.getActive().worldGen.spawnInVillages != WaystonesConfigData.VillageWaystoneGeneration.DISABLED));
+                        () -> WaystonesConfig.getActive().worldGen.spawnInVillages != WaystonesConfig.VillageWaystoneGeneration.DISABLED));
     }
 }
