@@ -10,23 +10,35 @@ import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 @Config(Waystones.MOD_ID)
 public class WaystonesConfig {
 
-    public enum TransportMobs {
+    public enum TransportMobs implements StringRepresentable {
         ENABLED,
         SAME_DIMENSION,
-        DISABLED
+        DISABLED;
+
+        @Override
+        public String getSerializedName() {
+            return name().toLowerCase(Locale.ROOT);
+        }
     }
 
-    public enum VillageWaystoneGeneration {
+    public enum VillageWaystoneGeneration implements StringRepresentable {
         DISABLED,
         REGULAR,
-        FREQUENT
+        FREQUENT;
+
+        @Override
+        public String getSerializedName() {
+            return name().toLowerCase(Locale.ROOT);
+        }
     }
 
     public General general = new General();
@@ -39,16 +51,16 @@ public class WaystonesConfig {
     public static class General {
 
         @Synced
-        @Comment("List of waystone origins that should prevent others from editing. PLAYER is special in that it allows only edits by the owner of the waystone.")
+        @Comment("List of waystone origins that should prevent others from editing. \"player\" is special in that it allows only edits by the owner of the waystone.")
         @NestedType(WaystoneOrigin.class)
         public Set<WaystoneOrigin> restrictedWaystones = Set.of(WaystoneOrigin.PLAYER);
 
         @Synced
-        @Comment("Set to \"GLOBAL\" to have newly placed or found waystones be global by default.")
+        @Comment("Set to \"global\" to have newly placed or found waystones be global by default.")
         public WaystoneVisibility defaultVisibility = WaystoneVisibility.ACTIVATION;
 
         @Synced
-        @Comment("Add \"GLOBAL\" to allow every player to create global waystones.")
+        @Comment("Add \"global\" to allow every player to create global waystones.")
         @NestedType(WaystoneVisibility.class)
         public Set<WaystoneVisibility> allowedVisibilities = Set.of();
 
@@ -87,11 +99,11 @@ public class WaystonesConfig {
                 "[source_is_inventory_button] add_cooldown(inventory_button, 300)");
 
         @Synced
-        @Comment("Set to ENABLED to have nearby pets teleport with you. Set to SAME_DIMENSION to have nearby pets teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
+        @Comment("Set to \"enabled\" to have nearby pets teleport with you. Set to \"same_dimension\" to have nearby pets teleport with you only if you're not changing dimensions. Set to \"disabled\" to disable.")
         public TransportMobs transportPets = TransportMobs.DISABLED;
 
         @Synced
-        @Comment("Set to ENABLED to have leashed mobs teleport with you. Set to SAME_DIMENSION to have leashed mobs teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
+        @Comment("Set to \"enabled\" to have leashed mobs teleport with you. Set to \"same_dimension\" to have leashed mobs teleport with you only if you're not changing dimensions. Set to \"disabled\" to disable.")
         public TransportMobs transportLeashed = TransportMobs.ENABLED;
 
         @Comment("List of entities that cannot be teleported, either as pet, leashed, or on warp plates.")
@@ -101,7 +113,7 @@ public class WaystonesConfig {
 
     public static class InventoryButton {
         @Synced
-        @Comment("Set to 'NONE' for no inventory button. Set to 'NEAREST' for an inventory button that teleports to the nearest waystone. Set to 'ANY' for an inventory button that opens the waystone selection menu. Set to a waystone name for an inventory button that teleports to a specifically named waystone.")
+        @Comment("Set to 'none' for no inventory button. Set to 'nearest' for an inventory button that teleports to the nearest waystone. Set to 'any' for an inventory button that opens the waystone selection menu. Set to a waystone name for an inventory button that teleports to a specifically named waystone.")
         public String inventoryButton = "";
 
         @Comment("The x position of the inventory button in the inventory.")
@@ -122,7 +134,7 @@ public class WaystonesConfig {
     }
 
     public static class WorldGen {
-        @Comment("Set to 'DEFAULT' to only generate the normally textured waystones. Set to 'MOSSY' or 'SANDY' to generate all as that variant. Set to 'BIOME' to make the style depend on the biome it is generated in.")
+        @Comment("Set to 'default' to only generate the normally textured waystones. Set to 'mossy' or 'sandy' to generate all as that variant. Set to 'biome' to make the style depend on the biome it is generated in.")
         public WorldGenStyle wildWaystoneStyle = WorldGenStyle.BIOME;
 
         @Comment("Approximate chunk distance between wild waystones being generated. Set to 0 to disable generation.")
@@ -136,17 +148,17 @@ public class WaystonesConfig {
         @NestedType(ResourceLocation.class)
         public Set<ResourceLocation> wildWaystonesDimensionDenyList = Set.of();
 
-        @Comment("Set to 'PRESET_FIRST' to first use names from the nameGenerationPresets. Set to 'PRESET_ONLY' to use only those custom names. Set to 'MIXED' to have some waystones use custom names, and others random names.")
+        @Comment("Set to 'preset_first' to first use names from the nameGenerationPresets. Set to 'preset_only' to use only those custom names. Set to 'mixed' to have some waystones use custom names, and others random names.")
         public NameGenerationMode nameGenerationMode = NameGenerationMode.PRESET_FIRST;
 
         @Comment("The template to use when generating new names. Supported placeholders are {Biome} (english biome name) and {MrPork} (the default name generator).")
         public String nameGenerationTemplate = "{MrPork}";
 
-        @Comment("These names will be used for the PRESET name generation mode. See the nameGenerationMode option for more info.")
+        @Comment("These names will be used for the preset name generation mode. See the nameGenerationMode option for more info.")
         @NestedType(String.class)
         public List<String> nameGenerationPresets = List.of();
 
-        @Comment("Set to REGULAR to have waystones spawn in some villages. Set to FREQUENT to have waystones spawn in most villages. Set to DISABLED to disable waystone generation in villages. Waystones will only spawn in vanilla or supported villages.")
+        @Comment("Set to \"regular\" to have waystones spawn in some villages. Set to \"frequent\" to have waystones spawn in most villages. Set to \"disabled\" to disable waystone generation in villages. Waystones will only spawn in vanilla or supported villages.")
         public VillageWaystoneGeneration spawnInVillages = VillageWaystoneGeneration.REGULAR;
     }
 

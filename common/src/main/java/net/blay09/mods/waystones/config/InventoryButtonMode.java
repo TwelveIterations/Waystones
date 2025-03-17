@@ -9,15 +9,15 @@ public class InventoryButtonMode {
     }
 
     public boolean isEnabled() {
-        return !value.isEmpty() && !"NONE".equals(value);
+        return !value.isEmpty() && !"none".equalsIgnoreCase(value);
     }
 
     public boolean isReturnToNearest() {
-        return "NEAREST".equals(value);
+        return "nearest".equalsIgnoreCase(value);
     }
 
     public boolean isReturnToAny() {
-        return "ANY".equals(value);
+        return "any".equalsIgnoreCase(value);
     }
 
     public boolean hasNamedTarget() {
