@@ -38,6 +38,9 @@ public class RequirementModifierParser {
             final var conditionId = waystonesResourceLocation(conditionMatcher.group(1));
             final var args = conditionMatcher.group(2);
             final var conditionResolver = RequirementRegistry.getConditionResolver(conditionId);
+            if (conditionResolver == null) {
+                throw new IllegalArgumentException("Unknown condition id: " + conditionId);
+            }
             conditions.add(parseCondition(conditionResolver, args != null ? args : ""));
         }
 
@@ -67,6 +70,9 @@ public class RequirementModifierParser {
             final var requirementId = waystonesResourceLocation(functionMatcher.group(1));
             final var args = functionMatcher.group(2);
             final var requirement = RequirementRegistry.getRequirementFunction(requirementId);
+            if (requirement == null) {
+                throw new IllegalArgumentException("Unknown requirement id: " + requirementId);
+            }
             return parseRequirement(requirement, args != null ? args : "");
         } else {
             throw new IllegalArgumentException("Invalid format for requirement modifier: '" + functionPart + "'");
