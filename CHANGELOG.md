@@ -1,1 +1,2 @@
-- Added missing `chat.waystones.cannot_break_waystone` message
+- Added `is_with_passengers` and `is_not_with_passengers` conditions for warp requirements, for vehicle passengers (which was missed in a previous update)
+- Added `passengers` variable for warp requirements (which was missed in a previous update)
