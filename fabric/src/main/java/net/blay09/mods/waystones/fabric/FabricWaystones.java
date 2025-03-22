@@ -15,7 +15,7 @@ public class FabricWaystones implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Balm.initialize(Waystones.MOD_ID, EmptyLoadContext.INSTANCE, Waystones::initialize);
+        Balm.initializeMod(Waystones.MOD_ID, EmptyLoadContext.INSTANCE, new Waystones());
 
         // TODO would be nice if we could use Balm.initializeIfLoaded here, but it might run too late at the moment)
         if (Balm.isModLoaded("repurposed_structures")) {

@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.client;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.client.BalmClient;
+import net.blay09.mods.balm.api.event.BalmEvents;
 import net.blay09.mods.balm.api.event.client.screen.ScreenDrawEvent;
 import net.blay09.mods.balm.api.event.client.screen.ScreenInitEvent;
 import net.blay09.mods.waystones.api.*;
@@ -33,8 +34,8 @@ public class InventoryButtonGuiHandler {
 
     private static WaystoneInventoryButton warpButton;
 
-    public static void initialize() {
-        Balm.getEvents().onEvent(ScreenInitEvent.Post.class, event -> {
+    public static void initialize(BalmEvents events) {
+        events.onEvent(ScreenInitEvent.Post.class, event -> {
             Screen screen = event.getScreen();
             if (!(screen instanceof InventoryScreen) && !(screen instanceof CreativeModeInventoryScreen)) {
                 return;
@@ -84,7 +85,7 @@ public class InventoryButtonGuiHandler {
             BalmClient.getScreens().addRenderableWidget(screen, warpButton);
         });
 
-        Balm.getEvents().onEvent(ScreenDrawEvent.Post.class, event -> {
+        events.onEvent(ScreenDrawEvent.Post.class, event -> {
             Screen screen = event.getScreen();
             GuiGraphics guiGraphics = event.getGuiGraphics();
             int mouseX = event.getMouseX();

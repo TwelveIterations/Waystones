@@ -15,6 +15,8 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.Objects;
 
+import static net.blay09.mods.waystones.Waystones.id;
+
 public class ModRenderers {
     public static ModelLayerLocation portstoneModel;
     public static ModelLayerLocation sharestoneModel;
@@ -28,15 +30,15 @@ public class ModRenderers {
         waystoneModel = renderers.registerModel(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "waystone"),
                 () -> WaystoneModel.createLayer(CubeDeformation.NONE));
 
-        renderers.registerBlockEntityRenderer(ModBlockEntities.waystone::get, WaystoneRenderer::new);
-        renderers.registerBlockEntityRenderer(ModBlockEntities.sharestone::get, SharestoneRenderer::new);
-        renderers.registerBlockEntityRenderer(ModBlockEntities.portstone::get, PortstoneRenderer::new);
+        renderers.registerBlockEntityRenderer(id("waystone"), ModBlockEntities.waystone::get, WaystoneRenderer::new);
+        renderers.registerBlockEntityRenderer(id("sharestone"), ModBlockEntities.sharestone::get, SharestoneRenderer::new);
+        renderers.registerBlockEntityRenderer(id("portstone"), ModBlockEntities.portstone::get, PortstoneRenderer::new);
 
-        renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> 0xffc456bd,
+        renderers.registerBlockColorHandler(id("warp_plate"), (state, view, pos, tintIndex) -> 0xffc456bd,
                 () -> new Block[]{ModBlocks.warpPlate});
-        renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) state.getBlock()).getColor())
+        renderers.registerBlockColorHandler(id("sharestone"), (state, view, pos, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) state.getBlock()).getColor())
                 .getTextColor() | 0xFF000000, () -> ModBlocks.sharestones);
-        renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> Objects.requireNonNull(((PortstoneBlock) state.getBlock()).getColor())
+        renderers.registerBlockColorHandler(id("portstone"), (state, view, pos, tintIndex) -> Objects.requireNonNull(((PortstoneBlock) state.getBlock()).getColor())
                 .getTextColor() | 0xFF000000, () -> ModBlocks.portstones);
 
         renderers.setBlockRenderType(() -> ModBlocks.warpPlate, RenderType.cutout());

@@ -1,6 +1,18 @@
 package net.blay09.mods.waystones;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.block.BalmBlockEntities;
+import net.blay09.mods.balm.api.block.BalmBlocks;
+import net.blay09.mods.balm.api.command.BalmCommands;
+import net.blay09.mods.balm.api.component.BalmComponents;
+import net.blay09.mods.balm.api.config.BalmConfig;
+import net.blay09.mods.balm.api.event.BalmEvents;
+import net.blay09.mods.balm.api.item.BalmItems;
+import net.blay09.mods.balm.api.menu.BalmMenus;
+import net.blay09.mods.balm.api.module.BalmModule;
+import net.blay09.mods.balm.api.network.BalmNetworking;
+import net.blay09.mods.balm.api.stats.BalmStats;
+import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.command.ModCommands;
@@ -18,26 +30,79 @@ import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Waystones {
+public class Waystones implements BalmModule {
 
     public static final Logger logger = LoggerFactory.getLogger(Waystones.class);
 
     public static final String MOD_ID = "waystones";
 
-    public static void initialize() {
-        RequirementRegistry.registerDefaults();
+    public static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    }
 
-        WaystonesConfig.initialize();
-        ModStats.initialize();
-        ModEventHandlers.initialize();
-        ModNetworking.initialize(Balm.getNetworking());
-        ModBlocks.initialize(Balm.getBlocks());
-        ModBlockEntities.initialize();
-        ModItems.initialize(Balm.getItems());
-        ModMenus.initialize();
-        ModWorldGen.initialize(Balm.getWorldGen());
-        ModCommands.initialize(Balm.getCommands());
-        ModComponents.initialize(Balm.getComponents());
+    @Override
+    public ResourceLocation getId() {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, "common");
+    }
+
+    @Override
+    public void registerConfig(BalmConfig config) {
+        config.registerConfig(WaystonesConfig.class);
+    }
+
+    @Override
+    public void registerStats(BalmStats stats) {
+        ModStats.initialize(stats);
+    }
+
+    @Override
+    public void registerEvents(BalmEvents events) {
+        ModEventHandlers.initialize(events);
+    }
+
+    @Override
+    public void registerNetworking(BalmNetworking networking) {
+        ModNetworking.initialize(networking);
+    }
+
+    @Override
+    public void registerBlocks(BalmBlocks blocks) {
+        ModBlocks.initialize(blocks);
+    }
+
+    @Override
+    public void registerBlockEntities(BalmBlockEntities blockEntities) {
+        ModBlockEntities.initialize(blockEntities);
+    }
+
+    @Override
+    public void registerItems(BalmItems items) {
+        ModItems.initialize(items);
+    }
+
+    @Override
+    public void registerMenus(BalmMenus menus) {
+        ModMenus.initialize(menus);
+    }
+
+    @Override
+    public void registerWorldGen(BalmWorldGen worldGen) {
+        ModWorldGen.initialize(worldGen);
+    }
+
+    @Override
+    public void registerCommands(BalmCommands commands) {
+        ModCommands.initialize(commands);
+    }
+
+    @Override
+    public void registerComponents(BalmComponents components) {
+        ModComponents.initialize(components);
+    }
+
+    @Override
+    public void initialize() {
+        RequirementRegistry.registerDefaults();
 
         if (WaystonesConfig.getActive().compatibility.blueMap) {
             Balm.initializeIfLoaded("bluemap", "net.blay09.mods.waystones.compat.BlueMapIntegration");
@@ -48,9 +113,5 @@ public class Waystones {
         }
 
         Balm.initializeIfLoaded(Compat.UNBREAKABLES, "net.blay09.mods.waystones.compat.UnbreakablesIntegration");
-    }
-
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 }

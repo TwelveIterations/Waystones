@@ -10,6 +10,6 @@ public class FabricWaystonesClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        BalmClient.initialize(Waystones.MOD_ID, EmptyLoadContext.INSTANCE, WaystonesClient::initialize);
+        BalmClient.initializeMod(Waystones.MOD_ID, EmptyLoadContext.INSTANCE, new WaystonesClient());
     }
 }
