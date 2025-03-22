@@ -1,4 +1,4 @@
-package net.blay09.mods.waystones;
+package net.blay09.mods.waystones.client;
 
 import net.blay09.mods.waystones.api.client.InternalClientMethods;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;

@@ -5,9 +5,7 @@ import net.blay09.mods.balm.api.client.rendering.BalmModels;
 import net.blay09.mods.balm.api.client.rendering.BalmRenderers;
 import net.blay09.mods.balm.api.client.screen.BalmScreens;
 import net.blay09.mods.balm.api.event.BalmEvents;
-import net.blay09.mods.waystones.InternalClientMethodsImpl;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.client.WaystonesClientAPI;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.store.EventfulWaystonesStore;
@@ -50,7 +48,6 @@ public class WaystonesClient implements BalmClientModule {
 
     @Override
     public void initialize() {
-        WaystonesClientAPI.__internalMethods = new InternalClientMethodsImpl();
         RequirementClientRegistry.registerDefaults();
 
         Compat.isVivecraftInstalled = ClientBrandRetriever.getClientModName().toLowerCase(Locale.ENGLISH).contains(Compat.VIVECRAFT);
