@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.command.ModCommands;
@@ -26,7 +25,6 @@ public class Waystones {
     public static final String MOD_ID = "waystones";
 
     public static void initialize() {
-        WaystonesAPI.__internalMethods = new InternalMethodsImpl();
         RequirementRegistry.registerDefaults();
 
         WaystonesConfig.initialize();

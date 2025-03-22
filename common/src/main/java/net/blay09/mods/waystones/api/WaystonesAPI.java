@@ -13,19 +13,26 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class WaystonesAPI {
 
-    public static InternalMethods __internalMethods;
+    private static final InternalMethods __internalMethods;
+
+    static {
+        try {
+            __internalMethods = (InternalMethods) Class.forName("net.blay09.mods.waystones.InternalMethodsImpl").getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init) {
         return __internalMethods.createDefaultTeleportContext(entity, waystone, init);
