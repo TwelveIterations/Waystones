@@ -89,3 +89,17 @@ configurations {
     // This is a workaround for issues with certain dependencies. It may not be necessary in your case.
     testCompileOnly.extendsFrom compileOnly
 }
+
+def neoForgeSnapshotUrl = findProperty("neoforge_snapshot_url")
+if (neoForgeSnapshotUrl != null) {
+    repositories {
+        maven {
+            name 'Maven for NeoForge Snapshots'
+            url neoForgeSnapshotUrl
+            content {
+                includeModule('net.neoforged', 'neoforge')
+                includeModule('net.neoforged', 'testframework')
+            }
+        }
+    }
+}
