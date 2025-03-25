@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.fabric;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.resources.ForceSpawnInVillagesCondition;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,5 +26,7 @@ public class FabricWaystones implements ModInitializer {
                 logger.error("Failed to load Repurposed Structures integration", e);
             }
         }
+
+        ForceSpawnInVillagesCondition.initialize();
     }
 }

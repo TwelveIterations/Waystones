@@ -4,8 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.DeferredObject;
-import net.blay09.mods.balm.api.event.server.ServerReloadedEvent;
-import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
+import net.blay09.mods.balm.api.event.server.ServerStartingEvent;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.api.world.BiomePredicate;
 import net.blay09.mods.waystones.Waystones;
@@ -83,8 +82,7 @@ public class ModWorldGen {
         worldGen.registerPoiType(id("wild_waystone"), () -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.WILDERNESS), 1, 1));
         worldGen.registerPoiType(id("village_waystone"), () -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.VILLAGE), 1, 1));
 
-        Balm.getEvents().onEvent(ServerStartedEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
-        Balm.getEvents().onEvent(ServerReloadedEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
+        Balm.getEvents().onEvent(ServerStartingEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
     }
 
     private static Set<BlockState> gatherWaystonesOfOrigin(WaystoneOrigin origin) {
