@@ -3,6 +3,7 @@ package net.blay09.mods.waystones;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.neoforge.NeoForgeLoadContext;
 import net.blay09.mods.waystones.compat.Compat;
+import net.blay09.mods.waystones.compat.lithostitched.ForceWaystoneCondition;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
@@ -28,6 +29,10 @@ public class NeoForgeWaystones {
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | ClassNotFoundException | InvocationTargetException e) {
                 logger.error("Failed to load Repurposed Structures integration", e);
             }
+        }
+
+        if (Balm.isModLoaded("lithostitched")) {
+            ForceWaystoneCondition.initialize();
         }
     }
 }

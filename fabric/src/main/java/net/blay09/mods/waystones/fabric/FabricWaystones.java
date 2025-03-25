@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.fabric;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.compat.lithostitched.ForceWaystoneCondition;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,10 @@ public class FabricWaystones implements ModInitializer {
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | ClassNotFoundException | InvocationTargetException e) {
                 logger.error("Failed to load Repurposed Structures integration", e);
             }
+        }
+
+        if (Balm.isModLoaded("lithostitched")) {
+            ForceWaystoneCondition.initialize();
         }
     }
 }
