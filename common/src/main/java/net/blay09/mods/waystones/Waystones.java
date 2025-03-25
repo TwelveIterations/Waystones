@@ -11,6 +11,7 @@ import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.module.BalmModule;
 import net.blay09.mods.balm.api.network.BalmNetworking;
+import net.blay09.mods.balm.api.resources.BalmResources;
 import net.blay09.mods.balm.api.stats.BalmStats;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.waystones.block.ModBlocks;
@@ -24,6 +25,7 @@ import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.network.ModNetworking;
 import net.blay09.mods.waystones.requirement.RequirementRegistry;
+import net.blay09.mods.waystones.resources.ForceSpawnInVillagesCondition;
 import net.blay09.mods.waystones.stats.ModStats;
 import net.blay09.mods.waystones.worldgen.ModWorldGen;
 import net.minecraft.resources.ResourceLocation;
@@ -98,6 +100,11 @@ public class Waystones implements BalmModule {
     @Override
     public void registerComponents(BalmComponents components) {
         ModComponents.initialize(components);
+    }
+
+    @Override
+    public void registerResources(BalmResources resources) {
+        resources.registerResourceCondition(id("force_spawn_in_villages"), ForceSpawnInVillagesCondition.CODEC);
     }
 
     @Override

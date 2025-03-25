@@ -1,0 +1,29 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "waystones:force_spawn_in_villages"
+    }
+  ],
+  "neoforge:conditions": [
+    {
+      "type": "waystones:force_spawn_in_villages"
+    }
+  ],
+  "type": "lithostitched:add_template_pool_elements",
+  "template_pools": "minecraft:village/savanna/houses",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "lithostitched:delegating",
+        "delegate": {
+          "element_type": "minecraft:legacy_single_pool_element",
+          "projection": "rigid",
+          "location": "waystones:village/common/waystone",
+          "processors": "minecraft:empty"
+        },
+        "forced_count": 1
+      }
+    }
+  ]
+}
