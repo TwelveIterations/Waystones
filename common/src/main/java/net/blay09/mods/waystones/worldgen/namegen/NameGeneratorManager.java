@@ -5,18 +5,16 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.event.GenerateWaystoneNameEvent;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.event.GenerateWaystoneNameEvent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,7 @@ public class NameGeneratorManager extends SavedData {
 
     private static final String DATA_NAME = Waystones.MOD_ID + "_name_generator";
     private static final Codec<NameGeneratorManager> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.listOf().fieldOf("usedNames").forGetter(NameGeneratorManager::getUsedNames)
+            Codec.STRING.listOf().fieldOf("UsedNames").forGetter(NameGeneratorManager::getUsedNames)
     ).apply(instance, NameGeneratorManager::new));
 
     public static final SavedDataType<NameGeneratorManager> TYPE = new SavedDataType<>(
@@ -41,6 +39,11 @@ public class NameGeneratorManager extends SavedData {
 
     public NameGeneratorManager(List<String> usedNames) {
         this.usedNames.addAll(usedNames);
+    }
+
+    public static NameGeneratorManager get(MinecraftServer server) {
+        final var overworld = server.getLevel(Level.OVERWORLD);
+        return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(TYPE);
     }
 
     public List<String> getUsedNames() {
@@ -86,11 +89,6 @@ public class NameGeneratorManager extends SavedData {
             i++;
         }
         return tryName;
-    }
-
-    public static NameGeneratorManager get(MinecraftServer server) {
-        final var overworld = server.getLevel(Level.OVERWORLD);
-        return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(TYPE);
     }
 
 }
