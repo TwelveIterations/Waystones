@@ -12,7 +12,7 @@ dependencies {
     compileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:$bluemap_version"
     compileOnly "us.dynmap:DynmapCoreAPI:$dynmap_version"
 
-    implementation "net.blay09.mods:unbreakables-neoforge:${unbreakables_version}"
+    compileOnly "net.blay09.mods:unbreakables-neoforge:${unbreakables_version}"
 }
 
 configurations {

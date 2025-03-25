@@ -12,6 +12,6 @@ public class NeoForgeWaystonesClient {
 
     public NeoForgeWaystonesClient(IEventBus modEventBus) {
         final var context = new NeoForgeLoadContext(modEventBus);
-        BalmClient.initialize(Waystones.MOD_ID, context, WaystonesClient::initialize);
+        BalmClient.initializeMod(Waystones.MOD_ID, context, new WaystonesClient());
     }
 }

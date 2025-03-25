@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.api.trait.IFOVOnUse;
 import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
@@ -63,16 +63,11 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
-        final var player = Balm.getProxy().getClientPlayer();
-        if (player == null) {
-            return;
-        }
-
-        final var boundTo = getWaystoneAttunedTo(player.getServer(), player, itemStack);
-        boundTo.ifPresent(it -> {
-            final var boundToValueComponent = it.getName().copy().withStyle(ChatFormatting.AQUA);
+        final var boundToName = itemStack.get(ModComponents.waystoneName.get());
+        if (boundToName != null) {
+            final var boundToValueComponent = boundToName.component().copy().withStyle(ChatFormatting.AQUA);
             list.accept(Component.translatable("tooltip.waystones.bound_to", boundToValueComponent).withStyle(ChatFormatting.GRAY));
-        });
+        }
     }
 
     @Override

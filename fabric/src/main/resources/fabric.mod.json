@@ -25,9 +25,6 @@
     "client": [
       "net.blay09.mods.waystones.fabric.client.FabricWaystonesClient"
     ],
-    "modmenu": [
-      "net.blay09.mods.waystones.compat.ModMenuIntegration"
-    ],
     "fabric-datagen": [
       "net.blay09.mods.waystones.datagen.ModDataGenerator"
     ],

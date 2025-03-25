@@ -17,7 +17,7 @@ public class NeoForgeWaystones {
 
     public NeoForgeWaystones(IEventBus modEventBus) {
         final var context = new NeoForgeLoadContext(modEventBus);
-        Balm.initialize(Waystones.MOD_ID, context, Waystones::initialize);
+        Balm.initializeMod(Waystones.MOD_ID, context, new Waystones());
 
         Balm.initializeIfLoaded(Compat.THEONEPROBE, "net.blay09.mods.waystones.compat.TheOneProbeIntegration");
 
