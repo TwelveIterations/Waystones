@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 
+import java.util.Locale;
 import java.util.function.IntFunction;
 
 public enum WaystoneVisibility implements StringRepresentable {
@@ -30,10 +31,10 @@ public enum WaystoneVisibility implements StringRepresentable {
     RED_SHARESTONE,
     BLACK_SHARESTONE;
 
-    @Override
-    public String getSerializedName() {
-        return name();
-    }
+    private static final IntFunction<WaystoneVisibility> BY_ID = ByIdMap.continuous(WaystoneVisibility::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
+    public static final StreamCodec<ByteBuf, WaystoneVisibility> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, WaystoneVisibility::ordinal);
+    public static Codec<WaystoneVisibility> CODEC = Codec.withAlternative(StringRepresentable.fromEnum(WaystoneVisibility::values), Codec.STRING,
+            WaystoneVisibility::valueOf);
 
     public static WaystoneVisibility fromWaystoneType(ResourceLocation waystoneType) {
         if (WaystoneTypes.isSharestone(waystoneType)) {
@@ -62,7 +63,8 @@ public enum WaystoneVisibility implements StringRepresentable {
         }
     }
 
-    private static final IntFunction<WaystoneVisibility> BY_ID = ByIdMap.continuous(WaystoneVisibility::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
-    public static Codec<WaystoneVisibility> CODEC = StringRepresentable.fromEnum(WaystoneVisibility::values);
-    public static final StreamCodec<ByteBuf, WaystoneVisibility> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, WaystoneVisibility::ordinal);
+    @Override
+    public String getSerializedName() {
+        return name().toLowerCase(Locale.ROOT);
+    }
 }
