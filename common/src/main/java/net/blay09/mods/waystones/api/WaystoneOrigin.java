@@ -21,7 +21,7 @@ public enum WaystoneOrigin implements StringRepresentable {
 
     @Override
     public String getSerializedName() {
-        return name().toLowerCase(Locale.ROOT);
+        return name();
     }
 
     private static final IntFunction<WaystoneOrigin> BY_ID = ByIdMap.continuous(WaystoneOrigin::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);

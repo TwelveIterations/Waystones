@@ -8,7 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 
-import java.util.Locale;
 import java.util.function.IntFunction;
 
 public enum WaystoneVisibility implements StringRepresentable {
@@ -33,7 +32,7 @@ public enum WaystoneVisibility implements StringRepresentable {
 
     @Override
     public String getSerializedName() {
-        return name().toLowerCase(Locale.ROOT);
+        return name();
     }
 
     public static WaystoneVisibility fromWaystoneType(ResourceLocation waystoneType) {

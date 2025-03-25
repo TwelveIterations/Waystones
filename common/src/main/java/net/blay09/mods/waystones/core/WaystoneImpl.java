@@ -44,14 +44,14 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     public static final StreamCodec<RegistryFriendlyByteBuf, List<Waystone>> LIST_STREAM_CODEC = ByteBufCodecs.collection(ArrayList::new, STREAM_CODEC);
 
     public static final MapCodec<Waystone> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("type").forGetter(Waystone::getWaystoneType),
-            UUIDUtil.CODEC.fieldOf("uid").forGetter(Waystone::getWaystoneUid),
-            ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(Waystone::getDimension),
-            BlockPos.CODEC.fieldOf("pos").forGetter(Waystone::getPos),
-            WaystoneOrigin.CODEC.fieldOf("origin").forGetter(Waystone::getOrigin),
-            UUIDUtil.CODEC.optionalFieldOf("ownerUid").forGetter(Waystone::getOwnerUid),
-            ComponentSerialization.CODEC.fieldOf("name").forGetter(Waystone::getName),
-            WaystoneVisibility.CODEC.fieldOf("visibility").forGetter(Waystone::getVisibility)
+            ResourceLocation.CODEC.fieldOf("Type").forGetter(Waystone::getWaystoneType),
+            UUIDUtil.CODEC.fieldOf("WaystoneUid").forGetter(Waystone::getWaystoneUid),
+            ResourceKey.codec(Registries.DIMENSION).fieldOf("World").forGetter(Waystone::getDimension),
+            BlockPos.CODEC.fieldOf("BlockPos").forGetter(Waystone::getPos),
+            WaystoneOrigin.CODEC.fieldOf("Origin").forGetter(Waystone::getOrigin),
+            UUIDUtil.CODEC.optionalFieldOf("OwnerUid").forGetter(Waystone::getOwnerUid),
+            ComponentSerialization.CODEC.fieldOf("NameV2").forGetter(Waystone::getName),
+            WaystoneVisibility.CODEC.fieldOf("Visibility").forGetter(Waystone::getVisibility)
     ).apply(instance, WaystoneImpl::new));
 
     private final ResourceLocation waystoneType;
