@@ -39,14 +39,6 @@ repositories {
     }
 
     maven {
-        url = "https://jm.gserv.me/repository/maven-public/"
-        content {
-            includeGroup "info.journeymap"
-            includeGroup "mysticdrew"
-        }
-    }
-
-    maven {
         url = 'https://jitpack.io'
         content {
             includeGroup "com.github.BlueMap-Minecraft"
