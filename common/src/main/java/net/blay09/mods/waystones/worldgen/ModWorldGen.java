@@ -4,8 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.DeferredObject;
-import net.blay09.mods.balm.api.event.server.ServerReloadedEvent;
-import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
+import net.blay09.mods.balm.api.event.server.ServerStartingEvent;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.api.world.BiomePredicate;
 import net.blay09.mods.waystones.Waystones;
@@ -14,7 +13,6 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WorldGenStyle;
 import net.blay09.mods.waystones.mixin.StructureTemplatePoolAccessor;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -32,7 +30,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class ModWorldGen {
     private static final ResourceLocation waystone = new ResourceLocation("waystones", "waystone");
@@ -63,8 +60,7 @@ public class ModWorldGen {
                 GenerationStep.Decoration.VEGETAL_DECORATION,
                 getWaystoneFeature(WorldGenStyle.DEFAULT));
 
-        Balm.getEvents().onEvent(ServerStartedEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
-        Balm.getEvents().onEvent(ServerReloadedEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
+        Balm.getEvents().onEvent(ServerStartingEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
     }
 
     private static BiomePredicate matchesTag(TagKey<Biome> tag) {
