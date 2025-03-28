@@ -3,7 +3,7 @@ package net.blay09.mods.waystones;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.forge.ForgeLoadContext;
-import net.blay09.mods.waystones.client.WaystonesClient;
+import net.blay09.mods.waystones.client.ForgeWaystonesClient;
 import net.blay09.mods.waystones.compat.Compat;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -20,9 +20,9 @@ public class ForgeWaystones {
 
     public ForgeWaystones(FMLJavaModLoadingContext context) {
         final var loadContext = new ForgeLoadContext(context.getModEventBus());
-        Balm.initialize(Waystones.MOD_ID, loadContext, Waystones::initialize);
+        Balm.initializeMod(Waystones.MOD_ID, loadContext, new Waystones());
         if (FMLEnvironment.dist.isClient()) {
-            BalmClient.initialize(Waystones.MOD_ID, loadContext, WaystonesClient::initialize);
+            BalmClient.initializeMod(Waystones.MOD_ID, loadContext, ForgeWaystonesClient::initialize);
         }
 
         Balm.initializeIfLoaded(Compat.THEONEPROBE, "net.blay09.mods.waystones.compat.TheOneProbeIntegration");
