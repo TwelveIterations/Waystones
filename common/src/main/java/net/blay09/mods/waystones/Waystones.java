@@ -43,14 +43,8 @@ public class Waystones {
         ModCommands.initialize(Balm.getCommands());
         ModComponents.initialize(Balm.getComponents());
 
-        if (WaystonesConfig.getActive().compatibility.blueMap) {
-            Balm.initializeIfLoaded("bluemap", "net.blay09.mods.waystones.compat.BlueMapIntegration");
-        }
-
-        if (WaystonesConfig.getActive().compatibility.dynmap) {
-            Balm.initializeIfLoaded("dynmap", "net.blay09.mods.waystones.compat.DynmapIntegration");
-        }
-
+        Balm.initializeIfLoaded("bluemap", "net.blay09.mods.waystones.compat.BlueMapIntegration");
+        Balm.initializeIfLoaded("dynmap", "net.blay09.mods.waystones.compat.DynmapIntegration");
         Balm.initializeIfLoaded(Compat.UNBREAKABLES, "net.blay09.mods.waystones.compat.UnbreakablesIntegration");
     }
 
