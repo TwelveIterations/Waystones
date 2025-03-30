@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.DeferredObject;
+import net.blay09.mods.balm.api.event.ConfigLoadedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStartingEvent;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.api.world.BiomePredicate;
@@ -57,21 +58,26 @@ public class ModWorldGen {
 
         waystonePlacement = worldGen.registerPlacementModifier(id("waystone"), () -> () -> WaystonePlacement.CODEC);
 
-        worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE),
-                GenerationStep.Decoration.VEGETAL_DECORATION,
-                getWaystoneFeature(WorldGenStyle.SANDY));
-        worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_MOSSY_WAYSTONE),
-                GenerationStep.Decoration.VEGETAL_DECORATION,
-                getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE),
-                GenerationStep.Decoration.VEGETAL_DECORATION,
-                getWaystoneFeature(WorldGenStyle.BLACKSTONE));
-        worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE),
-                GenerationStep.Decoration.VEGETAL_DECORATION,
-                getWaystoneFeature(WorldGenStyle.END_STONE));
-        worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE),
-                GenerationStep.Decoration.VEGETAL_DECORATION,
-                getWaystoneFeature(WorldGenStyle.DEFAULT));
+        final var waystonesCommonConfig = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "common");
+        Balm.getEvents().onEvent(ConfigLoadedEvent.class, event -> {
+            if (event.getSchema().identifier().equals(waystonesCommonConfig)) {
+                worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE),
+                        GenerationStep.Decoration.VEGETAL_DECORATION,
+                        getWaystoneFeature(WorldGenStyle.SANDY));
+                worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_MOSSY_WAYSTONE),
+                        GenerationStep.Decoration.VEGETAL_DECORATION,
+                        getWaystoneFeature(WorldGenStyle.MOSSY));
+                worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE),
+                        GenerationStep.Decoration.VEGETAL_DECORATION,
+                        getWaystoneFeature(WorldGenStyle.BLACKSTONE));
+                worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE),
+                        GenerationStep.Decoration.VEGETAL_DECORATION,
+                        getWaystoneFeature(WorldGenStyle.END_STONE));
+                worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE),
+                        GenerationStep.Decoration.VEGETAL_DECORATION,
+                        getWaystoneFeature(WorldGenStyle.DEFAULT));
+            }
+        });
 
         Balm.getEvents().onEvent(ServerStartingEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
     }
