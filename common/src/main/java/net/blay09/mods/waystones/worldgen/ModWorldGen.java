@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.DeferredObject;
+import net.blay09.mods.balm.api.event.ConfigLoadedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStartingEvent;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.api.world.BiomePredicate;
@@ -49,16 +50,21 @@ public class ModWorldGen {
 
         waystonePlacement = worldGen.registerPlacementModifier(id("waystone"), () -> () -> WaystonePlacement.CODEC);
 
-        final var IS_DESERT = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_desert"));
-        final var IS_SWAMP = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_swamp"));
-        final var IS_MUSHROOM = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_mushroom"));
-        worldGen.addFeatureToBiomes(matchesTag(IS_DESERT), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY));
-        worldGen.addFeatureToBiomes(matchesTag(BiomeTags.IS_JUNGLE), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(matchesTag(IS_SWAMP), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(matchesTag(IS_MUSHROOM), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(matchesNeitherTag(List.of(IS_SWAMP, IS_DESERT, BiomeTags.IS_JUNGLE, IS_MUSHROOM)),
-                GenerationStep.Decoration.VEGETAL_DECORATION,
-                getWaystoneFeature(WorldGenStyle.DEFAULT));
+        final var waystonesCommonConfig = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "common");
+        Balm.getEvents().onEvent(ConfigLoadedEvent.class, event -> {
+            if (event.getSchema().identifier().equals(waystonesCommonConfig)) {
+                final var IS_DESERT = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_desert"));
+                final var IS_SWAMP = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_swamp"));
+                final var IS_MUSHROOM = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_mushroom"));
+                worldGen.addFeatureToBiomes(matchesTag(IS_DESERT), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY));
+                worldGen.addFeatureToBiomes(matchesTag(BiomeTags.IS_JUNGLE), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+                worldGen.addFeatureToBiomes(matchesTag(IS_SWAMP), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+                worldGen.addFeatureToBiomes(matchesTag(IS_MUSHROOM), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+                worldGen.addFeatureToBiomes(matchesNeitherTag(List.of(IS_SWAMP, IS_DESERT, BiomeTags.IS_JUNGLE, IS_MUSHROOM)),
+                        GenerationStep.Decoration.VEGETAL_DECORATION,
+                        getWaystoneFeature(WorldGenStyle.DEFAULT));
+            }
+        });
 
         Balm.getEvents().onEvent(ServerStartingEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
     }
