@@ -50,7 +50,7 @@ public class ModWorldGen {
 
         waystonePlacement = worldGen.registerPlacementModifier(id("waystone"), () -> () -> WaystonePlacement.CODEC);
 
-        final var waystonesCommonConfig = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "common");
+        final var waystonesCommonConfig = new ResourceLocation(Waystones.MOD_ID, "common");
         Balm.getEvents().onEvent(ConfigLoadedEvent.class, event -> {
             if (event.getSchema().identifier().equals(waystonesCommonConfig)) {
                 final var IS_DESERT = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_desert"));
