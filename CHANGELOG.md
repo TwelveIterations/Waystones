@@ -1,1 +1,2 @@
 - Fixed configs being accessed too early, causing defaults to be used 
+- Added compatibility for Lithostitched (by Apollo)
