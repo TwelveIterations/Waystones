@@ -51,20 +51,27 @@ public class ModWorldGen {
         waystonePlacement = worldGen.registerPlacementModifier(id("waystone"), () -> () -> WaystonePlacement.CODEC);
 
         final var waystonesCommonConfig = new ResourceLocation(Waystones.MOD_ID, "common");
+        final Runnable configLoadHandler = () -> {
+            final var IS_DESERT = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_desert"));
+            final var IS_SWAMP = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_swamp"));
+            final var IS_MUSHROOM = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_mushroom"));
+            worldGen.addFeatureToBiomes(matchesTag(IS_DESERT), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY));
+            worldGen.addFeatureToBiomes(matchesTag(BiomeTags.IS_JUNGLE), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+            worldGen.addFeatureToBiomes(matchesTag(IS_SWAMP), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+            worldGen.addFeatureToBiomes(matchesTag(IS_MUSHROOM), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+            worldGen.addFeatureToBiomes(matchesNeitherTag(List.of(IS_SWAMP, IS_DESERT, BiomeTags.IS_JUNGLE, IS_MUSHROOM)),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.DEFAULT));
+        };
         Balm.getEvents().onEvent(ConfigLoadedEvent.class, event -> {
             if (event.getSchema().identifier().equals(waystonesCommonConfig)) {
-                final var IS_DESERT = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_desert"));
-                final var IS_SWAMP = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_swamp"));
-                final var IS_MUSHROOM = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_mushroom"));
-                worldGen.addFeatureToBiomes(matchesTag(IS_DESERT), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY));
-                worldGen.addFeatureToBiomes(matchesTag(BiomeTags.IS_JUNGLE), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-                worldGen.addFeatureToBiomes(matchesTag(IS_SWAMP), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-                worldGen.addFeatureToBiomes(matchesTag(IS_MUSHROOM), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-                worldGen.addFeatureToBiomes(matchesNeitherTag(List.of(IS_SWAMP, IS_DESERT, BiomeTags.IS_JUNGLE, IS_MUSHROOM)),
-                        GenerationStep.Decoration.VEGETAL_DECORATION,
-                        getWaystoneFeature(WorldGenStyle.DEFAULT));
+                configLoadHandler.run();
             }
         });
+        // TODO Workaround to load config even if load event already fired earlier - will have prettier solution in future Balm versions
+        if (Balm.getConfig().getActiveConfig(new ResourceLocation(Waystones.MOD_ID, "common")) != null) {
+            configLoadHandler.run();
+        }
 
         Balm.getEvents().onEvent(ServerStartingEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
     }
