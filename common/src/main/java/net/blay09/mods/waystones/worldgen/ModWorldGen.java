@@ -64,25 +64,32 @@ public class ModWorldGen {
         waystonePlacement = worldGen.registerPlacementModifier(id("waystone"), () -> () -> WaystonePlacement.CODEC);
 
         final var waystonesCommonConfig = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "common");
-        Balm.getEvents().onEvent(ConfigLoadedEvent.class, event -> {
+        final Runnable configLoadHandler = () -> {
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.SANDY));
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_MOSSY_WAYSTONE),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.MOSSY));
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.BLACKSTONE));
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.END_STONE));
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.DEFAULT));
+        };
+        Balm.getEvents().onEvent(ConfigLoadedEvent.class, (event) -> {
             if (event.getSchema().identifier().equals(waystonesCommonConfig)) {
-                worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE),
-                        GenerationStep.Decoration.VEGETAL_DECORATION,
-                        getWaystoneFeature(WorldGenStyle.SANDY));
-                worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_MOSSY_WAYSTONE),
-                        GenerationStep.Decoration.VEGETAL_DECORATION,
-                        getWaystoneFeature(WorldGenStyle.MOSSY));
-                worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE),
-                        GenerationStep.Decoration.VEGETAL_DECORATION,
-                        getWaystoneFeature(WorldGenStyle.BLACKSTONE));
-                worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE),
-                        GenerationStep.Decoration.VEGETAL_DECORATION,
-                        getWaystoneFeature(WorldGenStyle.END_STONE));
-                worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE),
-                        GenerationStep.Decoration.VEGETAL_DECORATION,
-                        getWaystoneFeature(WorldGenStyle.DEFAULT));
+                configLoadHandler.run();
             }
         });
+        // TODO Workaround to load config even if load event already fired earlier - will have prettier solution in future Balm versions
+        if (Balm.getConfig().getActiveConfig(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "common")) != null) {
+            configLoadHandler.run();
+        }
 
         worldGen.registerPoiType(id("wild_waystone"), () -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.WILDERNESS), 1, 1));
         worldGen.registerPoiType(id("village_waystone"), () -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.VILLAGE), 1, 1));
