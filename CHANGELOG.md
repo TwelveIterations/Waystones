@@ -1,1 +1,1 @@
-- Fixed wild waystones not spawning on Fabric
+- Fixed inventory button not working for named targets
