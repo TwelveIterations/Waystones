@@ -73,7 +73,7 @@ public class WaystoneManagerImpl extends SavedData implements WaystoneManager {
 
     @Override
     public Optional<Waystone> findWaystoneByName(String name) {
-        return waystones.values().stream().filter(it -> it.getName().equals(name)).findFirst();
+        return waystones.values().stream().filter(it -> it.getName().getString().equals(name)).findFirst();
     }
 
     @Override
