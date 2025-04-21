@@ -32,6 +32,9 @@ public class ServerboundInventoryButtonPacket implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ServerboundInventoryButtonPacket> TYPE = new CustomPacketPayload.Type<>(id("inventory_button"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundInventoryButtonPacket> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
+    private ServerboundInventoryButtonPacket() {
+    }
+
     public static void handle(final ServerPlayer player, ServerboundInventoryButtonPacket message) {
         InventoryButtonMode inventoryButtonMode = WaystonesConfig.getActive().getInventoryButtonMode();
         if (!inventoryButtonMode.isEnabled()) {

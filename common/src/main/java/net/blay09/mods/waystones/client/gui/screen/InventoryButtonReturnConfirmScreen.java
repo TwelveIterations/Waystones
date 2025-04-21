@@ -22,7 +22,7 @@ public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
     public InventoryButtonReturnConfirmScreen(String targetWaystone) {
         super(result -> {
             if (result) {
-                Balm.getNetworking().sendToServer(new ServerboundInventoryButtonPacket());
+                Balm.getNetworking().sendToServer(ServerboundInventoryButtonPacket.INSTANCE);
             }
             Minecraft.getInstance().setScreen(null);
         }, Component.translatable("gui.waystones.inventory.confirm_return"), Component.empty());
