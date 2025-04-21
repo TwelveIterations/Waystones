@@ -1,1 +1,1 @@
-- Fixed wild waystones not spawning on Fabric
+- Fixed disconnect when using inventory button
