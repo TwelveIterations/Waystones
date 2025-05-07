@@ -7,11 +7,13 @@ import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
@@ -62,6 +64,9 @@ public class RequirementRegistry {
     }
 
     public record VariableScaledItemParameter(WaystonesIdParameter variable, IdParameter item, FloatParameter count) {
+    }
+
+    public record CooldownAboveParameter(WaystonesIdParameter cooldown, FloatParameter seconds) {
     }
 
     public static void registerDefaults() {
@@ -311,6 +316,24 @@ public class RequirementRegistry {
                 FloatParameter.class,
                 (context, parameters) -> (float) Math.sqrt(context.getEntity()
                         .distanceToSqr(context.getTargetWaystone().getPos().getCenter())) <= parameters.value);
+        registerConditionResolver("has_cooldown",
+                WaystonesIdParameter.class,
+                (context, parameters) -> {
+                    if (context.getEntity() instanceof Player player) {
+                        final var cooldowns = PlayerWaystoneManager.getCooldowns(player);
+                        return cooldowns.containsKey(parameters.value) && cooldowns.get(parameters.value) > 0;
+                    }
+                    return false;
+                });
+        registerConditionResolver("has_cooldown_above",
+                CooldownAboveParameter.class,
+                (context, parameters) -> {
+                    if (context.getEntity() instanceof Player player) {
+                        final var cooldowns = PlayerWaystoneManager.getCooldowns(player);
+                        return cooldowns.containsKey(parameters.cooldown().value()) && cooldowns.get(parameters.cooldown().value()) > parameters.seconds().value();
+                    }
+                    return false;
+                });
 
         registerVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getTargetWaystone().getPos().getCenter())));
         registerVariableResolver("leashed", it -> (float) WaystoneTeleportManager.findLeashedAnimals(it.getEntity()).size());
