@@ -3,7 +3,9 @@ package net.blay09.mods.waystones.requirement;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.blay09.mods.waystones.api.requirement.WarpRequirementsContext;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +41,14 @@ public class WarpRequirementsContextImpl implements WarpRequirementsContext {
         final var resolver = RequirementRegistry.getVariableResolver(id);
         if (resolver != null) {
             return resolver.resolve(context);
+        }
+
+        if (context.getEntity() instanceof Player player) {
+            final var cooldowns = PlayerWaystoneManager.getCooldowns(player);
+            final var cooldown = cooldowns.get(id);
+            if (cooldown != null) {
+                return cooldown.floatValue();
+            }
         }
 
         return 0f;
