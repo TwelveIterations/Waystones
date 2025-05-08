@@ -74,11 +74,13 @@ public class RequirementRegistry {
         final var experiencePointRequirements = new ExperiencePointsRequirementType();
         final var experienceLevelRequirements = new ExperienceLevelRequirementType();
         final var cooldownRequirements = new CooldownRequirementType();
+        final var softCooldownRequirements = new SoftCooldownRequirementType();
         final var itemRequirements = new ItemRequirementType();
 
         register(experiencePointRequirements);
         register(experienceLevelRequirements);
         register(cooldownRequirements);
+        register(softCooldownRequirements);
         register(itemRequirements);
 
         registerModifier("add_level_cost", experienceLevelRequirements, FloatParameter.class, (cost, context, parameters) -> {
@@ -158,6 +160,33 @@ public class RequirementRegistry {
             return cost;
         }, () -> WaystonesConfig.getActive().teleports.enableCooldowns);
         registerModifier("max_cooldown", cooldownRequirements, CooldownParameter.class, (cost, context, parameters) -> {
+            cost.setCooldown(parameters.id.value, (int) Math.min(cost.getCooldownSeconds(), parameters.seconds.value));
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableCooldowns);
+
+        registerModifier("add_soft_cooldown", softCooldownRequirements, CooldownParameter.class, (cost, context, parameters) -> {
+            cost.setCooldown(parameters.id.value, (int) ((float) cost.getCooldownSeconds() + parameters.seconds.value));
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableCooldowns);
+        registerModifier("multiply_soft_cooldown", softCooldownRequirements, CooldownParameter.class, (cost, context, parameters) -> {
+            cost.setCooldown(parameters.id.value, (int) ((float) cost.getCooldownSeconds() * parameters.seconds.value));
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableCooldowns);
+        registerModifier("scaled_add_soft_cooldown", softCooldownRequirements, VariableScaledCooldownParameter.class, (cost, context, parameters) -> {
+            final var sourceValue = context.getContextValue(parameters.variable.value);
+            cost.setCooldown(parameters.cooldown.value, (int) ((float) cost.getCooldownSeconds() + sourceValue * parameters.seconds.value));
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableCooldowns);
+        registerModifier("scaled_multiply_soft_cooldown", softCooldownRequirements, VariableScaledCooldownParameter.class, (cost, context, parameters) -> {
+            final var sourceValue = context.getContextValue(parameters.variable.value);
+            cost.setCooldown(parameters.cooldown.value, (int) ((float) cost.getCooldownSeconds() * sourceValue * parameters.seconds.value));
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableCooldowns);
+        registerModifier("min_soft_cooldown", softCooldownRequirements, CooldownParameter.class, (cost, context, parameters) -> {
+            cost.setCooldown(parameters.id.value, (int) Math.max(cost.getCooldownSeconds(), parameters.seconds.value));
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableCooldowns);
+        registerModifier("max_soft_cooldown", softCooldownRequirements, CooldownParameter.class, (cost, context, parameters) -> {
             cost.setCooldown(parameters.id.value, (int) Math.min(cost.getCooldownSeconds(), parameters.seconds.value));
             return cost;
         }, () -> WaystonesConfig.getActive().teleports.enableCooldowns);
@@ -323,8 +352,7 @@ public class RequirementRegistry {
                 WaystonesIdParameter.class,
                 (context, parameters) -> {
                     if (context.getEntity() instanceof Player player) {
-                        final var cooldowns = PlayerWaystoneManager.getCooldowns(player);
-                        return cooldowns.containsKey(parameters.value) && cooldowns.get(parameters.value) > 0;
+                        return PlayerWaystoneManager.getCooldownMillisLeft(player, parameters.value()) > 0;
                     }
                     return false;
                 });
@@ -332,8 +360,7 @@ public class RequirementRegistry {
                 CooldownAboveParameter.class,
                 (context, parameters) -> {
                     if (context.getEntity() instanceof Player player) {
-                        final var cooldowns = PlayerWaystoneManager.getCooldowns(player);
-                        return cooldowns.containsKey(parameters.cooldown().value()) && cooldowns.get(parameters.cooldown().value()) > parameters.seconds().value();
+                        return PlayerWaystoneManager.getCooldownMillisLeft(player, parameters.cooldown().value()) / 1000f > parameters.seconds().value();
                     }
                     return false;
                 });

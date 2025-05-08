@@ -26,6 +26,7 @@ public class RequirementClientRegistry {
 
     public static void registerDefaults() {
         registerRenderer(CooldownRequirement.class, new CooldownRequirementRenderer());
+        registerRenderer(SoftCooldownRequirement.class, new SoftCooldownRequirementRenderer());
         registerRenderer(ExperienceLevelRequirement.class, new ExperienceLevelRequirementRenderer());
         registerRenderer(ExperiencePointsRequirement.class, new ExperiencePointsRequirementRenderer());
         registerRenderer(ItemRequirement.class, new ItemRequirementRenderer());

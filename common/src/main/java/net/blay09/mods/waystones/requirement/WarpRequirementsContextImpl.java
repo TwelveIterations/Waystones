@@ -44,11 +44,7 @@ public class WarpRequirementsContextImpl implements WarpRequirementsContext {
         }
 
         if (context.getEntity() instanceof Player player) {
-            final var cooldowns = PlayerWaystoneManager.getCooldowns(player);
-            final var cooldown = cooldowns.get(id);
-            if (cooldown != null) {
-                return cooldown.floatValue();
-            }
+            return PlayerWaystoneManager.getCooldownMillisLeft(player, id) / 1000f;
         }
 
         return 0f;
