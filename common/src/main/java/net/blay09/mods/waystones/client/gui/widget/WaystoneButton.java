@@ -79,7 +79,7 @@ public class WaystoneButton extends Button {
         if (renderer != null) {
             renderer.renderWidget(player, requirement, guiGraphics, mouseX, mouseY, partialTicks, getX() + 2, getY() + 2);
 
-            if (isHovered && mouseX < getX() + 2 + renderer.getWidth(requirement)) {
+            if (isHovered && mouseX < getX() + 2 + renderer.getWidth(player, requirement)) {
                 final List<Component> tooltip = new ArrayList<>();
                 warpRequirement.appendHoverText(player, tooltip);
                 guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY + font.lineHeight);

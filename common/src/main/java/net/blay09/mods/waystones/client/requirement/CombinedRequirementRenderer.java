@@ -21,18 +21,18 @@ public class CombinedRequirementRenderer implements RequirementRenderer<Combined
             final var childRenderer = child.getSecond();
             if (childRenderer != null) {
                 childRenderer.renderWidget(player, child.getFirst(), guiGraphics, mouseX, mouseY, partialTicks, currentX, y);
-                currentX += 2 + childRenderer.getWidth(child.getFirst());
+                currentX += 2 + childRenderer.getWidth(player, child.getFirst());
             }
         }
     }
 
     @Override
-    public int getWidth(CombinedRequirement requirement) {
+    public int getWidth(Player player, CombinedRequirement requirement) {
         return requirement.getRequirements()
                 .stream()
                 .filter(it -> !it.isEmpty())
                 .map(it -> Pair.of(it, RequirementClientRegistry.getRenderer(it)))
-                .mapToInt(it -> it.getSecond().getWidth(it.getFirst()))
+                .mapToInt(it -> it.getSecond().getWidth(player, it.getFirst()))
                 .sum();
     }
 
