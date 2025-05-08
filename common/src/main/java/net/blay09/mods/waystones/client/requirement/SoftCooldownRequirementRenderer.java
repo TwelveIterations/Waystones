@@ -1,14 +1,14 @@
 package net.blay09.mods.waystones.client.requirement;
 
-import net.blay09.mods.waystones.requirement.CooldownRequirement;
+import net.blay09.mods.waystones.requirement.SoftCooldownRequirement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
-public class CooldownRequirementRenderer implements RequirementRenderer<CooldownRequirement> {
+public class SoftCooldownRequirementRenderer implements RequirementRenderer<SoftCooldownRequirement> {
     @Override
-    public void renderWidget(Player player, CooldownRequirement requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
+    public void renderWidget(Player player, SoftCooldownRequirement requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
         final var timeLeftStr = formatTimeLeft(player, requirement);
         if (timeLeftStr == null) return;
         final var font = Minecraft.getInstance().font;
@@ -16,14 +16,14 @@ public class CooldownRequirementRenderer implements RequirementRenderer<Cooldown
     }
 
     @Override
-    public int getWidth(Player player, CooldownRequirement requirement) {
+    public int getWidth(Player player, SoftCooldownRequirement requirement) {
         final var timeLeftStr = formatTimeLeft(player, requirement);
         if (timeLeftStr == null) return 0;
         final var font = Minecraft.getInstance().font;
         return font.width(timeLeftStr) + 1;
     }
 
-    private static @Nullable String formatTimeLeft(Player player, CooldownRequirement requirement) {
+    private static @Nullable String formatTimeLeft(Player player, SoftCooldownRequirement requirement) {
         final var millisLeft = requirement.getCooldownMillisLeft(player);
         if (millisLeft <= 0) {
             return null;
