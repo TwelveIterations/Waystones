@@ -1,2 +1,3 @@
-- Moved JourneyMap waypoints two blocks up so you don't end up inside the waystone if you use JourneyMap's teleport feature
-- Fixed sorting not working correctly when you have more than 128 waystones activated
+- Fixed configs being accessed too early, causing defaults to be used
+- Fixed waystones not generating with Lithostitched installed.
+- Fixed sharestones not being limited to Vanilla colors. Waystones does not support custom colored sharestones.
