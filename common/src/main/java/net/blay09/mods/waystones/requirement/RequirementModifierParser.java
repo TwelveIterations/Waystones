@@ -54,7 +54,7 @@ public class RequirementModifierParser {
 
     private static List<ConfiguredRequirement<?, ?>> parseRequirements(String functionPart) {
         final var requirements = new ArrayList<ConfiguredRequirement<?, ?>>();
-        final var requirementPattern = Pattern.compile("(\\w+)\\((.*?)\\)");
+        final var requirementPattern = Pattern.compile("([\\w:]+)\\((.*?)\\)");
         final var requirementMatcher = requirementPattern.matcher(functionPart);
         while (requirementMatcher.find()) {
             requirements.add(parseRequirement(requirementMatcher.group(0)));
@@ -63,7 +63,7 @@ public class RequirementModifierParser {
     }
 
     private static ConfiguredRequirement<?, ?> parseRequirement(String functionPart) {
-        final var functionPattern = Pattern.compile("(\\w+)\\((.*?)\\)");
+        final var functionPattern = Pattern.compile("([\\w:]+)\\((.*?)\\)");
         final var functionMatcher = functionPattern.matcher(functionPart);
 
         if (functionMatcher.find()) {
