@@ -152,7 +152,7 @@ public class ModMenus {
                 new BalmMenuFactory<WaystoneEditMenu, WaystoneEditMenu.Data>() {
                     @Override
                     public WaystoneEditMenu create(int windowId, Inventory inventory, WaystoneEditMenu.Data data) {
-                        return new WaystoneEditMenu(windowId, data.waystone(), data.modifierCount(), data.error().orElse(null));
+                        return new WaystoneEditMenu(windowId, data.waystone(), data.modifierCount(), data.error().orElse(null), data.visibilityOptions());
                     }
 
                     @Override

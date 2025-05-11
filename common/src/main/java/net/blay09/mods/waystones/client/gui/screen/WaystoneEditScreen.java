@@ -61,9 +61,8 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         }
         y += 28;
 
-        final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions(Minecraft.getInstance().player, waystone);
-        visibilityButton = new WaystoneVisbilityButton(leftPos, y, oldVisibility, visibilityOptions, menu.canEdit());
-        visibilityButton.active = menu.canEdit() && visibilityOptions.size() > 1;
+        visibilityButton = new WaystoneVisbilityButton(leftPos, y, oldVisibility, menu.getVisibilityOptions(), menu.canEdit());
+        visibilityButton.active = menu.canEdit() && menu.getVisibilityOptions().size() > 1;
         addRenderableWidget(visibilityButton);
         y += 24;
 

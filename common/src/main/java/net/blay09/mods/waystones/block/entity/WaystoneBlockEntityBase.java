@@ -280,21 +280,25 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
-                final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), getWaystone());
+                final var error = WaystonePermissionManager.mayEditWaystone(((ServerPlayer) player), getWaystone());
+                final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions(((ServerPlayer) player), waystone);
                 return new WaystoneEditMenu(i,
                         getWaystone(),
                         getModifierCount(),
                         error.map(WaystoneEditError::getTranslationKey).map(Component::translatable).orElse(null),
+                        visibilityOptions,
                         getContainer());
             }
 
             @Override
-            public WaystoneEditMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                final var error = WaystonePermissionManager.mayEditWaystone(serverPlayer, serverPlayer.level(), getWaystone());
+            public WaystoneEditMenu.Data getScreenOpeningData(ServerPlayer player) {
+                final var error = WaystonePermissionManager.mayEditWaystone(player, getWaystone());
+                final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions(player, waystone);
                 return new WaystoneEditMenu.Data(worldPosition,
                         getWaystone(),
                         getModifierCount(),
-                        error.map(WaystoneEditError::getTranslationKey).map(Component::translatable));
+                        error.map(WaystoneEditError::getTranslationKey).map(Component::translatable),
+                        visibilityOptions);
             }
 
             @Override

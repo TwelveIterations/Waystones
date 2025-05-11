@@ -11,6 +11,7 @@ import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.module.BalmModule;
 import net.blay09.mods.balm.api.network.BalmNetworking;
+import net.blay09.mods.balm.api.permission.BalmPermissions;
 import net.blay09.mods.balm.api.resources.BalmResources;
 import net.blay09.mods.balm.api.stats.BalmStats;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
@@ -20,11 +21,12 @@ import net.blay09.mods.waystones.command.ModCommands;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.permission.ModPermissions;
+import net.blay09.mods.waystones.requirement.RequirementRegistry;
 import net.blay09.mods.waystones.handler.ModEventHandlers;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.network.ModNetworking;
-import net.blay09.mods.waystones.requirement.RequirementRegistry;
 import net.blay09.mods.waystones.resources.ForceSpawnInVillagesCondition;
 import net.blay09.mods.waystones.stats.ModStats;
 import net.blay09.mods.waystones.worldgen.ModWorldGen;
@@ -105,6 +107,11 @@ public class Waystones implements BalmModule {
     @Override
     public void registerResources(BalmResources resources) {
         resources.registerResourceCondition(id("force_spawn_in_villages"), ForceSpawnInVillagesCondition.CODEC);
+    }
+
+    @Override
+    public void registerPermissions(BalmPermissions permissions) {
+        ModPermissions.initialize(permissions);
     }
 
     @Override

@@ -38,7 +38,7 @@ public record ServerboundEditWaystonePacket(UUID waystoneUid, String name, Wayst
             return;
         }
 
-        final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), waystone);
+        final var error = WaystonePermissionManager.mayEditWaystone(player, waystone);
         if (error.isPresent()) {
             return;
         }

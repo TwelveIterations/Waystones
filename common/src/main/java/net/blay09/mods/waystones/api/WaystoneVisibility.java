@@ -8,8 +8,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 
-import java.util.Locale;
+import java.util.List;
 import java.util.function.IntFunction;
+
+import java.util.Locale;
 
 public enum WaystoneVisibility implements StringRepresentable {
     ACTIVATION,
@@ -33,6 +35,7 @@ public enum WaystoneVisibility implements StringRepresentable {
 
     private static final IntFunction<WaystoneVisibility> BY_ID = ByIdMap.continuous(WaystoneVisibility::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final StreamCodec<ByteBuf, WaystoneVisibility> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, WaystoneVisibility::ordinal);
+    public static final StreamCodec<ByteBuf, List<WaystoneVisibility>> LIST_STREAM_CODEC = STREAM_CODEC.apply(ByteBufCodecs.list());
     public static Codec<WaystoneVisibility> CODEC = Codec.withAlternative(StringRepresentable.fromEnum(WaystoneVisibility::values), Codec.STRING,
             WaystoneVisibility::valueOf);
 
