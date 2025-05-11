@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.command;
 
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.blay09.mods.balm.api.command.BalmCommands;
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneStyle;
 import net.blay09.mods.waystones.api.WaystonesAPI;
@@ -15,6 +16,7 @@ import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import static net.minecraft.commands.Commands.argument;
@@ -23,10 +25,22 @@ public class ModCommands {
     private static final SimpleCommandExceptionType ERROR_WAYSTONE_NOT_FOUND = new SimpleCommandExceptionType(Component.translatable(
             "commands.waystones.waystone_not_found"));
 
+    private static final ResourceLocation PERMISSION_WAYSTONES_ACTIVATE = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.activate");
+    private static final ResourceLocation PERMISSION_WAYSTONES_FORGET = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.forget");
+    private static final ResourceLocation PERMISSION_WAYSTONES_COUNT = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.count");
+    private static final ResourceLocation PERMISSION_WAYSTONES_LIST = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.list");
+    private static final ResourceLocation PERMISSION_WAYSTONES_GUI = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.gui");
+
     public static void initialize(BalmCommands commands) {
+        BalmCommands.registerPermission(PERMISSION_WAYSTONES_ACTIVATE, 2);
+        BalmCommands.registerPermission(PERMISSION_WAYSTONES_FORGET, 2);
+        BalmCommands.registerPermission(PERMISSION_WAYSTONES_COUNT, 2);
+        BalmCommands.registerPermission(PERMISSION_WAYSTONES_LIST, 2);
+        BalmCommands.registerPermission(PERMISSION_WAYSTONES_GUI, 2);
         commands.register(dispatcher -> dispatcher.register(Commands.literal("waystones")
-                .requires(source -> source.isPlayer() && source.hasPermission(2))
+                .requires(BalmCommands.requireAnyPermission(PERMISSION_WAYSTONES_ACTIVATE, PERMISSION_WAYSTONES_FORGET, PERMISSION_WAYSTONES_COUNT, PERMISSION_WAYSTONES_LIST, PERMISSION_WAYSTONES_GUI))
                 .then(Commands.literal("activate")
+                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_ACTIVATE))
                         .then(argument("targets", EntityArgument.players())
                                 .then(argument("pos", BlockPosArgument.blockPos()).executes(context -> {
                                     final var targets = EntityArgument.getPlayers(context, "targets");
@@ -53,6 +67,7 @@ public class ModCommands {
                                     return targets.size();
                                 }))))
                 .then(Commands.literal("forget")
+                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_FORGET))
                         .then(argument("targets", EntityArgument.players())
                                 .then(argument("pos", BlockPosArgument.blockPos()).executes(context -> {
                                     final var targets = EntityArgument.getPlayers(context, "targets");
@@ -101,8 +116,10 @@ public class ModCommands {
                                     return totalDeactivated;
                                 }))))
                 .then(Commands.literal("count")
+                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_COUNT))
                         .then(argument("player", EntityArgument.player()).executes(new CountWaystonesCommand())))
                 .then(Commands.literal("list")
+                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_LIST))
                         .then(argument("player", EntityArgument.player()).executes(ctx -> {
                                     final var caller = ctx.getSource().getPlayerOrException();
                                     final var target = ctx.getArgument("player", EntitySelector.class).findSinglePlayer(ctx.getSource());
@@ -136,6 +153,7 @@ public class ModCommands {
                                     return waystones.size();
                                 }))))
                 .then(Commands.literal("gui")
+                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_GUI))
                         .then(argument("player", EntityArgument.player()).executes(new OpenPlayerWaystonesGuiCommand())))
         ));
     }
