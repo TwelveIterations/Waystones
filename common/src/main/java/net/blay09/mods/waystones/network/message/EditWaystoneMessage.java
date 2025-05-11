@@ -48,7 +48,7 @@ public class EditWaystoneMessage implements CustomPacketPayload {
             return;
         }
 
-        final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), waystone);
+        final var error = WaystonePermissionManager.mayEditWaystone(player, waystone);
         if (error.isPresent()) {
             return;
         }

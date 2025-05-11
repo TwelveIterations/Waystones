@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.command.ModCommands;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.permission.ModPermissions;
 import net.blay09.mods.waystones.requirement.RequirementRegistry;
 import net.blay09.mods.waystones.handler.ModEventHandlers;
 import net.blay09.mods.waystones.item.ModItems;
@@ -33,6 +34,7 @@ public class Waystones {
         WaystonesConfig.initialize();
         Balm.getResources().registerResourceCondition(id("force_spawn_in_villages"), ForceSpawnInVillagesCondition.CODEC);
         ModStats.initialize();
+        ModPermissions.initialize();
         ModEventHandlers.initialize();
         ModNetworking.initialize(Balm.getNetworking());
         ModBlocks.initialize(Balm.getBlocks());
