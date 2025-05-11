@@ -1,6 +1,15 @@
 package net.blay09.mods.waystones.api;
 
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ByIdMap;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.IntFunction;
 
 public enum WaystoneVisibility {
     ACTIVATION,
@@ -21,6 +30,10 @@ public enum WaystoneVisibility {
     GREEN_SHARESTONE,
     RED_SHARESTONE,
     BLACK_SHARESTONE;
+
+    private static final IntFunction<WaystoneVisibility> BY_ID = ByIdMap.continuous(WaystoneVisibility::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
+    public static final StreamCodec<ByteBuf, WaystoneVisibility> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, WaystoneVisibility::ordinal);
+    public static final StreamCodec<ByteBuf, List<WaystoneVisibility>> LIST_STREAM_CODEC = STREAM_CODEC.apply(ByteBufCodecs.list());
 
     public static WaystoneVisibility fromWaystoneType(ResourceLocation waystoneType) {
         if (WaystoneTypes.isSharestone(waystoneType)) {
