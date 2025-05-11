@@ -1,4 +1,6 @@
-- Fixed requirement modifiers not parsing if they have a namespace in front
 - Added `add_soft_cooldown`, `multiply_soft_cooldown`, `scaled_add_soft_cooldown`, `scaled_multiply_soft_cooldown`, `min_soft_cooldown`, `max_soft_cooldown` modifier for adding a cooldown without refusing teleports
 - Added `has_cooldown` and `has_cooldown_above` conditions
 - Added access to variables for cooldowns in modifiers
+- Added permissions for waystones command for when a permission manager is installed
+- Added `waystones:edit_all` permission for when a permission manager is installed
+- Fixed requirement modifiers not parsing if they have a namespace in front
