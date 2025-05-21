@@ -1,3 +1,1 @@
-- Fixed configs being accessed too early, causing defaults to be used
-- Fixed waystones not generating with Lithostitched installed.
-- Fixed sharestones not being limited to Vanilla colors. Waystones does not support custom colored sharestones.
+- Fixed crash when more than one nameGenerationPresets are defined
