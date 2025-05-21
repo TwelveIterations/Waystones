@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
@@ -14,13 +15,11 @@ import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -45,8 +44,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class PortstoneBlock extends WaystoneBlockBase {
 
@@ -154,7 +153,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
 
                 @Override
                 public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.get(), null, windowId, waystones, Collections.emptySet());
+                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.get(), null, windowId, waystones, Set.of(TeleportFlags.PORTSTONE));
                 }
 
                 @Override
