@@ -201,8 +201,9 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
     private WaystoneButton createWaystoneButton(int y, final Waystone waystone) {
         final var waystoneFrom = menu.getWaystoneFrom();
+        final var flags = menu.getFlags();
         final var player = Minecraft.getInstance().player;
-        final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).setFromWaystone(waystoneFrom).setWarpItem(menu.getWarpItem());
+        final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).setFromWaystone(waystoneFrom).setWarpItem(menu.getWarpItem()).addFlags(flags);
         final var requirements = WaystonesAPI.resolveRequirements(context);
         WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, requirements, button -> onWaystoneSelected(waystone));
         if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {
