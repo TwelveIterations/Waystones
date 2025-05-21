@@ -21,22 +21,24 @@ public class BlankScrollItem extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        final var blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
-        if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntityBase) {
-            final var waystone = waystoneBlockEntityBase.getWaystone();
-            final var boundScrollStack = new ItemStack(ModItems.boundScroll);
-            WaystonesAPI.setBoundWaystone(boundScrollStack, waystone);
-            final var player = context.getPlayer();
-            int emptySlot = player.getInventory().getFreeSlot();
-            int stackableSlot = player.getInventory().getSlotWithRemainingSpace(boundScrollStack);
-            if ((emptySlot != -1 || stackableSlot != -1) || (!player.hasInfiniteMaterials() && context.getItemInHand().getCount() == 1)) {
-                context.getItemInHand().consume(1, player);
-                if (!player.addItem(boundScrollStack)) {
-                    player.drop(boundScrollStack, false);
+        if (!context.getLevel().isClientSide) {
+            final var blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
+            if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntityBase) {
+                final var waystone = waystoneBlockEntityBase.getWaystone();
+                final var boundScrollStack = new ItemStack(ModItems.boundScroll);
+                WaystonesAPI.setBoundWaystone(boundScrollStack, waystone);
+                final var player = context.getPlayer();
+                int emptySlot = player.getInventory().getFreeSlot();
+                int stackableSlot = player.getInventory().getSlotWithRemainingSpace(boundScrollStack);
+                if ((emptySlot != -1 || stackableSlot != -1) || (!player.hasInfiniteMaterials() && context.getItemInHand().getCount() == 1)) {
+                    context.getItemInHand().consume(1, player);
+                    if (!player.addItem(boundScrollStack)) {
+                        player.drop(boundScrollStack, false);
+                    }
+                    return InteractionResult.SUCCESS;
                 }
-                return InteractionResult.SUCCESS;
+                return InteractionResult.FAIL;
             }
-            return InteractionResult.FAIL;
         }
 
         return super.useOn(context);
