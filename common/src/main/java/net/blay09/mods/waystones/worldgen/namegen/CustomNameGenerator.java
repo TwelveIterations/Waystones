@@ -17,7 +17,7 @@ public class CustomNameGenerator implements INameGenerator {
 
     @Override
     public String randomName(RandomSource rand) {
-        List<String> customNames = WaystonesConfig.getActive().worldGen.customWaystoneNames;
+        List<String> customNames = new ArrayList<>(WaystonesConfig.getActive().worldGen.customWaystoneNames);
         Collections.shuffle(customNames);
         for (String customName : customNames) {
             if (allowDuplicates || !usedNames.contains(customName)) {
