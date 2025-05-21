@@ -20,7 +20,7 @@ public class CustomNameGenerator implements NameGenerator {
 
     @Override
     public Optional<Component> generateName(LevelAccessor level, Waystone waystone, RandomSource rand) {
-        final var customNames = WaystonesConfig.getActive().worldGen.nameGenerationPresets;
+        final var customNames = new ArrayList<>(WaystonesConfig.getActive().worldGen.nameGenerationPresets);
         Collections.shuffle(customNames);
         for (final var customName : customNames) {
             if (allowDuplicates || !usedNames.contains(customName)) {
