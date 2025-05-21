@@ -88,7 +88,7 @@ public class ModMenus {
                 new BalmMenuFactory<WaystoneSelectionMenu, List<Waystone>>() {
                     @Override
                     public WaystoneSelectionMenu create(int windowId, Inventory inventory, List<Waystone> waystones) {
-                        return new WaystoneSelectionMenu(ModMenus.portstoneSelection.get(), null, windowId, waystones, Collections.emptySet());
+                        return new WaystoneSelectionMenu(ModMenus.portstoneSelection.get(), null, windowId, waystones, Set.of(TeleportFlags.PORTSTONE));
                     }
 
                     @Override

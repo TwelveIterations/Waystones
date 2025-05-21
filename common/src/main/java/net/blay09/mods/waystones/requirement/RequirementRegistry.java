@@ -281,7 +281,7 @@ public class RequirementRegistry {
         registerConditionResolver("source_is_warp_plate", NoParameter.class,
                 (context, parameters) -> context.getFromWaystone().map(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE)).orElse(false));
         registerConditionResolver("source_is_portstone", NoParameter.class,
-                (context, parameters) -> context.getFromWaystone().map(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.PORTSTONE)).orElse(false));
+                (context, parameters) -> context.getFlags().contains(TeleportFlags.PORTSTONE));
         registerConditionResolver("source_is_waystone", NoParameter.class,
                 (context, parameters) -> context.getFromWaystone().map(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)).orElse(false));
         registerConditionResolver("source_is_sharestone", NoParameter.class,
