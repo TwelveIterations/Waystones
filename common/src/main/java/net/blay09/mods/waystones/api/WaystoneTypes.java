@@ -9,7 +9,6 @@ import java.util.Optional;
 public class WaystoneTypes {
     public static final ResourceLocation WAYSTONE = ResourceLocation.fromNamespaceAndPath("waystones", "waystone");
     public static final ResourceLocation WARP_PLATE = ResourceLocation.fromNamespaceAndPath("waystones", "warp_plate");
-    public static final ResourceLocation PORTSTONE = ResourceLocation.fromNamespaceAndPath("waystones", "portstone");
 
     public static final ResourceLocation[] SHARESTONES = new ResourceLocation[]{
             ResourceLocation.fromNamespaceAndPath("waystones", "orange_sharestone"),
