@@ -2,3 +2,4 @@
 - Fixed fake bound scroll being created on client when binding a scroll
 - Fixed `source_is_portstone` condition not working right
 - Fixed inventory button xp costs not previewing correctly
+- Fixed crash when more than one nameGenerationPresets are defined
