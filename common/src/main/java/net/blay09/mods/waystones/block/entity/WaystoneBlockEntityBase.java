@@ -16,7 +16,7 @@ import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.component.ModComponents;
-import net.blay09.mods.waystones.component.WaystoneNameComponent;
+import net.blay09.mods.waystones.component.WaystoneReferenceComponent;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
@@ -103,11 +103,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         tag.put("Items", container.serialize(provider));
 
-        if (waystone.isValid()) {
-            tag.store("UUID", UUIDUtil.CODEC, waystone.getWaystoneUid());
-        } else if (waystoneUid != null) {
-            tag.store("UUID", UUIDUtil.CODEC, waystoneUid);
-        }
+        tag.store("UUID", UUIDUtil.CODEC, getEffectiveWaystoneUid());
     }
 
     @Override
@@ -125,16 +121,17 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
-        final var waystoneUidComponent = input.get(ModComponents.waystone.get());
-        if (waystoneUidComponent != null) {
-            waystoneUid = waystoneUidComponent;
+        final var waystoneUidFromComponent = Optional.ofNullable(input.get(ModComponents.waystoneIdentity.get()))
+                .map(WaystoneReferenceComponent::waystoneId)
+                .orElseGet(() -> input.get(ModComponents.waystone.get()));
+        if (waystoneUidFromComponent != null) {
+            waystoneUid = waystoneUidFromComponent;
         }
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
-        builder.set(ModComponents.waystone.get(), waystone.isValid() ? waystone.getWaystoneUid() : waystoneUid)
-                .set(ModComponents.waystoneName.get(), new WaystoneNameComponent(waystone.getName()));
+        builder.set(ModComponents.waystoneIdentity.get(), new WaystoneReferenceComponent(getEffectiveWaystoneUid(), waystone.getName()));
     }
 
     @Override
@@ -447,5 +444,9 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
                 SavedDataWaystonesStore.get(serverLevel.getServer()).updateWaystone(waystone);
             }
         }
+    }
+
+    protected UUID getEffectiveWaystoneUid() {
+        return waystone.isValid() ? waystone.getWaystoneUid() : waystoneUid;
     }
 }

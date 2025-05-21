@@ -5,23 +5,19 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.component.ModComponents;
+import net.blay09.mods.waystones.component.WaystoneReferenceComponent;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -37,7 +33,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
+import java.util.Optional;
 
 public abstract class WaystoneBlockBase extends BaseEntityBlock implements SimpleWaterloggedBlock {
 
@@ -252,7 +248,9 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
 
         if (blockEntity instanceof WaystoneBlockEntityBase) {
             if (!level.isClientSide) {
-                final var waystoneUid = stack.get(ModComponents.waystone.get());
+                final var waystoneUid = Optional.ofNullable(stack.get(ModComponents.waystoneIdentity.get()))
+                        .map(WaystoneReferenceComponent::waystoneId)
+                        .orElseGet(() -> stack.get(ModComponents.waystone.get()));
                 WaystoneProxy existingWaystone = null;
                 if (waystoneUid != null) {
                     existingWaystone = new WaystoneProxy(level.getServer(), waystoneUid);

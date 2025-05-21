@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.component.ModComponents;
+import net.blay09.mods.waystones.component.WaystoneReferenceComponent;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -30,22 +31,38 @@ public abstract class AbstractAttunedShardItem extends ShardItem implements IAtt
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
-        final var attunedWaystoneUid = stack.get(ModComponents.attunement.get());
-        list.accept(WarpPlateBlock.getGalacticName(attunedWaystoneUid));
+        final var attunement = stack.get(ModComponents.warpPlateAttunement.get());
+        if (attunement != null) {
+            list.accept(WarpPlateBlock.getGalacticName(attunement.waystoneId()));
+        }
+        final var legacyAttunement = stack.get(ModComponents.attunement.get());
+        if (legacyAttunement != null) {
+            list.accept(WarpPlateBlock.getGalacticName(legacyAttunement));
+        }
         list.accept(Component.translatable("tooltip.waystones.attuned_shard.plug_into_warp_plate"));
     }
 
     @Override
     public Optional<Waystone> getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
-        return Optional.ofNullable(itemStack.get(ModComponents.attunement.get())).map(attunement -> new WaystoneProxy(server, attunement));
+        final var attunement = itemStack.get(ModComponents.warpPlateAttunement.get());
+        if (attunement != null) {
+            return Optional.of(new WaystoneProxy(server, attunement.waystoneId()));
+        }
+
+        final var legacyAttunement = itemStack.get(ModComponents.attunement.get());
+        if (legacyAttunement != null) {
+            return Optional.of(new WaystoneProxy(server, legacyAttunement));
+        }
+
+        return Optional.empty();
     }
 
     @Override
     public void setWaystoneAttunedTo(ItemStack itemStack, @Nullable Waystone waystone) {
         if (waystone != null) {
-            itemStack.set(ModComponents.attunement.get(), waystone.getWaystoneUid());
+            itemStack.set(ModComponents.warpPlateAttunement.get(), new WaystoneReferenceComponent(waystone.getWaystoneUid(), waystone.getName()));
         } else {
-            itemStack.remove(ModComponents.attunement.get());
+            itemStack.remove(ModComponents.warpPlateAttunement.get());
         }
     }
 }

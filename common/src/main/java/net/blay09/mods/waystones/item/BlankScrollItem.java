@@ -2,7 +2,8 @@ package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
-import net.minecraft.ChatFormatting;
+import net.blay09.mods.waystones.component.BlankScrollComponent;
+import net.blay09.mods.waystones.component.ModComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
@@ -11,12 +12,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public class BlankScrollItem extends Item {
     public BlankScrollItem(Properties properties) {
-        super(properties.stacksTo(64));
+        super(properties.stacksTo(64).component(ModComponents.blankScroll.get(), BlankScrollComponent.INSTANCE));
     }
 
     @Override
@@ -46,6 +46,6 @@ public class BlankScrollItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
-        list.accept(Component.translatable("tooltip.waystones.blank_scroll").withStyle(ChatFormatting.GRAY));
+        itemStack.addToTooltip(ModComponents.blankScroll.get(), context, display, list, flag);
     }
 }

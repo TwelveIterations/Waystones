@@ -6,7 +6,7 @@ import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.component.ModComponents;
-import net.blay09.mods.waystones.component.WaystoneNameComponent;
+import net.blay09.mods.waystones.component.WaystoneReferenceComponent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
@@ -335,6 +335,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(ModComponents.waystoneName.get(), new WaystoneNameComponent(WarpPlateBlock.getGalacticName(getWaystone().getWaystoneUid())));
+        builder.set(ModComponents.waystoneIdentity.get(), new WaystoneReferenceComponent(getEffectiveWaystoneUid(), WarpPlateBlock.getGalacticName(getWaystone().getWaystoneUid())));
     }
 }

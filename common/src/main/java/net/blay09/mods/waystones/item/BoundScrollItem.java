@@ -5,10 +5,10 @@ import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.api.trait.IFOVOnUse;
 import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
+import net.blay09.mods.waystones.component.BoundScrollComponent;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.WaystoneProxy;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -49,25 +49,31 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
 
     @Override
     public Optional<Waystone> getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
-        return Optional.ofNullable(itemStack.get(ModComponents.attunement.get())).map(attunement -> new WaystoneProxy(server, attunement));
+        final var boundScroll = itemStack.get(ModComponents.boundScroll.get());
+        if (boundScroll != null) {
+            return Optional.of(new WaystoneProxy(server, boundScroll.waystoneId()));
+        }
+
+        final var legacyAttunement = itemStack.get(ModComponents.attunement.get());
+        if (legacyAttunement != null) {
+            return Optional.of(new WaystoneProxy(server, legacyAttunement));
+        }
+
+        return Optional.empty();
     }
 
     @Override
     public void setWaystoneAttunedTo(ItemStack itemStack, @Nullable Waystone waystone) {
         if (waystone != null) {
-            itemStack.set(ModComponents.attunement.get(), waystone.getWaystoneUid());
+            itemStack.set(ModComponents.boundScroll.get(), new BoundScrollComponent(waystone.getWaystoneUid(), waystone.getName()));
         } else {
-            itemStack.remove(ModComponents.attunement.get());
+            itemStack.remove(ModComponents.boundScroll.get());
         }
     }
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
-        final var boundToName = itemStack.get(ModComponents.waystoneName.get());
-        if (boundToName != null) {
-            final var boundToValueComponent = boundToName.component().copy().withStyle(ChatFormatting.AQUA);
-            list.accept(Component.translatable("tooltip.waystones.bound_to", boundToValueComponent).withStyle(ChatFormatting.GRAY));
-        }
+        itemStack.addToTooltip(ModComponents.boundScroll.get(), context, display, list, flag);
     }
 
     @Override
