@@ -9,6 +9,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,14 +29,14 @@ public record ServerboundRemoveWaystonePacket(UUID waystoneUid) implements Custo
     );
 
     public static void handle(ServerPlayer player, ServerboundRemoveWaystonePacket message) {
-        WaystoneProxy waystone = new WaystoneProxy(player.server, message.waystoneUid);
+        final var server = player.getServer();
+        WaystoneProxy waystone = new WaystoneProxy(server, message.waystoneUid);
         PlayerWaystoneManager.deactivateWaystone(player, waystone);
-
 
         if (player.getAbilities().instabuild) {
             if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
                 // If this is a sharestone and the player is in creative mode, remove the sharestone from the database
-                SavedDataWaystonesStore.get(player.server).removeWaystone(waystone);
+                SavedDataWaystonesStore.get(server).removeWaystone(waystone);
             } else if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
                 // If the waystone is global and the player is in creative mode, remove the global-ness
                 final var backingWaystone = waystone.getBackingWaystone();
@@ -48,9 +49,9 @@ public record ServerboundRemoveWaystonePacket(UUID waystoneUid) implements Custo
                     BlockPos pos = backingWaystone.getPos();
                     BlockState state = targetWorld != null ? targetWorld.getBlockState(pos) : null;
                     if (targetWorld == null || !(state.getBlock() instanceof WaystoneBlock)) {
-                        SavedDataWaystonesStore.get(player.server).removeWaystone(backingWaystone);
-                        PlayerWaystoneManager.removeKnownWaystone(player.server, backingWaystone);
-                        WaystoneSyncManager.sendWaystoneRemovalToAll(player.server, backingWaystone, true);
+                        SavedDataWaystonesStore.get(server).removeWaystone(backingWaystone);
+                        PlayerWaystoneManager.removeKnownWaystone(server, backingWaystone);
+                        WaystoneSyncManager.sendWaystoneRemovalToAll(server, backingWaystone, true);
                     }
                 }
             }

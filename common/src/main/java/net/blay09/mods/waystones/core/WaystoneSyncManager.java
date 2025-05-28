@@ -50,7 +50,7 @@ public class WaystoneSyncManager {
     }
 
     public static void sendWaystonesOfType(ResourceLocation waystoneType, ServerPlayer player) {
-        List<Waystone> warpPlates = new ArrayList<>(SavedDataWaystonesStore.get(player.server).getWaystonesByType(waystoneType));
+        List<Waystone> warpPlates = new ArrayList<>(SavedDataWaystonesStore.get(player.getServer()).getWaystonesByType(waystoneType));
         Balm.getNetworking().sendTo(player, new ClientboundKnownWaystonesPacket(waystoneType, warpPlates));
     }
 

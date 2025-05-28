@@ -5,27 +5,28 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ModBiomeTagProvider extends FabricTagProvider<Biome> {
+public class ModBiomeTagProvider extends BiomeTagsProvider {
     public ModBiomeTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-        super(output, Registries.BIOME, registriesFuture);
+        super(output, registriesFuture);
     }
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        final var hasMossyWaystones = getOrCreateTagBuilder(ModBiomeTags.HAS_STRUCTURE_MOSSY_WAYSTONE);
+        final var hasMossyWaystones = tag(ModBiomeTags.HAS_STRUCTURE_MOSSY_WAYSTONE);
         hasMossyWaystones.add(Biomes.SWAMP, Biomes.MANGROVE_SWAMP, Biomes.MUSHROOM_FIELDS);
         hasMossyWaystones.addOptionalTag(BiomeTags.IS_JUNGLE);
-        getOrCreateTagBuilder(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE).add(Biomes.DESERT);
-        getOrCreateTagBuilder(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE).addOptionalTag(BiomeTags.IS_NETHER);
-        getOrCreateTagBuilder(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE).addOptionalTag(BiomeTags.IS_END);
+        tag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE).add(Biomes.DESERT);
+        tag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE).addOptionalTag(BiomeTags.IS_NETHER);
+        tag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE).addOptionalTag(BiomeTags.IS_END);
 
-        final var hasWaystones = getOrCreateTagBuilder(ModBiomeTags.HAS_STRUCTURE_WAYSTONE);
+        final var hasWaystones = tag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE);
         hasWaystones.add(
                 Biomes.PLAINS,
                 Biomes.SUNFLOWER_PLAINS,

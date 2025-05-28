@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.balm.mixin.AbstractContainerScreenAccessor;
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.WaystonesAPI;
@@ -10,7 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -57,8 +56,7 @@ public class WaystoneInventoryButton extends Button {
                 guiGraphics.renderItem(icon, getX(), getY());
                 guiGraphics.renderItemDecorations(Minecraft.getInstance().font, icon, getX(), getY());
             } else {
-                guiGraphics.blitSprite(RenderType::guiTextured, INVENTORY_BUTTON_SPRITE, getX(), getY(), 16, 16, 0x80FFFFFF);
-                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, INVENTORY_BUTTON_SPRITE, getX(), getY(), 16, 16, 0x80FFFFFF);
             }
         }
     }

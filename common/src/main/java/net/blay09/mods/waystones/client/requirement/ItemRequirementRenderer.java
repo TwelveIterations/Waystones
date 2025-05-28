@@ -12,7 +12,7 @@ public class ItemRequirementRenderer implements RequirementRenderer<ItemRequirem
         // TODO if (!requirement.canAfford(player)) {
         // TODO     guiGraphics.setColor(1f, 1f, 1f, 0.5f);
         // TODO }
-        guiGraphics.renderItem(requirement.getItemStack(), x, y, 16, 16);
+        guiGraphics.renderItem(requirement.getItemStack(), x, y);
         guiGraphics.renderItemDecorations(font, requirement.getItemStack(), x, y, requirement.getCount() > 1 ? String.valueOf(requirement.getCount()) : null);
     }
 

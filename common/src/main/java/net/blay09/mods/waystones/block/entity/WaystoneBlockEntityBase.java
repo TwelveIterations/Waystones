@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.block.entity.CustomRenderBoundingBox;
 import net.blay09.mods.balm.api.block.entity.OnLoadHandler;
 import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.balm.api.container.DefaultContainer;
+import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.balm.common.BalmBlockEntity;
 import net.blay09.mods.waystones.api.MutableWaystone;
@@ -35,6 +36,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -50,6 +52,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
@@ -100,21 +104,19 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        tag.put("Items", container.serialize(provider));
+    protected void saveAdditional(ValueOutput output) {
+        ContainerHelper.saveAllItems(output, container.getItems());
 
-        tag.store("UUID", UUIDUtil.CODEC, getEffectiveWaystoneUid());
+        output.store("UUID", UUIDUtil.CODEC, getEffectiveWaystoneUid());
     }
 
     @Override
-    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        if (compound.contains("Items")) {
-            compound.getCompound("Items").ifPresent(it -> container.deserialize(it, provider));
-        }
+    public void loadAdditional(ValueInput input) {
+        ContainerHelper.loadAllItems(input, container.getItems());
 
-        compound.read("UUID", UUIDUtil.CODEC).ifPresent(uuid -> waystoneUid = uuid);
+        input.read("UUID", UUIDUtil.CODEC).ifPresent(uuid -> waystoneUid = uuid);
 
-        compound.read("Waystone", WaystoneImpl.CODEC.codec()).ifPresent(loadedWaystone -> {
+        input.read("Waystone", WaystoneImpl.CODEC.codec()).ifPresent(loadedWaystone -> {
             waystone = loadedWaystone;
         });
     }
@@ -135,8 +137,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     }
 
     @Override
-    public void writeUpdateTag(CompoundTag tag) {
-        tag.store("Waystone", WaystoneImpl.CODEC.codec(), getWaystone());
+    public void writeUpdateTag(ValueOutput output) {
+        output.store("Waystone", WaystoneImpl.CODEC.codec(), getWaystone());
     }
 
     @Override

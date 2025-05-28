@@ -16,7 +16,7 @@ public class LoginHandler {
     public static void onPlayerLogin(PlayerLoginEvent event) {
         ServerPlayer player = event.getPlayer();
         // Introduce all global waystones to this player
-        List<Waystone> globalWaystones = SavedDataWaystonesStore.get(player.server).getGlobalWaystones();
+        List<Waystone> globalWaystones = SavedDataWaystonesStore.get(player.getServer()).getGlobalWaystones();
         for (Waystone waystone : globalWaystones) {
             if (!PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
                 PlayerWaystoneManager.activateWaystone(player, waystone);

@@ -10,6 +10,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
@@ -49,7 +51,6 @@ public class WaystoneButton extends Button {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         final var font = Minecraft.getInstance().font;
         final var player = Minecraft.getInstance().player;
@@ -82,7 +83,7 @@ public class WaystoneButton extends Button {
             if (isHovered && mouseX < getX() + 2 + renderer.getWidth(player, requirement)) {
                 final List<Component> tooltip = new ArrayList<>();
                 warpRequirement.appendHoverText(player, tooltip);
-                guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY + font.lineHeight);
+                guiGraphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), mouseX, mouseY + font.lineHeight);
             }
         }
     }

@@ -32,7 +32,8 @@ public record ServerboundEditWaystonePacket(UUID waystoneUid, String name, Wayst
     );
 
     public static void handle(ServerPlayer player, ServerboundEditWaystonePacket message) {
-        final var waystone = new WaystoneProxy(player.server, message.waystoneUid);
+        final var server = player.getServer();
+        final var waystone = new WaystoneProxy(server, message.waystoneUid);
         if (!waystone.isValid()) {
             Waystones.logger.warn("{} tried to edit an invalid waystone with id {}", player.getName().getString(), message.waystoneUid);
             return;
@@ -61,19 +62,19 @@ public record ServerboundEditWaystonePacket(UUID waystoneUid, String name, Wayst
         }
 
         final var backingWaystone = (WaystoneImpl) waystone.getBackingWaystone();
-        final var legalName = makeNameLegal(player.server, message.name);
+        final var legalName = makeNameLegal(server, message.name);
         backingWaystone.setName(legalName);
 
         if (visibility == WaystoneVisibility.GLOBAL && (WaystonePermissionManager.isAllowedVisibility(visibility) || WaystonePermissionManager.skipsPermissions(
                 player))) {
             if (backingWaystone.getVisibility() != WaystoneVisibility.GLOBAL) {
-                PlayerWaystoneManager.activeWaystoneForEveryone(player.server, backingWaystone);
+                PlayerWaystoneManager.activeWaystoneForEveryone(server, backingWaystone);
             }
         }
         backingWaystone.setVisibility(visibility);
 
-        SavedDataWaystonesStore.get(player.server).setDirty();
-        WaystoneSyncManager.sendWaystoneUpdateToAll(player.server, backingWaystone);
+        SavedDataWaystonesStore.get(server).setDirty();
+        WaystoneSyncManager.sendWaystoneUpdateToAll(server, backingWaystone);
 
         player.closeContainer();
     }

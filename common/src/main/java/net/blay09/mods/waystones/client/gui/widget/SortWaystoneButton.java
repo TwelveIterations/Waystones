@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.client.gui.widget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -38,9 +39,9 @@ public class SortWaystoneButton extends Button {
             }
 
             if (isHovered && active) {
-                guiGraphics.blitSprite(RenderType::guiTextured, sortDir == 1 ? MOVE_DOWN_HIGHLIGHTED_SPRITE : MOVE_UP_HIGHLIGHTED_SPRITE, getX() - 5, renderY, 32, 32, color);
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, sortDir == 1 ? MOVE_DOWN_HIGHLIGHTED_SPRITE : MOVE_UP_HIGHLIGHTED_SPRITE, getX() - 5, renderY, 32, 32, color);
             } else {
-                guiGraphics.blitSprite(RenderType::guiTextured, sortDir == 1 ? MOVE_DOWN_SPRITE : MOVE_UP_SPRITE, getX() - 5, renderY, 32, 32, color);
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, sortDir == 1 ? MOVE_DOWN_SPRITE : MOVE_UP_SPRITE, getX() - 5, renderY, 32, 32, color);
             }
         }
     }

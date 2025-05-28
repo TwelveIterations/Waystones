@@ -258,7 +258,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         renderTooltip(guiGraphics, mouseX, mouseY);
         for (ITooltipProvider tooltipProvider : tooltipProviders) {
             if (tooltipProvider.shouldShowTooltip()) {
-                guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltipProvider.getTooltipComponents(), Optional.empty(), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(font, tooltipProvider.getTooltipComponents(), Optional.empty(), mouseX, mouseY);
             }
         }
     }
@@ -269,9 +269,6 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        Font font = Minecraft.getInstance().font;
-
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         Waystone fromWaystone = menu.getWaystoneFrom();
         guiGraphics.drawCenteredString(font, getTitle(), imageWidth / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
         if (fromWaystone != null) {
@@ -315,12 +312,12 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
         if (isLocationHeaderHovered) {
             var poseStack = guiGraphics.pose();
-            poseStack.pushPose();
+            poseStack.pushMatrix();
             float scale = 0.5f;
-            poseStack.translate(x + fullWidth / 2f + 4, y, 0f);
-            poseStack.scale(scale, scale, scale);
+            poseStack.translate(x + fullWidth / 2f + 4, y);
+            poseStack.scale(scale, scale);
             guiGraphics.renderItem(new ItemStack(Items.WRITABLE_BOOK), 0, 0);
-            poseStack.popPose();
+            poseStack.popMatrix();
         }
     }
 

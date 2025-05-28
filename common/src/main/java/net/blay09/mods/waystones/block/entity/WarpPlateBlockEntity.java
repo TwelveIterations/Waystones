@@ -34,6 +34,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
@@ -88,17 +90,17 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
 
-        tag.putInt("LastAttunementSlot", lastAttunementSlot);
+        output.putInt("LastAttunementSlot", lastAttunementSlot);
     }
 
     @Override
-    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        super.loadAdditional(compound, provider);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
 
-        lastAttunementSlot = compound.getIntOr("LastAttunementSlot", 0);
+        lastAttunementSlot = input.getIntOr("LastAttunementSlot", 0);
     }
 
     public boolean hasPotentialWarpTarget() {
