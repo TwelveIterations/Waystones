@@ -9,7 +9,7 @@ import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.client.render.*;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
@@ -41,7 +41,7 @@ public class ModRenderers {
         renderers.registerBlockColorHandler(id("portstone"), (state, view, pos, tintIndex) -> Objects.requireNonNull(((PortstoneBlock) state.getBlock()).getColor())
                 .getTextColor() | 0xFF000000, () -> ModBlocks.portstones);
 
-        renderers.setBlockRenderType(() -> ModBlocks.warpPlate, RenderType.cutout());
+        renderers.setBlockRenderType(() -> ModBlocks.warpPlate, ChunkSectionLayer.CUTOUT);
     }
 
 }
