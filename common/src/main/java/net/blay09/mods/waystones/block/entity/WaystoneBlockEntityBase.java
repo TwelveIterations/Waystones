@@ -103,7 +103,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         tag.put("Items", container.serialize(provider));
 
-        tag.store("UUID", UUIDUtil.CODEC, getEffectiveWaystoneUid());
+        tag.storeNullable("UUID", UUIDUtil.CODEC, getEffectiveWaystoneUid());
     }
 
     @Override
