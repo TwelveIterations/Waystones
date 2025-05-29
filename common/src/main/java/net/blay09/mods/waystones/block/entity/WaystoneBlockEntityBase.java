@@ -107,7 +107,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     protected void saveAdditional(ValueOutput output) {
         ContainerHelper.saveAllItems(output, container.getItems());
 
-        output.store("UUID", UUIDUtil.CODEC, getEffectiveWaystoneUid());
+        output.storeNullable("UUID", UUIDUtil.CODEC, getEffectiveWaystoneUid());
     }
 
     @Override
