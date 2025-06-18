@@ -19,7 +19,7 @@ public class ForgeWaystones {
     private static final Logger logger = LoggerFactory.getLogger(ForgeWaystones.class);
 
     public ForgeWaystones(FMLJavaModLoadingContext context) {
-        final var loadContext = new ForgeLoadContext(context.getModEventBus());
+        final var loadContext = new ForgeLoadContext(context.getModBusGroup());
         Balm.initializeMod(Waystones.MOD_ID, loadContext, new Waystones());
         if (FMLEnvironment.dist.isClient()) {
             BalmClient.initializeMod(Waystones.MOD_ID, loadContext, ForgeWaystonesClient::initialize);
