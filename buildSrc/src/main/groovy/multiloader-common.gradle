@@ -101,7 +101,7 @@ processResources {
             "fabric_version": fabric_version,
             "fabric_loader_version": fabric_loader_version,
             "mod_name": mod_name,
-            "mod_main": mod_name.replaceAll(" ", ""),
+            "mod_main": mod_name.split(/\s+/).collect { word -> word.capitalize() }.join(""),
             "mod_author": mod_author,
             "mod_id": mod_id,
             "license": license,

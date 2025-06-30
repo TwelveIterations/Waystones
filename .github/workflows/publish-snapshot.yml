@@ -2,7 +2,8 @@ name: publish-snapshot
 on:
   push:
     branches:
-      - '**'
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+'
 
 jobs:
   prepare-matrix:
