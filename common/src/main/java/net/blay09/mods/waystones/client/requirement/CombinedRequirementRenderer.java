@@ -32,6 +32,7 @@ public class CombinedRequirementRenderer implements RequirementRenderer<Combined
                 .stream()
                 .filter(it -> !it.isEmpty())
                 .map(it -> Pair.of(it, RequirementClientRegistry.getRenderer(it)))
+                .filter(it -> it.getSecond() != null)
                 .mapToInt(it -> it.getSecond().getWidth(player, it.getFirst()))
                 .sum();
     }
