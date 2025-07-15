@@ -258,6 +258,8 @@ public class RequirementRegistry {
             return cost;
         }, () -> WaystonesConfig.getActive().teleports.enableCosts);
 
+        registerModifier("dismount", createDefaultType("dismount", DismountRequirement.class), NoParameter.class, (cost, context, parameters) -> cost, () -> true);
+
         registerModifier("refuse", createDefaultType("refuse", RefuseRequirement.class), ComponentParameter.class, (cost, context, parameters) -> {
             cost.setMessage(parameters.value);
             return cost;
