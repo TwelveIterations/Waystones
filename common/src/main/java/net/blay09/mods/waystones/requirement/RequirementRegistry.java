@@ -11,8 +11,10 @@ import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -45,6 +47,9 @@ public class RequirementRegistry {
     public record IdParameter(ResourceLocation value) {
     }
 
+    public record TaggableIdParameter(ResourceLocation value, boolean isTag) {
+    }
+
     public record WaystonesIdParameter(ResourceLocation value) {
     }
 
@@ -57,7 +62,8 @@ public class RequirementRegistry {
     public record CooldownParameter(WaystonesIdParameter id, FloatParameter seconds) {
     }
 
-    public record VariableScaledCooldownParameter(WaystonesIdParameter variable, WaystonesIdParameter cooldown, FloatParameter seconds) {
+    public record VariableScaledCooldownParameter(WaystonesIdParameter variable, WaystonesIdParameter cooldown,
+                                                  FloatParameter seconds) {
     }
 
     public record ItemParameter(IdParameter item, FloatParameter count) {
@@ -261,6 +267,9 @@ public class RequirementRegistry {
         registerSerializer(FloatParameter.class, it -> new FloatParameter(Float.parseFloat(it)));
         registerSerializer(StringParameter.class, StringParameter::new);
         registerSerializer(IdParameter.class, it -> new IdParameter(ResourceLocation.parse(it)));
+        registerSerializer(TaggableIdParameter.class,
+                it -> it.startsWith("#") ? new TaggableIdParameter(ResourceLocation.tryParse(it.substring(1)),
+                        true) : new TaggableIdParameter(ResourceLocation.tryParse(it), false));
         registerSerializer(WaystonesIdParameter.class, it -> new WaystonesIdParameter(RequirementModifierParser.waystonesResourceLocation(it)));
         registerSerializer(ComponentParameter.class,
                 it -> new ComponentParameter(it.startsWith("$") ? Component.translatable(it.substring(1)) : Component.literal(it)));
@@ -321,6 +330,19 @@ public class RequirementRegistry {
         registerConditionResolver("target_is_waystone",
                 NoParameter.class,
                 (context, parameters) -> context.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.WAYSTONE));
+        registerConditionResolver("is_on_any_vehicle", NoParameter.class, (context, parameters) -> context.getEntity().getVehicle() != null);
+        registerConditionResolver("is_on_vehicle", TaggableIdParameter.class, (context, parameters) -> {
+            final var vehicle = context.getEntity().getVehicle();
+            if (vehicle != null) {
+                if (parameters.isTag()) {
+                    return vehicle.getType().is(TagKey.create(Registries.ENTITY_TYPE, parameters.value()));
+                } else {
+                    return BuiltInRegistries.ENTITY_TYPE.getKey(vehicle.getType()).equals(parameters.value());
+                }
+            }
+
+            return false;
+        });
         registerConditionResolver("is_with_passengers", NoParameter.class, (context, parameters) -> !WaystoneTeleportManager.findPassengers(context.getEntity()).isEmpty());
         registerConditionResolver("is_with_pets", NoParameter.class, (context, parameters) -> !WaystoneTeleportManager.findPets(context.getEntity()).isEmpty());
         registerConditionResolver("is_with_leashed",
