@@ -161,7 +161,8 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
         if (pos.getY() < world.getHeight() - 1) {
             if (world.getBlockState(pos.above()).canBeReplaced(context)) {
                 return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite())
-                        .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
+                        .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER)
+                        .setValue(ORIGIN, WaystoneOrigin.PLAYER);
             }
         }
 
