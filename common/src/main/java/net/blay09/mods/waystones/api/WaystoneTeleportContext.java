@@ -44,6 +44,10 @@ public interface WaystoneTeleportContext {
 
     WaystoneTeleportContext setPlaysEffect(boolean playsEffect);
 
+    boolean appliesModifiers();
+
+    WaystoneTeleportContext setAppliesModifiers(boolean appliesModifiers);
+
     Set<ResourceLocation> getFlags();
 
     WaystoneTeleportContext addFlag(ResourceLocation flag);
