@@ -378,6 +378,15 @@ public class RequirementRegistry {
                     }
                     return false;
                 });
+        registerConditionResolver("has_item",
+                ItemParameter.class,
+                (context, parameters) -> {
+                    if (context.getEntity() instanceof Player player) {
+                        final var item = BuiltInRegistries.ITEM.get(parameters.item().value());
+                        return player.getInventory().countItem(item) >= parameters.count().value();
+                    }
+                    return false;
+                });
         registerConditionResolver("has_empty_inventory",
                 NoParameter.class,
                 (context, parameters) -> {
