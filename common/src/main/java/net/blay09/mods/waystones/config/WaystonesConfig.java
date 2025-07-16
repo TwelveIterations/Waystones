@@ -109,6 +109,9 @@ public class WaystonesConfig {
         @Comment("List of entities that cannot be teleported, either as pet, leashed, or on warp plates.")
         @NestedType(ResourceLocation.class)
         public Set<ResourceLocation> entityDenyList = Set.of(ResourceLocation.withDefaultNamespace("wither"));
+
+        @Comment("Set to true to enable warp modifier items for applying status effects on teleports.")
+        public boolean enableModifiers = true;
     }
 
     public static class InventoryButton {

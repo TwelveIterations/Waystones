@@ -42,13 +42,15 @@ public class InternalMethodsImpl implements InternalMethods {
     @Override
     public Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init) {
         return WaystonesAPI.createCustomTeleportContext(entity, waystone).ifLeft(context -> {
-            final var shouldTransportPets = WaystonesConfig.getActive().teleports.transportPets;
+            final var config = WaystonesConfig.getActive();
+            final var shouldTransportPets = config.teleports.transportPets;
             if (shouldTransportPets == WaystonesConfig.TransportMobs.ENABLED || (shouldTransportPets == WaystonesConfig.TransportMobs.SAME_DIMENSION && !context.isDimensionalTeleport())) {
                 if (entity instanceof LivingEntity livingEntity) {
                     context.getAdditionalEntities().addAll(WaystoneTeleportManager.findPets(livingEntity));
                 }
             }
             context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(entity));
+            context.setAppliesModifiers(config.teleports.enableModifiers);
             init.accept(context);
             context.setRequirements(resolveRequirements(context));
         });
