@@ -78,7 +78,7 @@ public class WaystoneTeleportManager {
             Balm.getNetworking().sendToTracking(targetLevel, targetPos, new ClientboundTeleportEffectPacket(targetPos));
         }
 
-        if (targetTileEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
+        if (context.appliesModifiers() && targetTileEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
             teleportedEntities.forEach(waystoneBlockEntity::applyModifierEffects);
         }
 
