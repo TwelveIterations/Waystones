@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.blay09.mods.waystones.block.ModBlocks;
+import net.blay09.mods.waystones.api.WaystoneStyles;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.client.ModRenderers;
@@ -56,14 +56,8 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
             VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
             int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
             int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
-            int color = 0xFFFFFFFF;
-            if (state.getBlock() == ModBlocks.endStoneWaystone) {
-                color = 0xFF7200FF;
-            } else if (state.getBlock() == ModBlocks.blackstoneWaystone) {
-                color = 0xFF993333;
-            }
-
-            model.renderToBuffer(matrixStack, vertexBuilder, light, overlay, color);
+            final var style = WaystoneStyles.getStyle(state.getBlock());
+            model.renderToBuffer(matrixStack, vertexBuilder, light, overlay, style != null ? style.getRuneColor() : 0xFFFFFFFF);
         }
         matrixStack.popPose();
     }
