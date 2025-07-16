@@ -15,6 +15,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -374,6 +375,26 @@ public class RequirementRegistry {
                 (context, parameters) -> {
                     if (context.getEntity() instanceof Player player) {
                         return PlayerWaystoneManager.getCooldownMillisLeft(player, parameters.value()) > 0;
+                    }
+                    return false;
+                });
+        registerConditionResolver("has_empty_inventory",
+                NoParameter.class,
+                (context, parameters) -> {
+                    if (context.getEntity() instanceof Player player) {
+                        return player.getInventory().isEmpty();
+                    }
+                    return true;
+                });
+        registerConditionResolver("is_wearing_any_armor",
+                NoParameter.class,
+                (context, parameters) -> {
+                    if (context.getEntity() instanceof LivingEntity livingEntity) {
+                        for (final var itemStack : livingEntity.getArmorAndBodyArmorSlots()) {
+                            if (!itemStack.isEmpty()) {
+                                return true;
+                            }
+                        }
                     }
                     return false;
                 });
