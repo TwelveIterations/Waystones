@@ -14,9 +14,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -385,7 +386,7 @@ public class RequirementRegistry {
                 ItemParameter.class,
                 (context, parameters) -> {
                     if (context.getEntity() instanceof Player player) {
-                        final var item = BuiltInRegistries.ITEM.get(parameters.item().value());
+                        final var item = BuiltInRegistries.ITEM.getValue(parameters.item().value());
                         return player.getInventory().countItem(item) >= parameters.count().value();
                     }
                     return false;
@@ -402,9 +403,12 @@ public class RequirementRegistry {
                 NoParameter.class,
                 (context, parameters) -> {
                     if (context.getEntity() instanceof LivingEntity livingEntity) {
-                        for (final var itemStack : livingEntity.getArmorAndBodyArmorSlots()) {
-                            if (!itemStack.isEmpty()) {
-                                return true;
+                        for (final var equipmentslot : EquipmentSlotGroup.ARMOR) {
+                            if (equipmentslot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
+                                final var itemstack = livingEntity.getItemBySlot(equipmentslot);
+                                if (!itemstack.isEmpty()) {
+                                    return true;
+                                }
                             }
                         }
                     }
