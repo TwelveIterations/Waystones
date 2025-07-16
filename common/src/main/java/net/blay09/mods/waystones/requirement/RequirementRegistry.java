@@ -401,12 +401,9 @@ public class RequirementRegistry {
                 NoParameter.class,
                 (context, parameters) -> {
                     if (context.getEntity() instanceof LivingEntity livingEntity) {
-                        for (final var equipmentslot : EquipmentSlotGroup.ARMOR) {
-                            if (equipmentslot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
-                                final var itemstack = livingEntity.getItemBySlot(equipmentslot);
-                                if (!itemstack.isEmpty()) {
-                                    return true;
-                                }
+                        for (final var itemStack : livingEntity.getArmorAndBodyArmorSlots()) {
+                            if (!itemStack.isEmpty()) {
+                                return true;
                             }
                         }
                     }
