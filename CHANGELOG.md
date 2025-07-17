@@ -1,1 +1,3 @@
-- Fixed crash when more than one nameGenerationPresets are defined
+- Added Blackstone Waystone, End Stone Waystone and Deepslate Waystone from 1.21+
+- Backported `has_structure/*_waystone` tags from 1.21+ (older `is_desert` etc. tags are still supported)
+- Fixed bottom half of waystone not getting correct origin blockstate set
