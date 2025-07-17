@@ -1,1 +1,8 @@
-- Updated to Minecraft 1.21.7
+- Added `enableModifiers` config option (default: true) to control whether items can be placed as warp modifiers to apply status effects on teleports
+- Added `is_on_any_vehicle` warp condition
+- Added `is_on_vehicle(entity_type)` warp condition
+- Added `has_empty_inventory` warp condition
+- Added `is_wearing_any_armor` warp condition
+- Added `has_item(item, count)` warp condition (unlike `add_item_cost` this will not consume the item)
+- Added `dismount()` warp function to force-dismount the player
+- Fixed bottom waystone half not getting correct origin block state set
