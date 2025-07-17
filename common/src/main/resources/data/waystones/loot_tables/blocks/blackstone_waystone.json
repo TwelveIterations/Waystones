@@ -23,25 +23,30 @@
       ],
       "functions": [
         {
+          "function": "minecraft:copy_nbt",
           "conditions": [
             {
               "condition": "minecraft:match_tool",
               "predicate": {
-                "predicates": {
-                  "minecraft:enchantments": [
-                    {
-                      "enchantments": "minecraft:silk_touch",
-                      "levels": {
-                        "min": 1
-                      }
+                "enchantments": [
+                  {
+                    "enchantment": "minecraft:silk_touch",
+                    "levels": {
+                      "min": 1
                     }
-                  ]
-                }
+                  }
+                ]
               }
             }
           ],
-          "function": "minecraft:copy_components",
-          "source": "block_entity"
+          "source": "block_entity",
+          "ops": [
+            {
+              "source": "UUID",
+              "target": "UUID",
+              "op": "replace"
+            }
+          ]
         }
       ],
       "rolls": 1.0

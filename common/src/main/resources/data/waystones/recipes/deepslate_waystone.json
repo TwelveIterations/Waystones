@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "O": "minecraft:obsidian",
-    "S": "minecraft:deepslate",
-    "W": "waystones:warp_stone"
+    "O": {"item": "minecraft:obsidian"},
+    "S": {"item": "minecraft:deepslate"},
+    "W": {"item": "waystones:warp_stone"}
   },
   "pattern": [
     " S ",
@@ -13,6 +13,6 @@
   ],
   "result": {
     "count": 1,
-    "id": "waystones:deepslate_waystone"
+    "item": "waystones:deepslate_waystone"
   }
 }

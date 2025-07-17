@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "O": "minecraft:obsidian",
-    "S": "minecraft:blackstone",
-    "W": "waystones:warp_stone"
+    "O": {"item": "minecraft:obsidian"},
+    "S": {"item": "minecraft:blackstone"},
+    "W": {"item": "waystones:warp_stone"}
   },
   "pattern": [
     " S ",
@@ -13,6 +13,6 @@
   ],
   "result": {
     "count": 1,
-    "id": "waystones:blackstone_waystone"
+    "item": "waystones:blackstone_waystone"
   }
 }
