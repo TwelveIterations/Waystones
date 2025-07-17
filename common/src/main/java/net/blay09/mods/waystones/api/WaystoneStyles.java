@@ -9,15 +9,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WaystoneStyles {
+    private static final Map<ResourceLocation, WaystoneStyle> styles = new HashMap<>();
+    private static final Map<Block, WaystoneStyle> stylesByBlock = new HashMap<>();
+
     public static WaystoneStyle DEFAULT = register(new WaystoneStyle(ResourceLocation.fromNamespaceAndPath("waystones", "waystone")));
     public static WaystoneStyle MOSSY = register(new WaystoneStyle(ResourceLocation.fromNamespaceAndPath("waystones", "mossy_waystone")));
     public static WaystoneStyle SANDY = register(new WaystoneStyle(ResourceLocation.fromNamespaceAndPath("waystones", "sandy_waystone")));
     public static WaystoneStyle BLACKSTONE = register(new WaystoneStyle(ResourceLocation.fromNamespaceAndPath("waystones", "blackstone_waystone")).withRuneColor(0xFF993333));
     public static WaystoneStyle DEEPSLATE = register(new WaystoneStyle(ResourceLocation.fromNamespaceAndPath("waystones", "deepslate_waystone")));
     public static WaystoneStyle END_STONE = register(new WaystoneStyle(ResourceLocation.fromNamespaceAndPath("waystones", "end_stone_waystone")).withRuneColor(0xFF7200FF));
-
-    private static Map<ResourceLocation, WaystoneStyle> styles = new HashMap<>();
-    private static Map<Block, WaystoneStyle> stylesByBlock = new HashMap<>();
 
     public static WaystoneStyle register(WaystoneStyle style) {
         styles.put(style.getBlockRegistryName(), style);
