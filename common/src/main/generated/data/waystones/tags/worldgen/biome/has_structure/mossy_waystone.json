@@ -1,0 +1,20 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:swamp",
+    "minecraft:mangrove_swamp",
+    "minecraft:mushroom_fields",
+    {
+      "id": "#minecraft:is_jungle",
+      "required": false
+    },
+    {
+      "id": "#waystones:is_mushroom",
+      "required": false
+    },
+    {
+      "id": "#waystones:is_swamp",
+      "required": false
+    }
+  ]
+}
