@@ -19,10 +19,10 @@ public class ModBlockEntities {
     public static DeferredObject<BlockEntityType<PortstoneBlockEntity>> portstone;
 
     public static void initialize(BalmBlockEntities blockEntities) {
-        waystone = blockEntities.registerBlockEntity(id("waystone"), WaystoneBlockEntity::new, () -> new Block[]{ModBlocks.waystone, ModBlocks.mossyWaystone, ModBlocks.sandyWaystone});
+        waystone = blockEntities.registerBlockEntity(id("waystone"), WaystoneBlockEntity::new, () -> new Block[]{ModBlocks.waystone, ModBlocks.mossyWaystone, ModBlocks.sandyWaystone, ModBlocks.blackstoneWaystone, ModBlocks.endStoneWaystone, ModBlocks.deepslateWaystone});
         sharestone = blockEntities.registerBlockEntity(id("sharestone"), SharestoneBlockEntity::new, () -> ArrayUtils.add(ModBlocks.scopedSharestones, ModBlocks.sharestone));
-        warpPlate = blockEntities.registerBlockEntity(id("warp_plate"), WarpPlateBlockEntity::new, () -> new Block[] {ModBlocks.warpPlate});
-        portstone = blockEntities.registerBlockEntity(id("portstone"), PortstoneBlockEntity::new, () -> new Block[] {ModBlocks.portstone});
+        warpPlate = blockEntities.registerBlockEntity(id("warp_plate"), WarpPlateBlockEntity::new, () -> new Block[]{ModBlocks.warpPlate});
+        portstone = blockEntities.registerBlockEntity(id("portstone"), PortstoneBlockEntity::new, () -> new Block[]{ModBlocks.portstone});
     }
 
     private static ResourceLocation id(String name) {

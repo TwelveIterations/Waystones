@@ -4,5 +4,8 @@ public enum WorldGenStyle {
     DEFAULT,
     MOSSY,
     SANDY,
+    BLACKSTONE,
+    DEEPSLATE,
+    END_STONE,
     BIOME
 }

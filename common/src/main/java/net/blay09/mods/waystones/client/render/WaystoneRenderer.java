@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.WaystoneStyles;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.client.ModRenderers;
@@ -54,7 +55,19 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
             VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
             int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
             int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
-            model.renderToBuffer(matrixStack, vertexBuilder, light, overlay, 1f, 1f, 1f, 1f);
+            final var style = WaystoneStyles.getStyle(state.getBlock());
+            float red = 1f;
+            float green = 1f;
+            float blue = 1f;
+            float alpha = 1f;
+            if (style != null) {
+                int color = style.getRuneColor();
+                red = (float) (color >> 16 & 0xFF) / 255f;
+                green = (float) (color >> 8 & 0xFF) / 255f;
+                blue = (float) (color & 0xFF) / 255f;
+                alpha = (float) (color >> 24 & 0xFF) / 255f;
+            }
+            model.renderToBuffer(matrixStack, vertexBuilder, light, overlay, red, green, blue, alpha);
         }
         matrixStack.popPose();
     }

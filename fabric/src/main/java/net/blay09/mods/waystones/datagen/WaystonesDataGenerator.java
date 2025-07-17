@@ -9,5 +9,6 @@ public class WaystonesDataGenerator implements DataGeneratorEntrypoint {
         FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
         pack.addProvider(WaystonesBlockTagProvider::new);
         pack.addProvider(WaystonesItemTagProvider::new);
+        pack.addProvider(WaystonesBiomeTagProvider::new);
     }
 }

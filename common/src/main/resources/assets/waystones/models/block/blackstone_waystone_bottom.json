@@ -1,0 +1,7 @@
+{
+    "parent": "waystones:block/waystone_bottom",
+    "textures": {
+        "particle": "minecraft:block/blackstone",
+        "texture": "waystones:block/blackstone_waystone"
+    }
+}

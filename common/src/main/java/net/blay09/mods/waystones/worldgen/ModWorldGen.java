@@ -9,10 +9,13 @@ import net.blay09.mods.balm.api.event.server.ServerStartingEvent;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.api.world.BiomePredicate;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.ModBlocks;
+import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WorldGenStyle;
 import net.blay09.mods.waystones.mixin.StructureTemplatePoolAccessor;
+import net.blay09.mods.waystones.tag.ModBiomeTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
@@ -20,7 +23,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
@@ -31,11 +36,16 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ModWorldGen {
     private static final ResourceLocation waystone = new ResourceLocation("waystones", "waystone");
     private static final ResourceLocation mossyWaystone = new ResourceLocation("waystones", "mossy_waystone");
     private static final ResourceLocation sandyWaystone = new ResourceLocation("waystones", "sandy_waystone");
+    private static final ResourceLocation blackstoneWaystone = new ResourceLocation("waystones", "blackstone_waystone");
+    private static final ResourceLocation deepslateWaystone = new ResourceLocation("waystones", "deepslate_waystone");
+    private static final ResourceLocation endStoneWaystone = new ResourceLocation("waystones", "end_stone_waystone");
     private static final ResourceLocation villageWaystoneStructure = new ResourceLocation("waystones", "village/common/waystone");
     private static final ResourceLocation desertVillageWaystoneStructure = new ResourceLocation("waystones", "village/desert/waystone");
     private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(Registries.PROCESSOR_LIST,
@@ -47,19 +57,28 @@ public class ModWorldGen {
         worldGen.registerFeature(waystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.waystone.defaultBlockState()));
         worldGen.registerFeature(mossyWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.mossyWaystone.defaultBlockState()));
         worldGen.registerFeature(sandyWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.sandyWaystone.defaultBlockState()));
+        worldGen.registerFeature(blackstoneWaystone,
+                () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.blackstoneWaystone.defaultBlockState()));
+        worldGen.registerFeature(deepslateWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.deepslateWaystone.defaultBlockState()));
+        worldGen.registerFeature(endStoneWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.endStoneWaystone.defaultBlockState()));
 
         waystonePlacement = worldGen.registerPlacementModifier(id("waystone"), () -> () -> WaystonePlacement.CODEC);
 
         final var waystonesCommonConfig = new ResourceLocation(Waystones.MOD_ID, "common");
         final Runnable configLoadHandler = () -> {
-            final var IS_DESERT = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_desert"));
-            final var IS_SWAMP = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_swamp"));
-            final var IS_MUSHROOM = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_mushroom"));
-            worldGen.addFeatureToBiomes(matchesTag(IS_DESERT), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY));
-            worldGen.addFeatureToBiomes(matchesTag(BiomeTags.IS_JUNGLE), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-            worldGen.addFeatureToBiomes(matchesTag(IS_SWAMP), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-            worldGen.addFeatureToBiomes(matchesTag(IS_MUSHROOM), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-            worldGen.addFeatureToBiomes(matchesNeitherTag(List.of(IS_SWAMP, IS_DESERT, BiomeTags.IS_JUNGLE, IS_MUSHROOM)),
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.SANDY));
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_MOSSY_WAYSTONE),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.MOSSY));
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.BLACKSTONE));
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.END_STONE));
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE),
                     GenerationStep.Decoration.VEGETAL_DECORATION,
                     getWaystoneFeature(WorldGenStyle.DEFAULT));
         };
@@ -73,23 +92,26 @@ public class ModWorldGen {
             configLoadHandler.run();
         }
 
+        worldGen.registerPoiType(id("wild_waystone"), () -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.WILDERNESS), 1, 1));
+        worldGen.registerPoiType(id("village_waystone"), () -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.VILLAGE), 1, 1));
+
         Balm.getEvents().onEvent(ServerStartingEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
+    }
+
+    private static Set<BlockState> gatherWaystonesOfOrigin(WaystoneOrigin origin) {
+        final var sourceBlocks = List.of(ModBlocks.waystone,
+                ModBlocks.sandyWaystone,
+                ModBlocks.mossyWaystone,
+                ModBlocks.blackstoneWaystone,
+                ModBlocks.endStoneWaystone);
+        return sourceBlocks.stream()
+                .flatMap(it -> it.getStateDefinition().getPossibleStates().stream())
+                .filter(it -> it.getValue(WaystoneBlock.ORIGIN) == origin)
+                .collect(Collectors.toSet());
     }
 
     private static BiomePredicate matchesTag(TagKey<Biome> tag) {
         return (resourceLocation, biome) -> biome.is(tag);
-    }
-
-    private static BiomePredicate matchesNeitherTag(List<TagKey<Biome>> tags) {
-        return (resourceLocation, biome) -> {
-            for (TagKey<Biome> tag : tags) {
-                if (biome.is(tag)) {
-                    return false;
-                }
-            }
-
-            return true;
-        };
     }
 
     private static ResourceLocation id(String name) {
@@ -101,9 +123,15 @@ public class ModWorldGen {
         return switch (worldGenStyle) {
             case MOSSY -> mossyWaystone;
             case SANDY -> sandyWaystone;
+            case BLACKSTONE -> blackstoneWaystone;
+            case DEEPSLATE -> deepslateWaystone;
+            case END_STONE -> endStoneWaystone;
             case BIOME -> switch (biomeWorldGenStyle) {
                 case SANDY -> sandyWaystone;
                 case MOSSY -> mossyWaystone;
+                case BLACKSTONE -> blackstoneWaystone;
+                case DEEPSLATE -> deepslateWaystone;
+                case END_STONE -> endStoneWaystone;
                 default -> waystone;
             };
             default -> waystone;
