@@ -24,6 +24,9 @@ public class WaystonesBlockTagProvider extends FabricTagProvider<Block> {
         mineableBuilder.add(ModBlocks.waystone,
                 ModBlocks.sandyWaystone,
                 ModBlocks.mossyWaystone,
+                ModBlocks.blackstoneWaystone,
+                ModBlocks.deepslateWaystone,
+                ModBlocks.endStoneWaystone,
                 ModBlocks.warpPlate,
                 ModBlocks.portstone,
                 ModBlocks.sharestone);
@@ -35,6 +38,9 @@ public class WaystonesBlockTagProvider extends FabricTagProvider<Block> {
         isTeleportTargetBuilder.add(ModBlocks.waystone,
                 ModBlocks.sandyWaystone,
                 ModBlocks.mossyWaystone,
+                ModBlocks.blackstoneWaystone,
+                ModBlocks.deepslateWaystone,
+                ModBlocks.endStoneWaystone,
                 ModBlocks.warpPlate,
                 ModBlocks.portstone,
                 ModBlocks.sharestone);
