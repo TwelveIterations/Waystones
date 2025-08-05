@@ -1,1 +1,1 @@
-- Updated to Minecraft 1.21.8
+- Fixed inventory button refusing on target-bound warp conditions before a target is chosen
