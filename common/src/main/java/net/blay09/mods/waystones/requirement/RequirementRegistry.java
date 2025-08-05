@@ -288,7 +288,7 @@ public class RequirementRegistry {
         registerConditionResolver("source_name_contains",
                 StringParameter.class,
                 (context, parameters) -> context.getFromWaystone().map(waystone -> waystone.getName().getString().contains(parameters.value())).orElse(false));
-        registerConditionResolver("is_interdimensional", NoParameter.class, (context, parameters) -> context.isDimensionalTeleport());
+        registerBoundConditionResolver("is_interdimensional", NoParameter.class, (context, parameters) -> context.isDimensionalTeleport());
         registerConditionResolver("source_is_warp_plate", NoParameter.class,
                 (context, parameters) -> context.getFromWaystone().map(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE)).orElse(false));
         registerConditionResolver("source_is_portstone", NoParameter.class,
@@ -310,27 +310,27 @@ public class RequirementRegistry {
         registerConditionResolver("source_is_return_scroll", NoParameter.class, (context, parameters) -> context.getWarpItem().is(ModItemTags.RETURN_SCROLLS));
         registerConditionResolver("source_is_warp_scroll", NoParameter.class, (context, parameters) -> context.getWarpItem().is(ModItemTags.WARP_SCROLLS));
         registerConditionResolver("source_is_warp_stone", NoParameter.class, (context, parameters) -> context.getWarpItem().is(ModItemTags.WARP_STONES));
-        registerConditionResolver("target_name_equals",
+        registerBoundConditionResolver("target_name_equals",
                 StringParameter.class,
                 (context, parameters) -> parameters.value().equals(context.getTargetWaystone().getName().getString()));
-        registerConditionResolver("target_name_contains",
+        registerBoundConditionResolver("target_name_contains",
                 StringParameter.class,
                 (context, parameters) -> context.getTargetWaystone().getName().getString().contains(parameters.value()));
-        registerConditionResolver("target_is_warp_plate",
+        registerBoundConditionResolver("target_is_warp_plate",
                 NoParameter.class,
                 (context, parameters) -> context.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.WARP_PLATE));
-        registerConditionResolver("target_is_global",
+        registerBoundConditionResolver("target_is_global",
                 NoParameter.class,
                 (context, parameters) -> context.getTargetWaystone().getVisibility() == WaystoneVisibility.GLOBAL);
-        registerConditionResolver("target_is_sharestone",
+        registerBoundConditionResolver("target_is_sharestone",
                 NoParameter.class,
                 (context, parameters) -> WaystoneTypes.isSharestone(context.getTargetWaystone().getWaystoneType()));
         for (final var sharestoneType : WaystoneTypes.SHARESTONES) {
-            registerConditionResolver("target_is_" + sharestoneType.getPath(),
+            registerBoundConditionResolver("target_is_" + sharestoneType.getPath(),
                     NoParameter.class,
                     (context, parameters) -> sharestoneType.equals(context.getTargetWaystone().getWaystoneType()));
         }
-        registerConditionResolver("target_is_waystone",
+        registerBoundConditionResolver("target_is_waystone",
                 NoParameter.class,
                 (context, parameters) -> context.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.WAYSTONE));
         registerConditionResolver("is_on_any_vehicle", NoParameter.class, (context, parameters) -> context.getEntity().getVehicle() != null);
@@ -357,7 +357,7 @@ public class RequirementRegistry {
                         .map(waystone -> waystone.getDimension().location())
                         .orElseGet(() -> context.getEntity().level().dimension().location())
                         .equals(parameters.value));
-        registerConditionResolver("target_is_dimension",
+        registerBoundConditionResolver("target_is_dimension",
                 IdParameter.class,
                 (context, parameters) -> context.getTargetWaystone().getDimension().location().equals(parameters.value));
         registerConditionResolver("involves_dimension",
@@ -366,7 +366,7 @@ public class RequirementRegistry {
                         .map(waystone -> waystone.getDimension().location())
                         .orElseGet(() -> context.getEntity().level().dimension().location())
                         .equals(parameters.value));
-        registerConditionResolver("is_within_distance",
+        registerBoundConditionResolver("is_within_distance",
                 FloatParameter.class,
                 (context, parameters) -> (float) Math.sqrt(context.getEntity()
                         .distanceToSqr(context.getTargetWaystone().getPos().getCenter())) <= parameters.value);
@@ -416,7 +416,7 @@ public class RequirementRegistry {
                     return false;
                 });
 
-        registerVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getTargetWaystone().getPos().getCenter())));
+        registerBoundVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getTargetWaystone().getPos().getCenter())));
         registerVariableResolver("leashed", it -> (float) WaystoneTeleportManager.findLeashedAnimals(it.getEntity()).size());
         registerVariableResolver("pets", it -> (float) WaystoneTeleportManager.findPets(it.getEntity()).size());
         registerVariableResolver("passengers", it -> (float) WaystoneTeleportManager.findPassengers(it.getEntity()).size());
@@ -476,6 +476,23 @@ public class RequirementRegistry {
         });
     }
 
+    public static void registerBoundVariableResolver(String name, Function<WaystoneTeleportContext, Float> resolver) {
+        register(new VariableResolver() {
+            @Override
+            public ResourceLocation getId() {
+                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
+            }
+
+            @Override
+            public float resolve(WaystoneTeleportContext context) {
+                if (!context.getTargetWaystone().isValid()) {
+                    return 0f;
+                }
+                return resolver.apply(context);
+            }
+        });
+    }
+
     public static <P> void registerConditionResolver(String name, Class<P> parameterType, BiFunction<WaystoneTeleportContext, P, Boolean> resolver) {
         register(new ConditionResolver<P>() {
             @Override
@@ -509,6 +526,52 @@ public class RequirementRegistry {
 
             @Override
             public boolean matches(WaystoneTeleportContext context, P parameters) {
+                return !resolver.apply(context, parameters);
+            }
+        });
+    }
+
+    public static <P> void registerBoundConditionResolver(String name, Class<P> parameterType, BiFunction<WaystoneTeleportContext, P, Boolean> resolver) {
+        register(new ConditionResolver<P>() {
+            @Override
+            public ResourceLocation getId() {
+                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
+            }
+
+            @Override
+            public Class<P> getParameterType() {
+                return parameterType;
+            }
+
+            @Override
+            public boolean matches(WaystoneTeleportContext context, P parameters) {
+                if (!context.getTargetWaystone().isValid()) {
+                    return false;
+                }
+
+                return resolver.apply(context, parameters);
+            }
+        });
+
+        final var index = name.indexOf("is_");
+        final var notName = index != -1 ? name.substring(0, index + 3) + "not_" + name.substring(index + 3) : "not_" + name;
+        register(new ConditionResolver<P>() {
+            @Override
+            public ResourceLocation getId() {
+                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, notName);
+            }
+
+            @Override
+            public Class<P> getParameterType() {
+                return parameterType;
+            }
+
+            @Override
+            public boolean matches(WaystoneTeleportContext context, P parameters) {
+                if (!context.getTargetWaystone().isValid()) {
+                    return false;
+                }
+
                 return !resolver.apply(context, parameters);
             }
         });
