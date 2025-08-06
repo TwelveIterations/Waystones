@@ -3,9 +3,8 @@
     "minecraft:swamp",
     "minecraft:mangrove_swamp",
     "minecraft:mushroom_fields",
-    {
-      "id": "#minecraft:is_jungle",
-      "required": false
-    }
+    "minecraft:bamboo_jungle",
+    "minecraft:jungle",
+    "minecraft:sparse_jungle"
   ]
 }
