@@ -1,1 +1,1 @@
-- Fixed inventory button refusing on target-bound warp conditions before a target is chosen
+- Fixed worldgen feature cycle order crash that for some reason didn't happen to everyone
