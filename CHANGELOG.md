@@ -1,1 +1,1 @@
-- Fixed inventory button refusing on target-bound warp conditions before a target is chosen
+- Fixed feature cycle order crash when `wildWaystoneStyle` was set to `MOSSY`
