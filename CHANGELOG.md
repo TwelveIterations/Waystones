@@ -1,1 +1,1 @@
-- Fixed worldgen feature cycle order crash that for some reason didn't happen to everyone
+- Fixed feature cycle order crash when `wildWaystoneStyle` was set to `MOSSY`
