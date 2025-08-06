@@ -1,9 +1,10 @@
 {
   "replace": false,
   "values": [
-    {
-      "id": "#minecraft:is_nether",
-      "required": false
-    }
+    "minecraft:nether_wastes",
+    "minecraft:soul_sand_valley",
+    "minecraft:crimson_forest",
+    "minecraft:warped_forest",
+    "minecraft:basalt_deltas"
   ]
 }
