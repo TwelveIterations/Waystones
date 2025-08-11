@@ -1,1 +1,1 @@
-- Fixed feature cycle order crash when `wildWaystoneStyle` was set to `MOSSY`
+- Fixed desert village waystones and waterlogged waystone structures all being considered the same waystone
