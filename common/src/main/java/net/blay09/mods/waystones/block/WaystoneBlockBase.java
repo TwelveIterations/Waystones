@@ -117,13 +117,6 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             }
         }
 
-        if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity && !player.getAbilities().instabuild) {
-            for (int i = 0; i < waystoneBlockEntity.getContainer().getContainerSize(); i++) {
-                ItemStack itemStack = waystoneBlockEntity.getContainer().getItem(i);
-                popResource(world, pos, itemStack);
-            }
-        }
-
         return super.playerWillDestroy(world, pos, state, player);
     }
 
