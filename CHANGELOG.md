@@ -1,1 +1,1 @@
-- Fixed desert village waystones and waterlogged waystone structures all being considered the same waystone
+- Updated JourneyMap support to place Waystones and Sharestones into Groups
