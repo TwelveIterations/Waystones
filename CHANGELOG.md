@@ -1,1 +1,2 @@
+- Updated JourneyMap support to place Waystones and Sharestones into Groups
 - Fixed dupe bug
