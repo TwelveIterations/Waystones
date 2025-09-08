@@ -14,7 +14,8 @@ import journeymap.api.v2.common.waypoint.WaypointFactory;
 import journeymap.api.v2.common.waypoint.WaypointGroup;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.event.WaystoneRemoveReceivedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneUpdateReceivedEvent;
 import net.blay09.mods.waystones.api.event.WaystonesListReceivedEvent;
@@ -50,8 +51,6 @@ public class JourneyMapIntegration implements IClientPlugin {
     }
 
     private IClientAPI api;
-    private WaypointGroup waystonesGroup;
-    private WaypointGroup sharestonesGroup;
     private boolean journeyMapReady;
     private final Map<UUID, String> waystoneToWaypoint = new HashMap<>();
 
@@ -72,9 +71,6 @@ public class JourneyMapIntegration implements IClientPlugin {
 
         // This fires after all waypoints have been loaded
         ClientEventRegistry.MAPPING_EVENT.subscribe(Waystones.MOD_ID, this::onMappingEvent);
-
-        waystonesGroup = WaypointFactory.createWaypointGroup(Waystones.MOD_ID, "waystones");
-        sharestonesGroup = WaypointFactory.createWaypointGroup(Waystones.MOD_ID, "sharestones");
     }
 
     /**
@@ -211,9 +207,21 @@ public class JourneyMapIntegration implements IClientPlugin {
 
     private WaypointGroup getWaystoneGroup(Waystone waystone) {
         if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
-            return sharestonesGroup;
+            return Optional.ofNullable(api.getWaypointGroupByName(Waystones.MOD_ID, "Sharestones"))
+                    .orElseGet(() -> {
+                        final var group = WaypointFactory.createWaypointGroup(Waystones.MOD_ID, "Sharestones");
+                        group.setLocked(true);
+                        api.addWaypointGroup(group);
+                        return group;
+                    });
         } else {
-            return waystonesGroup;
+            return Optional.ofNullable(api.getWaypointGroupByName(Waystones.MOD_ID, "Waystones"))
+                    .orElseGet(() -> {
+                        final var group = WaypointFactory.createWaypointGroup(Waystones.MOD_ID, "Waystones");
+                        group.setLocked(true);
+                        api.addWaypointGroup(group);
+                        return group;
+                    });
         }
     }
 }
