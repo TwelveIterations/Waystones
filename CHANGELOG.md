@@ -1,1 +1,1 @@
-- Fixed desert village waystones and waterlogged waystone structures all being considered the same waystone
+- Fixed dupe bug
