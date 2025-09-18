@@ -32,7 +32,7 @@ public record ServerboundEditWaystonePacket(UUID waystoneUid, String name, Wayst
     );
 
     public static void handle(ServerPlayer player, ServerboundEditWaystonePacket message) {
-        final var server = player.getServer();
+        final var server = player.level().getServer();
         final var waystone = new WaystoneProxy(server, message.waystoneUid);
         if (!waystone.isValid()) {
             Waystones.logger.warn("{} tried to edit an invalid waystone with id {}", player.getName().getString(), message.waystoneUid);

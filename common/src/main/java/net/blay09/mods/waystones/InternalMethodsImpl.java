@@ -62,7 +62,7 @@ public class InternalMethodsImpl implements InternalMethods {
             return Either.right(new WaystoneTeleportError.InvalidWaystone(waystone));
         }
 
-        MinecraftServer server = entity.getServer();
+        MinecraftServer server = entity.level().getServer();
         if (server == null) {
             return Either.right(new WaystoneTeleportError.NotOnServer());
         }

@@ -144,7 +144,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult blockHitResult) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             final var targetWaystoneType = getTargetWaystoneType();
             final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystoneType(player, targetWaystoneType));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);

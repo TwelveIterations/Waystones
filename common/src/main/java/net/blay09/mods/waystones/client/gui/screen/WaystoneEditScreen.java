@@ -2,7 +2,6 @@ package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
-import net.blay09.mods.waystones.core.WaystoneVisibilities;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.network.message.ServerboundEditWaystonePacket;
 import net.blay09.mods.waystones.network.message.ServerboundRequestManageWaystoneModifiersPacket;
@@ -11,10 +10,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.Locale;
 
@@ -91,26 +91,26 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (menu.canEdit() && textField.isMouseOver(mouseX, mouseY) && button == 1) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (menu.canEdit() && textField.isMouseOver(event.x(), event.y()) && event.button() == 1) {
             textField.setValue("");
             return true;
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (textField.keyPressed(keyCode, scanCode, modifiers) || textField.isFocused()) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
+    public boolean keyPressed(KeyEvent event) {
+        if (textField.keyPressed(event) || textField.isFocused()) {
+            if (event.isEscape() || event.isConfirmation()) {
                 this.onClose();
             }
 
             return true;
         }
 
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override

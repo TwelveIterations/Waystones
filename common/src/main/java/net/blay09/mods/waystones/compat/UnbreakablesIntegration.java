@@ -8,7 +8,7 @@ import net.blay09.mods.waystones.api.WaystonesAPI;
 public class UnbreakablesIntegration {
     public UnbreakablesIntegration() {
         UnbreakablesAPI.registerCondition("is_waystone_owner", NoParameter.class, (context, params) -> {
-            final var server = context.getPlayer().getServer();
+            final var server = context.getPlayer().level().getServer();
             if (server != null) {
                 final var waystone = WaystonesAPI.getWaystoneAt(server, context.getBlockGetter(), context.getPos());
                 return waystone.map(it -> it.isOwner(context.getPlayer()))
@@ -18,7 +18,7 @@ public class UnbreakablesIntegration {
         });
 
         UnbreakablesAPI.registerCondition("is_waystone_global", NoParameter.class, (context, params) -> {
-            final var server = context.getPlayer().getServer();
+            final var server = context.getPlayer().level().getServer();
             if (server != null) {
                 final var waystone = WaystonesAPI.getWaystoneAt(server, context.getBlockGetter(), context.getPos());
                 return waystone.map(it -> it.getVisibility() == WaystoneVisibility.GLOBAL)

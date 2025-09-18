@@ -66,7 +66,7 @@ public class PlayerWaystoneManager {
         if (inventoryButtonMode.isReturnToNearest()) {
             return PlayerWaystoneManager.getNearestWaystone(player);
         } else if (inventoryButtonMode.hasNamedTarget()) {
-            return SavedDataWaystonesStore.get(player.getServer()).findWaystoneByName(inventoryButtonMode.getNamedTarget());
+            return SavedDataWaystonesStore.get(player.level().getServer()).findWaystoneByName(inventoryButtonMode.getNamedTarget());
         }
 
         return Optional.empty();
@@ -112,7 +112,7 @@ public class PlayerWaystoneManager {
     }
 
     public static WaystonesPlayerStore getPlayerWaystoneData(@Nullable Level world) {
-        return world == null || world.isClientSide ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
+        return world == null || world.isClientSide() ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
     }
 
     public static WaystonesPlayerStore getPlayerWaystoneData(BalmEnvironment side) {
@@ -186,7 +186,7 @@ public class PlayerWaystoneManager {
     public static Collection<Waystone> getTargetsForWaystoneType(Player player, ResourceLocation waystoneType) {
         final var result = new ArrayList<Waystone>();
         if (WaystoneTypes.isSharestone(waystoneType)) {
-            result.addAll(SavedDataWaystonesStore.get(player.getServer()).getWaystonesByType(waystoneType));
+            result.addAll(SavedDataWaystonesStore.get(player.level().getServer()).getWaystonesByType(waystoneType));
         } else {
             result.addAll(PlayerWaystoneManager.getActivatedWaystones(player));
         }

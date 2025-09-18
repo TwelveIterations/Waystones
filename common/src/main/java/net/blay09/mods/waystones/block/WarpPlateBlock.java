@@ -12,6 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -76,8 +77,6 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         }
     }
 
-    private static final Style GALACTIC_STYLE = Style.EMPTY.withFont(ResourceLocation.fromNamespaceAndPath("minecraft", "alt"));
-
     private static final VoxelShape SHAPE = Shapes.or(
             box(0.0, 0.0, 0.0, 16.0, 1.0, 16.0),
             box(3.0, 1.0, 3.0, 13.0, 2.0, 13.0)
@@ -108,7 +107,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         if (entity.getX() >= pos.getX() && entity.getX() < pos.getX() + 1
                 && entity.getY() >= pos.getY() && entity.getY() < pos.getY() + 1
                 && entity.getZ() >= pos.getZ() && entity.getZ() < pos.getZ() + 1
-                && !world.isClientSide) {
+                && !world.isClientSide()) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
             if (tileEntity instanceof WarpPlateBlockEntity) {
                 ((WarpPlateBlockEntity) tileEntity).onEntityCollision(entity);
@@ -159,7 +158,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     @Override
     protected InteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         if (itemStack.is(ModItemTags.WARP_SHARDS)) {
-            if (!level.isClientSide && level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
+            if (!level.isClientSide() && level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
                 final var existing = warpPlate.getShardItem();
                 if (existing.isEmpty()) {
                     warpPlate.setShardItem(player.getAbilities().instabuild ? itemStack.copy().split(1) : itemStack.split(1));
@@ -174,7 +173,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult blockHitResult) {
         if (player.isShiftKeyDown()) {
-            if (!level.isClientSide && level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
+            if (!level.isClientSide() && level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
                 final var itemStack = warpPlate.getShardItem();
                 if (!itemStack.isEmpty()) {
                     final var itemEntity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, itemStack);
@@ -213,7 +212,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
 
     public static Component getGalacticName(UUID waystoneUid) {
         final var name = getGalacticIdentifier(waystoneUid);
-        return Component.literal(name).withStyle(WarpPlateBlock.getColorForName(name)).withStyle(GALACTIC_STYLE);
+        return Component.literal(name).withStyle(WarpPlateBlock.getColorForName(name)).withStyle(ChatFormatting.OBFUSCATED);
     }
 
     @Override
@@ -233,7 +232,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         if (tickingBlockEntityType == null) {
             return null;
         }
-        return world.isClientSide ? null : createTickerHelper(type,
+        return world.isClientSide() ? null : createTickerHelper(type,
                 tickingBlockEntityType,
                 (level, pos, state2, blockEntity) -> blockEntity.serverTick());
     }

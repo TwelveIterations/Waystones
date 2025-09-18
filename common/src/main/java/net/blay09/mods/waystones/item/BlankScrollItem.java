@@ -21,7 +21,7 @@ public class BlankScrollItem extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        if (!context.getLevel().isClientSide) {
+        if (!context.getLevel().isClientSide()) {
             final var blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
             if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntityBase) {
                 final var waystone = waystoneBlockEntityBase.getWaystone();

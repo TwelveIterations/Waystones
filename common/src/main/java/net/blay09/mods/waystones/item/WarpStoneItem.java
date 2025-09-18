@@ -57,7 +57,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
     @Override
     public void onUseTick(Level level, LivingEntity entity, ItemStack itemStack, int remainingTicks) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             int duration = getUseDuration(itemStack, entity);
             float progress = (duration - remainingTicks) / (float) duration;
             boolean shouldMirror = entity.getUsedItemHand() == InteractionHand.MAIN_HAND ^ entity.getMainArm() == HumanoidArm.RIGHT;
@@ -126,7 +126,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
     @Override
     public ItemStack finishUsingItem(ItemStack itemStack, Level world, LivingEntity entity) {
-        if (!world.isClientSide && entity instanceof ServerPlayer player) {
+        if (!world.isClientSide() && entity instanceof ServerPlayer player) {
             final var hand = player.getUsedItemHand();
             final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForItem(player, itemStack));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
@@ -140,7 +140,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
                 public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
                     return new WaystoneSelectionMenu(ModMenus.warpStoneSelection.get(), null, windowId, waystones, Collections.emptySet())
                             .withWarpItem(itemStack)
-                            .setPostTeleportHandler(context -> itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand)));
+                            .setPostTeleportHandler(context -> itemStack.hurtAndBreak(1, player, hand.asEquipmentSlot()));
                 }
 
                 @Override
@@ -161,7 +161,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
     @Override
     public InteractionResult use(Level world, Player player, InteractionHand hand) {
         final var itemStack = player.getItemInHand(hand);
-        if (!player.isUsingItem() && !world.isClientSide) {
+        if (!player.isUsingItem() && !world.isClientSide()) {
             world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.1f, 2f);
         }
         if (getUseDuration(itemStack, player) <= 0 || Compat.isVivecraftInstalled) {

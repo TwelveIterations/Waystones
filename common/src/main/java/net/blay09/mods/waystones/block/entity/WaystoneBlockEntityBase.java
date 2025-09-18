@@ -165,7 +165,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     }
 
     public Waystone getWaystone() {
-        if (!waystone.isValid() && level != null && !level.isClientSide && !shouldNotInitialize) {
+        if (!waystone.isValid() && level != null && !level.isClientSide() && !shouldNotInitialize) {
             if (waystoneUid != null) {
                 waystone = new WaystoneProxy(level.getServer(), waystoneUid);
             }

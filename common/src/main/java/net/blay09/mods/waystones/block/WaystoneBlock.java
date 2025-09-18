@@ -75,13 +75,13 @@ public class WaystoneBlock extends WaystoneBlockBase {
     protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 blockEntity.getSelectionMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openMenu(player, menuProvider));
             }
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);
 
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 final var nameComponent = waystone.getName().copy().withStyle(ChatFormatting.WHITE);
                 final var chatComponent = Component.translatable("chat.waystones.waystone_activated", nameComponent).withStyle(ChatFormatting.YELLOW);
                 player.displayClientMessage(chatComponent, false);
@@ -93,7 +93,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
 
             notifyObserversOfAction(world, pos);
 
-            if (world.isClientSide) {
+            if (world.isClientSide()) {
                 for (int i = 0; i < 32; i++) {
                     world.addParticle(ParticleTypes.ENCHANT,
                             pos.getX() + 0.5 + (world.random.nextDouble() - 0.5) * 2,

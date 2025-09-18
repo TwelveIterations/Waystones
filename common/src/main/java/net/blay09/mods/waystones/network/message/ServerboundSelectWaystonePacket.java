@@ -29,7 +29,7 @@ public record ServerboundSelectWaystonePacket(UUID waystoneUid) implements Custo
             return;
         }
 
-        final var waystone = new WaystoneProxy(player.getServer(), message.waystoneUid);
+        final var waystone = new WaystoneProxy(player.level().getServer(), message.waystoneUid);
         if (selectionMenu.getWaystones().stream().noneMatch(it -> it.getWaystoneUid().equals(waystone.getWaystoneUid()))) {
             Waystones.logger.warn("{} tried to teleport to waystone {} that they don't have access to.",
                     player.getName().getString(),

@@ -29,7 +29,7 @@ public record ServerboundRemoveWaystonePacket(UUID waystoneUid) implements Custo
     );
 
     public static void handle(ServerPlayer player, ServerboundRemoveWaystonePacket message) {
-        final var server = player.getServer();
+        final var server = player.level().getServer();
         WaystoneProxy waystone = new WaystoneProxy(server, message.waystoneUid);
         PlayerWaystoneManager.deactivateWaystone(player, waystone);
 

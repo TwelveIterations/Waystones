@@ -36,7 +36,7 @@ public class ScrollItemBase extends Item {
     @Override
     public InteractionResult use(Level world, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
-        if (!player.isUsingItem() && !world.isClientSide) {
+        if (!player.isUsingItem() && !world.isClientSide()) {
             world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.1f, 2f);
         }
         if (getUseDuration(itemStack, player) <= 0 || Compat.isVivecraftInstalled) {
@@ -49,7 +49,7 @@ public class ScrollItemBase extends Item {
 
     @Override
     public void onUseTick(Level level, LivingEntity entity, ItemStack itemStack, int remainingTicks) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             int duration = getUseDuration(itemStack, entity);
             float progress = (duration - remainingTicks) / (float) duration;
             int maxParticles = Math.max(4, (int) (progress * 48));

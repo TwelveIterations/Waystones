@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.mixin.ScreenAccessor;
+import net.blay09.mods.kuma.api.Kuma;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
@@ -26,6 +26,8 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -85,13 +87,13 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
         tooltipProviders.clear();
         btnPrevPage = Button.builder(Component.translatable("gui.waystones.waystone_selection.previous_page"), button -> {
-            pageOffset = Screen.hasShiftDown() ? 0 : pageOffset - 1;
+            pageOffset = Kuma.hasShiftDown() ? 0 : pageOffset - 1;
             updateList();
         }).pos(width / 2 - 100, height / 2 + 40).size(95, 20).build();
         addRenderableWidget(btnPrevPage);
 
         btnNextPage = Button.builder(Component.translatable("gui.waystones.waystone_selection.next_page"), button -> {
-            pageOffset = Screen.hasShiftDown() ? (waystones.size() - 1) / buttonsPerPage : pageOffset + 1;
+            pageOffset = Kuma.hasShiftDown() ? (waystones.size() - 1) / buttonsPerPage : pageOffset + 1;
             updateList();
         }).pos(width / 2 + 5, height / 2 + 40).size(95, 20).build();
         addRenderableWidget(btnNextPage);
@@ -218,7 +220,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
     private void sortWaystone(Waystone waystone, int sortDir) {
         final var waystoneUid = waystone.getWaystoneUid();
-        if (Screen.hasShiftDown()) {
+        if (Kuma.hasShiftDown()) {
             if (sortDir == -1) {
                 PlayerWaystoneManager.sortWaystoneAsFirst(Minecraft.getInstance().player, waystoneUid);
                 Balm.getNetworking().sendToServer(new ServerboundSortWaystonePacket(waystoneUid, ServerboundSortWaystonePacket.SORT_FIRST));
@@ -243,13 +245,13 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (isLocationHeaderHovered && menu.getWaystoneFrom() != null) {
             Balm.getNetworking().sendToServer(new ServerboundRequestEditWaystonePacket(menu.getWaystoneFrom().getPos()));
             return true;
         }
 
-        return super.mouseClicked(mouseX, mouseY, mouseButton);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
@@ -330,16 +332,16 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
         if (this.searchBox == null) {
-            return super.keyPressed(key, scanCode, modifiers);
+            return super.keyPressed(event);
         }
 
-        if (!this.searchBox.isFocused() || (key == GLFW.GLFW_KEY_ESCAPE && this.shouldCloseOnEsc())) {
-            return super.keyPressed(key, scanCode, modifiers);
+        if (!this.searchBox.isFocused() || (event.isEscape() && this.shouldCloseOnEsc())) {
+            return super.keyPressed(event);
         }
 
-        return this.searchBox.keyPressed(key, scanCode, modifiers);
+        return this.searchBox.keyPressed(event);
     }
 
     public Comparator<Waystone> getSorting() {

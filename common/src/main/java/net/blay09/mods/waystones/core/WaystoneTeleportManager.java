@@ -45,7 +45,7 @@ public class WaystoneTeleportManager {
     }
 
     public static Either<List<Entity>, WaystoneTeleportError> doTeleport(WaystoneTeleportContext context) {
-        final var server = context.getEntity().getServer();
+        final var server = context.getEntity().level().getServer();
         if (server == null) {
             return Either.right(new WaystoneTeleportError.NotOnServer());
         }

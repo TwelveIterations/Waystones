@@ -110,7 +110,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             BlockState offsetState = world.getBlockState(offset);
             if (offsetState.getBlock() == this && offsetState.getValue(HALF) != half) {
                 world.destroyBlock(half == DoubleBlockHalf.LOWER ? pos : offset, false, player);
-                if (!world.isClientSide && !player.getAbilities().instabuild) {
+                if (!world.isClientSide() && !player.getAbilities().instabuild) {
                     dropResources(state, world, pos, blockEntity, player, player.getMainHandItem());
                     dropResources(offsetState, world, offset, offsetTileEntity, player, player.getMainHandItem());
                 }
@@ -162,7 +162,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     }
 
     protected void notifyObserversOfAction(Level world, BlockPos pos) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             for (Direction direction : Direction.values()) {
                 BlockPos offset = pos.relative(direction);
                 BlockState neighbourState = world.getBlockState(offset);
@@ -179,7 +179,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     @Nullable
     protected InteractionResult handleEditActions(Level world, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
         if (player.isShiftKeyDown()) {
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 blockEntity.getSettingsMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openMenu(player, menuProvider));
             }
             return InteractionResult.SUCCESS;
@@ -241,7 +241,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
         }
 
         if (blockEntity instanceof WaystoneBlockEntityBase) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 final var waystoneUid = Optional.ofNullable(stack.get(ModComponents.waystoneIdentity.get()))
                         .map(WaystoneReferenceComponent::waystoneId)
                         .orElseGet(() -> stack.get(ModComponents.waystone.get()));
@@ -268,13 +268,13 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                 Waystone waystone = ((WaystoneBlockEntityBase) blockEntity).getWaystone();
                 PlayerWaystoneManager.activateWaystone(((Player) placer), waystone);
 
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     WaystoneSyncManager.sendActivatedWaystones(((Player) placer));
                 }
             }
 
             // Open settings screen on placement since people don't realize you can shift-click waystones to edit them
-            if (!level.isClientSide && placer instanceof ServerPlayer) {
+            if (!level.isClientSide() && placer instanceof ServerPlayer) {
                 final ServerPlayer player = (ServerPlayer) placer;
                 final WaystoneBlockEntityBase waystoneTileEntity = (WaystoneBlockEntityBase) blockEntity;
                 if (shouldOpenMenuWhenPlaced()) {

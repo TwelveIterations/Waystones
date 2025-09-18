@@ -1,82 +1,110 @@
 package net.blay09.mods.waystones.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.blay09.mods.waystones.block.PortstoneBlock;
+import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.item.ModItems;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
-public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEntity> {
+public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEntity, PortstoneRenderer.PortstoneRenderState> {
+
+    public static class PortstoneRenderState extends BlockEntityRenderState {
+        public boolean skip;
+        public Direction facing;
+        public boolean glow;
+        public int runeColor;
+        public ItemStackRenderState item;
+    }
+
     private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.withDefaultNamespace("waystone_overlays/portstone"));
     private static ItemStack warpStoneItem;
 
+    private final ItemModelResolver itemModelResolver;
     private final PortstoneModel model;
 
     public PortstoneRenderer(BlockEntityRendererProvider.Context context) {
         model = new PortstoneModel(context.bakeLayer(ModRenderers.portstoneModel));
+        itemModelResolver = context.itemModelResolver();
     }
 
     @Override
-    public void render(PortstoneBlockEntity tileEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn, Vec3 cameraPos) {
-        final var level = tileEntity.getLevel();
-        final var state = tileEntity.getBlockState();
-        if (level == null || state.getValue(PortstoneBlock.HALF) != DoubleBlockHalf.LOWER) {
+    public PortstoneRenderState createRenderState() {
+        return new PortstoneRenderState();
+    }
+
+    @Override
+    public void extractRenderState(PortstoneBlockEntity blockEntity, PortstoneRenderState renderState, float delta, Vec3 vec, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+        BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, delta, vec, crumblingOverlay);
+        if (renderState.blockState.getValue(SharestoneBlock.HALF) != DoubleBlockHalf.LOWER) {
+            renderState.skip = true;
             return;
         }
-        final var facing = state.getValue(PortstoneBlock.FACING);
 
+        renderState.facing = renderState.blockState.getValue(PortstoneBlock.FACING);
+        renderState.glow = !WaystonesConfig.getActive().client.disableTextGlow;
+        renderState.runeColor = ((PortstoneBlock) blockEntity.getBlockState().getBlock()).getColor().getTextureDiffuseColor();
+
+        final var level = blockEntity.getLevel();
         if (warpStoneItem == null) {
             warpStoneItem = new ItemStack(ModItems.warpStone);
             level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).get(Enchantments.UNBREAKING).ifPresent(it -> warpStoneItem.enchant(it, 1));
         }
 
-        DyeColor color = ((PortstoneBlock) state.getBlock()).getColor();
-        if (color != null) {
-            poseStack.pushPose();
-            poseStack.translate(0.5f, 0f, 0.5f);
-            poseStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
-            poseStack.mulPose(Axis.XN.rotationDegrees(180f));
-            poseStack.translate(0f, -2f, 0f);
-            float scale = 1.01f;
-            poseStack.scale(0.5f, 0.5f, 0.5f);
-            poseStack.scale(scale, scale, scale);
+        itemModelResolver.updateForTopItem(renderState.item, warpStoneItem, ItemDisplayContext.FIXED, level, null, (int) renderState.blockPos.asLong());
+    }
 
-            VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
-            int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
-            int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
-            model.renderToBuffer(poseStack, vertexBuilder, light, overlay, color.getTextureDiffuseColor());
-            poseStack.popPose();
+    @Override
+    public void submit(PortstoneRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+        if (renderState.skip) {
+            return;
         }
 
         poseStack.pushPose();
+        poseStack.translate(0.5f, 0f, 0.5f);
+        poseStack.mulPose(Axis.YN.rotationDegrees(renderState.facing.toYRot()));
+        poseStack.mulPose(Axis.XN.rotationDegrees(180f));
+        poseStack.translate(0f, -2f, 0f);
+        float scale = 1.01f;
+        poseStack.scale(0.5f, 0.5f, 0.5f);
+        poseStack.scale(scale, scale, scale);
+        submitNodeCollector.submitModel(model, Unit.INSTANCE, poseStack, MATERIAL.renderType(RenderType::entityCutout), renderState.glow ? LightTexture.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, renderState.runeColor, renderState.breakProgress);
+        poseStack.popPose();
+
+        poseStack.pushPose();
         poseStack.translate(0.5f, 1f, 0.5f);
-        poseStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
+        poseStack.mulPose(Axis.YN.rotationDegrees(renderState.facing.toYRot()));
         poseStack.translate(0f, 0f, 0.15f);
         poseStack.mulPose(Axis.XN.rotationDegrees(25f));
         poseStack.scale(0.5f, 0.5f, 0.5f);
         poseStack.translate(0.03125f, 0f, 0f);
-        Minecraft.getInstance()
-                .getItemRenderer()
-                .renderStatic(warpStoneItem, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, poseStack, buffer, level, 0);
+        renderState.item.submit(poseStack, submitNodeCollector, renderState.lightCoords, OverlayTexture.NO_OVERLAY, 0);
         poseStack.popPose();
     }
 }

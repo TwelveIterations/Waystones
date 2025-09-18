@@ -5,8 +5,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -80,7 +80,7 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
     }
 
     @Override
-    public void onPress() {
+    public void onPress(InputWithModifiers input) {
         if (canEdit) {
             final var index = options.indexOf(visibility);
             visibility = options.get((index + 1) % options.size());

@@ -43,7 +43,7 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
         for (final var iterator = activatedWaystonesTag.iterator(); iterator.hasNext(); ) {
             final var activatedWaystoneTag = iterator.next();
             activatedWaystoneTag.asString().map(UUID::fromString).ifPresentOrElse(waystoneId -> {
-                final var proxy = new WaystoneProxy(player.getServer(), waystoneId);
+                final var proxy = new WaystoneProxy(player.level().getServer(), waystoneId);
                 if (proxy.isValid()) {
                     waystones.add(proxy);
                 } else {

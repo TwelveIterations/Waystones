@@ -1,4 +1,5 @@
 dependencies {
+    implementation("net.blay09.mods:kuma-api-neoforge:${kuma_version}")
     implementation("net.blay09.mods:balm-neoforge:${balm_version}") {
         changing = balm_version.contains("SNAPSHOT")
     }

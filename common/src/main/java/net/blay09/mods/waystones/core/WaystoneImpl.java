@@ -136,7 +136,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
 
     @Override
     public boolean isOwner(Player player) {
-        return ownerUid == null || player.getGameProfile().getId().equals(ownerUid) || player.getAbilities().instabuild;
+        return ownerUid == null || player.getGameProfile().id().equals(ownerUid) || player.getAbilities().instabuild;
     }
 
     @Override
