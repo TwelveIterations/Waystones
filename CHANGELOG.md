@@ -1,2 +1,1 @@
-- Updated JourneyMap support to place Waystones and Sharestones into Groups
-- Fixed dupe bug
+- Updated to Minecraft 1.21.9
