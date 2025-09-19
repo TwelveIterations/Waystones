@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.MaterialSet;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
@@ -34,7 +35,7 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
 
     public static class WaystoneRenderState extends BlockEntityRenderState {
         public boolean skip;
-        public Direction facing;
+        public Direction facing = Direction.NORTH;
         public boolean glow;
         public boolean showRunes;
         public int runeColor;
@@ -43,9 +44,11 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
     private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS,
             ResourceLocation.withDefaultNamespace("waystone_overlays/waystone_active"));
 
+    private final MaterialSet materials;
     private final SharestoneModel model;
 
     public WaystoneRenderer(BlockEntityRendererProvider.Context context) {
+        materials = context.materials();
         model = new SharestoneModel(context.bakeLayer(ModRenderers.waystoneModel));
     }
 
@@ -83,7 +86,8 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
         poseStack.scale(0.5f, 0.5f, 0.5f);
         if (renderState.showRunes) {
             poseStack.scale(1.05f, 1.05f, 1.05f);
-            submitNodeCollector.submitModel(model, Unit.INSTANCE, poseStack, MATERIAL.renderType(RenderType::entityCutout), renderState.glow ? LightTexture.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, renderState.runeColor, renderState.breakProgress);
+            final var sprite = materials.get(MATERIAL);
+            submitNodeCollector.submitModel(model, Unit.INSTANCE, poseStack, MATERIAL.renderType(RenderType::entityCutout), renderState.glow ? LightTexture.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, -1, sprite, renderState.runeColor, renderState.breakProgress);
         }
         poseStack.popPose();
     }

@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.MaterialSet;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -37,19 +38,21 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
 
     public static class PortstoneRenderState extends BlockEntityRenderState {
         public boolean skip;
-        public Direction facing;
+        public Direction facing = Direction.NORTH;
         public boolean glow;
         public int runeColor;
-        public ItemStackRenderState item;
+        public final ItemStackRenderState item = new ItemStackRenderState();
     }
 
     private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.withDefaultNamespace("waystone_overlays/portstone"));
     private static ItemStack warpStoneItem;
 
+    private final MaterialSet materials;
     private final ItemModelResolver itemModelResolver;
     private final PortstoneModel model;
 
     public PortstoneRenderer(BlockEntityRendererProvider.Context context) {
+        materials = context.materials();
         model = new PortstoneModel(context.bakeLayer(ModRenderers.portstoneModel));
         itemModelResolver = context.itemModelResolver();
     }
@@ -94,7 +97,8 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
         float scale = 1.01f;
         poseStack.scale(0.5f, 0.5f, 0.5f);
         poseStack.scale(scale, scale, scale);
-        submitNodeCollector.submitModel(model, Unit.INSTANCE, poseStack, MATERIAL.renderType(RenderType::entityCutout), renderState.glow ? LightTexture.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, renderState.runeColor, renderState.breakProgress);
+        final var sprite = materials.get(MATERIAL);
+        submitNodeCollector.submitModel(model, Unit.INSTANCE, poseStack, MATERIAL.renderType(RenderType::entityCutout), renderState.glow ? LightTexture.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, -1, sprite, renderState.runeColor, renderState.breakProgress);
         poseStack.popPose();
 
         poseStack.pushPose();

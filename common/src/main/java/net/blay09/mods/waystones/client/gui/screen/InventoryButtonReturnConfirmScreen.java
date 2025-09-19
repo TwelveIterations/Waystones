@@ -46,6 +46,6 @@ public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         Font font = Minecraft.getInstance().font;
-        guiGraphics.drawCenteredString(font, waystoneName, width / 2, 100, 0xFFFFFF);
+        guiGraphics.drawCenteredString(font, waystoneName, width / 2, 100, 0xFFFFFFFF);
     }
 }

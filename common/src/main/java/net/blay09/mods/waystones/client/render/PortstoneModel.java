@@ -5,8 +5,9 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.util.Unit;
 
-public class PortstoneModel extends Model {
+public class PortstoneModel extends Model<Unit> {
 
     public PortstoneModel(ModelPart modelPart) {
         super(modelPart, it -> RenderType.cutout());

@@ -272,7 +272,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         Waystone fromWaystone = menu.getWaystoneFrom();
-        guiGraphics.drawCenteredString(font, getTitle(), imageWidth / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
+        guiGraphics.drawCenteredString(font, getTitle(), imageWidth / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFFFF);
         if (fromWaystone != null) {
             drawLocationHeader(guiGraphics, fromWaystone, mouseX, mouseY, imageWidth / 2, headerY);
         }
@@ -282,7 +282,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                     ChatFormatting.RED + I18n.get("gui.waystones.waystone_selection.no_waystones_activated"),
                     imageWidth / 2,
                     imageHeight / 2 - 20,
-                    0xFFFFFF);
+                    0xFFFFFFFF);
         }
     }
 
@@ -310,7 +310,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
         final var fullText = Component.translatable("gui.waystones.waystone_selection.current_location",
                 effectiveName.withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.YELLOW);
-        guiGraphics.drawString(font, fullText, x - fullWidth / 2, y, 0xFFFFFF);
+        guiGraphics.drawString(font, fullText, x - fullWidth / 2, y, 0xFFFFFFFF);
 
         if (isLocationHeaderHovered) {
             var poseStack = guiGraphics.pose();

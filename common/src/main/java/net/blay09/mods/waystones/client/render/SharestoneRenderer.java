@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.MaterialSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
@@ -37,7 +38,7 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
         public boolean skip;
         public boolean glow;
         public int runeColor;
-        public ItemStackRenderState item;
+        public final ItemStackRenderState item = new ItemStackRenderState();
         public float itemYaw;
         public float itemOffsetY;
     }
@@ -46,12 +47,14 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
 
     private static ItemStack warpStoneItem;
 
+    private final MaterialSet materials;
     private final ItemModelResolver itemModelResolver;
     private final SharestoneModel model;
 
     public SharestoneRenderer(BlockEntityRendererProvider.Context context) {
-        model = new SharestoneModel(context.bakeLayer(ModRenderers.sharestoneModel));
+        materials = context.materials();
         itemModelResolver = context.itemModelResolver();
+        model = new SharestoneModel(context.bakeLayer(ModRenderers.sharestoneModel));
     }
 
     @Override
@@ -96,7 +99,8 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
         float scale = 1.01f;
         poseStack.scale(0.5f, 0.5f, 0.5f);
         poseStack.scale(scale, scale, scale);
-        submitNodeCollector.submitModel(model, Unit.INSTANCE, poseStack, MATERIAL.renderType(RenderType::entityCutout), renderState.glow ? LightTexture.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, renderState.runeColor, renderState.breakProgress);
+        final var sprite = materials.get(MATERIAL);
+        submitNodeCollector.submitModel(model, Unit.INSTANCE, poseStack, MATERIAL.renderType(RenderType::entityCutout), renderState.glow ? LightTexture.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, -1, sprite, renderState.runeColor, renderState.breakProgress);
         poseStack.popPose();
 
         poseStack.pushPose();
