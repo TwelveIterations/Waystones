@@ -63,8 +63,7 @@ public class ModWorldGen {
 
         waystonePlacement = worldGen.registerPlacementModifier(id("waystone"), () -> () -> WaystonePlacement.CODEC);
 
-        final var waystonesCommonConfig = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "common");
-        final Runnable configLoadHandler = () -> {
+        Balm.getConfig().onConfigAvailable(WaystonesConfig.class, (config) -> {
             worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE),
                     GenerationStep.Decoration.VEGETAL_DECORATION,
                     getWaystoneFeature(WorldGenStyle.SANDY));
@@ -80,16 +79,7 @@ public class ModWorldGen {
             worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE),
                     GenerationStep.Decoration.VEGETAL_DECORATION,
                     getWaystoneFeature(WorldGenStyle.DEFAULT));
-        };
-        Balm.getEvents().onEvent(ConfigLoadedEvent.class, (event) -> {
-            if (event.getSchema().identifier().equals(waystonesCommonConfig)) {
-                configLoadHandler.run();
-            }
         });
-        // TODO Workaround to load config even if load event already fired earlier - will have prettier solution in future Balm versions
-        if (Balm.getConfig().getActiveConfig(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "common")) != null) {
-            configLoadHandler.run();
-        }
 
         worldGen.registerPoiType(id("wild_waystone"), () -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.WILDERNESS), 1, 1));
         worldGen.registerPoiType(id("village_waystone"), () -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.VILLAGE), 1, 1));
@@ -118,7 +108,7 @@ public class ModWorldGen {
     }
 
     private static ResourceLocation getWaystoneFeature(WorldGenStyle biomeWorldGenStyle) {
-        WorldGenStyle worldGenStyle = WorldGenStyle.BIOME;// TODO WaystonesConfig.getActive().worldGen.wildWaystoneStyle;
+        WorldGenStyle worldGenStyle = WaystonesConfig.getActive().worldGen.wildWaystoneStyle;
         return switch (worldGenStyle) {
             case MOSSY -> mossyWaystone;
             case SANDY -> sandyWaystone;
