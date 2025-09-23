@@ -77,6 +77,9 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         }
     }
 
+    private static final FontDescription ALT_FONT = new FontDescription.Resource(ResourceLocation.withDefaultNamespace("alt"));
+    private static final Style ROOT_STYLE = Style.EMPTY.withFont(ALT_FONT);
+
     private static final VoxelShape SHAPE = Shapes.or(
             box(0.0, 0.0, 0.0, 16.0, 1.0, 16.0),
             box(3.0, 1.0, 3.0, 13.0, 2.0, 13.0)
@@ -212,7 +215,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
 
     public static Component getGalacticName(UUID waystoneUid) {
         final var name = getGalacticIdentifier(waystoneUid);
-        return Component.literal(name).withStyle(WarpPlateBlock.getColorForName(name)).withStyle(ChatFormatting.OBFUSCATED);
+        return Component.literal(name).withStyle(WarpPlateBlock.getColorForName(name)).withStyle(ROOT_STYLE);
     }
 
     @Override
