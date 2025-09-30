@@ -66,7 +66,7 @@ public class WaystoneButton extends Button {
                 distanceStr = String.format("%.1f", distance / 1000f).replace(",0", "").replace(".0", "") + "km";
             }
             int xOffset = getWidth() - font.width(distanceStr);
-            guiGraphics.drawString(font, distanceStr, getX() + xOffset - 4, getY() + 6, 0xFFFFFF);
+            guiGraphics.drawString(font, distanceStr, getX() + xOffset - 4, getY() + 6, 0xFFFFFFFF);
         }
 
         renderRequirements(warpRequirement, guiGraphics, mouseX, mouseY, partialTicks);

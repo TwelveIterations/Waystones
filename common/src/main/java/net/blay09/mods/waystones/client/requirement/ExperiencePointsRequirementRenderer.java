@@ -30,7 +30,7 @@ public class ExperiencePointsRequirementRenderer implements RequirementRenderer<
 
             final var font = Minecraft.getInstance().font;
             if (levels > 3) {
-                guiGraphics.drawString(font, "+", x + 15, y + 4, 0xC8FF8F);
+                guiGraphics.drawString(font, "+", x + 15, y + 4, 0xFFC8FF8F);
             }
         }
     }
