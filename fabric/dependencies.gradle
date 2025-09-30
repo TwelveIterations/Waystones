@@ -1,5 +1,5 @@
 dependencies {
-    implementation("net.blay09.mods:kuma-api-fabric:${kuma_version}")
+    modImplementation("net.blay09.mods:kuma-api-fabric:${kuma_version}")
     modImplementation("net.blay09.mods:balm-fabric:${balm_version}") {
         changing = balm_version.contains("SNAPSHOT")
     }
