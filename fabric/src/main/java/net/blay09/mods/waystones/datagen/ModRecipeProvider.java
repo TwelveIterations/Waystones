@@ -30,60 +30,54 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 shaped(RecipeCategory.DECORATIONS, ModBlocks.waystone)
                         .pattern(" S ")
                         .pattern("SWS")
-                        .pattern("OOO")
+                        .pattern("SSS")
                         .define('S', Blocks.STONE_BRICKS)
                         .define('W', ModItems.warpStone)
-                        .define('O', Blocks.OBSIDIAN)
                         .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                         .save(exporter);
 
                 shaped(RecipeCategory.DECORATIONS, ModBlocks.sandyWaystone)
                         .pattern(" S ")
                         .pattern("SWS")
-                        .pattern("OOO")
+                        .pattern("SSS")
                         .define('S', Blocks.CHISELED_SANDSTONE)
                         .define('W', ModItems.warpStone)
-                        .define('O', Blocks.OBSIDIAN)
                         .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                         .save(exporter);
 
                 shaped(RecipeCategory.DECORATIONS, ModBlocks.mossyWaystone)
                         .pattern(" S ")
                         .pattern("SWS")
-                        .pattern("OOO")
+                        .pattern("SSS")
                         .define('S', Blocks.MOSSY_STONE_BRICKS)
                         .define('W', ModItems.warpStone)
-                        .define('O', Blocks.OBSIDIAN)
                         .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                         .save(exporter);
 
                 shaped(RecipeCategory.DECORATIONS, ModBlocks.deepslateWaystone)
                         .pattern(" S ")
                         .pattern("SWS")
-                        .pattern("OOO")
+                        .pattern("SSS")
                         .define('S', Blocks.DEEPSLATE)
                         .define('W', ModItems.warpStone)
-                        .define('O', Blocks.OBSIDIAN)
                         .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                         .save(exporter);
 
                 shaped(RecipeCategory.DECORATIONS, ModBlocks.blackstoneWaystone)
                         .pattern(" S ")
                         .pattern("SWS")
-                        .pattern("OOO")
+                        .pattern("SSS")
                         .define('S', Blocks.BLACKSTONE)
                         .define('W', ModItems.warpStone)
-                        .define('O', Blocks.OBSIDIAN)
                         .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                         .save(exporter);
 
                 shaped(RecipeCategory.DECORATIONS, ModBlocks.endStoneWaystone)
                         .pattern(" S ")
                         .pattern("SWS")
-                        .pattern("OOO")
+                        .pattern("SSS")
                         .define('S', Blocks.END_STONE_BRICKS)
                         .define('W', ModItems.warpStone)
-                        .define('O', Blocks.OBSIDIAN)
                         .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                         .save(exporter);
 
@@ -118,13 +112,16 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
                         .save(exporter);
 
-                shapeless(RecipeCategory.DECORATIONS, ModItems.deepslateShard, 1)
-                        .requires(Items.DEEPSLATE)
-                        .requires(Items.FLINT)
-                        .unlockedBy("has_deepslate", has(Items.DEEPSLATE))
+                shaped(RecipeCategory.DECORATIONS, ModBlocks.getPortstone(DyeColor.WHITE))
+                        .pattern(" S ")
+                        .pattern("SWS")
+                        .pattern("BBB")
+                        .define('B', Blocks.STONE_BRICKS)
+                        .define('W', ModItems.warpStone)
+                        .define('S', Blocks.STONE_BRICK_SLAB)
+                        .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                         .save(exporter);
 
-                createPortstoneRecipe(exporter, DyeColor.WHITE, BalmItemTags.WHITE_DYES);
                 createPortstoneRecipe(exporter, DyeColor.ORANGE, BalmItemTags.ORANGE_DYES);
                 createPortstoneRecipe(exporter, DyeColor.MAGENTA, BalmItemTags.MAGENTA_DYES);
                 createPortstoneRecipe(exporter, DyeColor.LIGHT_BLUE, BalmItemTags.LIGHT_BLUE_DYES);
@@ -158,22 +155,22 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 createSharestoneRecipe(exporter, DyeColor.BLACK, BalmItemTags.BLACK_DYES);
 
                 shaped(RecipeCategory.DECORATIONS, ModItems.warpStone)
-                        .pattern("DED")
+                        .pattern("AEA")
                         .pattern("EGE")
-                        .pattern("DED")
-                        .define('G', BalmItemTags.EMERALDS)
+                        .pattern("AEA")
+                        .define('G', Items.GOLD_INGOT)
                         .define('E', Items.ENDER_PEARL)
-                        .define('D', Items.AMETHYST_SHARD)
+                        .define('A', Items.AMETHYST_SHARD)
                         .unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
                         .save(exporter);
 
                 shaped(RecipeCategory.DECORATIONS, ModItems.warpScroll, 3)
-                        .pattern("GDG")
-                        .pattern("GEG")
+                        .pattern("GIG")
+                        .pattern("GAG")
                         .pattern("PPP")
-                        .define('D', Items.INK_SAC)
+                        .define('I', Items.INK_SAC)
                         .define('G', BalmItemTags.GOLD_NUGGETS)
-                        .define('E', Items.ENDER_PEARL)
+                        .define('A', Items.AMETHYST_SHARD)
                         .define('P', Items.PAPER)
                         .unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
                         .save(exporter);
@@ -188,9 +185,9 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .save(exporter);
 
                 shaped(RecipeCategory.DECORATIONS, ModItems.returnScroll, 3)
-                        .pattern("GEG")
+                        .pattern("GIG")
                         .pattern("PPP")
-                        .define('E', Items.INK_SAC)
+                        .define('I', Items.INK_SAC)
                         .define('G', BalmItemTags.GOLD_NUGGETS)
                         .define('P', Items.PAPER)
                         .unlockedBy("has_paper", has(Items.PAPER))
@@ -206,10 +203,9 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 shaped(RecipeCategory.DECORATIONS, sharestone)
                         .pattern("SSS")
                         .pattern("DWD")
-                        .pattern("OOO")
+                        .pattern("SSS")
                         .define('S', Blocks.STONE_BRICKS)
                         .define('W', ModItems.warpStone)
-                        .define('O', Blocks.OBSIDIAN)
                         .define('D', dyeTag)
                         .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                         .save(exporter);
@@ -225,9 +221,9 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("DSD")
                         .pattern("SWS")
                         .pattern("BBB")
-                        .define('S', Blocks.STONE_BRICKS)
+                        .define('B', Blocks.STONE_BRICKS)
                         .define('W', ModItems.warpStone)
-                        .define('B', Blocks.POLISHED_ANDESITE)
+                        .define('S', Blocks.STONE_BRICK_SLAB)
                         .define('D', dyeTag)
                         .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                         .save(exporter);
