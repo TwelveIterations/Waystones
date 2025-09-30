@@ -124,7 +124,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
                     Component.translatable("waystones.untitled_waystone"),
                     textField.getX() + 4,
                     textField.getY() + 6,
-                    0x808080);
+                    0xFF808080);
         }
     }
 
@@ -149,7 +149,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
                 modifiersComponent,
                 24,
                 modifierButton.getY() - topPos + 6,
-                menu.getModifierCount() > 0 ? 0xFf55Ff55 : 0xfFaAaAaA,
+                menu.getModifierCount() > 0 ? 0xFF55FF55 : 0xFFAAAAAA,
                 true);
     }
 
