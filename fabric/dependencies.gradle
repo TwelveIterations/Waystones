@@ -3,7 +3,6 @@ dependencies {
     modImplementation("net.blay09.mods:balm-fabric:${balm_version}") {
         changing = balm_version.contains("SNAPSHOT")
     }
-    modCompileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
     if (jei_minecraft_version == minecraft_version) {
         modLocalRuntime "mezz.jei:jei-$jei_minecraft_version-fabric:$jei_version"
     }
