@@ -1,10 +1,14 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "minecraft:crafting_shaped",
   "category": "misc",
-  "ingredients": [
-    "waystones:warp_dust",
-    "waystones:warp_dust",
-    "minecraft:flint"
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "F": "minecraft:flint"
+  },
+  "pattern": [
+    " A ",
+    "AFA",
+    " A "
   ],
   "result": {
     "count": 1,

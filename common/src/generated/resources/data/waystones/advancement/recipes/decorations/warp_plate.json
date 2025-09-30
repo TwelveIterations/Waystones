@@ -1,27 +1,27 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
+    "has_amethyst_shard": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:amethyst_shard"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
     "has_the_recipe": {
       "conditions": {
         "recipe": "waystones:warp_plate"
       },
       "trigger": "minecraft:recipe_unlocked"
-    },
-    "has_warp_dust": {
-      "conditions": {
-        "items": [
-          {
-            "items": "waystones:warp_dust"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
     }
   },
   "requirements": [
     [
       "has_the_recipe",
-      "has_warp_dust"
+      "has_amethyst_shard"
     ]
   ],
   "rewards": {

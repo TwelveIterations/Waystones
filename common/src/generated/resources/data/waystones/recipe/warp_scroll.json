@@ -2,14 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": "minecraft:ink_sac",
-    "E": "minecraft:ender_pearl",
+    "A": "minecraft:amethyst_shard",
     "G": "#c:nuggets/gold",
+    "I": "minecraft:ink_sac",
     "P": "minecraft:paper"
   },
   "pattern": [
-    "GDG",
-    "GEG",
+    "GIG",
+    "GAG",
     "PPP"
   ],
   "result": {

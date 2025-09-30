@@ -2,13 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": "minecraft:polished_andesite",
-    "D": "#c:dyes/white",
-    "S": "minecraft:stone_bricks",
+    "B": "minecraft:stone_bricks",
+    "S": "minecraft:stone_brick_slab",
     "W": "waystones:warp_stone"
   },
   "pattern": [
-    "DSD",
+    " S ",
     "SWS",
     "BBB"
   ],

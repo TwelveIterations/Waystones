@@ -2,12 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "E": "minecraft:ink_sac",
     "G": "#c:nuggets/gold",
+    "I": "minecraft:ink_sac",
     "P": "minecraft:paper"
   },
   "pattern": [
-    "GEG",
+    "GIG",
     "PPP"
   ],
   "result": {

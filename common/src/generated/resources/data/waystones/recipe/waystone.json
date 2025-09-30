@@ -2,14 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "O": "minecraft:obsidian",
     "S": "minecraft:stone_bricks",
     "W": "waystones:warp_stone"
   },
   "pattern": [
     " S ",
     "SWS",
-    "OOO"
+    "SSS"
   ],
   "result": {
     "count": 1,

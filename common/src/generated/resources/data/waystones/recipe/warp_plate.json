@@ -2,14 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "F": "waystones:dormant_shard",
-    "S": "minecraft:stone_bricks",
-    "W": "waystones:warp_dust"
+    "A": "minecraft:amethyst_shard",
+    "F": "minecraft:flint",
+    "S": "minecraft:stone_bricks"
   },
   "pattern": [
-    "SWS",
-    "WFW",
-    "SWS"
+    "SAS",
+    "AFA",
+    "SAS"
   ],
   "result": {
     "count": 1,

@@ -2,14 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": "minecraft:amethyst_shard",
+    "A": "minecraft:amethyst_shard",
     "E": "minecraft:ender_pearl",
-    "G": "#c:gems/emerald"
+    "G": "minecraft:gold_ingot"
   },
   "pattern": [
-    "DED",
+    "AEA",
     "EGE",
-    "DED"
+    "AEA"
   ],
   "result": {
     "count": 1,
