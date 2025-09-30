@@ -91,7 +91,7 @@ configurations {
 }
 
 def neoForgeSnapshotUrl = findProperty("neoforge_snapshot_url")
-if (neoForgeSnapshotUrl != null) {
+if (neoForgeSnapshotUrl != null && !neoForgeSnapshotUrl.isBlank()) {
     repositories {
         maven {
             name 'Maven for NeoForge Snapshots'
