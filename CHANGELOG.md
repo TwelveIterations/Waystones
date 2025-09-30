@@ -1,2 +1,1 @@
-- Updated JourneyMap support to place Waystones and Sharestones into Groups
-- Fixed dupe bug
+- Fixed some UI labels rendering with zero opacity
