@@ -25,7 +25,6 @@
   "item.waystones.return_scroll": "帰還の巻物",
   "item.waystones.warp_stone": "ワープストーン",
   "item.waystones.bound_scroll": "固定転移の巻物",
-  "item.waystones.warp_dust": "ワープダスト",
   "item.waystones.attuned_shard": "ワーププレートの欠片",
   "container.waystones.waystone_selection": "転移先を選択してください:",
   "container.waystones.waystone_settings": "転移ポイントの名前を入力:",

@@ -100,19 +100,22 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .save(exporter, "waystones:mossy_waystone_from_moss_blocks");
 
                 shaped(RecipeCategory.DECORATIONS, ModBlocks.warpPlate)
-                        .pattern("SWS")
-                        .pattern("WFW")
-                        .pattern("SWS")
-                        .define('F', ModItems.dormantShard)
-                        .define('W', ModItems.warpDust)
+                        .pattern("SAS")
+                        .pattern("AFA")
+                        .pattern("SAS")
+                        .define('F', Items.FLINT)
+                        .define('A', Items.AMETHYST_SHARD)
                         .define('S', Blocks.STONE_BRICKS)
-                        .unlockedBy("has_warp_dust", has(ModItems.warpDust))
+                        .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
                         .save(exporter);
 
-                shapeless(RecipeCategory.DECORATIONS, ModItems.dormantShard, 1)
-                        .requires(ModItems.warpDust, 2)
-                        .requires(Items.FLINT)
-                        .unlockedBy("has_warp_dust", has(ModItems.warpDust))
+                shaped(RecipeCategory.DECORATIONS, ModItems.dormantShard, 1)
+                        .pattern(" A ")
+                        .pattern("AFA")
+                        .pattern(" A ")
+                        .define('F', Items.FLINT)
+                        .define('A', Items.AMETHYST_SHARD)
+                        .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
                         .save(exporter);
 
                 shapeless(RecipeCategory.DECORATIONS, ModItems.deepslateShard, 1)
@@ -191,12 +194,6 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .define('G', BalmItemTags.GOLD_NUGGETS)
                         .define('P', Items.PAPER)
                         .unlockedBy("has_paper", has(Items.PAPER))
-                        .save(exporter);
-
-                shapeless(RecipeCategory.DECORATIONS, ModItems.warpDust, 4)
-                        .requires(Items.ENDER_PEARL)
-                        .requires(Items.AMETHYST_SHARD)
-                        .unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
                         .save(exporter);
             }
 

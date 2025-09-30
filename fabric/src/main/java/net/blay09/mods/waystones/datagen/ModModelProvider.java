@@ -62,7 +62,6 @@ public class ModModelProvider extends FabricModelProvider {
 
     @Override
     public void generateItemModels(ItemModelGenerators itemModelGenerator) {
-        itemModelGenerator.generateFlatItem(ModItems.warpDust, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.dormantShard, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.attunedShard, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.crumblingAttunedShard, ModelTemplates.FLAT_ITEM);

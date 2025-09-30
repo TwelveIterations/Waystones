@@ -26,7 +26,6 @@
   "item.waystones.return_scroll": "Parchemin de retour",
   "item.waystones.warp_stone": "Pierre de téléportation",
   "item.waystones.bound_scroll": "Parchemin lié",
-  "item.waystones.warp_dust": "Poudre de téléportation",
 
   "container.waystones.waystone_selection": "Choisissez votre destination:",
   "container.waystones.waystone_settings": "Entrez le nom de la waystone:",

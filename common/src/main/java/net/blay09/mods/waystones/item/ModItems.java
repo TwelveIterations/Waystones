@@ -26,7 +26,6 @@ public class ModItems {
     public static Item boundScroll;
     public static Item warpScroll;
     public static Item warpStone;
-    public static Item warpDust;
     public static Item dormantShard;
     public static Item attunedShard;
     public static Item deepslateShard;
@@ -38,7 +37,6 @@ public class ModItems {
         items.registerItem((identifier) -> boundScroll = new BoundScrollItem(defaultProperties(identifier)), id("bound_scroll"), null);
         items.registerItem((identifier) -> warpScroll = new WarpScrollItem(defaultProperties(identifier)), id("warp_scroll"));
         items.registerItem((identifier) -> warpStone = new WarpStoneItem(defaultProperties(identifier)), id("warp_stone"));
-        items.registerItem((identifier) -> warpDust = new WarpDustItem(defaultProperties(identifier)), id("warp_dust"));
         items.registerItem((identifier) -> dormantShard = new ShardItem(defaultProperties(identifier)), id("dormant_shard"));
         items.registerItem((identifier) -> attunedShard = new AttunedShardItem(defaultProperties(identifier)), id("attuned_shard"), null);
         items.registerItem((identifier) -> deepslateShard = new ShardItem(defaultProperties(identifier)), id("deepslate_shard"), null);
@@ -56,7 +54,6 @@ public class ModItems {
                     "return_scroll",
                     "warp_scroll",
                     "warp_stone",
-                    "warp_dust",
                     "dormant_shard",
                     "deepslate_shard",
                     ".+_waystone",
