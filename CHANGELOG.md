@@ -1,1 +1,1 @@
-- Updated to Minecraft 1.21.9
+- Fixed waystone runes showing as outline visible through all blocks
