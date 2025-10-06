@@ -98,7 +98,7 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
         poseStack.scale(0.5f, 0.5f, 0.5f);
         poseStack.scale(scale, scale, scale);
         final var sprite = materials.get(MATERIAL);
-        submitNodeCollector.submitModel(model, Unit.INSTANCE, poseStack, MATERIAL.renderType(RenderType::entityCutout), renderState.glow ? LightTexture.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, -1, sprite, renderState.runeColor, renderState.breakProgress);
+        submitNodeCollector.submitModel(model, Unit.INSTANCE, poseStack, MATERIAL.renderType(RenderType::entityCutout), renderState.glow ? LightTexture.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, renderState.runeColor, sprite, 0, renderState.breakProgress);
         poseStack.popPose();
 
         poseStack.pushPose();
