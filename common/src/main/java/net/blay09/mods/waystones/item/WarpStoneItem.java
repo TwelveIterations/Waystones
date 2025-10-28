@@ -38,7 +38,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
     private final Random random = new Random();
 
     public WarpStoneItem(Properties properties) {
-        super(properties.durability(128));
+        super(properties.durability(10000));
     }
 
     @Override
@@ -140,7 +140,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
                 public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
                     return new WaystoneSelectionMenu(ModMenus.warpStoneSelection.get(), null, windowId, waystones, Collections.emptySet())
                             .withWarpItem(itemStack)
-                            .setPostTeleportHandler(context -> itemStack.hurtAndBreak(1, player, hand.asEquipmentSlot()));
+                            .withHand(hand);
                 }
 
                 @Override
