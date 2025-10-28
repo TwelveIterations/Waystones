@@ -40,6 +40,7 @@ public record ServerboundSelectWaystonePacket(UUID waystoneUid) implements Custo
         WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> {
                     it.setFromWaystone(selectionMenu.getWaystoneFrom());
                     it.setWarpItem(selectionMenu.getWarpItem());
+                    it.setWarpHand(selectionMenu.getWarpHand());
                     it.addFlags(selectionMenu.getFlags());
                 })
                 .ifLeft(WaystonesAPI::tryTeleport)

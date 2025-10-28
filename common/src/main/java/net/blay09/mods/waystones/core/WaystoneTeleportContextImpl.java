@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.blay09.mods.waystones.requirement.NoRequirement;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
@@ -23,6 +24,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     private Waystone fromWaystone;
 
     private ItemStack warpItem = ItemStack.EMPTY;
+    private InteractionHand warpHand = InteractionHand.MAIN_HAND;
 
     private WarpRequirement warpRequirement = NoRequirement.INSTANCE;
 
@@ -81,6 +83,17 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public WaystoneTeleportContext setWarpItem(ItemStack warpItem) {
         this.warpItem = warpItem;
+        return this;
+    }
+
+    @Override
+    public InteractionHand getWarpHand() {
+        return warpHand;
+    }
+
+    @Override
+    public WaystoneTeleportContext setWarpHand(InteractionHand warpHand) {
+        this.warpHand = warpHand;
         return this;
     }
 
