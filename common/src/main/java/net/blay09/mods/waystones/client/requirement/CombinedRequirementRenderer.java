@@ -14,7 +14,7 @@ public class CombinedRequirementRenderer implements RequirementRenderer<Combined
                 .stream()
                 .filter(it -> !it.isEmpty())
                 .map(it -> Pair.of(it, RequirementClientRegistry.getRenderer(it)))
-                .sorted(Comparator.comparingInt(it -> it.getSecond().getOrder()))
+                .sorted(Comparator.comparingInt(it -> it.getSecond() != null ? it.getSecond().getOrder() : 100))
                 .toList();
         var currentX = x;
         for (final var child : sortedChildren) {
