@@ -1,3 +1,5 @@
+- Fixed crash when multiple warp requirements are active with some not having a renderer attached
+
 **Note: ** Durability costs have been moved to warp requirements.
 1. Either regenerate your warp requirements configuration by removing the section from your config file,
 2. or add `[source_is_warp_stone] add_durability_cost(80)` to them to restore previous behaviour
