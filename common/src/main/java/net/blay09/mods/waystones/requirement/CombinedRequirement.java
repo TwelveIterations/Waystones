@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.requirement;
 
+import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -21,13 +22,13 @@ public class CombinedRequirement implements WarpRequirement {
     }
 
     @Override
-    public void consume(Player player) {
-        requirements.forEach(requirement -> requirement.consume(player));
+    public void consume(WaystoneTeleportContext context, Player player) {
+        requirements.forEach(requirement -> requirement.consume(context, player));
     }
 
     @Override
-    public void rollback(Player player) {
-        requirements.forEach(requirement -> requirement.rollback(player));
+    public void rollback(WaystoneTeleportContext context, Player player) {
+        requirements.forEach(requirement -> requirement.rollback(context, player));
     }
 
     @Override

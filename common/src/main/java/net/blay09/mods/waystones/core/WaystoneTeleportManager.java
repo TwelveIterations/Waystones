@@ -245,7 +245,7 @@ public class WaystoneTeleportManager {
         }
 
         if (entity instanceof Player player) {
-            context.getRequirements().consume(player);
+            context.getRequirements().consume(context, player);
         }
 
         return doTeleport(context).ifLeft(teleportedEntities -> Balm.getEvents().fireEvent(new WaystoneTeleportEvent.Post(context, teleportedEntities)));
