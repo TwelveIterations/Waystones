@@ -83,6 +83,10 @@ public class WaystonesConfig {
         public boolean enableCosts = true;
 
         @Synced
+        @Comment("Set to false to simply disable all durability costs. See warpRequirements for more fine-grained control.")
+        public boolean enableDurability = true;
+
+        @Synced
         @Comment("Set to false to simply disable all cooldowns. See warpRequirements for more fine-grained control.")
         public boolean enableCooldowns = true;
 
@@ -93,6 +97,7 @@ public class WaystonesConfig {
                 "[is_not_interdimensional] scaled_add_xp_cost(distance, 0.01)",
                 "[is_interdimensional] add_xp_cost(27)",
                 "[source_is_warp_plate] multiply_xp_cost(0)",
+                "[source_is_warp_stone] add_durability_cost(80)",
                 "[target_is_global] multiply_xp_cost(0)",
                 "min_xp_cost(0)",
                 "max_xp_cost(27)",

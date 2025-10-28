@@ -31,6 +31,7 @@ public class RequirementClientRegistry {
         registerRenderer(ExperiencePointsRequirement.class, new ExperiencePointsRequirementRenderer());
         registerRenderer(ItemRequirement.class, new ItemRequirementRenderer());
         registerRenderer(RefuseRequirement.class, new RefuseRequirementRenderer());
+        // registerRenderer(DurabilityRequirement.class, new DurabilityRequirementRenderer());
         registerRenderer(CombinedRequirement.class, new CombinedRequirementRenderer());
     }
 }

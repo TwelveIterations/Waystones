@@ -79,17 +79,46 @@ public class RequirementRegistry {
     }
 
     public static void registerDefaults() {
+        final var durabilityRequirements = new DurabilityRequirementType();
         final var experiencePointRequirements = new ExperiencePointsRequirementType();
         final var experienceLevelRequirements = new ExperienceLevelRequirementType();
         final var cooldownRequirements = new CooldownRequirementType();
         final var softCooldownRequirements = new SoftCooldownRequirementType();
         final var itemRequirements = new ItemRequirementType();
 
+        register(durabilityRequirements);
         register(experiencePointRequirements);
         register(experienceLevelRequirements);
         register(cooldownRequirements);
         register(softCooldownRequirements);
         register(itemRequirements);
+
+        registerModifier("add_durability_cost", durabilityRequirements, IntParameter.class, (cost, context, parameters) -> {
+            cost.setDamage(cost.getDamage() + parameters.value);
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableDurability);
+        registerModifier("multiply_durability_cost", durabilityRequirements, FloatParameter.class, (cost, context, parameters) -> {
+            cost.setDamage((int) (cost.getDamage() * parameters.value));
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableDurability);
+        registerModifier("scaled_add_durability_cost", durabilityRequirements, VariableScaledParameter.class, (cost, context, parameters) -> {
+            final var sourceValue = context.getContextValue(parameters.id.value);
+            cost.setDamage((int) (cost.getDamage() + sourceValue * parameters.scale.value));
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableDurability);
+        registerModifier("scaled_multiply_durability_cost", durabilityRequirements, VariableScaledParameter.class, (cost, context, parameters) -> {
+            final var sourceValue = context.getContextValue(parameters.id.value);
+            cost.setDamage((int) (cost.getDamage() * sourceValue * parameters.scale.value));
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableDurability);
+        registerModifier("min_durability_cost", durabilityRequirements, IntParameter.class, (cost, context, parameters) -> {
+            cost.setDamage(Math.max(cost.getDamage(), parameters.value));
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableDurability);
+        registerModifier("max_durability_cost", durabilityRequirements, IntParameter.class, (cost, context, parameters) -> {
+            cost.setDamage(Math.min(cost.getDamage(), parameters.value));
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableDurability);
 
         registerModifier("add_level_cost", experienceLevelRequirements, FloatParameter.class, (cost, context, parameters) -> {
             cost.setLevels((int) (cost.getLevels() + parameters.value));
