@@ -194,6 +194,6 @@ public class WaystonesConfig {
     }
 
     public static WaystonesConfig getActive() {
-        return Balm.getConfig().getActiveConfig(WaystonesConfig.class);
+        return Balm.config().getActiveConfig(WaystonesConfig.class);
     }
 }

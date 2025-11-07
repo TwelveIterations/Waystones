@@ -170,7 +170,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                         Player player = Minecraft.getInstance().player;
                         PlayerWaystoneManager.deactivateWaystone(Objects.requireNonNull(player), waystone);
                         waystones.remove(waystone);
-                        Balm.getNetworking().sendToServer(new ServerboundRemoveWaystonePacket(waystone.getWaystoneUid()));
+                        Balm.networking().sendToServer(new ServerboundRemoveWaystonePacket(waystone.getWaystoneUid()));
                         updateList();
                     });
                     addRenderableWidget(removeButton);
@@ -215,7 +215,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     protected void onWaystoneSelected(Waystone waystone) {
-        Balm.getNetworking().sendToServer(new ServerboundSelectWaystonePacket(waystone.getWaystoneUid()));
+        Balm.networking().sendToServer(new ServerboundSelectWaystonePacket(waystone.getWaystoneUid()));
     }
 
     private void sortWaystone(Waystone waystone, int sortDir) {
@@ -223,10 +223,10 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         if (Kuma.hasShiftDown()) {
             if (sortDir == -1) {
                 PlayerWaystoneManager.sortWaystoneAsFirst(Minecraft.getInstance().player, waystoneUid);
-                Balm.getNetworking().sendToServer(new ServerboundSortWaystonePacket(waystoneUid, ServerboundSortWaystonePacket.SORT_FIRST));
+                Balm.networking().sendToServer(new ServerboundSortWaystonePacket(waystoneUid, ServerboundSortWaystonePacket.SORT_FIRST));
             } else if (sortDir == 1) {
                 PlayerWaystoneManager.sortWaystoneAsLast(Minecraft.getInstance().player, waystoneUid);
-                Balm.getNetworking().sendToServer(new ServerboundSortWaystonePacket(waystoneUid, ServerboundSortWaystonePacket.SORT_LAST));
+                Balm.networking().sendToServer(new ServerboundSortWaystonePacket(waystoneUid, ServerboundSortWaystonePacket.SORT_LAST));
             }
         } else {
             final var index = filteredWaystones.indexOf(waystone);
@@ -238,7 +238,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
             final var otherWaystoneUid = otherWaystone.getWaystoneUid();
 
             PlayerWaystoneManager.sortWaystoneSwap(Minecraft.getInstance().player, waystoneUid, otherWaystoneUid);
-            Balm.getNetworking().sendToServer(new ServerboundSortWaystonePacket(waystoneUid, otherWaystoneUid));
+            Balm.networking().sendToServer(new ServerboundSortWaystonePacket(waystoneUid, otherWaystoneUid));
         }
 
         updateList();
@@ -247,7 +247,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (isLocationHeaderHovered && menu.getWaystoneFrom() != null) {
-            Balm.getNetworking().sendToServer(new ServerboundRequestEditWaystonePacket(menu.getWaystoneFrom().getPos()));
+            Balm.networking().sendToServer(new ServerboundRequestEditWaystonePacket(menu.getWaystoneFrom().getPos()));
             return true;
         }
 

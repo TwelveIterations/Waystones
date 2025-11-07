@@ -116,14 +116,14 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public ItemStack createAttunedShard(Waystone warpPlate) {
-        ItemStack itemStack = new ItemStack(ModItems.attunedShard);
+        ItemStack itemStack = ModItems.attunedShard.createStack();
         setBoundWaystone(itemStack, warpPlate);
         return itemStack;
     }
 
     @Override
     public ItemStack createBoundScroll(Waystone waystone) {
-        ItemStack itemStack = new ItemStack(ModItems.warpScroll);
+        ItemStack itemStack = ModItems.warpScroll.createStack();
         setBoundWaystone(itemStack, waystone);
         return itemStack;
     }
@@ -138,7 +138,7 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public Optional<Waystone> placeSharestone(ServerLevel level, BlockPos pos, DyeColor color) {
-        final var sharestone = ModBlocks.getSharestone(color);
+        final var sharestone = ModBlocks.sharestones.get(color);
         if (sharestone == null) {
             return Optional.empty();
         }
@@ -157,7 +157,7 @@ public class InternalMethodsImpl implements InternalMethods {
     @Override
     public Optional<Waystone> getBoundWaystone(@Nullable Player player, ItemStack itemStack) {
         if (itemStack.getItem() instanceof IAttunementItem attunementItem) {
-            return attunementItem.getWaystoneAttunedTo(Balm.getHooks().getServer(), player, itemStack);
+            return attunementItem.getWaystoneAttunedTo(Balm.platform().server(), player, itemStack);
         }
         return Optional.empty();
     }

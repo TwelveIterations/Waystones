@@ -16,9 +16,7 @@ import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -54,7 +52,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     protected int attunementTicks;
 
     public WarpPlateBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(ModBlockEntities.warpPlate.get(), blockPos, blockState);
+        super(ModBlockEntities.warpPlate.value(), blockPos, blockState);
     }
 
     @Override
@@ -81,7 +79,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     }
 
     private void initializeInventory() {
-        setShardItem(new ItemStack(ModItems.dormantShard));
+        setShardItem(ModItems.dormantShard.createStack());
     }
 
     @Override
@@ -300,7 +298,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
 
             if (attunementTicks >= getMaxAttunementTicks()) {
                 attunementTicks = 0;
-                final var attunedShard = new ItemStack(ModItems.attunedShard);
+                final var attunedShard = ModItems.attunedShard.createStack();
                 WaystonesAPI.setBoundWaystone(attunedShard, getWaystone());
                 setShardItem(attunedShard);
             }
@@ -315,7 +313,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
                     level.addFreshEntity(shardEntity);
                     setShardItem(ItemStack.EMPTY);
                     if (level instanceof ServerLevel serverLevel) {
-                        Balm.getNetworking().sendToTracking(serverLevel, worldPosition, new ClientboundWarpPlateEjectEffectPacket(worldPosition));
+                        Balm.networking().sendToTracking(serverLevel, worldPosition, new ClientboundWarpPlateEjectEffectPacket(worldPosition));
                         level.playSound(null, worldPosition, SoundEvents.CHICKEN_EGG, SoundSource.PLAYERS, 1f, 1f);
                     }
                 }
@@ -337,6 +335,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(ModComponents.waystoneIdentity.get(), new WaystoneReferenceComponent(getEffectiveWaystoneUid(), WarpPlateBlock.getGalacticName(getWaystone().getWaystoneUid())));
+        builder.set(ModComponents.waystoneIdentity.value(), new WaystoneReferenceComponent(getEffectiveWaystoneUid(), WarpPlateBlock.getGalacticName(getWaystone().getWaystoneUid())));
     }
 }

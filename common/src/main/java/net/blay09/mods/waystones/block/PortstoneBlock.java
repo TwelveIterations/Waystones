@@ -148,7 +148,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
             final var targetWaystoneType = getTargetWaystoneType();
             final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystoneType(player, targetWaystoneType));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            Balm.getNetworking().openMenu(player, new BalmMenuProvider<List<Waystone>>() {
+            Balm.networking().openMenu(player, new BalmMenuProvider<List<Waystone>>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("container.waystones." + color.getSerializedName() + "_portstone");
@@ -156,7 +156,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
 
                 @Override
                 public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.get(), null, windowId, waystones, Set.of(TeleportFlags.PORTSTONE));
+                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.value(), null, windowId, waystones, Set.of(TeleportFlags.PORTSTONE));
                 }
 
                 @Override

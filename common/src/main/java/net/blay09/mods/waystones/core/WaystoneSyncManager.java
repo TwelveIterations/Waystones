@@ -41,35 +41,35 @@ public class WaystoneSyncManager {
 
     public static void sendSortingIndex(Player player) {
         final var sortingIndex = PlayerWaystoneManager.getSortingIndex(player);
-        Balm.getNetworking().sendTo(player, new ClientboundSortingIndexPacket(sortingIndex));
+        Balm.networking().sendTo(player, new ClientboundSortingIndexPacket(sortingIndex));
     }
 
     public static void sendActivatedWaystones(Player player) {
         final var waystones = new ArrayList<>(PlayerWaystoneManager.getActivatedWaystones(player));
-        Balm.getNetworking().sendTo(player, new ClientboundKnownWaystonesPacket(WaystoneTypes.WAYSTONE, waystones));
+        Balm.networking().sendTo(player, new ClientboundKnownWaystonesPacket(WaystoneTypes.WAYSTONE, waystones));
     }
 
     public static void sendWaystonesOfType(ResourceLocation waystoneType, ServerPlayer player) {
         List<Waystone> warpPlates = new ArrayList<>(SavedDataWaystonesStore.get(player.level().getServer()).getWaystonesByType(waystoneType));
-        Balm.getNetworking().sendTo(player, new ClientboundKnownWaystonesPacket(waystoneType, warpPlates));
+        Balm.networking().sendTo(player, new ClientboundKnownWaystonesPacket(waystoneType, warpPlates));
     }
 
     public static void sendWaystoneUpdate(Player player, Waystone waystone) {
         // If this is a waystone, only send an update if the player has activated it already
         if (!waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
-            Balm.getNetworking().sendTo(player, new ClientboundUpdateWaystonePacket(waystone));
+            Balm.networking().sendTo(player, new ClientboundUpdateWaystonePacket(waystone));
         }
     }
 
     public static void sendWaystoneRemoval(Player player, Waystone waystone, boolean wasDestroyed) {
         // If this is a waystone, only send an update if the player has activated it already
         if (!waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
-            Balm.getNetworking().sendTo(player, new ClientboundWaystoneRemovedPacket(waystone.getWaystoneType(), waystone.getWaystoneUid(), wasDestroyed));
+            Balm.networking().sendTo(player, new ClientboundWaystoneRemovedPacket(waystone.getWaystoneType(), waystone.getWaystoneUid(), wasDestroyed));
         }
     }
 
     public static void sendWaystoneCooldowns(Player player) {
         final var cooldowns = PlayerWaystoneManager.getCooldowns(player);
-        Balm.getNetworking().sendTo(player, new ClientboundPlayerWaystoneCooldownsPacket(cooldowns));
+        Balm.networking().sendTo(player, new ClientboundPlayerWaystoneCooldownsPacket(cooldowns));
     }
 }

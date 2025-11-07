@@ -1,12 +1,12 @@
 package net.blay09.mods.waystones.datagen;
 
+import net.blay09.mods.balm.world.level.block.DeferredBlock;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -26,22 +26,22 @@ public class ModBlockLootTableProvider extends FabricBlockLootTableProvider {
 
     @Override
     public void generate() {
-        add(ModBlocks.waystone, createDoubleBlockWaystoneLoot(ModBlocks.waystone));
-        add(ModBlocks.sandyWaystone, createDoubleBlockWaystoneLoot(ModBlocks.sandyWaystone));
-        add(ModBlocks.mossyWaystone, createDoubleBlockWaystoneLoot(ModBlocks.mossyWaystone));
-        add(ModBlocks.deepslateWaystone, createDoubleBlockWaystoneLoot(ModBlocks.deepslateWaystone));
-        add(ModBlocks.blackstoneWaystone, createDoubleBlockWaystoneLoot(ModBlocks.blackstoneWaystone));
-        add(ModBlocks.endStoneWaystone, createDoubleBlockWaystoneLoot(ModBlocks.endStoneWaystone));
-        add(ModBlocks.warpPlate, createWaystoneLoot(ModBlocks.warpPlate));
-        for (final var portstone : ModBlocks.portstones) {
-            add(portstone, createDoubleBlockWaystoneLoot(portstone));
+        add(ModBlocks.waystone.asBlock(), createDoubleBlockWaystoneLoot(ModBlocks.waystone));
+        add(ModBlocks.sandyWaystone.asBlock(), createDoubleBlockWaystoneLoot(ModBlocks.sandyWaystone));
+        add(ModBlocks.mossyWaystone.asBlock(), createDoubleBlockWaystoneLoot(ModBlocks.mossyWaystone));
+        add(ModBlocks.deepslateWaystone.asBlock(), createDoubleBlockWaystoneLoot(ModBlocks.deepslateWaystone));
+        add(ModBlocks.blackstoneWaystone.asBlock(), createDoubleBlockWaystoneLoot(ModBlocks.blackstoneWaystone));
+        add(ModBlocks.endStoneWaystone.asBlock(), createDoubleBlockWaystoneLoot(ModBlocks.endStoneWaystone));
+        add(ModBlocks.warpPlate.asBlock(), createWaystoneLoot(ModBlocks.warpPlate));
+        for (final var portstone : ModBlocks.portstones.values()) {
+            add(portstone.asBlock(), createDoubleBlockWaystoneLoot(portstone));
         }
-        for (final var sharestone : ModBlocks.sharestones) {
-            add(sharestone, createDoubleBlockWaystoneLoot(sharestone));
+        for (final var sharestone : ModBlocks.sharestones.values()) {
+            add(sharestone.asBlock(), createDoubleBlockWaystoneLoot(sharestone));
         }
     }
 
-    private LootTable.Builder createWaystoneLoot(Block block) {
+    private LootTable.Builder createWaystoneLoot(DeferredBlock block) {
 
         return LootTable.lootTable()
                 .withPool(applyExplosionCondition(block, LootPool.lootPool()
@@ -53,12 +53,12 @@ public class ModBlockLootTableProvider extends FabricBlockLootTableProvider {
                                 .when(hasSilkTouch()));
     }
 
-    private LootTable.Builder createDoubleBlockWaystoneLoot(Block block) {
+    private LootTable.Builder createDoubleBlockWaystoneLoot(DeferredBlock block) {
         return LootTable.lootTable()
                 .withPool(applyExplosionCondition(block, LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1f))
                         .add(LootItem.lootTableItem(block))
-                        .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+                        .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block.asBlock())
                                 .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(WaystoneBlockBase.HALF, DoubleBlockHalf.LOWER)))
                         .apply(CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
                                 .when(hasSilkTouch()))));

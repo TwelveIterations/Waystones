@@ -35,7 +35,7 @@ public record ClientboundKnownWaystonesPacket(ResourceLocation waystoneType, Lis
             playerWaystoneData.setWaystones(message.waystones);
         }
 
-        Balm.getEvents().fireEvent(new WaystonesListReceivedEvent(message.waystoneType, message.waystones));
+        Balm.events().fireEvent(new WaystonesListReceivedEvent(message.waystoneType, message.waystones));
 
         for (Waystone waystone : message.waystones) {
             WaystonesClient.getWaystonesStore().updateWaystone(waystone);

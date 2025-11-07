@@ -57,7 +57,7 @@ public class PlayerWaystoneManager {
         if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
             getPlayerWaystoneData(player.level()).activateWaystone(player, waystone);
 
-            Balm.getEvents().fireEvent(new WaystoneActivatedEvent(player, waystone));
+            Balm.events().fireEvent(new WaystoneActivatedEvent(player, waystone));
         }
     }
 

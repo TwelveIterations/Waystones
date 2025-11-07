@@ -17,6 +17,6 @@ public class WaystoneBlockItem extends BlockItem {
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
-        itemStack.addToTooltip(ModComponents.waystoneIdentity.get(), context, display, list, flag);
+        itemStack.addToTooltip(ModComponents.waystoneIdentity.value(), context, display, list, flag);
     }
 }

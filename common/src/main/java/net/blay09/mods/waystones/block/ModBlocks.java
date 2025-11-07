@@ -1,30 +1,23 @@
 package net.blay09.mods.waystones.block;
 
-import net.blay09.mods.balm.api.block.BalmBlocks;
-import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.balm.world.level.block.BalmBlockRegistrar;
+import net.blay09.mods.balm.world.level.block.DeferredBlock;
+import net.blay09.mods.balm.world.level.block.DiscriminatedBlocks;
 import net.blay09.mods.waystones.component.DescriptionComponent;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.item.PortstoneBlockItem;
 import net.blay09.mods.waystones.item.SharestoneBlockItem;
 import net.blay09.mods.waystones.item.WaystoneBlockItem;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
+import java.util.Set;
 
 public class ModBlocks {
 
-    private static final DyeColor[] portstoneColors = new DyeColor[]{
+    private static final Set<DyeColor> portstoneColors = Set.of(
             DyeColor.WHITE,
             DyeColor.ORANGE,
             DyeColor.MAGENTA,
@@ -41,9 +34,9 @@ public class ModBlocks {
             DyeColor.GREEN,
             DyeColor.RED,
             DyeColor.BLACK
-    };
+    );
 
-    private static final DyeColor[] sharestoneColors = new DyeColor[]{
+    private static final Set<DyeColor> sharestoneColors = Set.of(
             DyeColor.ORANGE,
             DyeColor.MAGENTA,
             DyeColor.LIGHT_BLUE,
@@ -59,103 +52,34 @@ public class ModBlocks {
             DyeColor.GREEN,
             DyeColor.RED,
             DyeColor.BLACK
-    };
+    );
 
-    public static Block waystone;
-    public static Block mossyWaystone;
-    public static Block sandyWaystone;
-    public static Block deepslateWaystone;
-    public static Block blackstoneWaystone;
-    public static Block endStoneWaystone;
-    public static Block warpPlate;
-    public static final PortstoneBlock[] portstones = new PortstoneBlock[portstoneColors.length];
-    public static final SharestoneBlock[] sharestones = new SharestoneBlock[sharestoneColors.length];
+    public static DeferredBlock waystone;
+    public static DeferredBlock mossyWaystone;
+    public static DeferredBlock sandyWaystone;
+    public static DeferredBlock deepslateWaystone;
+    public static DeferredBlock blackstoneWaystone;
+    public static DeferredBlock endStoneWaystone;
+    public static DeferredBlock warpPlate;
+    public static DiscriminatedBlocks<DyeColor> portstones;
+    public static DiscriminatedBlocks<DyeColor> sharestones;
 
-    public static void initialize(BalmBlocks blocks) {
-        blocks.register((identifier) -> waystone = new WaystoneBlock(defaultProperties(identifier)), ModBlocks::waystoneItemBlock, id("waystone"));
-        blocks.register((identifier) -> mossyWaystone = new WaystoneBlock(defaultProperties(identifier)), ModBlocks::waystoneItemBlock, id("mossy_waystone"));
-        blocks.register((identifier) -> sandyWaystone = new WaystoneBlock(defaultProperties(identifier)), ModBlocks::waystoneItemBlock, id("sandy_waystone"));
-        blocks.register((identifier) -> deepslateWaystone = new WaystoneBlock(defaultProperties(identifier).sound(SoundType.DEEPSLATE)),
-                ModBlocks::waystoneItemBlock,
-                id("deepslate_waystone"));
-        blocks.register((identifier) -> blackstoneWaystone = new WaystoneBlock(defaultProperties(identifier)), ModBlocks::waystoneItemBlock, id("blackstone_waystone"));
-        blocks.register((identifier) -> endStoneWaystone = new WaystoneBlock(defaultProperties(identifier)), ModBlocks::waystoneItemBlock, id("end_stone_waystone"));
-        blocks.register((identifier) -> warpPlate = new WarpPlateBlock(defaultProperties(identifier)), ModBlocks::itemBlock, id("warp_plate"));
+    public static void initialize(BalmBlockRegistrar blocks) {
+        waystone = blocks.register("waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withItem(WaystoneBlockItem::new).asDeferredBlock();
+        mossyWaystone = blocks.register("mossy_waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withItem(WaystoneBlockItem::new).asDeferredBlock();
+        sandyWaystone = blocks.register("sandy_waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withItem(WaystoneBlockItem::new).asDeferredBlock();
+        deepslateWaystone = blocks.register("deepslate_waystone", WaystoneBlock::new, it -> it.sound(SoundType.DEEPSLATE).strength(5f, 2000f)).withItem(WaystoneBlockItem::new).asDeferredBlock();
+        blackstoneWaystone = blocks.register("blackstone_waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withItem(WaystoneBlockItem::new).asDeferredBlock();
+        endStoneWaystone = blocks.register("end_stone_waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withItem(WaystoneBlockItem::new).asDeferredBlock();
+        warpPlate = blocks.register("warp_plate", WarpPlateBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withDefaultItem().asDeferredBlock();
 
-        for (final var color : portstoneColors) {
-            blocks.register((identifier) -> portstones[color.ordinal()] = new PortstoneBlock(color, defaultProperties(identifier)),
-                    (block, name) -> portstoneItemBlock(block, name, properties ->
-                            properties.component(ModComponents.description.get(),
-                                    new DescriptionComponent(Component.translatable("tooltip.waystones.portstone").withStyle(ChatFormatting.GRAY)))),
-                    id(color.getSerializedName() + "_portstone"));
-        }
+        portstones = blocks.registerDiscriminated(portstoneColors, color -> DiscriminatedBlocks.prefix(color, "portstone"), PortstoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f))
+                .withItems(PortstoneBlockItem::new, it -> it.component(ModComponents.description.value(), new DescriptionComponent(Component.translatable("tooltip.waystones.portstone").withStyle(ChatFormatting.GRAY))))
+                .asDiscriminatedBlocks();
 
-        for (final var color : sharestoneColors) {
-            blocks.register((identifier) -> sharestones[color.ordinal() - 1] = new SharestoneBlock(color, defaultProperties(identifier)),
-                    (block, name) -> sharestoneItemBlock(block, name, properties -> properties.component(ModComponents.description.get(),
-                            new DescriptionComponent(Component.translatable("tooltip.waystones." + name.getPath())))),
-                    id(color.getSerializedName() + "_sharestone"));
-        }
-    }
-
-    private static BlockItem portstoneItemBlock(Block block, ResourceLocation name, Function<Item.Properties, Item.Properties> properties) {
-        return new PortstoneBlockItem(block, properties.apply(defaultItemProperties(name)));
-    }
-
-    private static BlockItem sharestoneItemBlock(Block block, ResourceLocation name, Function<Item.Properties, Item.Properties> properties) {
-        return new SharestoneBlockItem(block, properties.apply(defaultItemProperties(name)));
-    }
-
-    private static BlockItem waystoneItemBlock(Block block, ResourceLocation name) {
-        return new WaystoneBlockItem(block, defaultItemProperties(name));
-    }
-
-    private static BlockItem itemBlock(Block block, ResourceLocation name) {
-        return new BlockItem(block, defaultItemProperties(name));
-    }
-
-    private static BlockItem itemBlock(Block block, ResourceLocation name, Function<Item.Properties, Item.Properties> properties) {
-        return new BlockItem(block, properties.apply(defaultItemProperties(name)));
-    }
-
-    private static ResourceLocation id(String name) {
-        return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
-    }
-
-    private static ResourceKey<Block> blockId(ResourceLocation identifier) {
-        return ResourceKey.create(Registries.BLOCK, identifier);
-    }
-
-    private static ResourceKey<Item> itemId(ResourceLocation identifier) {
-        return ResourceKey.create(Registries.ITEM, identifier);
-    }
-
-    private static BlockBehaviour.Properties defaultProperties(ResourceLocation identifier) {
-        return BlockBehaviour.Properties.of().setId(blockId(identifier)).sound(SoundType.STONE).strength(5f, 2000f);
-    }
-
-    private static Item.Properties defaultItemProperties(ResourceLocation identifier) {
-        return new Item.Properties().setId(itemId(identifier));
-    }
-
-    @Nullable
-    public static SharestoneBlock getSharestone(DyeColor color) {
-        final var index = color.ordinal() - 1; // -1 because we skip WHITE
-        if (index < 0 || index >= sharestones.length) {
-            return null;
-        }
-
-        return sharestones[index];
-    }
-
-    @Nullable
-    public static PortstoneBlock getPortstone(DyeColor color) {
-        final var index = color.ordinal();
-        if (index >= portstones.length) {
-            return null;
-        }
-
-        return portstones[index];
+        sharestones = blocks.registerDiscriminated(sharestoneColors, color -> DiscriminatedBlocks.prefix(color, "sharestone"), SharestoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f))
+                .withItems(SharestoneBlockItem::new, (color, it) -> it.component(ModComponents.description.value(), new DescriptionComponent(Component.translatable("tooltip.waystones." + color + "_sharestone").withStyle(ChatFormatting.GRAY))))
+                .asDiscriminatedBlocks();
     }
 
 }

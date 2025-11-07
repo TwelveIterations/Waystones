@@ -76,7 +76,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
             if (!world.isClientSide()) {
-                blockEntity.getSelectionMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openMenu(player, menuProvider));
+                blockEntity.getSelectionMenuProvider().ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
             }
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);

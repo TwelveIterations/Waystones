@@ -24,7 +24,7 @@ import java.util.Optional;
 public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
 
     public WaystoneBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(ModBlockEntities.waystone.get(), blockPos, blockState);
+        super(ModBlockEntities.waystone.value(), blockPos, blockState);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
             public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
                 final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone()));
                 PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), getWaystone(), windowId, waystones, Collections.emptySet());
+                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.value(), getWaystone(), windowId, waystones, Collections.emptySet());
             }
 
             @Override

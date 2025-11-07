@@ -63,7 +63,7 @@ public class WaystonePlacement extends PlacementModifier {
 
     @Override
     public PlacementModifierType<?> type() {
-        return ModWorldGen.waystonePlacement.get();
+        return ModWorldGen.waystonePlacement.value();
     }
 
     private boolean isWaystoneChunk(PlacementContext world, BlockPos pos) {

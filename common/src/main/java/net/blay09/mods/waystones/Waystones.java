@@ -1,20 +1,22 @@
 package net.blay09.mods.waystones;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.block.BalmBlockEntities;
-import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.blay09.mods.balm.api.command.BalmCommands;
-import net.blay09.mods.balm.api.component.BalmComponents;
 import net.blay09.mods.balm.api.config.BalmConfig;
 import net.blay09.mods.balm.api.event.BalmEvents;
-import net.blay09.mods.balm.api.item.BalmItems;
-import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.module.BalmModule;
 import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.permission.BalmPermissions;
-import net.blay09.mods.balm.api.resources.BalmResources;
-import net.blay09.mods.balm.api.stats.BalmStats;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
+import net.blay09.mods.balm.core.BalmRegistrar;
+import net.blay09.mods.balm.core.component.BalmDataComponentTypeRegistrar;
+import net.blay09.mods.balm.server.packs.resources.BalmResourceConditionRegistrar;
+import net.blay09.mods.balm.stats.BalmCustomStatRegistrar;
+import net.blay09.mods.balm.world.inventory.BalmMenuTypeRegistrar;
+import net.blay09.mods.balm.world.item.BalmCreativeModeTabRegistrar;
+import net.blay09.mods.balm.world.item.BalmItemRegistrar;
+import net.blay09.mods.balm.world.level.block.BalmBlockRegistrar;
+import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityTypeRegistrar;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.command.ModCommands;
@@ -30,6 +32,7 @@ import net.blay09.mods.waystones.network.ModNetworking;
 import net.blay09.mods.waystones.resources.ForceSpawnInVillagesCondition;
 import net.blay09.mods.waystones.stats.ModStats;
 import net.blay09.mods.waystones.worldgen.ModWorldGen;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +58,7 @@ public class Waystones implements BalmModule {
     }
 
     @Override
-    public void registerStats(BalmStats stats) {
+    public void registerCustomStats(BalmCustomStatRegistrar stats) {
         ModStats.initialize(stats);
     }
 
@@ -70,22 +73,27 @@ public class Waystones implements BalmModule {
     }
 
     @Override
-    public void registerBlocks(BalmBlocks blocks) {
+    public void registerBlocks(BalmBlockRegistrar blocks) {
         ModBlocks.initialize(blocks);
     }
 
     @Override
-    public void registerBlockEntities(BalmBlockEntities blockEntities) {
+    public void registerBlockEntityTypes(BalmBlockEntityTypeRegistrar blockEntities) {
         ModBlockEntities.initialize(blockEntities);
     }
 
     @Override
-    public void registerItems(BalmItems items) {
+    public void registerItems(BalmItemRegistrar items) {
         ModItems.initialize(items);
     }
 
     @Override
-    public void registerMenus(BalmMenus menus) {
+    public void registerCreativeModeTabs(BalmCreativeModeTabRegistrar creativeModeTabs) {
+        ModItems.initialize(creativeModeTabs);
+    }
+
+    @Override
+    public void registerMenuTypes(BalmMenuTypeRegistrar menus) {
         ModMenus.initialize(menus);
     }
 
@@ -95,18 +103,25 @@ public class Waystones implements BalmModule {
     }
 
     @Override
+    public void registerAdditional(BalmRegistrar registrar) {
+        ModWorldGen.initializeFeatures(registrar.scoped(Registries.FEATURE, getId().getNamespace()));
+        ModWorldGen.initializePlacementModifierTypes(registrar.scoped(Registries.PLACEMENT_MODIFIER_TYPE, getId().getNamespace()));
+        ModWorldGen.initializePoiTypes(registrar.scoped(Registries.POINT_OF_INTEREST_TYPE, getId().getNamespace()));
+    }
+
+    @Override
     public void registerCommands(BalmCommands commands) {
         ModCommands.initialize(commands);
     }
 
     @Override
-    public void registerComponents(BalmComponents components) {
+    public void registerDataComponentTypes(BalmDataComponentTypeRegistrar components) {
         ModComponents.initialize(components);
     }
 
     @Override
-    public void registerResources(BalmResources resources) {
-        resources.registerResourceCondition(id("force_spawn_in_villages"), ForceSpawnInVillagesCondition.CODEC);
+    public void registerResourceConditions(BalmResourceConditionRegistrar resources) {
+        resources.register("force_spawn_in_villages", ForceSpawnInVillagesCondition.CODEC);
     }
 
     @Override

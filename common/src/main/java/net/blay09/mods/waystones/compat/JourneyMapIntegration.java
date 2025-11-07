@@ -59,9 +59,9 @@ public class JourneyMapIntegration implements IClientPlugin {
 
     public JourneyMapIntegration() {
         instance = this;
-        Balm.getEvents().onEvent(WaystonesListReceivedEvent.class, this::onWaystonesListReceived);
-        Balm.getEvents().onEvent(WaystoneUpdateReceivedEvent.class, this::onWaystoneUpdateReceived);
-        Balm.getEvents().onEvent(WaystoneRemoveReceivedEvent.class, this::onWaystoneRemoveReceived);
+        Balm.events().onEvent(WaystonesListReceivedEvent.class, this::onWaystonesListReceived);
+        Balm.events().onEvent(WaystoneUpdateReceivedEvent.class, this::onWaystoneUpdateReceived);
+        Balm.events().onEvent(WaystoneRemoveReceivedEvent.class, this::onWaystoneRemoveReceived);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class JourneyMapIntegration implements IClientPlugin {
 
     private static boolean shouldManageWaypoints() {
         WaystonesConfig config = WaystonesConfig.getActive();
-        if (config.compatibility.preferJourneyMapIntegrationMod && Balm.isModLoaded("jmi")) {
+        if (config.compatibility.preferJourneyMapIntegrationMod && Balm.platform().isModLoaded("jmi")) {
             return false;
         }
 

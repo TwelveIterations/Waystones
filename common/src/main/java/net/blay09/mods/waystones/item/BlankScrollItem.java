@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 public class BlankScrollItem extends Item {
     public BlankScrollItem(Properties properties) {
-        super(properties.stacksTo(64).component(ModComponents.blankScroll.get(), BlankScrollComponent.INSTANCE));
+        super(properties.stacksTo(64).component(ModComponents.blankScroll.value(), BlankScrollComponent.INSTANCE));
     }
 
     @Override
@@ -25,7 +25,7 @@ public class BlankScrollItem extends Item {
             final var blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
             if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntityBase) {
                 final var waystone = waystoneBlockEntityBase.getWaystone();
-                final var boundScrollStack = new ItemStack(ModItems.boundScroll);
+                final var boundScrollStack = ModItems.boundScroll.createStack();
                 WaystonesAPI.setBoundWaystone(boundScrollStack, waystone);
                 final var player = context.getPlayer();
                 int emptySlot = player.getInventory().getFreeSlot();
@@ -46,6 +46,6 @@ public class BlankScrollItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
-        itemStack.addToTooltip(ModComponents.blankScroll.get(), context, display, list, flag);
+        itemStack.addToTooltip(ModComponents.blankScroll.value(), context, display, list, flag);
     }
 }

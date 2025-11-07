@@ -24,14 +24,14 @@ public class CrumblingAttunedShardItem extends AbstractAttunedShardItem {
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, context, display, list, flag);
 
-        final var attunedWaystoneId = Optional.ofNullable(stack.get(ModComponents.warpPlateAttunement.get()))
+        final var attunedWaystoneId = Optional.ofNullable(stack.get(ModComponents.warpPlateAttunement.value()))
                 .map(WaystoneReferenceComponent::waystoneId)
-                .orElseGet(() -> stack.get(ModComponents.attunement.get()));
+                .orElseGet(() -> stack.get(ModComponents.attunement.value()));
         if (attunedWaystoneId != null) {
             var textComponent = Component.translatable("tooltip.waystones.attuned_shard.attunement_crumbling");
             textComponent.withStyle(ChatFormatting.WHITE).withStyle(ChatFormatting.ITALIC);
 
-            Player player = Balm.getProxy().getClientPlayer();
+            Player player = Balm.safeClientAccess().getClientPlayer();
             if (player != null && player.containerMenu instanceof WaystoneModifierMenu wpc) {
                 if (!attunedWaystoneId.equals(wpc.getWaystone().getWaystoneUid())) {
                     list.accept(textComponent);

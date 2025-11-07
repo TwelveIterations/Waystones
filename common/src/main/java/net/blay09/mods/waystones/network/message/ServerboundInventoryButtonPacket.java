@@ -65,7 +65,7 @@ public class ServerboundInventoryButtonPacket implements CustomPacketPayload {
 
                 @Override
                 public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
-                    return new WaystoneSelectionMenu(ModMenus.inventorySelection.get(), null, windowId, waystones, Set.of(TeleportFlags.INVENTORY_BUTTON));
+                    return new WaystoneSelectionMenu(ModMenus.inventorySelection.value(), null, windowId, waystones, Set.of(TeleportFlags.INVENTORY_BUTTON));
                 }
 
                 @Override
@@ -78,7 +78,7 @@ public class ServerboundInventoryButtonPacket implements CustomPacketPayload {
                     return WaystoneImpl.LIST_STREAM_CODEC;
                 }
             };
-            Balm.getNetworking().openMenu(player, containerProvider);
+            Balm.networking().openMenu(player, containerProvider);
         }
     }
 

@@ -21,50 +21,50 @@ public class ModBlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
     protected void addTags(HolderLookup.Provider arg) {
         final var mineablePickaxeTag = TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("mineable/pickaxe"));
         final var mineableBuilder = tag(mineablePickaxeTag);
-        mineableBuilder.add(ModBlocks.waystone,
-                ModBlocks.sandyWaystone,
-                ModBlocks.mossyWaystone,
-                ModBlocks.deepslateWaystone,
-                ModBlocks.blackstoneWaystone,
-                ModBlocks.endStoneWaystone,
-                ModBlocks.warpPlate);
-        for (final var portstone : ModBlocks.portstones) {
-            mineableBuilder.add(portstone);
+        mineableBuilder.add(ModBlocks.waystone.asBlock(),
+                ModBlocks.sandyWaystone.asBlock(),
+                ModBlocks.mossyWaystone.asBlock(),
+                ModBlocks.deepslateWaystone.asBlock(),
+                ModBlocks.blackstoneWaystone.asBlock(),
+                ModBlocks.endStoneWaystone.asBlock(),
+                ModBlocks.warpPlate.asBlock());
+        for (final var portstone : ModBlocks.portstones.values()) {
+            mineableBuilder.add(portstone.asBlock());
         }
-        for (final var sharestone : ModBlocks.sharestones) {
-            mineableBuilder.add(sharestone);
+        for (final var sharestone : ModBlocks.sharestones.values()) {
+            mineableBuilder.add(sharestone.asBlock());
         }
 
         final var isTeleportTargetBuilder = tag(ModBlockTags.IS_TELEPORT_TARGET);
-        isTeleportTargetBuilder.add(ModBlocks.waystone,
-                ModBlocks.sandyWaystone,
-                ModBlocks.mossyWaystone,
-                ModBlocks.deepslateWaystone,
-                ModBlocks.blackstoneWaystone,
-                ModBlocks.endStoneWaystone,
-                ModBlocks.warpPlate);
-        for (final var portstone : ModBlocks.portstones) {
-            isTeleportTargetBuilder.add(portstone);
+        isTeleportTargetBuilder.add(ModBlocks.waystone.asBlock(),
+                ModBlocks.sandyWaystone.asBlock(),
+                ModBlocks.mossyWaystone.asBlock(),
+                ModBlocks.deepslateWaystone.asBlock(),
+                ModBlocks.blackstoneWaystone.asBlock(),
+                ModBlocks.endStoneWaystone.asBlock(),
+                ModBlocks.warpPlate.asBlock());
+        for (final var portstone : ModBlocks.portstones.values()) {
+            isTeleportTargetBuilder.add(portstone.asBlock());
         }
-        for (final var sharestone : ModBlocks.sharestones) {
-            isTeleportTargetBuilder.add(sharestone);
+        for (final var sharestone : ModBlocks.sharestones.values()) {
+            isTeleportTargetBuilder.add(sharestone.asBlock());
         }
 
-        tag(ModBlockTags.WAYSTONES).add(ModBlocks.waystone,
-                ModBlocks.sandyWaystone,
-                ModBlocks.mossyWaystone,
-                ModBlocks.deepslateWaystone,
-                ModBlocks.blackstoneWaystone,
-                ModBlocks.endStoneWaystone);
+        tag(ModBlockTags.WAYSTONES).add(ModBlocks.waystone.asBlock(),
+                ModBlocks.sandyWaystone.asBlock(),
+                ModBlocks.mossyWaystone.asBlock(),
+                ModBlocks.deepslateWaystone.asBlock(),
+                ModBlocks.blackstoneWaystone.asBlock(),
+                ModBlocks.endStoneWaystone.asBlock());
 
         final var sharestonesBuilder = tag(ModBlockTags.SHARESTONES);
-        for (final var sharestone : ModBlocks.sharestones) {
-            sharestonesBuilder.add(sharestone);
+        for (final var sharestone : ModBlocks.sharestones.values()) {
+            sharestonesBuilder.add(sharestone.asBlock());
         }
 
         final var portstonesBuilder = tag(ModBlockTags.PORTSTONES);
-        for (final var portstone : ModBlocks.portstones) {
-            portstonesBuilder.add(portstone);
+        for (final var portstone : ModBlocks.portstones.values()) {
+            portstonesBuilder.add(portstone.asBlock());
         }
     }
 

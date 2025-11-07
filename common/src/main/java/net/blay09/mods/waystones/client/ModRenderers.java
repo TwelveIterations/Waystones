@@ -1,7 +1,9 @@
 package net.blay09.mods.waystones.client;
 
-import net.blay09.mods.balm.api.client.rendering.BalmRenderers;
-import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.balm.client.color.block.BalmBlockColorRegistrar;
+import net.blay09.mods.balm.client.model.geom.BalmModelLayerRegistrar;
+import net.blay09.mods.balm.client.renderer.blockentity.BalmBlockEntityRendererRegistrar;
+import net.blay09.mods.balm.client.renderer.chunk.BalmBlockRenderTypeRegistrar;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.PortstoneBlock;
 import net.blay09.mods.waystones.block.SharestoneBlock;
@@ -10,8 +12,6 @@ import net.blay09.mods.waystones.client.render.*;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 
 import java.util.Objects;
 
@@ -22,26 +22,29 @@ public class ModRenderers {
     public static ModelLayerLocation sharestoneModel;
     public static ModelLayerLocation waystoneModel;
 
-    public static void initialize(BalmRenderers renderers) {
-        portstoneModel = renderers.registerModel(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "portstone"),
+    public static void initialize(BalmModelLayerRegistrar modelLayers) {
+        portstoneModel = modelLayers.register(id("portstone"),
                 () -> PortstoneModel.createLayer(CubeDeformation.NONE));
-        sharestoneModel = renderers.registerModel(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "sharestone"),
+        sharestoneModel = modelLayers.register(id("sharestone"),
                 () -> SharestoneModel.createLayer(CubeDeformation.NONE));
-        waystoneModel = renderers.registerModel(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "waystone"),
+        waystoneModel = modelLayers.register(id("waystone"),
                 () -> WaystoneModel.createLayer(CubeDeformation.NONE));
+    }
 
-        renderers.registerBlockEntityRenderer(id("waystone"), ModBlockEntities.waystone::get, WaystoneRenderer::new);
-        renderers.registerBlockEntityRenderer(id("sharestone"), ModBlockEntities.sharestone::get, SharestoneRenderer::new);
-        renderers.registerBlockEntityRenderer(id("portstone"), ModBlockEntities.portstone::get, PortstoneRenderer::new);
+    public static void initialize(BalmBlockEntityRendererRegistrar renderers) {
+        renderers.register(ModBlockEntities.waystone, WaystoneRenderer::new);
+        renderers.register(ModBlockEntities.sharestone, SharestoneRenderer::new);
+        renderers.register(ModBlockEntities.portstone, PortstoneRenderer::new);
+    }
 
-        renderers.registerBlockColorHandler(id("warp_plate"), (state, view, pos, tintIndex) -> 0xffc456bd,
-                () -> new Block[]{ModBlocks.warpPlate});
-        renderers.registerBlockColorHandler(id("sharestone"), (state, view, pos, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) state.getBlock()).getColor())
-                .getTextColor() | 0xFF000000, () -> ModBlocks.sharestones);
-        renderers.registerBlockColorHandler(id("portstone"), (state, view, pos, tintIndex) -> Objects.requireNonNull(((PortstoneBlock) state.getBlock()).getColor())
-                .getTextColor() | 0xFF000000, () -> ModBlocks.portstones);
+    public static void initialize(BalmBlockColorRegistrar blockColors) {
+        blockColors.register((state, view, pos, tintIndex) -> 0xffc456bd, ModBlocks.warpPlate);
+        blockColors.register((state, view, pos, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) state.getBlock()).getColor()).getTextColor() | 0xFF000000, ModBlocks.sharestones.values());
+        blockColors.register((state, view, pos, tintIndex) -> Objects.requireNonNull(((PortstoneBlock) state.getBlock()).getColor()).getTextColor() | 0xFF000000, ModBlocks.portstones.values());
+    }
 
-        renderers.setBlockRenderType(() -> ModBlocks.warpPlate, ChunkSectionLayer.CUTOUT);
+    public static void initialize(BalmBlockRenderTypeRegistrar blockRenderTypes) {
+        blockRenderTypes.setRenderLayer(ModBlocks.warpPlate, ChunkSectionLayer.CUTOUT);
     }
 
 }

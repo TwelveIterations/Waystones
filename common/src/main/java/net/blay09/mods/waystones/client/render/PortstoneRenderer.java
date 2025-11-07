@@ -76,7 +76,7 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
 
         final var level = blockEntity.getLevel();
         if (warpStoneItem == null) {
-            warpStoneItem = new ItemStack(ModItems.warpStone);
+            warpStoneItem = ModItems.warpStone.createStack();
             level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).get(Enchantments.UNBREAKING).ifPresent(it -> warpStoneItem.enchant(it, 1));
         }
 

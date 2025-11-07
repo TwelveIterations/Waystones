@@ -61,7 +61,7 @@ public class WaystonePermissionManager {
     }
 
     public static boolean skipsPermissions(ServerPlayer player) {
-        return Balm.getPermissions().hasPermission(player, ModPermissions.EDIT_ALL);
+        return Balm.permissions().hasPermission(player, ModPermissions.EDIT_ALL);
     }
 
     public static boolean isEntityDeniedTeleports(Entity entity) {

@@ -74,8 +74,8 @@ public class WaystoneTeleportManager {
         }
 
         if (context.playsEffect()) {
-            teleportedEntities.forEach(additionalEntity -> Balm.getNetworking().sendToTracking(sourceLevel, sourcePos, new ClientboundTeleportEffectPacket(sourcePos)));
-            Balm.getNetworking().sendToTracking(targetLevel, targetPos, new ClientboundTeleportEffectPacket(targetPos));
+            teleportedEntities.forEach(additionalEntity -> Balm.networking().sendToTracking(sourceLevel, sourcePos, new ClientboundTeleportEffectPacket(sourcePos)));
+            Balm.networking().sendToTracking(targetLevel, targetPos, new ClientboundTeleportEffectPacket(targetPos));
         }
 
         if (context.appliesModifiers() && targetTileEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
@@ -217,7 +217,7 @@ public class WaystoneTeleportManager {
 
     public static Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context) {
         WaystoneTeleportEvent.Pre event = new WaystoneTeleportEvent.Pre(context);
-        Balm.getEvents().fireEvent(event);
+        Balm.events().fireEvent(event);
         if (event.isCanceled()) {
             return Either.right(new WaystoneTeleportError.CancelledByEvent());
         }
@@ -248,7 +248,7 @@ public class WaystoneTeleportManager {
             context.getRequirements().consume(context, player);
         }
 
-        return doTeleport(context).ifLeft(teleportedEntities -> Balm.getEvents().fireEvent(new WaystoneTeleportEvent.Post(context, teleportedEntities)));
+        return doTeleport(context).ifLeft(teleportedEntities -> Balm.events().fireEvent(new WaystoneTeleportEvent.Post(context, teleportedEntities)));
     }
 
     public static Collection<Entity> findPassengers(Entity entity) {

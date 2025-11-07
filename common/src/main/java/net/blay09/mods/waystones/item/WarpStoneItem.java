@@ -130,7 +130,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
             final var hand = player.getUsedItemHand();
             final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForItem(player, itemStack));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            Balm.getNetworking().openMenu(player, new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
+            Balm.networking().openMenu(player, new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("container.waystones.waystone_selection");
@@ -138,7 +138,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
                 @Override
                 public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-                    return new WaystoneSelectionMenu(ModMenus.warpStoneSelection.get(), null, windowId, waystones, Collections.emptySet())
+                    return new WaystoneSelectionMenu(ModMenus.warpStoneSelection.value(), null, windowId, waystones, Collections.emptySet())
                             .withWarpItem(itemStack)
                             .withHand(hand);
                 }

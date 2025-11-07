@@ -51,7 +51,7 @@ public class WaystoneEditMenu extends AbstractContainerMenu {
     }
 
     public WaystoneEditMenu(int windowId, Waystone waystone, int modifierCount, Component error, List<WaystoneVisibility> visibilityOptions, Container container) {
-        super(ModMenus.waystoneSettings.get(), windowId);
+        super(ModMenus.waystoneSettings.value(), windowId);
         this.waystone = waystone;
         this.modifierCount = modifierCount;
         this.error = error;

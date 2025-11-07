@@ -14,7 +14,6 @@ import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.selector.EntitySelector;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -23,7 +22,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -41,7 +39,7 @@ public class OpenPlayerWaystonesGuiCommand implements Command<CommandSourceStack
 
             @Override
             public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
-                return new WaystoneSelectionMenu(ModMenus.adminSelection.get(), null, windowId, waystones, Set.of(TeleportFlags.ADMIN));
+                return new WaystoneSelectionMenu(ModMenus.adminSelection.value(), null, windowId, waystones, Set.of(TeleportFlags.ADMIN));
             }
 
             @Override
@@ -54,7 +52,7 @@ public class OpenPlayerWaystonesGuiCommand implements Command<CommandSourceStack
                 return WaystoneImpl.LIST_STREAM_CODEC;
             }
         };
-        Balm.getNetworking().openMenu(op, menuProvider);
+        Balm.networking().openMenu(op, menuProvider);
 
         return 0;
     }

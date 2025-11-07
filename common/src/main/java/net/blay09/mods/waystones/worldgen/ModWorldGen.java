@@ -3,11 +3,10 @@ package net.blay09.mods.waystones.worldgen;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.DeferredObject;
-import net.blay09.mods.balm.api.event.ConfigLoadedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStartingEvent;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.api.world.BiomePredicate;
+import net.blay09.mods.balm.core.BalmRegistrar;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.ModBlocks;
@@ -26,6 +25,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.levelgen.structure.pools.LegacySinglePoolElement;
@@ -50,20 +50,29 @@ public class ModWorldGen {
     private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(Registries.PROCESSOR_LIST,
             ResourceLocation.fromNamespaceAndPath("minecraft", "empty"));
 
-    public static DeferredObject<PlacementModifierType<WaystonePlacement>> waystonePlacement;
+    public static Holder<PlacementModifierType<?>> waystonePlacement;
+
+    public static void initializeFeatures(BalmRegistrar.Scoped<Feature<?>> registrar) {
+        registrar.register(waystone.getPath(), (id) -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.waystone.defaultBlockState()));
+        registrar.register(mossyWaystone.getPath(), (id) -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.mossyWaystone.defaultBlockState()));
+        registrar.register(sandyWaystone.getPath(), (id) -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.sandyWaystone.defaultBlockState()));
+        registrar.register(blackstoneWaystone.getPath(),
+                (id) -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.blackstoneWaystone.defaultBlockState()));
+        registrar.register(deepslateWaystone.getPath(), (id) -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.deepslateWaystone.defaultBlockState()));
+        registrar.register(endStoneWaystone.getPath(), (id) -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.endStoneWaystone.defaultBlockState()));
+    }
+
+    public static void initializePlacementModifierTypes(BalmRegistrar.Scoped<PlacementModifierType<?>> registrar) {
+        waystonePlacement = registrar.register("waystone", (id) -> (PlacementModifierType<WaystonePlacement>) () -> WaystonePlacement.CODEC);
+    }
+
+    public static void initializePoiTypes(BalmRegistrar.Scoped<PoiType> registrar) {
+        registrar.register("wild_waystone", (id) -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.WILDERNESS), 1, 1));
+        registrar.register("village_waystone", (id) -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.VILLAGE), 1, 1));
+    }
 
     public static void initialize(BalmWorldGen worldGen) {
-        worldGen.registerFeature(waystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.waystone.defaultBlockState()));
-        worldGen.registerFeature(mossyWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.mossyWaystone.defaultBlockState()));
-        worldGen.registerFeature(sandyWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.sandyWaystone.defaultBlockState()));
-        worldGen.registerFeature(blackstoneWaystone,
-                () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.blackstoneWaystone.defaultBlockState()));
-        worldGen.registerFeature(deepslateWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.deepslateWaystone.defaultBlockState()));
-        worldGen.registerFeature(endStoneWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.endStoneWaystone.defaultBlockState()));
-
-        waystonePlacement = worldGen.registerPlacementModifier(id("waystone"), () -> () -> WaystonePlacement.CODEC);
-
-        Balm.getConfig().onConfigAvailable(WaystonesConfig.class, (config) -> {
+        Balm.config().onConfigAvailable(WaystonesConfig.class, (config) -> {
             worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE),
                     GenerationStep.Decoration.VEGETAL_DECORATION,
                     getWaystoneFeature(WorldGenStyle.SANDY));
@@ -81,10 +90,7 @@ public class ModWorldGen {
                     getWaystoneFeature(WorldGenStyle.DEFAULT));
         });
 
-        worldGen.registerPoiType(id("wild_waystone"), () -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.WILDERNESS), 1, 1));
-        worldGen.registerPoiType(id("village_waystone"), () -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.VILLAGE), 1, 1));
-
-        Balm.getEvents().onEvent(ServerStartingEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
+        Balm.events().onEvent(ServerStartingEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
     }
 
     private static Set<BlockState> gatherWaystonesOfOrigin(WaystoneOrigin origin) {
@@ -94,13 +100,18 @@ public class ModWorldGen {
                 ModBlocks.blackstoneWaystone,
                 ModBlocks.endStoneWaystone);
         return sourceBlocks.stream()
-                .flatMap(it -> it.getStateDefinition().getPossibleStates().stream())
+                .flatMap(it -> it.asBlock().getStateDefinition().getPossibleStates().stream())
                 .filter(it -> it.getValue(WaystoneBlock.ORIGIN) == origin)
                 .collect(Collectors.toSet());
     }
 
     private static BiomePredicate matchesTag(TagKey<Biome> tag) {
-        return (resourceLocation, biome) -> biome.is(tag);
+        return new BiomePredicate() {
+            @Override
+            public boolean test(Holder<Biome> biomeHolder) {
+                return biomeHolder.is(tag);
+            }
+        };
     }
 
     private static ResourceLocation id(String name) {

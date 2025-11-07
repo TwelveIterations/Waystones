@@ -180,7 +180,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     protected InteractionResult handleEditActions(Level world, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide()) {
-                blockEntity.getSettingsMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openMenu(player, menuProvider));
+                blockEntity.getSettingsMenuProvider().ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
             }
             return InteractionResult.SUCCESS;
         }
@@ -242,9 +242,9 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
 
         if (blockEntity instanceof WaystoneBlockEntityBase) {
             if (!level.isClientSide()) {
-                final var waystoneUid = Optional.ofNullable(stack.get(ModComponents.waystoneIdentity.get()))
+                final var waystoneUid = Optional.ofNullable(stack.get(ModComponents.waystoneIdentity.value()))
                         .map(WaystoneReferenceComponent::waystoneId)
-                        .orElseGet(() -> stack.get(ModComponents.waystone.get()));
+                        .orElseGet(() -> stack.get(ModComponents.waystone.value()));
                 WaystoneProxy existingWaystone = null;
                 if (waystoneUid != null) {
                     existingWaystone = new WaystoneProxy(level.getServer(), waystoneUid);
@@ -278,7 +278,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                 final ServerPlayer player = (ServerPlayer) placer;
                 final WaystoneBlockEntityBase waystoneTileEntity = (WaystoneBlockEntityBase) blockEntity;
                 if (shouldOpenMenuWhenPlaced()) {
-                    waystoneTileEntity.getSettingsMenuProvider().ifPresent(it -> Balm.getNetworking().openMenu(player, it));
+                    waystoneTileEntity.getSettingsMenuProvider().ifPresent(it -> Balm.networking().openMenu(player, it));
                 }
             }
         }

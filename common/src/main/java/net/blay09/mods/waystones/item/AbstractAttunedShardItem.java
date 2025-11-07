@@ -31,11 +31,11 @@ public abstract class AbstractAttunedShardItem extends ShardItem implements IAtt
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
-        final var attunement = stack.get(ModComponents.warpPlateAttunement.get());
+        final var attunement = stack.get(ModComponents.warpPlateAttunement.value());
         if (attunement != null) {
             list.accept(WarpPlateBlock.getGalacticName(attunement.waystoneId()));
         }
-        final var legacyAttunement = stack.get(ModComponents.attunement.get());
+        final var legacyAttunement = stack.get(ModComponents.attunement.value());
         if (legacyAttunement != null) {
             list.accept(WarpPlateBlock.getGalacticName(legacyAttunement));
         }
@@ -44,12 +44,12 @@ public abstract class AbstractAttunedShardItem extends ShardItem implements IAtt
 
     @Override
     public Optional<Waystone> getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
-        final var attunement = itemStack.get(ModComponents.warpPlateAttunement.get());
+        final var attunement = itemStack.get(ModComponents.warpPlateAttunement.value());
         if (attunement != null) {
             return Optional.of(new WaystoneProxy(server, attunement.waystoneId()));
         }
 
-        final var legacyAttunement = itemStack.get(ModComponents.attunement.get());
+        final var legacyAttunement = itemStack.get(ModComponents.attunement.value());
         if (legacyAttunement != null) {
             return Optional.of(new WaystoneProxy(server, legacyAttunement));
         }
@@ -60,9 +60,9 @@ public abstract class AbstractAttunedShardItem extends ShardItem implements IAtt
     @Override
     public void setWaystoneAttunedTo(ItemStack itemStack, @Nullable Waystone waystone) {
         if (waystone != null) {
-            itemStack.set(ModComponents.warpPlateAttunement.get(), new WaystoneReferenceComponent(waystone.getWaystoneUid(), waystone.getName()));
+            itemStack.set(ModComponents.warpPlateAttunement.value(), new WaystoneReferenceComponent(waystone.getWaystoneUid(), waystone.getName()));
         } else {
-            itemStack.remove(ModComponents.warpPlateAttunement.get());
+            itemStack.remove(ModComponents.warpPlateAttunement.value());
         }
     }
 }

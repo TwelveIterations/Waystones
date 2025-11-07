@@ -5,9 +5,8 @@ import net.blay09.mods.balm.api.block.entity.CustomRenderBoundingBox;
 import net.blay09.mods.balm.api.block.entity.OnLoadHandler;
 import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.balm.common.BalmBlockEntity;
+import net.blay09.mods.balm.world.level.block.entity.BlockEntityUtils;
 import net.blay09.mods.waystones.api.MutableWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
@@ -32,6 +31,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -59,7 +60,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements OnLoadHandler, CustomRenderBoundingBox, BalmContainerProvider {
+public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnLoadHandler, CustomRenderBoundingBox, BalmContainerProvider {
 
     protected final DefaultContainer container = new DefaultContainer(5) {
         @Override
@@ -123,9 +124,9 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
-        final var waystoneUidFromComponent = Optional.ofNullable(input.get(ModComponents.waystoneIdentity.get()))
+        final var waystoneUidFromComponent = Optional.ofNullable(input.get(ModComponents.waystoneIdentity.value()))
                 .map(WaystoneReferenceComponent::waystoneId)
-                .orElseGet(() -> input.get(ModComponents.waystone.get()));
+                .orElseGet(() -> input.get(ModComponents.waystone.value()));
         if (waystoneUidFromComponent != null) {
             waystoneUid = waystoneUidFromComponent;
         }
@@ -133,12 +134,19 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
-        builder.set(ModComponents.waystoneIdentity.get(), new WaystoneReferenceComponent(getEffectiveWaystoneUid(), waystone.getName()));
+        builder.set(ModComponents.waystoneIdentity.value(), new WaystoneReferenceComponent(getEffectiveWaystoneUid(), waystone.getName()));
     }
 
     @Override
-    public void writeUpdateTag(ValueOutput output) {
-        output.store("Waystone", WaystoneImpl.CODEC.codec(), getWaystone());
+    public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
+        return BlockEntityUtils.createUpdatePacket(this);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return BlockEntityUtils.createUpdateTag(registries, output -> {
+            output.store("Waystone", WaystoneImpl.CODEC.codec(), getWaystone());
+        });
     }
 
     @Override
@@ -151,7 +159,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             ((WaystoneImpl) backingWaystone).setDimension(level.dimension());
             ((WaystoneImpl) backingWaystone).setPos(worldPosition);
         }
-        sync();
+        BlockEntityUtils.sync(this);
     }
 
     @Override
@@ -188,7 +196,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
             if (waystone.isValid()) {
                 waystoneUid = waystone.getWaystoneUid();
-                sync();
+                BlockEntityUtils.sync(this);
             }
         }
 
@@ -205,10 +213,10 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
                 origin,
                 player != null ? player.getUUID() : null);
         SavedDataWaystonesStore.get(level.getLevel().getServer()).addWaystone(waystone);
-        Balm.getEvents().fireEvent(new WaystoneInitializedEvent(waystone));
+        Balm.events().fireEvent(new WaystoneInitializedEvent(waystone));
         this.waystone = waystone;
         setChanged();
-        sync();
+        BlockEntityUtils.sync(this);
     }
 
     public void initializeFromExisting(ServerLevelAccessor level, WaystoneImpl existingWaystone, ItemStack itemStack) {
@@ -218,13 +226,13 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         existingWaystone.setTransient(false);
         SavedDataWaystonesStore.get(level.getLevel().getServer()).updateWaystone(waystone);
         setChanged();
-        sync();
+        BlockEntityUtils.sync(this);
     }
 
     public void initializeFromBase(WaystoneBlockEntityBase tileEntity) {
         waystone = tileEntity.getWaystone();
         setChanged();
-        sync();
+        BlockEntityUtils.sync(this);
     }
 
     public void uninitializeWaystone() {
@@ -248,7 +256,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             }
 
             setChanged();
-            sync();
+            BlockEntityUtils.sync(this);
         }
     }
 
@@ -395,7 +403,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
                 ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.WITHER, witherSeconds * 20, potency));
             }
             for (ItemStack curativeItem : curativeItems) {
-                Balm.getHooks().curePotionEffects((LivingEntity) entity, curativeItem);
+                Balm.hooks().curePotionEffects((LivingEntity) entity, curativeItem);
             }
         }
     }
@@ -434,6 +442,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
 
+        dropItems(level, pos);
+
         if (level instanceof ServerLevel serverLevel) {
             final var waystone = getWaystone();
             final var wasNotSilkTouched = !canSilkTouch() || !isSilkTouched();
@@ -451,4 +461,6 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     protected UUID getEffectiveWaystoneUid() {
         return waystone.isValid() ? waystone.getWaystoneUid() : waystoneUid;
     }
+
+
 }

@@ -188,7 +188,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         }
 
         if (level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
-            warpPlate.getSettingsMenuProvider().ifPresent(it -> Balm.getNetworking().openMenu(player, it));
+            warpPlate.getSettingsMenuProvider().ifPresent(it -> Balm.networking().openMenu(player, it));
             return InteractionResult.SUCCESS;
         }
 
@@ -231,7 +231,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        final var tickingBlockEntityType = ModBlockEntities.warpPlate.get();
+        final var tickingBlockEntityType = ModBlockEntities.warpPlate.value();
         if (tickingBlockEntityType == null) {
             return null;
         }

@@ -17,6 +17,6 @@ public class PortstoneBlockItem extends BlockItem {
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
-        itemStack.addToTooltip(ModComponents.description.get(), context, display, list, flag);
+        itemStack.addToTooltip(ModComponents.description.value(), context, display, list, flag);
     }
 }

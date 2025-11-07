@@ -29,7 +29,7 @@ public record ClientboundWaystoneRemovedPacket(ResourceLocation waystoneType, UU
     );
 
     public static void handle(Player player, ClientboundWaystoneRemovedPacket message) {
-        Balm.getEvents().fireEvent(new WaystoneRemoveReceivedEvent(message.waystoneType, message.waystoneId, message.wasDestroyed));
+        Balm.events().fireEvent(new WaystoneRemoveReceivedEvent(message.waystoneType, message.waystoneId, message.wasDestroyed));
     }
 
     @Override

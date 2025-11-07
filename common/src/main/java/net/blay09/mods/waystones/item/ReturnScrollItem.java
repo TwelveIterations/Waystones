@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 public class ReturnScrollItem extends BoundScrollItem {
 
     public ReturnScrollItem(Properties properties) {
-        super(properties.component(ModComponents.returnScroll.get(), ReturnScrollComponent.INSTANCE));
+        super(properties.component(ModComponents.returnScroll.value(), ReturnScrollComponent.INSTANCE));
     }
 
     @Override
@@ -27,6 +27,6 @@ public class ReturnScrollItem extends BoundScrollItem {
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
-        itemStack.addToTooltip(ModComponents.returnScroll.get(), context, display, list, flag);
+        itemStack.addToTooltip(ModComponents.returnScroll.value(), context, display, list, flag);
     }
 }

@@ -27,7 +27,7 @@ import java.util.*;
 public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
 
     public SharestoneBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.sharestone.get(), pos, state);
+        super(ModBlockEntities.sharestone.value(), pos, state);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
                 final var fromWaystone = getWaystone();
                 final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(player, fromWaystone));
                 PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-                return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), fromWaystone, windowId, waystones, Collections.emptySet());
+                return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.value(), fromWaystone, windowId, waystones, Collections.emptySet());
             }
 
             @Override

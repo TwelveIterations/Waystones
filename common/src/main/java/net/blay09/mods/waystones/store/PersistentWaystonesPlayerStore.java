@@ -205,7 +205,7 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     }
 
     private static CompoundTag getWaystonesData(Player player) {
-        CompoundTag persistedData = Balm.getHooks().getPersistentData(player);
+        CompoundTag persistedData = Balm.hooks().getPersistentData(player);
         CompoundTag compound = persistedData.getCompoundOrEmpty(TAG_NAME);
         persistedData.put(TAG_NAME, compound);
         return compound;

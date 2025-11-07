@@ -22,13 +22,13 @@ public record EventfulWaystonesStore(WaystonesStore delegate) implements Wayston
     @Override
     public void updateWaystone(Waystone waystone) {
         delegate.updateWaystone(waystone);
-        Balm.getEvents().fireEvent(new WaystoneUpdatedEvent(waystone));
+        Balm.events().fireEvent(new WaystoneUpdatedEvent(waystone));
     }
 
     @Override
     public void removeWaystone(Waystone waystone) {
         delegate.removeWaystone(waystone);
-        Balm.getEvents().fireEvent(new WaystoneRemovedEvent(waystone));
+        Balm.events().fireEvent(new WaystoneRemovedEvent(waystone));
     }
 
     @Override

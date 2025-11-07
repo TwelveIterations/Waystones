@@ -36,10 +36,10 @@ public class BlueMapIntegration {
         });
         BlueMapAPI.onDisable(api -> this.api = null);
 
-        Balm.getEvents().onEvent(WaystonesLoadedEvent.class, this::onWaystonesLoaded);
-        Balm.getEvents().onEvent(WaystoneInitializedEvent.class, this::onWaystoneInitialized);
-        Balm.getEvents().onEvent(WaystoneUpdatedEvent.class, this::onWaystoneUpdated);
-        Balm.getEvents().onEvent(WaystoneRemovedEvent.class, this::onWaystoneRemoved);
+        Balm.events().onEvent(WaystonesLoadedEvent.class, this::onWaystonesLoaded);
+        Balm.events().onEvent(WaystoneInitializedEvent.class, this::onWaystoneInitialized);
+        Balm.events().onEvent(WaystoneUpdatedEvent.class, this::onWaystoneUpdated);
+        Balm.events().onEvent(WaystoneRemovedEvent.class, this::onWaystoneRemoved);
     }
 
     public static String getMarkerId(Waystone waystone) {

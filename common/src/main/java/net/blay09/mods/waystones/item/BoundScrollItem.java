@@ -49,12 +49,12 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
 
     @Override
     public Optional<Waystone> getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
-        final var boundScroll = itemStack.get(ModComponents.boundScroll.get());
+        final var boundScroll = itemStack.get(ModComponents.boundScroll.value());
         if (boundScroll != null) {
             return Optional.of(new WaystoneProxy(server, boundScroll.waystoneId()));
         }
 
-        final var legacyAttunement = itemStack.get(ModComponents.attunement.get());
+        final var legacyAttunement = itemStack.get(ModComponents.attunement.value());
         if (legacyAttunement != null) {
             return Optional.of(new WaystoneProxy(server, legacyAttunement));
         }
@@ -65,15 +65,15 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
     @Override
     public void setWaystoneAttunedTo(ItemStack itemStack, @Nullable Waystone waystone) {
         if (waystone != null) {
-            itemStack.set(ModComponents.boundScroll.get(), new BoundScrollComponent(waystone.getWaystoneUid(), waystone.getName()));
+            itemStack.set(ModComponents.boundScroll.value(), new BoundScrollComponent(waystone.getWaystoneUid(), waystone.getName()));
         } else {
-            itemStack.remove(ModComponents.boundScroll.get());
+            itemStack.remove(ModComponents.boundScroll.value());
         }
     }
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
-        itemStack.addToTooltip(ModComponents.boundScroll.get(), context, display, list, flag);
+        itemStack.addToTooltip(ModComponents.boundScroll.value(), context, display, list, flag);
     }
 
     @Override

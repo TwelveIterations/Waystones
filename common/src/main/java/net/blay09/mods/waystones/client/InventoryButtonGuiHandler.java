@@ -72,7 +72,7 @@ public class InventoryButtonGuiHandler {
                             mc.setScreen(new InventoryButtonReturnConfirmScreen());
                         }
                     } else if (inventoryButtonMode.isReturnToAny()) {
-                        Balm.getNetworking().sendToServer(ServerboundInventoryButtonPacket.INSTANCE);
+                        Balm.networking().sendToServer(ServerboundInventoryButtonPacket.INSTANCE);
                     }
                 } else {
                     mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 0.5f));

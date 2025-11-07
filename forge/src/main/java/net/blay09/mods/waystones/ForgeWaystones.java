@@ -28,7 +28,7 @@ public class ForgeWaystones {
         Balm.initializeIfLoaded(Compat.THEONEPROBE, "net.blay09.mods.waystones.compat.TheOneProbeIntegration");
 
         // TODO would be nice if we could use Balm.initializeIfLoaded here, but it might run too late at the moment)
-        if (Balm.isModLoaded("repurposed_structures")) {
+        if (Balm.platform().isModLoaded("repurposed_structures")) {
             try {
                 Class.forName("net.blay09.mods.waystones.compat.RepurposedStructuresIntegration").getConstructor().newInstance();
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | ClassNotFoundException | InvocationTargetException e) {

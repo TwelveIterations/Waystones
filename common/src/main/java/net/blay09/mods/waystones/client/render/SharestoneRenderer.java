@@ -77,7 +77,7 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
         renderState.runeColor = ((SharestoneBlock) blockEntity.getBlockState().getBlock()).getColor().getTextureDiffuseColor();
 
         if (warpStoneItem == null) {
-            warpStoneItem = new ItemStack(ModItems.warpStone);
+            warpStoneItem = ModItems.warpStone.createStack();
             level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).get(Enchantments.UNBREAKING).ifPresent(it -> warpStoneItem.enchant(it, 1));
         }
 

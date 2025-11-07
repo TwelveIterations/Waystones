@@ -28,10 +28,10 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     public DynmapIntegration() {
         DynmapCommonAPIListener.register(this);
 
-        Balm.getEvents().onEvent(WaystonesLoadedEvent.class, this::onWaystonesLoaded);
-        Balm.getEvents().onEvent(WaystoneInitializedEvent.class, this::onWaystoneInitialized);
-        Balm.getEvents().onEvent(WaystoneUpdatedEvent.class, this::onWaystoneUpdated);
-        Balm.getEvents().onEvent(WaystoneRemovedEvent.class, this::onWaystoneRemoved);
+        Balm.events().onEvent(WaystonesLoadedEvent.class, this::onWaystonesLoaded);
+        Balm.events().onEvent(WaystoneInitializedEvent.class, this::onWaystoneInitialized);
+        Balm.events().onEvent(WaystoneUpdatedEvent.class, this::onWaystoneUpdated);
+        Balm.events().onEvent(WaystoneRemovedEvent.class, this::onWaystoneRemoved);
     }
 
     public static String getMarkerId(Waystone waystone) {
@@ -52,7 +52,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
 
     private static String getDynmapWorldName(ResourceLocation id) {
         return switch (id.toString()) {
-            case "minecraft:overworld" -> Balm.getHooks().getServer().getWorldData().getLevelName();
+            case "minecraft:overworld" -> Balm.platform().server().getWorldData().getLevelName();
             case "minecraft:the_nether" -> "DIM-1";
             case "minecraft:the_end" -> "DIM1";
             default -> id.getNamespace() + "_" + id.getPath();

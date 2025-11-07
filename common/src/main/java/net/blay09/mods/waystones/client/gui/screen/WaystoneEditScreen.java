@@ -73,9 +73,9 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
                 20,
                 modifierSprites,
                 (button) -> {
-                    Balm.getNetworking()
+                    Balm.networking()
                             .sendToServer(new ServerboundEditWaystonePacket(menu.getWaystone().getWaystoneUid(), textField.getValue(), visibilityButton.getVisibility()));
-                    Balm.getNetworking().sendToServer(new ServerboundRequestManageWaystoneModifiersPacket(menu.getWaystone().getPos()));
+                    Balm.networking().sendToServer(new ServerboundRequestManageWaystoneModifiersPacket(menu.getWaystone().getPos()));
                 },
                 Component.literal("gui.waystones.waystone_settings.manage_modifiers"));
         modifierButton.setPosition(leftPos, y);
@@ -160,7 +160,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
     @Override
     public void onClose() {
         if (textField != null && visibilityButton != null) {
-            Balm.getNetworking()
+            Balm.networking()
                     .sendToServer(new ServerboundEditWaystonePacket(menu.getWaystone().getWaystoneUid(), textField.getValue(), visibilityButton.getVisibility()));
         }
 

@@ -73,7 +73,7 @@ public class NameGeneratorManager extends SavedData {
         var name = resolveDuplicate(originalName);
 
         final var event = new GenerateWaystoneNameEvent(waystone, name);
-        Balm.getEvents().fireEvent(event);
+        Balm.events().fireEvent(event);
         name = event.getName();
 
         usedNames.add(name.getString());

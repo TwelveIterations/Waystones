@@ -22,7 +22,7 @@ public class WaystoneModifierMenu extends AbstractContainerMenu {
     }
 
     public WaystoneModifierMenu(int windowId, Inventory playerInventory, Waystone waystone, Container container) {
-        super(ModMenus.waystoneModifiers.get(), windowId);
+        super(ModMenus.waystoneModifiers.value(), windowId);
         this.container = container;
         this.waystone = waystone;
 

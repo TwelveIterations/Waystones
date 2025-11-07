@@ -112,7 +112,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
                         .save(exporter);
 
-                shaped(RecipeCategory.DECORATIONS, ModBlocks.getPortstone(DyeColor.WHITE))
+                shaped(RecipeCategory.DECORATIONS, ModBlocks.portstones.get(DyeColor.WHITE))
                         .pattern(" S ")
                         .pattern("SWS")
                         .pattern("BBB")
@@ -195,7 +195,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
             }
 
             private void createSharestoneRecipe(RecipeOutput exporter, DyeColor color, TagKey<Item> dyeTag) {
-                final var sharestone = ModBlocks.getSharestone(color);
+                final var sharestone = ModBlocks.sharestones.get(color);
                 if (sharestone == null) {
                     return;
                 }
@@ -212,7 +212,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
             }
 
             private void createPortstoneRecipe(RecipeOutput exporter, DyeColor color, TagKey<Item> dyeTag) {
-                final var portstone = ModBlocks.getPortstone(color);
+                final var portstone = ModBlocks.portstones.get(color);
                 if (portstone == null) {
                     return;
                 }

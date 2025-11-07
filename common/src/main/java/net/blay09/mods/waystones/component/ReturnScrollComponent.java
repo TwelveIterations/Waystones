@@ -18,7 +18,7 @@ public record ReturnScrollComponent() implements TooltipProvider {
 
     @Override
     public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag flag, DataComponentGetter components) {
-        final var player = Balm.getProxy().getClientPlayer();
+        final var player = Balm.safeClientAccess().getClientPlayer();
         if (player != null) {
             final var nearestWaystone = PlayerWaystoneManager.getNearestWaystone(player);
             tooltip.accept(nearestWaystone.map(it -> it.getName().copy().withStyle(ChatFormatting.DARK_AQUA))
