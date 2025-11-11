@@ -1,4 +1,8 @@
 {
-  "type": "waystones:mossy_waystone",
-  "config": {}
+  "type": "waystones:waystone",
+  "config": {
+    "state": {
+      "Name": "waystones:mossy_waystone"
+    }
+  }
 }

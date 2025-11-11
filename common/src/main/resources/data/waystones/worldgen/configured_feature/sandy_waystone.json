@@ -1,4 +1,8 @@
 {
-  "type": "waystones:sandy_waystone",
-  "config": {}
+  "type": "waystones:waystone",
+  "config": {
+    "state": {
+      "Name": "waystones:sandy_waystone"
+    }
+  }
 }

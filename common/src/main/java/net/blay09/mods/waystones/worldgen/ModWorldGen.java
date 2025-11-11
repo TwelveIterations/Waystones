@@ -26,7 +26,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.levelgen.structure.pools.LegacySinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
@@ -53,13 +52,14 @@ public class ModWorldGen {
     public static Holder<PlacementModifierType<?>> waystonePlacement;
 
     public static void initializeFeatures(BalmRegistrar.Scoped<Feature<?>> registrar) {
-        registrar.register(waystone.getPath(), (id) -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.waystone.defaultBlockState()));
-        registrar.register(mossyWaystone.getPath(), (id) -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.mossyWaystone.defaultBlockState()));
-        registrar.register(sandyWaystone.getPath(), (id) -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.sandyWaystone.defaultBlockState()));
+        registrar.register(waystone.getPath(), (id) -> new WaystoneFeature());
+        // TODO Backwards compatibility, to be removed in 1.21.11
+        registrar.register(mossyWaystone.getPath(), (id) -> new WaystoneFeature());
+        registrar.register(sandyWaystone.getPath(), (id) -> new WaystoneFeature());
         registrar.register(blackstoneWaystone.getPath(),
-                (id) -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.blackstoneWaystone.defaultBlockState()));
-        registrar.register(deepslateWaystone.getPath(), (id) -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.deepslateWaystone.defaultBlockState()));
-        registrar.register(endStoneWaystone.getPath(), (id) -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.endStoneWaystone.defaultBlockState()));
+                (id) -> new WaystoneFeature());
+        registrar.register(deepslateWaystone.getPath(), (id) -> new WaystoneFeature());
+        registrar.register(endStoneWaystone.getPath(), (id) -> new WaystoneFeature());
     }
 
     public static void initializePlacementModifierTypes(BalmRegistrar.Scoped<PlacementModifierType<?>> registrar) {

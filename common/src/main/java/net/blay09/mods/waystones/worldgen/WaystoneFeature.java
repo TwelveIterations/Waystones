@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.worldgen;
 
-import com.mojang.serialization.Codec;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
@@ -14,20 +13,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
 
+public class WaystoneFeature extends Feature<BlockStateConfiguration> {
 
-public class WaystoneFeature extends Feature<NoneFeatureConfiguration> {
-
-    private final BlockState waystoneState;
-
-    public WaystoneFeature(Codec<NoneFeatureConfiguration> codec, BlockState waystoneState) {
-        super(codec);
-        this.waystoneState = waystoneState;
+    public WaystoneFeature() {
+        super(BlockStateConfiguration.CODEC);
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+    public boolean place(FeaturePlaceContext<BlockStateConfiguration> context) {
         WorldGenLevel world = context.level();
         BlockPos pos = context.origin();
         RandomSource random = context.random();
@@ -36,12 +31,12 @@ public class WaystoneFeature extends Feature<NoneFeatureConfiguration> {
         BlockPos posAbove = pos.above();
         BlockState stateAbove = world.getBlockState(posAbove);
         if (state.isAir() && stateAbove.isAir()) {
-            world.setBlock(pos, waystoneState
+            world.setBlock(pos, context.config().state
                     .setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER)
                     .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.WILDERNESS)
                     .setValue(WaystoneBlock.FACING, facing), 2);
 
-            world.setBlock(posAbove, waystoneState
+            world.setBlock(posAbove, context.config().state
                     .setValue(WaystoneBlock.HALF, DoubleBlockHalf.UPPER)
                     .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.WILDERNESS)
                     .setValue(WaystoneBlock.FACING, facing), 2);
