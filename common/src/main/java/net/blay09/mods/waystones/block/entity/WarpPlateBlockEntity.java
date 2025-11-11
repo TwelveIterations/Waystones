@@ -47,7 +47,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
 
     private final Random random = new Random();
 
-    private int lastAttunementSlot;
+    private int nextRoundRobinAttunementSlot;
 
     protected int attunementTicks;
 
@@ -91,14 +91,14 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
 
-        output.putInt("LastAttunementSlot", lastAttunementSlot);
+        output.putInt("LastAttunementSlot", nextRoundRobinAttunementSlot);
     }
 
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
 
-        lastAttunementSlot = input.getIntOr("LastAttunementSlot", 0);
+        nextRoundRobinAttunementSlot = input.getIntOr("LastAttunementSlot", 0);
     }
 
     public boolean hasPotentialWarpTarget() {
@@ -176,6 +176,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
                     iterator.remove();
                 } else if (ticksPassed > useTime) {
                     ItemStack targetAttunementStack = getTargetAttunementStack();
+                    nextRoundRobinAttunementSlot++;
                     Waystone targetWaystone = WaystonesAPI.getBoundWaystone(null, targetAttunementStack).orElse(null);
                     if (targetWaystone != null && targetWaystone.isValid()) {
                         teleportToTarget(entity, targetWaystone, targetAttunementStack);
@@ -264,8 +265,8 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
         }
 
         if (!attunedShards.isEmpty()) {
-            lastAttunementSlot = (lastAttunementSlot + 1) % attunedShards.size();
-            return shouldRoundRobin ? attunedShards.get(lastAttunementSlot) : attunedShards.get(random.nextInt(attunedShards.size()));
+            nextRoundRobinAttunementSlot = nextRoundRobinAttunementSlot % attunedShards.size();
+            return shouldRoundRobin ? attunedShards.get(nextRoundRobinAttunementSlot) : attunedShards.get(random.nextInt(attunedShards.size()));
         }
 
         return ItemStack.EMPTY;
