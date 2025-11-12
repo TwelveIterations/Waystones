@@ -9,5 +9,6 @@ public class ModEventHandlers {
         events.onEvent(LivingDamageEvent.class, WarpDamageResetHandler::onDamage);
         events.onEvent(WaystoneActivatedEvent.class, WaystoneActivationStatHandler::onWaystoneActivated);
         events.onEvent(UseBlockEvent.class, WaystoneDebugHandler::onWaystoneUsed);
+        events.onEvent(UseBlockEvent.class, WaystoneEditInteractionHandler::onUseBlock);
     }
 }
