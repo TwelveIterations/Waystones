@@ -1,5 +1,12 @@
 repositories {
     maven {
+        url "https://maven.twelveiterations.com/repository/maven-proxy/"
+        content {
+            includeGroup "dev.emi"
+        }
+    }
+
+    maven {
         url = "https://www.cursemaven.com"
         content {
             includeGroup 'curse.maven'
@@ -29,14 +36,6 @@ repositories {
         content {
             includeGroup "lol.bai"
             includeGroup "mcp.mobius.waila"
-        }
-    }
-
-    maven {
-        url = "https://maven.terraformersmc.com/releases"
-        content {
-            includeGroup "com.terraformersmc"
-            includeGroup "dev.emi"
         }
     }
 
