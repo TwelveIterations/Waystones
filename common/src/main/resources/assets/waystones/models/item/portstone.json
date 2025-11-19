@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 32],
 	"textures": {
-		"1": "waystones:item/warp_stone",
-		"particle": "waystones:item/warp_stone",
+		"1": "waystones:block/warp_stone",
+		"particle": "waystones:block/warp_stone",
 		"runes": "waystone_overlays/portstone",
 		"texture": "waystones:block/andesite_waystone"
 	},
