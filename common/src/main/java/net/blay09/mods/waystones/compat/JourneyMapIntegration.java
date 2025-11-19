@@ -59,9 +59,9 @@ public class JourneyMapIntegration implements IClientPlugin {
 
     public JourneyMapIntegration() {
         instance = this;
-        // TODO Balm.events().onEvent(WaystonesListReceivedEvent.class, this::onWaystonesListReceived);
-        // TODO Balm.events().onEvent(WaystoneUpdateReceivedEvent.class, this::onWaystoneUpdateReceived);
-        // TODO Balm.events().onEvent(WaystoneRemoveReceivedEvent.class, this::onWaystoneRemoveReceived);
+        WaystonesListReceivedEvent.EVENT.register(this::onWaystonesListReceived);
+        WaystoneUpdateReceivedEvent.EVENT.register(this::onWaystoneUpdateReceived);
+        WaystoneRemoveReceivedEvent.EVENT.register(this::onWaystoneRemoveReceived);
     }
 
     @Override
@@ -106,8 +106,8 @@ public class JourneyMapIntegration implements IClientPlugin {
     }
 
     public void onWaystonesListReceived(WaystonesListReceivedEvent event) {
-        if (shouldManageWaypoints() && isSupportedWaystoneType(event.getWaystoneType())) {
-            runWhenJourneyMapIsReady(() -> updateAllWaypoints(event.getWaystoneType(), event.getWaystones()));
+        if (shouldManageWaypoints() && isSupportedWaystoneType(event.waystoneType())) {
+            runWhenJourneyMapIsReady(() -> updateAllWaypoints(event.waystoneType(), event.waystones()));
         }
     }
 
@@ -125,14 +125,14 @@ public class JourneyMapIntegration implements IClientPlugin {
     }
 
     public void onWaystoneUpdateReceived(WaystoneUpdateReceivedEvent event) {
-        if (shouldManageWaypoints() && isSupportedWaystoneType(event.getWaystone().getWaystoneType())) {
-            runWhenJourneyMapIsReady(() -> updateWaypoint(event.getWaystone()));
+        if (shouldManageWaypoints() && isSupportedWaystoneType(event.waystone().getWaystoneType())) {
+            runWhenJourneyMapIsReady(() -> updateWaypoint(event.waystone()));
         }
     }
 
     public void onWaystoneRemoveReceived(WaystoneRemoveReceivedEvent event) {
-        if (shouldManageWaypoints() && isSupportedWaystoneType(event.getWaystoneType())) {
-            runWhenJourneyMapIsReady(() -> removeWaypoint(event.getWaystoneId()));
+        if (shouldManageWaypoints() && isSupportedWaystoneType(event.waystoneType())) {
+            runWhenJourneyMapIsReady(() -> removeWaypoint(event.waystoneId()));
         }
     }
 

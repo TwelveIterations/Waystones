@@ -23,7 +23,7 @@ public record ClientboundUpdateWaystonePacket(Waystone waystone) implements Cust
 
     public static void handle(Player player, ClientboundUpdateWaystonePacket message) {
         WaystonesClient.getWaystonesStore().updateWaystone(message.waystone);
-        // TODO Balm.events().fireEvent(new WaystoneUpdateReceivedEvent(message.waystone));
+        WaystoneUpdateReceivedEvent.EVENT.invoker().accept(new WaystoneUpdateReceivedEvent(message.waystone()));
     }
 
     @Override

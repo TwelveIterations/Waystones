@@ -3,13 +3,14 @@ package net.blay09.mods.waystones.block.entity;
 import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
-import net.blay09.mods.balm.world.level.block.entity.BlockEntityUtils;
+import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.balm.world.level.block.entity.OnLoadHandler;
 import net.blay09.mods.waystones.api.MutableWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.api.error.WaystoneEditError;
+import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.component.ModComponents;
@@ -136,12 +137,12 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
-        return BlockEntityUtils.createUpdatePacket(this);
+        return BalmBlockEntityUtils.createUpdatePacket(this);
     }
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return BlockEntityUtils.createUpdateTag(registries, output -> {
+        return BalmBlockEntityUtils.createUpdateTag(registries, output -> {
             output.store("Waystone", WaystoneImpl.CODEC.codec(), getWaystone());
         });
     }
@@ -156,7 +157,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
             ((WaystoneImpl) backingWaystone).setDimension(level.dimension());
             ((WaystoneImpl) backingWaystone).setPos(worldPosition);
         }
-        BlockEntityUtils.sync(this);
+        BalmBlockEntityUtils.sync(this);
     }
 
     public AABB getRenderBoundingBox() {
@@ -192,7 +193,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
             if (waystone.isValid()) {
                 waystoneUid = waystone.getWaystoneUid();
-                BlockEntityUtils.sync(this);
+                BalmBlockEntityUtils.sync(this);
             }
         }
 
@@ -209,10 +210,10 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
                 origin,
                 player != null ? player.getUUID() : null);
         SavedDataWaystonesStore.get(level.getLevel().getServer()).addWaystone(waystone);
-        // TODO Balm.events().fireEvent(new WaystoneInitializedEvent(waystone));
+        WaystoneInitializedEvent.EVENT.invoker().accept(new WaystoneInitializedEvent(waystone));
         this.waystone = waystone;
         setChanged();
-        BlockEntityUtils.sync(this);
+        BalmBlockEntityUtils.sync(this);
     }
 
     public void initializeFromExisting(ServerLevelAccessor level, WaystoneImpl existingWaystone, ItemStack itemStack) {
@@ -222,13 +223,13 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
         existingWaystone.setTransient(false);
         SavedDataWaystonesStore.get(level.getLevel().getServer()).updateWaystone(waystone);
         setChanged();
-        BlockEntityUtils.sync(this);
+        BalmBlockEntityUtils.sync(this);
     }
 
     public void initializeFromBase(WaystoneBlockEntityBase tileEntity) {
         waystone = tileEntity.getWaystone();
         setChanged();
-        BlockEntityUtils.sync(this);
+        BalmBlockEntityUtils.sync(this);
     }
 
     public void uninitializeWaystone() {
@@ -252,7 +253,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
             }
 
             setChanged();
-            BlockEntityUtils.sync(this);
+            BalmBlockEntityUtils.sync(this);
         }
     }
 

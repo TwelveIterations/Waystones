@@ -1,26 +1,12 @@
 package net.blay09.mods.waystones.api.event;
 
+import net.blay09.mods.balm.Balmstrap;
+import net.blay09.mods.balm.platform.event.BidirectionalEventMapper;
 import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.world.entity.player.Player;
 
-/**
- * TODO
- */
-@Deprecated
-public class WaystoneActivatedEvent {
-    private final Player player;
-    private final Waystone waystone;
+import java.util.function.Consumer;
 
-    public WaystoneActivatedEvent(Player player, Waystone waystone) {
-        this.player = player;
-        this.waystone = waystone;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public Waystone getWaystone() {
-        return waystone;
-    }
+public record WaystoneActivatedEvent(Player player, Waystone waystone) {
+    public static final BidirectionalEventMapper<Consumer<WaystoneActivatedEvent>> EVENT = Balmstrap.createBoundCustomEvent(WaystoneActivatedEvent.class);
 }

@@ -28,10 +28,10 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     public DynmapIntegration() {
         DynmapCommonAPIListener.register(this);
 
-        // TODO Balm.events().onEvent(WaystonesLoadedEvent.class, this::onWaystonesLoaded);
-        // TODO Balm.events().onEvent(WaystoneInitializedEvent.class, this::onWaystoneInitialized);
-        // TODO Balm.events().onEvent(WaystoneUpdatedEvent.class, this::onWaystoneUpdated);
-        // TODO Balm.events().onEvent(WaystoneRemovedEvent.class, this::onWaystoneRemoved);
+        WaystonesLoadedEvent.EVENT.register(this::onWaystonesLoaded);
+        WaystoneInitializedEvent.EVENT.register(this::onWaystoneInitialized);
+        WaystoneUpdatedEvent.EVENT.register(this::onWaystoneUpdated);
+        WaystoneRemovedEvent.EVENT.register(this::onWaystoneRemoved);
     }
 
     public static String getMarkerId(Waystone waystone) {
@@ -132,7 +132,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
             return;
         }
 
-        runWhenDynmapIsReady(() -> addWaystoneMarker(event.getWaystone()));
+        runWhenDynmapIsReady(() -> addWaystoneMarker(event.waystone()));
     }
 
     private void onWaystoneUpdated(WaystoneUpdatedEvent event) {
@@ -140,7 +140,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
             return;
         }
 
-        runWhenDynmapIsReady(() -> addWaystoneMarker(event.getWaystone()));
+        runWhenDynmapIsReady(() -> addWaystoneMarker(event.waystone()));
     }
 
     private void onWaystoneRemoved(WaystoneRemovedEvent event) {
@@ -148,7 +148,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
             return;
         }
 
-        runWhenDynmapIsReady(() -> removeWaystoneMarker(event.getWaystone()));
+        runWhenDynmapIsReady(() -> removeWaystoneMarker(event.waystone()));
     }
 
     private void onWaystonesLoaded(WaystonesLoadedEvent event) {
@@ -156,7 +156,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
             return;
         }
 
-        final var waystones = event.getWaystoneManager().getWaystones().stream()
+        final var waystones = event.waystoneManager().getWaystones().stream()
                 .filter(DynmapIntegration::isSupportedWaystoneType)
                 .toList();
         runWhenDynmapIsReady(() -> createFromWaystones(waystones));

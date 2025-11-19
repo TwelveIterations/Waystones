@@ -6,10 +6,7 @@ import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
 public class WaystoneActivationStatHandler {
 
     public static void onWaystoneActivated(WaystoneActivatedEvent event) {
-        event.getPlayer().awardStat(ModStats.waystoneActivated);
+        event.player().awardStat(ModStats.waystoneActivated);
     }
 
-    public static void register() {
-        // TODO
-    }
 }

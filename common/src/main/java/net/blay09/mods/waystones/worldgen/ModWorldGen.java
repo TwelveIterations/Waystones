@@ -56,13 +56,6 @@ public class ModWorldGen {
 
     public static void initializeFeatures(BalmRegistrar.Scoped<Feature<?>> registrar) {
         registrar.register(waystone.getPath(), (id) -> new WaystoneFeature());
-        // TODO Backwards compatibility, to be removed in 1.21.11
-        registrar.register(mossyWaystone.getPath(), (id) -> new WaystoneFeature());
-        registrar.register(sandyWaystone.getPath(), (id) -> new WaystoneFeature());
-        registrar.register(blackstoneWaystone.getPath(),
-                (id) -> new WaystoneFeature());
-        registrar.register(deepslateWaystone.getPath(), (id) -> new WaystoneFeature());
-        registrar.register(endStoneWaystone.getPath(), (id) -> new WaystoneFeature());
     }
 
     public static void initializePlacementModifierTypes(BalmRegistrar.Scoped<PlacementModifierType<?>> registrar) {

@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.compat;
 import de.bluecolored.bluemap.api.BlueMapAPI;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
-import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
@@ -36,10 +35,10 @@ public class BlueMapIntegration {
         });
         BlueMapAPI.onDisable(api -> this.api = null);
 
-        // TODO Balm.events().onEvent(WaystonesLoadedEvent.class, this::onWaystonesLoaded);
-        // TODO Balm.events().onEvent(WaystoneInitializedEvent.class, this::onWaystoneInitialized);
-        // TODO Balm.events().onEvent(WaystoneUpdatedEvent.class, this::onWaystoneUpdated);
-        // TODO Balm.events().onEvent(WaystoneRemovedEvent.class, this::onWaystoneRemoved);
+        WaystonesLoadedEvent.EVENT.register(this::onWaystonesLoaded);
+        WaystoneInitializedEvent.EVENT.register(this::onWaystoneInitialized);
+        WaystoneUpdatedEvent.EVENT.register(this::onWaystoneUpdated);
+        WaystoneRemovedEvent.EVENT.register(this::onWaystoneRemoved);
     }
 
     public static String getMarkerId(Waystone waystone) {
@@ -71,9 +70,9 @@ public class BlueMapIntegration {
             return;
         }
 
-        ResourceKey<Level> dimensionId = event.getWaystone().getDimension();
+        ResourceKey<Level> dimensionId = event.waystone().getDimension();
         final var levelMarkers = levelMarkersByDimension.computeIfAbsent(dimensionId, LevelMarkers::new);
-        levelMarkers.addWaystoneMarker(event.getWaystone());
+        levelMarkers.addWaystoneMarker(event.waystone());
         if (api != null) {
             levelMarkers.update(api);
         }
@@ -84,9 +83,9 @@ public class BlueMapIntegration {
             return;
         }
 
-        ResourceKey<Level> dimensionId = event.getWaystone().getDimension();
+        ResourceKey<Level> dimensionId = event.waystone().getDimension();
         final var levelMarkers = levelMarkersByDimension.computeIfAbsent(dimensionId, LevelMarkers::new);
-        levelMarkers.addWaystoneMarker(event.getWaystone());
+        levelMarkers.addWaystoneMarker(event.waystone());
         if (api != null) {
             levelMarkers.update(api);
         }
@@ -97,9 +96,9 @@ public class BlueMapIntegration {
             return;
         }
 
-        ResourceKey<Level> dimensionId = event.getWaystone().getDimension();
+        ResourceKey<Level> dimensionId = event.waystone().getDimension();
         final var levelMarkers = levelMarkersByDimension.computeIfAbsent(dimensionId, LevelMarkers::new);
-        levelMarkers.removeWaystoneMarker(event.getWaystone());
+        levelMarkers.removeWaystoneMarker(event.waystone());
         if (api != null) {
             levelMarkers.update(api);
         }
@@ -110,7 +109,7 @@ public class BlueMapIntegration {
             return;
         }
 
-        final var waystonesByDimension = event.getWaystoneManager().getWaystones().stream()
+        final var waystonesByDimension = event.waystoneManager().getWaystones().stream()
                 .filter(BlueMapIntegration::isSupportedWaystoneType)
                 .collect(Collectors.groupingBy(Waystone::getDimension));
         for (final var entry : waystonesByDimension.entrySet()) {

@@ -216,11 +216,11 @@ public class WaystoneTeleportManager {
     }
 
     public static Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context) {
-        WaystoneTeleportEvent.Pre event = new WaystoneTeleportEvent.Pre(context);
-        // TODO Balm.events().fireEvent(event);
-        // TODO if (event.isCanceled()) {
-        //    return Either.right(new WaystoneTeleportError.CancelledByEvent());
-        // }
+        WaystoneTeleportEvent.Before event = new WaystoneTeleportEvent.Before(context);
+        WaystoneTeleportEvent.Before.EVENT.invoker().accept(event);
+        if (event.isCanceled()) {
+           return Either.right(new WaystoneTeleportError.CancelledByEvent());
+        }
 
         final var entity = context.getEntity();
 
@@ -248,8 +248,8 @@ public class WaystoneTeleportManager {
             context.getRequirements().consume(context, player);
         }
 
-        return doTeleport(context);
-                // TODO .ifLeft(teleportedEntities -> Balm.events().fireEvent(new WaystoneTeleportEvent.Post(context, teleportedEntities)));
+        return doTeleport(context)
+                .ifLeft(teleportedEntities -> WaystoneTeleportEvent.After.EVENT.invoker().accept(new WaystoneTeleportEvent.After(context, teleportedEntities)));
     }
 
     public static Collection<Entity> findPassengers(Entity entity) {

@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.client;
 
 import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.client.gui.screens.BalmScreenUtils;
 import net.blay09.mods.balm.client.platform.event.callback.ScreenCallback;
 import net.blay09.mods.balm.mixin.ScreenAccessor;
 import net.blay09.mods.waystones.api.*;
@@ -81,7 +82,7 @@ public class InventoryButtonGuiHandler {
 
                 return true;
             }, xPosition, yPosition);
-            // TODO BalmClient.getScreens().addRenderableWidget(screen, warpButton);
+            BalmScreenUtils.addRenderableWidget(screen, warpButton);
         });
 
         ScreenCallback.Render.AFTER.register((screen, guiGraphics, mouseX, mouseY, delta) -> {

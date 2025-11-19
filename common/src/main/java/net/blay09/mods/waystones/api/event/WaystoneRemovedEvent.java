@@ -1,17 +1,11 @@
 package net.blay09.mods.waystones.api.event;
 
+import net.blay09.mods.balm.Balmstrap;
+import net.blay09.mods.balm.platform.event.BidirectionalEventMapper;
 import net.blay09.mods.waystones.api.Waystone;
 
-// TODO
-@Deprecated
-public class WaystoneRemovedEvent {
-    private final Waystone waystone;
+import java.util.function.Consumer;
 
-    public WaystoneRemovedEvent(Waystone waystone) {
-        this.waystone = waystone;
-    }
-
-    public Waystone getWaystone() {
-        return waystone;
-    }
+public record WaystoneRemovedEvent(Waystone waystone) {
+    public static final BidirectionalEventMapper<Consumer<WaystoneRemovedEvent>> EVENT = Balmstrap.createBoundCustomEvent(WaystoneRemovedEvent.class);
 }

@@ -1,6 +1,8 @@
 package net.blay09.mods.waystones.store;
 
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.event.WaystoneRemovedEvent;
+import net.blay09.mods.waystones.api.event.WaystoneUpdatedEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockGetter;
@@ -19,13 +21,13 @@ public record EventfulWaystonesStore(WaystonesStore delegate) implements Wayston
     @Override
     public void updateWaystone(Waystone waystone) {
         delegate.updateWaystone(waystone);
-        // TODO Balm.events().fireEvent(new WaystoneUpdatedEvent(waystone));
+        WaystoneUpdatedEvent.EVENT.invoker().accept(new WaystoneUpdatedEvent(waystone));
     }
 
     @Override
     public void removeWaystone(Waystone waystone) {
         delegate.removeWaystone(waystone);
-        // TODO Balm.events().fireEvent(new WaystoneRemovedEvent(waystone));
+        WaystoneRemovedEvent.EVENT.invoker().accept(new WaystoneRemovedEvent(waystone));
     }
 
     @Override

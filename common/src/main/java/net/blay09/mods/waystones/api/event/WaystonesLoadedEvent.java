@@ -1,17 +1,11 @@
 package net.blay09.mods.waystones.api.event;
 
+import net.blay09.mods.balm.Balmstrap;
+import net.blay09.mods.balm.platform.event.BidirectionalEventMapper;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 
-// TODO
-@Deprecated
-public class WaystonesLoadedEvent {
-    private final SavedDataWaystonesStore waystoneManager;
+import java.util.function.Consumer;
 
-    public WaystonesLoadedEvent(SavedDataWaystonesStore waystoneManager) {
-        this.waystoneManager = waystoneManager;
-    }
-
-    public SavedDataWaystonesStore getWaystoneManager() {
-        return waystoneManager;
-    }
+public record WaystonesLoadedEvent(SavedDataWaystonesStore waystoneManager) {
+    public static final BidirectionalEventMapper<Consumer<WaystonesLoadedEvent>> EVENT = Balmstrap.createBoundCustomEvent(WaystonesLoadedEvent.class);
 }

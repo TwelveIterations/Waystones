@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.core;
 import net.blay09.mods.balm.platform.BalmEnvironment;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -55,7 +56,7 @@ public class PlayerWaystoneManager {
         if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
             getPlayerWaystoneData(player.level()).activateWaystone(player, waystone);
 
-            // TODO Balm.events().fireEvent(new WaystoneActivatedEvent(player, waystone));
+            WaystoneActivatedEvent.EVENT.invoker().accept(new WaystoneActivatedEvent(player, waystone));
         }
     }
 

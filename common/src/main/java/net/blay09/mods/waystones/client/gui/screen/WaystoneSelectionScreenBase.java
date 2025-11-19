@@ -139,9 +139,9 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         tooltipProviders.clear();
 
         Predicate<Object> removePredicate = button -> button instanceof WaystoneButton || button instanceof SortWaystoneButton || button instanceof RemoveWaystoneButton;
-        ((ScreenAccessor) this).balm_getChildren().removeIf(removePredicate);
-        ((ScreenAccessor) this).balm_getNarratables().removeIf(removePredicate);
-        ((ScreenAccessor) this).balm_getRenderables().removeIf(removePredicate);
+        ((ScreenAccessor) this).balm$getChildren().removeIf(removePredicate);
+        ((ScreenAccessor) this).balm$getNarratables().removeIf(removePredicate);
+        ((ScreenAccessor) this).balm$getRenderables().removeIf(removePredicate);
 
         int y = topPos + headerHeight + headerY;
         for (int i = 0; i < buttonsPerPage; i++) {
