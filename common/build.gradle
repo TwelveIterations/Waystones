@@ -1,27 +1,20 @@
 plugins {
     id 'multiloader-common'
-    id 'net.neoforged.moddev'
-}
-
-base {
-    archivesName = "${mod_id}-common-${minecraft_version}"
+    alias libs.plugins.neoModDev
 }
 
 neoForge {
-    neoFormVersion = neo_form_version
+    neoFormVersion = libs.neoForm.get().version
     // Automatically enable AccessTransformers if the file exists
     def at = file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {
         accessTransformers.from(at.absolutePath)
     }
-    parchment {
-        minecraftVersion = parchment_minecraft
-        mappingsVersion = parchment_version
-    }
+    parchment.parchmentArtifact = libs.parchment.get().toString()
 }
 
 dependencies {
-    compileOnly "org.spongepowered:mixin:$mixin_version"
+    compileOnly libs.mixinLib
 }
 
 apply from: rootProject.file('repositories.gradle')
@@ -56,10 +49,21 @@ artifacts {
     commonGeneratedResources sourceSets.generated.resources.sourceDirectories.singleFile
 }
 
-sourceSets {
-    main {
-        java {
-            srcDir 'src/shell/java'
+// Implement mcgradleconventions loader attribute
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements'].each { variant ->
+    configurations.named("$variant") {
+        attributes {
+            attribute(loaderAttribute, 'common')
+        }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant->
+        configurations.named("$variant") {
+            attributes {
+                attribute(loaderAttribute, 'common')
+            }
         }
     }
 }

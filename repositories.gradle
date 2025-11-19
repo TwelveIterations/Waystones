@@ -1,20 +1,31 @@
 repositories {
     maven {
-        url "https://maven.twelveiterations.com/repository/maven-proxy/"
+        name = 'Twelve Iterations'
+        url = 'https://maven.twelveiterations.com/repository/maven-public/'
         content {
-            includeGroup "dev.emi"
+            includeGroup 'net.blay09.mods'
         }
     }
 
     maven {
-        url = "https://www.cursemaven.com"
+        name = 'Twelve Iterations Proxy'
+        url = 'https://maven.twelveiterations.com/repository/maven-proxy/'
+        content {
+            includeGroup 'dev.emi'
+        }
+    }
+
+    maven {
+        name = 'CurseMaven'
+        url = 'https://www.cursemaven.com'
         content {
             includeGroup 'curse.maven'
         }
     }
 
     maven {
-        url = "https://maven.shedaniel.me/"
+        name = 'Shedaniel'
+        url = 'https://maven.shedaniel.me/'
         content {
             includeGroup "me.shedaniel"
             includeGroup "me.shedaniel.cloth"
@@ -23,7 +34,8 @@ repositories {
     }
 
     maven {
-        url = "https://maven.blamejared.com"
+        name = 'BlameJared'
+        url = 'https://maven.blamejared.com'
         content {
             includeGroup "mezz.jei"
             includeGroup "info.journeymap"
@@ -32,7 +44,8 @@ repositories {
     }
 
     maven {
-        url = "https://maven.bai.lol"
+        name = 'Bai'
+        url = 'https://maven.bai.lol'
         content {
             includeGroup "lol.bai"
             includeGroup "mcp.mobius.waila"
@@ -40,6 +53,7 @@ repositories {
     }
 
     maven {
+        name = 'JitPack'
         url = 'https://jitpack.io'
         content {
             includeGroup "com.github.BlueMap-Minecraft"
@@ -48,42 +62,47 @@ repositories {
     }
 
     maven {
-        url = "https://repo.mikeprimm.com/"
+        name = 'MikePrimm'
+        url = 'https://repo.mikeprimm.com/'
         content {
             includeGroup "us.dynmap"
         }
     }
 
     maven {
+        name = 'LadySnake'
         url = 'https://maven.ladysnake.org/releases'
         content {
             includeGroup "dev.onyxstudios.cardinal-components-api"
             includeGroup "org.ladysnake.cardinal-components-api"
         }
     }
-	
-	maven {
-        url "https://maven.siphalor.de/"
+
+    maven {
+        name = 'Siphalor'
+        url = 'https://maven.siphalor.de/'
         content {
             includeGroup "de.siphalor"
         }
     }
 
     maven {
-        url = "https://maven.theillusivec4.top/"
+        name = 'Theillusivec4'
+        url = 'https://maven.theillusivec4.top/'
         content {
             includeGroup "top.theillusivec4.curios"
         }
     }
 
     maven {
-        url = "https://dl.cloudsmith.io/public/novamachina-mods/release/maven/"
+        name = 'CloudSmith'
+        url = 'https://dl.cloudsmith.io/public/novamachina-mods/release/maven/'
         content {
             includeGroup "novamachina.novacore"
             includeGroup "novamachina.exnihilosequentia"
         }
     }
-	
+
     exclusiveContent {
         forRepository {
             maven {

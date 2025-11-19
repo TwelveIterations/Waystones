@@ -1,7 +1,6 @@
 dependencies {
-    implementation("net.blay09.mods:kuma-api-common:${kuma_version}")
-    implementation("net.blay09.mods:balm-common:${balm_version}") {
-        changing = balm_version.endsWith("SNAPSHOT")
+    implementation(libs.balmCommon) {
+        changing = libs.versions.balm.get().endsWith("SNAPSHOT")
     }
     compileOnly "info.journeymap:journeymap-api-common:${journeymap_api_version}"
     compileOnly "mcp.mobius.waila:wthit-api:mojmap-$wthit_version"

@@ -6,7 +6,7 @@
   "name": "${mod_name}",
   "description": "${description}",
   "authors": [
-    "BlayTheNinth"
+    "${mod_author}"
   ],
   "contact": {
     "homepage": "${homepage}",
@@ -42,20 +42,19 @@
     "waystones.mixins.json",
     "waystones.fabric.mixins.json"
   ],
-
   "depends": {
+    "java": ">=${java_version}",
+    "minecraft": ">=${minecraft_version}",
     "fabricloader": ">=${fabric_loader_version}",
-    "fabric-api": "*",
-    "balm": ">=${minimum_balm_version}",
-    "minecraft": ">=${minimum_minecraft_version}",
-    "java": ">=${java_version}"
+    "fabric-api": ">=${fabric_api_version}",
+    "balm": ">=${balm_version}"
   },
   "suggests": {
   },
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.discord": "https://discord.gg/VAfZ2Nau6j",
+        "modmenu.discord": "${discord}",
         "waystones.iconCredits": "https://opengameart.org/content/roguelikerpg-items"
       }
     },

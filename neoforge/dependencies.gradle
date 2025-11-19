@@ -1,7 +1,6 @@
 dependencies {
-    implementation("net.blay09.mods:kuma-api-neoforge:${kuma_version}")
-    implementation("net.blay09.mods:balm-neoforge:${balm_version}") {
-        changing = balm_version.contains("SNAPSHOT")
+    implementation(libs.balmNeoForge) {
+        changing = libs.versions.balm.get().contains("SNAPSHOT")
     }
     compileOnly group: 'info.journeymap', name: 'journeymap-api-neoforge', version: project.journeymap_api_version, changing: true
     // runtimeOnly "mysticdrew:common-networking-neoforge:$journeymap_networking_version"

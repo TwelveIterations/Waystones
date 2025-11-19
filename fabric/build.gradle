@@ -1,18 +1,22 @@
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
 plugins {
     id 'multiloader-loader'
-    id 'fabric-loom'
-    id 'net.darkhax.curseforgegradle'
-    id "com.modrinth.minotaur"
+    alias libs.plugins.fabricLoom
+    alias libs.plugins.curseForge
+    alias libs.plugins.modrinth
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.layered {
+    minecraft libs.minecraft
+    mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
+        parchment variantOf(libs.parchment) {
+            artifactType('zip')
+        }
     }
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    modImplementation libs.fabricLoader
+    modImplementation libs.fabricApi
 }
 
 apply from: rootProject.file('repositories.gradle')
@@ -54,23 +58,49 @@ loom {
     }
 }
 
-task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+// Implement mcgradleconventions loader attribute
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements', 'includeInternal', 'modCompileClasspath'].each { variant ->
+    configurations.named("$variant") {
+        attributes {
+            attribute(loaderAttribute, 'fabric')
+        }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant->
+        configurations.named("$variant") {
+            attributes {
+                attribute(loaderAttribute, 'fabric')
+            }
+        }
+    }
+}
+loom.remapConfigurations.configureEach {
+    configurations.named(it.name) {
+        attributes {
+            attribute(loaderAttribute, 'fabric')
+        }
+    }
+}
+
+tasks.register('curseforge', TaskPublishCurseForge) {
     dependsOn('build')
     description = 'Publishes the Fabric build to CurseForge.'
     group = 'publishing'
 
     apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
-    
+
     def projectId = findProperty("curseforge_project_id")
     onlyIf {
         projectId != null
     }
     if (projectId) {
-        def mainFile = upload(findProperty("curseforge_project_id"), file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
+        def mainFile = upload(findProperty("curseforge_project_id"), file("${project.buildDir}/libs/${base.archivesName}-${version}.jar"))
         mainFile.changelog = rootProject.file('CHANGELOG.md').text
         mainFile.addRequirement("fabric-api")
         mainFile.addRequirement("balm")
-        project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
+        mainFile.addGameVersion(libs.minecraft.get().version)
         mainFile.releaseType = "release"
         project.findProperty("curseforge_environments")?.split(",")?.toList()?.each { mainFile.addEnvironment(it) }
     }
@@ -80,10 +110,10 @@ modrinth {
     token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
     projectId = findProperty("modrinth_project_id")
     versionType = "release"
-    versionNumber = project.version + "+fabric-" + project.minecraft_version
+    versionNumber = project.version + "+fabric-" + libs.minecraft.get().version
     uploadFile = remapJar
     changelog = rootProject.file("CHANGELOG.md").text
-    gameVersions = project.minecraft_versions.split(',').toList()
+    gameVersions = [libs.minecraft.get().version]
     syncBodyFrom = rootProject.file("modpage.md").text
     loaders = ['fabric']
     dependencies {

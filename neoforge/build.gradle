@@ -1,26 +1,21 @@
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
 plugins {
     id 'multiloader-loader'
-    id 'net.neoforged.moddev'
-    id 'net.darkhax.curseforgegradle'
-    id "com.modrinth.minotaur"
-}
-
-base {
-    archivesName = "${mod_id}-neoforge-${minecraft_version}"
+    alias libs.plugins.neoModDev
+    alias libs.plugins.curseForge
+    alias libs.plugins.modrinth
 }
 
 neoForge {
-    version = neoforge_version
+    version = libs.neoForge.get().version
     // Automatically enable neoforge AccessTransformers if the file exists
     def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {
         accessTransformers.from(at.absolutePath)
     }
 
-    parchment {
-        minecraftVersion = parchment_minecraft
-        mappingsVersion = parchment_version
-    }
+    parchment.parchmentArtifact = libs.parchment.get().toString()
 
     runs {
         configureEach {
@@ -49,7 +44,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 apply from: rootProject.file('repositories.gradle')
 apply from: 'dependencies.gradle'
 
-task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+tasks.register('curseforge', TaskPublishCurseForge) {
     dependsOn('build')
     description = 'Publishes the NeoForge build to CurseForge.'
     group = 'publishing'
@@ -61,10 +56,10 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
         projectId != null
     }
     if (projectId) {
-        def mainFile = upload(findProperty("curseforge_project_id"), file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
+        def mainFile = upload(findProperty("curseforge_project_id"), file("${project.buildDir}/libs/${base.archivesName}-${version}.jar"))
         mainFile.changelog = rootProject.file('CHANGELOG.md').text
         mainFile.addRequirement("balm")
-        project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
+        mainFile.addGameVersion(libs.minecraft.get().version)
         mainFile.releaseType = "release"
         project.findProperty("curseforge_environments")?.split(",")?.toList()?.each { mainFile.addEnvironment(it) }
         mainFile.addModLoader("NeoForge")
@@ -75,10 +70,10 @@ modrinth {
     token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
     projectId = findProperty("modrinth_project_id")
     versionType = "release"
-    versionNumber = project.version + "+neoforge-" + project.minecraft_version
+    versionNumber = project.version + "+neoforge-" + libs.minecraft.get().version
     uploadFile = jar
     changelog = rootProject.file("CHANGELOG.md").text
-    gameVersions = project.minecraft_versions.split(',').toList()
+    gameVersions = [libs.minecraft.get().version]
     syncBodyFrom = rootProject.file("modpage.md").text
     loaders = ['neoforge']
     dependencies {
@@ -86,20 +81,34 @@ modrinth {
     }
 }
 
-configurations {
-    // This is a workaround for issues with certain dependencies. It may not be necessary in your case.
-    testCompileOnly.extendsFrom compileOnly
-}
-
 def neoForgeSnapshotUrl = findProperty("neoforge_snapshot_url")
 if (neoForgeSnapshotUrl != null && !neoForgeSnapshotUrl.isBlank()) {
     repositories {
         maven {
-            name 'Maven for NeoForge Snapshots'
-            url neoForgeSnapshotUrl
+            name = 'Maven for NeoForge Snapshots'
+            url = neoForgeSnapshotUrl
             content {
                 includeModule('net.neoforged', 'neoforge')
                 includeModule('net.neoforged', 'testframework')
+            }
+        }
+    }
+}
+
+// Implement mcgradleconventions loader attribute
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements'].each { variant ->
+    configurations.named("$variant") {
+        attributes {
+            attribute(loaderAttribute, 'neoforge')
+        }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName, it.getTaskName(null, 'jarJar')].each { variant->
+        configurations.named("$variant") {
+            attributes {
+                attribute(loaderAttribute, 'neoforge')
             }
         }
     }

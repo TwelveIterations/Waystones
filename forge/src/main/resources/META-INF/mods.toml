@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="${forge_loader_version_range}"
+loaderVersion="*"
 license="${license}"
 issueTrackerURL="${issues}"
 [[mods]]
@@ -8,8 +8,8 @@ version="${version}"
 displayName="${mod_name}"
 displayURL="${homepage}"
 logoFile="${mod_id}.png"
-credits="BlayTheNinth"
-authors="BlayTheNinth"
+credits="${credits}"
+authors="${mod_author}"
 description='''${description}'''
 [[mixins]]
 config = "${mod_id}.mixins.json"
@@ -18,18 +18,18 @@ config = "${mod_id}.forge.mixins.json"
 [[dependencies.${mod_id}]]
 modId="forge"
 mandatory=true
-versionRange="${forge_version_range}"
+versionRange="[${forge_version},)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.${mod_id}]]
 modId="minecraft"
 mandatory=true
-versionRange="${minecraft_version_range}"
+versionRange="[${minecraft_version},)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.${mod_id}]]
 modId="balm"
 mandatory=true
-versionRange="${balm_version_range}"
+versionRange="[${balm_version},)"
 ordering="NONE"
 side="BOTH"

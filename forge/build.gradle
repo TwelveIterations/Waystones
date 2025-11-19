@@ -1,9 +1,11 @@
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
 plugins {
     id 'multiloader-loader'
-    id 'net.minecraftforge.gradle' version '[6.0.25,6.2)'
-    id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
-    id 'net.darkhax.curseforgegradle'
-    id "com.modrinth.minotaur"
+    alias libs.plugins.forge
+    alias libs.plugins.mixinPlugin
+    alias libs.plugins.curseForge
+    alias libs.plugins.modrinth
 }
 
 mixin {
@@ -18,11 +20,11 @@ jar {
 }
 
 minecraft {
-    mappings channel: 'official', version: minecraft_version
+    mappings channel: 'official', version: libs.minecraft.get().version
 
-    reobf = false
+    copyIdeResources = true //Calls processResources when in dev
 
-    copyIdeResources = true
+    reobf = false // Forge 1.20.6+ uses official mappings at runtime, so we shouldn't reobf from official to SRG
 
     // Automatically enable forge AccessTransformers if the file exists
     def at = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -77,10 +79,11 @@ minecraft {
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
-    // temporary hacky fix as suggested by Forge
-    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+    def mcVersion = libs.minecraft.get().version
+    def forgeVersion = libs.forge.get().version
+    minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
+    def mixinVersion = libs.mixinLib.get().version
+    annotationProcessor "org.spongepowered:mixin:${mixinVersion}:processor"
 }
 
 apply from: rootProject.file('repositories.gradle')
@@ -94,7 +97,7 @@ publishing {
     }
 }
 
-task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+tasks.register('curseforge', TaskPublishCurseForge) {
     dependsOn('build')
     description = 'Publishes the Forge build to CurseForge.'
     group = 'publishing'
@@ -106,10 +109,10 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
         projectId != null
     }
     if (projectId) {
-        def mainFile = upload(findProperty("curseforge_project_id"), file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
+        def mainFile = upload(findProperty("curseforge_project_id"), file("${project.buildDir}/libs/${base.archivesName}-${version}.jar"))
         mainFile.changelog = rootProject.file('CHANGELOG.md').text
         mainFile.addRequirement("balm")
-        project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
+        mainFile.addGameVersion(libs.minecraft.get().version)
         mainFile.releaseType = "release"
         project.findProperty("curseforge_environments")?.split(",")?.toList()?.each { mainFile.addEnvironment(it) }
     }
@@ -119,10 +122,10 @@ modrinth {
     token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
     projectId = findProperty("modrinth_project_id")
     versionType = "release"
-    versionNumber = project.version + "+forge-" + project.minecraft_version
+    versionNumber = project.version + "+forge-" + libs.minecraft.get().version
     uploadFile = jar
     changelog = rootProject.file("CHANGELOG.md").text
-    gameVersions = project.minecraft_versions.split(',').toList()
+    gameVersions = [libs.minecraft.get().version]
     syncBodyFrom = rootProject.file("modpage.md").text
     loaders = ['forge']
     dependencies {
@@ -134,4 +137,23 @@ sourceSets.each {
     def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
     it.output.resourcesDir = dir
     it.java.destinationDirectory = dir
+}
+
+// Implement mcgradleconventions loader attribute
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements'].each { variant ->
+    configurations.named("$variant") {
+        attributes {
+            attribute(loaderAttribute, 'forge')
+        }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant->
+        configurations.named("$variant") {
+            attributes {
+                attribute(loaderAttribute, 'forge')
+            }
+        }
+    }
 }
