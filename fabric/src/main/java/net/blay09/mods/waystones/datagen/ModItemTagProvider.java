@@ -7,7 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -20,7 +20,7 @@ public class ModItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
 
     @Override
     protected void addTags(HolderLookup.Provider lookup) {
-        tag(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("enchantable/durability"))).add(ModItems.warpStone.asItem());
+        tag(TagKey.create(Registries.ITEM, Identifier.withDefaultNamespace("enchantable/durability"))).add(ModItems.warpStone.asItem());
         tag(ModItemTags.SCROLLS).add(ModItems.warpScroll.asItem(), ModItems.returnScroll.asItem(), ModItems.boundScroll.asItem(), ModItems.blankScroll.asItem());
         tag(ModItemTags.WARP_SCROLLS).add(ModItems.warpScroll.asItem());
         tag(ModItemTags.RETURN_SCROLLS).add(ModItems.returnScroll.asItem());

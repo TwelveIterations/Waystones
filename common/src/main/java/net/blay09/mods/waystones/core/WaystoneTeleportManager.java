@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.core;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
@@ -217,10 +217,10 @@ public class WaystoneTeleportManager {
 
     public static Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context) {
         WaystoneTeleportEvent.Pre event = new WaystoneTeleportEvent.Pre(context);
-        Balm.events().fireEvent(event);
-        if (event.isCanceled()) {
-            return Either.right(new WaystoneTeleportError.CancelledByEvent());
-        }
+        // TODO Balm.events().fireEvent(event);
+        // TODO if (event.isCanceled()) {
+        //    return Either.right(new WaystoneTeleportError.CancelledByEvent());
+        // }
 
         final var entity = context.getEntity();
 
@@ -248,7 +248,8 @@ public class WaystoneTeleportManager {
             context.getRequirements().consume(context, player);
         }
 
-        return doTeleport(context).ifLeft(teleportedEntities -> Balm.events().fireEvent(new WaystoneTeleportEvent.Post(context, teleportedEntities)));
+        return doTeleport(context);
+                // TODO .ifLeft(teleportedEntities -> Balm.events().fireEvent(new WaystoneTeleportEvent.Post(context, teleportedEntities)));
     }
 
     public static Collection<Entity> findPassengers(Entity entity) {

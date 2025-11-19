@@ -1,25 +1,26 @@
 package net.blay09.mods.waystones.api.event;
 
-import net.blay09.mods.balm.api.event.BalmEvent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.UUID;
 
 /**
  * This event is fired on the client side when the client has been notified of a waystone being removed.
+ * // TODO
  */
-public class WaystoneRemoveReceivedEvent extends BalmEvent {
-    private final ResourceLocation waystoneType;
+@Deprecated
+public class WaystoneRemoveReceivedEvent {
+    private final Identifier waystoneType;
     private final UUID waystoneId;
     private final boolean wasDestroyed;
 
-    public WaystoneRemoveReceivedEvent(ResourceLocation waystoneType, UUID waystoneId, boolean wasDestroyed) {
+    public WaystoneRemoveReceivedEvent(Identifier waystoneType, UUID waystoneId, boolean wasDestroyed) {
         this.waystoneType = waystoneType;
         this.waystoneId = waystoneId;
         this.wasDestroyed = wasDestroyed;
     }
 
-    public ResourceLocation getWaystoneType() {
+    public Identifier getWaystoneType() {
         return waystoneType;
     }
 

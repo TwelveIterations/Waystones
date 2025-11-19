@@ -5,7 +5,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,9 +36,9 @@ public class JigsawPlacementPlacerMixin {
             return resourceKey;
         }
 
-        String poolPath = resourceKey.location().getPath();
+        String poolPath = resourceKey.identifier().getPath();
         if (poolPath.endsWith("/houses")) {
-            ResourceLocation waystonePoolName = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, poolPath.replace("/houses", "/waystones"));
+            Identifier waystonePoolName = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, poolPath.replace("/houses", "/waystones"));
             ResourceKey<StructureTemplatePool> waystonePoolKey = ResourceKey.create(Registries.TEMPLATE_POOL, waystonePoolName);
             if (pools.get(waystonePoolKey).isPresent()) {
                 waystones$hasWaystone = true;

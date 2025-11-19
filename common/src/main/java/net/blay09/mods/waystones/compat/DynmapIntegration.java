@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.compat;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
@@ -8,7 +8,7 @@ import net.blay09.mods.waystones.api.event.WaystoneRemovedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneUpdatedEvent;
 import net.blay09.mods.waystones.api.event.WaystonesLoadedEvent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dynmap.DynmapCommonAPI;
 import org.dynmap.DynmapCommonAPIListener;
 import org.dynmap.markers.Marker;
@@ -28,10 +28,10 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     public DynmapIntegration() {
         DynmapCommonAPIListener.register(this);
 
-        Balm.events().onEvent(WaystonesLoadedEvent.class, this::onWaystonesLoaded);
-        Balm.events().onEvent(WaystoneInitializedEvent.class, this::onWaystoneInitialized);
-        Balm.events().onEvent(WaystoneUpdatedEvent.class, this::onWaystoneUpdated);
-        Balm.events().onEvent(WaystoneRemovedEvent.class, this::onWaystoneRemoved);
+        // TODO Balm.events().onEvent(WaystonesLoadedEvent.class, this::onWaystonesLoaded);
+        // TODO Balm.events().onEvent(WaystoneInitializedEvent.class, this::onWaystoneInitialized);
+        // TODO Balm.events().onEvent(WaystoneUpdatedEvent.class, this::onWaystoneUpdated);
+        // TODO Balm.events().onEvent(WaystoneRemovedEvent.class, this::onWaystoneRemoved);
     }
 
     public static String getMarkerId(Waystone waystone) {
@@ -42,7 +42,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
         return markerSet.createMarker(getMarkerId(waystone),
                 waystone.getName().getString(),
                 false,
-                getDynmapWorldName(waystone.getDimension().location()),
+                getDynmapWorldName(waystone.getDimension().identifier()),
                 waystone.getPos().getX(),
                 waystone.getPos().getY(),
                 waystone.getPos().getZ(),
@@ -50,7 +50,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
                 false);
     }
 
-    private static String getDynmapWorldName(ResourceLocation id) {
+    private static String getDynmapWorldName(Identifier id) {
         return switch (id.toString()) {
             case "minecraft:overworld" -> Balm.platform().server().getWorldData().getLevelName();
             case "minecraft:the_nether" -> "DIM-1";
@@ -63,7 +63,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
         return isSupportedWaystoneType(waystone.getWaystoneType());
     }
 
-    private static boolean isSupportedWaystoneType(ResourceLocation waystoneType) {
+    private static boolean isSupportedWaystoneType(Identifier waystoneType) {
         return waystoneType.equals(WaystoneTypes.WAYSTONE) || WaystoneTypes.isSharestone(waystoneType);
     }
 

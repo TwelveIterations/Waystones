@@ -4,20 +4,19 @@ import net.blay09.mods.waystones.requirement.ExperiencePointsRequirement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 public class ExperiencePointsRequirementRenderer implements RequirementRenderer<ExperiencePointsRequirement> {
 
-    private static final ResourceLocation[] ENABLED_LEVEL_SPRITES = new ResourceLocation[]{
-            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_1"),
-            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_2"),
-            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_3")};
-    private static final ResourceLocation[] DISABLED_LEVEL_SPRITES = new ResourceLocation[]{
-            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_1_disabled"),
-            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_2_disabled"),
-            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_3_disabled")};
+    private static final Identifier[] ENABLED_LEVEL_SPRITES = new Identifier[]{
+            Identifier.withDefaultNamespace("container/enchanting_table/level_1"),
+            Identifier.withDefaultNamespace("container/enchanting_table/level_2"),
+            Identifier.withDefaultNamespace("container/enchanting_table/level_3")};
+    private static final Identifier[] DISABLED_LEVEL_SPRITES = new Identifier[]{
+            Identifier.withDefaultNamespace("container/enchanting_table/level_1_disabled"),
+            Identifier.withDefaultNamespace("container/enchanting_table/level_2_disabled"),
+            Identifier.withDefaultNamespace("container/enchanting_table/level_3_disabled")};
 
     @Override
     public void renderWidget(Player player, ExperiencePointsRequirement requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {

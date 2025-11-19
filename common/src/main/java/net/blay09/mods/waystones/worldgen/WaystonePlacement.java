@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -72,7 +72,7 @@ public class WaystonePlacement extends PlacementModifier {
             return false;
         }
 
-        ResourceLocation dimension = world.getLevel().getLevel().dimension().location();
+        Identifier dimension = world.getLevel().getLevel().dimension().identifier();
         final var dimensionAllowList = WaystonesConfig.getActive().worldGen.wildWaystonesDimensionAllowList;
         final var dimensionDenyList = WaystonesConfig.getActive().worldGen.wildWaystonesDimensionDenyList;
         if (!dimensionAllowList.isEmpty() && !dimensionAllowList.contains(dimension)) {

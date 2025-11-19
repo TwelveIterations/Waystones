@@ -1,10 +1,8 @@
 package net.blay09.mods.waystones.core;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.BalmEnvironment;
+import net.blay09.mods.balm.platform.BalmEnvironment;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
-import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -14,7 +12,7 @@ import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 import net.blay09.mods.waystones.store.WaystonesPlayerStore;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -57,7 +55,7 @@ public class PlayerWaystoneManager {
         if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
             getPlayerWaystoneData(player.level()).activateWaystone(player, waystone);
 
-            Balm.events().fireEvent(new WaystoneActivatedEvent(player, waystone));
+            // TODO Balm.events().fireEvent(new WaystoneActivatedEvent(player, waystone));
         }
     }
 
@@ -76,7 +74,7 @@ public class PlayerWaystoneManager {
         getPlayerWaystoneData(player.level()).deactivateWaystone(player, waystone);
     }
 
-    public static Map<ResourceLocation, Long> getCooldowns(Player player) {
+    public static Map<Identifier, Long> getCooldowns(Player player) {
         return getPlayerWaystoneData(player.level()).getCooldowns(player);
     }
 
@@ -84,16 +82,16 @@ public class PlayerWaystoneManager {
         getPlayerWaystoneData(player.level()).resetCooldowns(player);
     }
 
-    public static long getCooldownUntil(Player player, ResourceLocation key) {
+    public static long getCooldownUntil(Player player, Identifier key) {
         return getPlayerWaystoneData(player.level()).getCooldownUntil(player, key);
     }
 
-    public static long getCooldownMillisLeft(Player player, ResourceLocation key) {
+    public static long getCooldownMillisLeft(Player player, Identifier key) {
         long cooldownUntil = getCooldownUntil(player, key);
         return Math.max(0, cooldownUntil - System.currentTimeMillis());
     }
 
-    public static void setCooldownUntil(Player player, ResourceLocation key, long timestamp) {
+    public static void setCooldownUntil(Player player, Identifier key, long timestamp) {
         getPlayerWaystoneData(player.level()).setCooldownUntil(player, key, timestamp);
     }
 
@@ -183,7 +181,7 @@ public class PlayerWaystoneManager {
         return result;
     }
 
-    public static Collection<Waystone> getTargetsForWaystoneType(Player player, ResourceLocation waystoneType) {
+    public static Collection<Waystone> getTargetsForWaystoneType(Player player, Identifier waystoneType) {
         final var result = new ArrayList<Waystone>();
         if (WaystoneTypes.isSharestone(waystoneType)) {
             result.addAll(SavedDataWaystonesStore.get(player.level().getServer()).getWaystonesByType(waystoneType));

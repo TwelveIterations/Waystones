@@ -6,7 +6,7 @@ import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -33,12 +33,12 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
     private final Waystone fromWaystone;
     private final List<Waystone> waystones;
-    private final Set<ResourceLocation> flags;
+    private final Set<Identifier> flags;
     private Consumer<WaystoneTeleportContext> postTeleportHandler = it -> {};
     private ItemStack warpItem = ItemStack.EMPTY;
     private InteractionHand warpHand = InteractionHand.MAIN_HAND;
 
-    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, List<Waystone> waystones, Set<ResourceLocation> flags) {
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, List<Waystone> waystones, Set<Identifier> flags) {
         super(type, windowId);
         this.fromWaystone = fromWaystone;
         this.waystones = waystones;
@@ -87,7 +87,7 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
         return waystones;
     }
 
-    public Set<ResourceLocation> getFlags() {
+    public Set<Identifier> getFlags() {
         return flags;
     }
 

@@ -1,13 +1,14 @@
 package net.blay09.mods.waystones.api.event;
 
-import net.blay09.mods.balm.api.event.BalmEvent;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.minecraft.world.entity.Entity;
 
 import java.util.List;
 
-public abstract class WaystoneTeleportEvent extends BalmEvent {
+// TODO
+@Deprecated
+public abstract class WaystoneTeleportEvent {
 
     public static class Pre extends WaystoneTeleportEvent {
         private final WaystoneTeleportContext context;

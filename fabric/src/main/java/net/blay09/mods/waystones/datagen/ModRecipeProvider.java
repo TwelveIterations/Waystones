@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.datagen;
 
-import net.blay09.mods.balm.api.tag.BalmItemTags;
+import net.blay09.mods.balm.tags.BalmItemTags;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.item.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;

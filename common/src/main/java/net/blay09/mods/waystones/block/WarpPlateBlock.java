@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.block;
 
 import com.mojang.serialization.MapCodec;
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
@@ -14,7 +14,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
@@ -77,7 +77,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         }
     }
 
-    private static final FontDescription ALT_FONT = new FontDescription.Resource(ResourceLocation.withDefaultNamespace("alt"));
+    private static final FontDescription ALT_FONT = new FontDescription.Resource(Identifier.withDefaultNamespace("alt"));
     private static final Style ROOT_STYLE = Style.EMPTY.withFont(ALT_FONT);
 
     private static final VoxelShape SHAPE = Shapes.or(

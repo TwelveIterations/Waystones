@@ -5,17 +5,17 @@ import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
 public class CooldownRequirement implements WarpRequirement {
 
-    private ResourceLocation key;
+    private Identifier key;
     private int seconds;
 
-    public CooldownRequirement(ResourceLocation key, int seconds) {
+    public CooldownRequirement(Identifier key, int seconds) {
         this.key = key;
         this.seconds = seconds;
     }
@@ -55,12 +55,12 @@ public class CooldownRequirement implements WarpRequirement {
         return seconds <= 0;
     }
 
-    public void setCooldown(ResourceLocation key, int seconds) {
+    public void setCooldown(Identifier key, int seconds) {
         this.key = key;
         this.seconds = seconds;
     }
 
-    public ResourceLocation getCooldownKey() {
+    public Identifier getCooldownKey() {
         return key;
     }
 

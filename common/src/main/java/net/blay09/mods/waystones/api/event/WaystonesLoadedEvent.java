@@ -1,9 +1,10 @@
 package net.blay09.mods.waystones.api.event;
 
-import net.blay09.mods.balm.api.event.BalmEvent;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 
-public class WaystonesLoadedEvent extends BalmEvent {
+// TODO
+@Deprecated
+public class WaystonesLoadedEvent {
     private final SavedDataWaystonesStore waystoneManager;
 
     public WaystonesLoadedEvent(SavedDataWaystonesStore waystoneManager) {

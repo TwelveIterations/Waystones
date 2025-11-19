@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.network.message.ServerboundEditWaystonePacket;
@@ -13,7 +13,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.Locale;
@@ -67,8 +67,8 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         y += 24;
 
         final var modifierSprites = new WidgetSprites(
-                ResourceLocation.withDefaultNamespace("waystones/modifier_button"),
-                ResourceLocation.withDefaultNamespace("waystones/modifier_button_highlighted"));
+                Identifier.withDefaultNamespace("waystones/modifier_button"),
+                Identifier.withDefaultNamespace("waystones/modifier_button_highlighted"));
         modifierButton = new ImageButton(20,
                 20,
                 modifierSprites,

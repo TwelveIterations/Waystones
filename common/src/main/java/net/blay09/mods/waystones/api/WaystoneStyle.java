@@ -1,20 +1,20 @@
 package net.blay09.mods.waystones.api;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * @see WaystoneStyles
  */
 public class WaystoneStyle {
 
-    private final ResourceLocation blockRegistryName;
+    private final Identifier blockRegistryName;
     private int runeColor = 0xFFFFFFFF;
 
-    public WaystoneStyle(ResourceLocation blockRegistryName) {
+    public WaystoneStyle(Identifier blockRegistryName) {
         this.blockRegistryName = blockRegistryName;
     }
 
-    public ResourceLocation getBlockRegistryName() {
+    public Identifier getBlockRegistryName() {
         return blockRegistryName;
     }
 

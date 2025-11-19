@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.api.requirement;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface RequirementType<T extends WarpRequirement> {
-    ResourceLocation getId();
+    Identifier getId();
     T createInstance();
 }

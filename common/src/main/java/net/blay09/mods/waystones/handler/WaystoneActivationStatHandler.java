@@ -9,4 +9,7 @@ public class WaystoneActivationStatHandler {
         event.getPlayer().awardStat(ModStats.waystoneActivated);
     }
 
+    public static void register() {
+        // TODO
+    }
 }

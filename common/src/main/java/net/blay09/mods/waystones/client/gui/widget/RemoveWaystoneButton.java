@@ -11,13 +11,13 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
 public class RemoveWaystoneButton extends Button implements ITooltipProvider {
 
-    private static final ResourceLocation CANCEL_SPRITE = ResourceLocation.withDefaultNamespace("container/beacon/cancel");
+    private static final Identifier CANCEL_SPRITE = Identifier.withDefaultNamespace("container/beacon/cancel");
 
     private final List<Component> tooltip;
     private final List<Component> activeTooltip;
@@ -50,7 +50,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         boolean shiftDown = Kuma.hasShiftDown();
         if (!shiftDown) {
             shiftGuard = false;

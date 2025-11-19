@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -81,7 +81,7 @@ public class WaystonesAPI {
         return __internalMethods.getAllWaystones(server);
     }
 
-    public static Collection<Waystone> getWaystonesByType(MinecraftServer server, ResourceLocation type) {
+    public static Collection<Waystone> getWaystonesByType(MinecraftServer server, Identifier type) {
         return __internalMethods.getWaystonesByType(server, type);
     }
 

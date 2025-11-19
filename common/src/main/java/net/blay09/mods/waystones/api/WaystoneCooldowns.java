@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.api;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class WaystoneCooldowns {
-    public static final ResourceLocation INVENTORY_BUTTON = ResourceLocation.fromNamespaceAndPath("waystones", "inventory_button");
+    public static final Identifier INVENTORY_BUTTON = Identifier.fromNamespaceAndPath("waystones", "inventory_button");
 }

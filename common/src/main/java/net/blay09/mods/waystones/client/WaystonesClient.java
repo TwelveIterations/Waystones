@@ -1,13 +1,9 @@
 package net.blay09.mods.waystones.client;
 
-import net.blay09.mods.balm.api.client.module.BalmClientModule;
-import net.blay09.mods.balm.api.client.rendering.BalmModels;
-import net.blay09.mods.balm.api.client.rendering.BalmRenderers;
-import net.blay09.mods.balm.api.client.screen.BalmScreens;
-import net.blay09.mods.balm.api.event.BalmEvents;
 import net.blay09.mods.balm.client.color.block.BalmBlockColorRegistrar;
 import net.blay09.mods.balm.client.gui.screens.inventory.BalmMenuScreenRegistrar;
 import net.blay09.mods.balm.client.model.geom.BalmModelLayerRegistrar;
+import net.blay09.mods.balm.client.platform.module.BalmClientModule;
 import net.blay09.mods.balm.client.renderer.block.model.BalmBlockStateModelRegistrar;
 import net.blay09.mods.balm.client.renderer.blockentity.BalmBlockEntityRendererRegistrar;
 import net.blay09.mods.balm.client.renderer.chunk.BalmBlockRenderTypeRegistrar;
@@ -18,7 +14,7 @@ import net.blay09.mods.waystones.store.EventfulWaystonesStore;
 import net.blay09.mods.waystones.store.InMemoryWaystonesStore;
 import net.blay09.mods.waystones.store.WaystonesStore;
 import net.minecraft.client.ClientBrandRetriever;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.Locale;
@@ -27,14 +23,8 @@ public class WaystonesClient implements BalmClientModule {
     private static final WaystonesStore waystonesStore = new EventfulWaystonesStore(new InMemoryWaystonesStore(List.of()));
 
     @Override
-    public ResourceLocation getId() {
-        return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "client");
-    }
-
-    @Override
-    public void registerEvents(BalmEvents events) {
-        ModClientEventHandlers.initialize(events);
-        InventoryButtonGuiHandler.initialize(events);
+    public Identifier getId() {
+        return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "client");
     }
 
     @Override
@@ -69,6 +59,9 @@ public class WaystonesClient implements BalmClientModule {
 
     @Override
     public void initialize() {
+        ModClientEventHandlers.initialize();
+        InventoryButtonGuiHandler.initialize();
+
         RequirementClientRegistry.registerDefaults();
 
         Compat.isVivecraftInstalled = ClientBrandRetriever.getClientModName().toLowerCase(Locale.ENGLISH).contains(Compat.VIVECRAFT);

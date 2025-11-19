@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.WaystonesAPI;

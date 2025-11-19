@@ -4,7 +4,7 @@ import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityTypeRegistra
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class ModBlockEntities {
@@ -22,8 +22,8 @@ public class ModBlockEntities {
         portstone = blockEntities.register("portstone", PortstoneBlockEntity::new, ModBlocks.portstones.values()).asHolder();
     }
 
-    private static ResourceLocation id(String name) {
-        return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
+    private static Identifier id(String name) {
+        return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, name);
     }
 
 }

@@ -7,7 +7,7 @@ import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -66,8 +66,8 @@ public class InvalidWaystone implements Waystone {
     }
 
     @Override
-    public ResourceLocation getWaystoneType() {
-        return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "invalid");
+    public Identifier getWaystoneType() {
+        return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "invalid");
     }
 
     @Override

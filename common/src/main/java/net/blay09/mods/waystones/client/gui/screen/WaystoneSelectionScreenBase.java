@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.mixin.ScreenAccessor;
 import net.blay09.mods.kuma.api.Kuma;
 import net.blay09.mods.waystones.api.*;

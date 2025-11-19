@@ -1,10 +1,10 @@
 package net.blay09.mods.waystones.api;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class TeleportFlags {
 
-    public static final ResourceLocation ADMIN = ResourceLocation.fromNamespaceAndPath("waystones", "admin");
-    public static final ResourceLocation INVENTORY_BUTTON = ResourceLocation.fromNamespaceAndPath("waystones", "inventory_button");
-    public static final ResourceLocation PORTSTONE = ResourceLocation.fromNamespaceAndPath("waystones", "portstone");
+    public static final Identifier ADMIN = Identifier.fromNamespaceAndPath("waystones", "admin");
+    public static final Identifier INVENTORY_BUTTON = Identifier.fromNamespaceAndPath("waystones", "inventory_button");
+    public static final Identifier PORTSTONE = Identifier.fromNamespaceAndPath("waystones", "portstone");
 }

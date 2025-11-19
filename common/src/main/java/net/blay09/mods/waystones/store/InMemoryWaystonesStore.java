@@ -8,7 +8,7 @@ import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockGetter;
 
 import java.util.*;
@@ -17,7 +17,7 @@ public class InMemoryWaystonesStore implements WaystonesStore {
 
     private final List<Waystone> waystones = new ArrayList<>();
     private final Map<UUID, Waystone> waystonesById = new HashMap<>();
-    private final Multimap<ResourceLocation, Waystone> waystonesByType = ArrayListMultimap.create();
+    private final Multimap<Identifier, Waystone> waystonesByType = ArrayListMultimap.create();
 
     public InMemoryWaystonesStore(List<Waystone> waystones) {
         this.waystones.addAll(waystones);
@@ -77,7 +77,7 @@ public class InMemoryWaystonesStore implements WaystonesStore {
     }
 
     @Override
-    public Collection<Waystone> getWaystonesByType(ResourceLocation type) {
+    public Collection<Waystone> getWaystonesByType(Identifier type) {
         return waystonesByType.get(type);
     }
 

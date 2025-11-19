@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.block;
 
 import com.mojang.serialization.MapCodec;
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;

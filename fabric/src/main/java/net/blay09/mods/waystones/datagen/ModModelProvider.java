@@ -15,7 +15,7 @@ import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.renderer.block.model.VariantMutator;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -92,28 +92,28 @@ public class ModModelProvider extends FabricModelProvider {
     }
 
     private void createSharestone(BlockModelGenerators blockStateModelGenerator, DyeColor color, DeferredBlock block) {
-        final var topModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/sharestone_top");
-        final var bottomModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/sharestone_bottom");
+        final var topModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "block/sharestone_top");
+        final var bottomModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "block/sharestone_bottom");
         final var generator = MultiVariantGenerator.dispatch(block.asBlock())
                 .with(PropertyDispatch.initial(WaystoneBlockBase.HALF)
                         .select(DoubleBlockHalf.LOWER, plainVariant(bottomModelLocation))
                         .select(DoubleBlockHalf.UPPER, plainVariant(topModelLocation)))
                 .with(ROTATION_HORIZONTAL_FACING);
         blockStateModelGenerator.blockStateOutput.accept(generator);
-        final var itemModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "item/sharestone");
+        final var itemModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "item/sharestone");
         blockStateModelGenerator.registerSimpleTintedItemModel(block.asBlock(), itemModelLocation, new Constant(color.getTextColor()));
     }
 
     private void createPortstone(BlockModelGenerators blockStateModelGenerator, DyeColor color, DeferredBlock block) {
-        final var topModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_top");
-        final var bottomModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_bottom");
+        final var topModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_top");
+        final var bottomModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_bottom");
         final var generator = MultiVariantGenerator.dispatch(block.asBlock())
                 .with(PropertyDispatch.initial(WaystoneBlockBase.HALF)
                         .select(DoubleBlockHalf.LOWER, plainVariant(bottomModelLocation))
                         .select(DoubleBlockHalf.UPPER, plainVariant(topModelLocation)))
                 .with(ROTATION_HORIZONTAL_FACING);
         blockStateModelGenerator.blockStateOutput.accept(generator);
-        final var itemModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "item/portstone");
+        final var itemModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "item/portstone");
         blockStateModelGenerator.registerSimpleTintedItemModel(block.asBlock(), itemModelLocation, new Constant(color.getTextColor()));
     }
 

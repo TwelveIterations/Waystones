@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.forge.ForgeLoadContext;
 import net.blay09.mods.waystones.client.ForgeWaystonesClient;

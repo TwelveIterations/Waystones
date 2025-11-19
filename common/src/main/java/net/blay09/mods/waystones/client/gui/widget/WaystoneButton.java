@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
@@ -10,8 +9,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
@@ -19,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class WaystoneButton extends Button {
+public class WaystoneButton extends Button.Plain {
 
 
     private final WarpRequirement warpRequirement;
@@ -49,8 +46,8 @@ public class WaystoneButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
+    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderContents(guiGraphics, mouseX, mouseY, partialTicks);
 
         final var font = Minecraft.getInstance().font;
         final var player = Minecraft.getInstance().player;

@@ -1,10 +1,8 @@
 package net.blay09.mods.waystones.client;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.client.BalmClient;
-import net.blay09.mods.balm.api.event.BalmEvents;
-import net.blay09.mods.balm.api.event.client.screen.ScreenDrawEvent;
-import net.blay09.mods.balm.api.event.client.screen.ScreenInitEvent;
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.client.platform.event.callback.ScreenCallback;
+import net.blay09.mods.balm.mixin.ScreenAccessor;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
@@ -23,7 +21,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 
@@ -36,9 +34,8 @@ public class InventoryButtonGuiHandler {
 
     private static WaystoneInventoryButton warpButton;
 
-    public static void initialize(BalmEvents events) {
-        events.onEvent(ScreenInitEvent.Post.class, event -> {
-            Screen screen = event.getScreen();
+    public static void initialize() {
+        ScreenCallback.Init.AFTER.register(screen -> {
             if (!(screen instanceof InventoryScreen) && !(screen instanceof CreativeModeInventoryScreen)) {
                 return;
             }
@@ -84,14 +81,10 @@ public class InventoryButtonGuiHandler {
 
                 return true;
             }, xPosition, yPosition);
-            BalmClient.getScreens().addRenderableWidget(screen, warpButton);
+            // TODO BalmClient.getScreens().addRenderableWidget(screen, warpButton);
         });
 
-        events.onEvent(ScreenDrawEvent.Post.class, event -> {
-            Screen screen = event.getScreen();
-            GuiGraphics guiGraphics = event.getGuiGraphics();
-            int mouseX = event.getMouseX();
-            int mouseY = event.getMouseY();
+        ScreenCallback.Render.AFTER.register((screen, guiGraphics, mouseX, mouseY, delta) -> {
             // Render the inventory button tooltip when it's hovered
             if ((screen instanceof InventoryScreen || screen instanceof CreativeModeInventoryScreen) && warpButton != null && warpButton.isHoveredOrFocused()) {
                 InventoryButtonMode inventoryButtonMode = WaystonesConfig.getActive().getInventoryButtonMode();

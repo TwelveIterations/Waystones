@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.network;
 
-import net.blay09.mods.balm.api.network.BalmNetworking;
+import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.waystones.network.message.*;
 
 public class ModNetworking {

@@ -1,14 +1,14 @@
 package net.blay09.mods.waystones.requirement;
 
 import net.blay09.mods.waystones.api.requirement.RequirementType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ExperienceLevelRequirementType implements RequirementType<ExperienceLevelRequirement> {
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("waystones", "experience_levels");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath("waystones", "experience_levels");
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 

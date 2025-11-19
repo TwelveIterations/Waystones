@@ -1,18 +1,15 @@
 package net.blay09.mods.waystones.block.entity;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.block.entity.CustomRenderBoundingBox;
-import net.blay09.mods.balm.api.block.entity.OnLoadHandler;
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
-import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.balm.world.BalmContainerProvider;
+import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.level.block.entity.BlockEntityUtils;
+import net.blay09.mods.balm.world.level.block.entity.OnLoadHandler;
 import net.blay09.mods.waystones.api.MutableWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.api.error.WaystoneEditError;
-import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.component.ModComponents;
@@ -33,7 +30,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -60,7 +57,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnLoadHandler, CustomRenderBoundingBox, BalmContainerProvider {
+public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnLoadHandler, BalmContainerProvider {
 
     protected final DefaultContainer container = new DefaultContainer(5) {
         @Override
@@ -162,7 +159,6 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
         BlockEntityUtils.sync(this);
     }
 
-    @Override
     public AABB getRenderBoundingBox() {
         return new AABB(worldPosition.getX(),
                 worldPosition.getY(),
@@ -203,7 +199,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
         return waystone;
     }
 
-    protected abstract ResourceLocation getWaystoneType();
+    protected abstract Identifier getWaystoneType();
 
     public void initializeWaystone(ServerLevelAccessor level, @Nullable LivingEntity player, WaystoneOrigin origin) {
         WaystoneImpl waystone = new WaystoneImpl(getWaystoneType(),
@@ -213,7 +209,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
                 origin,
                 player != null ? player.getUUID() : null);
         SavedDataWaystonesStore.get(level.getLevel().getServer()).addWaystone(waystone);
-        Balm.events().fireEvent(new WaystoneInitializedEvent(waystone));
+        // TODO Balm.events().fireEvent(new WaystoneInitializedEvent(waystone));
         this.waystone = waystone;
         setChanged();
         BlockEntityUtils.sync(this);
@@ -402,8 +398,8 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
             if (witherSeconds > 0) {
                 ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.WITHER, witherSeconds * 20, potency));
             }
-            for (ItemStack curativeItem : curativeItems) {
-                Balm.hooks().curePotionEffects((LivingEntity) entity, curativeItem);
+            if (!curativeItems.isEmpty()) {
+                ((LivingEntity) entity).removeAllEffects();
             }
         }
     }

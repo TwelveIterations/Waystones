@@ -6,14 +6,13 @@ import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class WaystoneModifierScreen extends AbstractContainerScreen<WaystoneModifierMenu> {
 
-    private static final ResourceLocation WARP_PLATE_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/menu/waystone_modifiers.png");
+    private static final Identifier WARP_PLATE_GUI_TEXTURES = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/menu/waystone_modifiers.png");
 
     public WaystoneModifierScreen(WaystoneModifierMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);

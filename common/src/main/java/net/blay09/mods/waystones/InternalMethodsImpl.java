@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones;
 
 import com.mojang.datafixers.util.Either;
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
@@ -17,7 +17,7 @@ import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -245,7 +245,7 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Collection<Waystone> getWaystonesByType(MinecraftServer server, ResourceLocation type) {
+    public Collection<Waystone> getWaystonesByType(MinecraftServer server, Identifier type) {
         return SavedDataWaystonesStore.get(server).getWaystonesByType(type);
     }
 

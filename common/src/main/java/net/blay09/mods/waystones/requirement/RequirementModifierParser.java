@@ -5,7 +5,7 @@ import net.blay09.mods.waystones.api.WaystoneStyle;
 import net.blay09.mods.waystones.api.requirement.ConditionResolver;
 import net.blay09.mods.waystones.api.requirement.RequirementFunction;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class RequirementModifierParser {
         final var conditionMatcher = conditionPattern.matcher(conditionsPart);
 
         while (conditionMatcher.find()) {
-            final var conditionId = waystonesResourceLocation(conditionMatcher.group(1));
+            final var conditionId = waystonesIdentifier(conditionMatcher.group(1));
             final var args = conditionMatcher.group(2);
             final var conditionResolver = RequirementRegistry.getConditionResolver(conditionId);
             if (conditionResolver == null) {
@@ -67,7 +67,7 @@ public class RequirementModifierParser {
         final var functionMatcher = functionPattern.matcher(functionPart);
 
         if (functionMatcher.find()) {
-            final var requirementId = waystonesResourceLocation(functionMatcher.group(1));
+            final var requirementId = waystonesIdentifier(functionMatcher.group(1));
             final var args = functionMatcher.group(2);
             final var requirement = RequirementRegistry.getRequirementFunction(requirementId);
             if (requirement == null) {
@@ -84,11 +84,11 @@ public class RequirementModifierParser {
         return new ConfiguredRequirement<>(requirement, parameters);
     }
 
-    public static ResourceLocation waystonesResourceLocation(String value) {
+    public static Identifier waystonesIdentifier(String value) {
         final var colon = value.indexOf(':');
         final var namespace = colon != -1 ? value.substring(0, colon) : "waystones";
         final var path = colon != -1 ? value.substring(colon + 1) : value;
-        return ResourceLocation.fromNamespaceAndPath(namespace, path);
+        return Identifier.fromNamespaceAndPath(namespace, path);
     }
 
     public static <T> T deserializeParameter(Class<T> type, String value) {

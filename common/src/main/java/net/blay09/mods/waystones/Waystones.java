@@ -1,15 +1,13 @@
 package net.blay09.mods.waystones;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.command.BalmCommands;
-import net.blay09.mods.balm.api.config.BalmConfig;
-import net.blay09.mods.balm.api.event.BalmEvents;
-import net.blay09.mods.balm.api.module.BalmModule;
-import net.blay09.mods.balm.api.network.BalmNetworking;
-import net.blay09.mods.balm.api.permission.BalmPermissions;
-import net.blay09.mods.balm.api.world.BalmWorldGen;
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.commands.BalmCommands;
 import net.blay09.mods.balm.core.BalmRegistrar;
 import net.blay09.mods.balm.core.component.BalmDataComponentTypeRegistrar;
+import net.blay09.mods.balm.network.BalmNetworking;
+import net.blay09.mods.balm.platform.config.BalmConfig;
+import net.blay09.mods.balm.platform.module.BalmModule;
+import net.blay09.mods.balm.platform.permissions.BalmPermissions;
 import net.blay09.mods.balm.server.packs.resources.BalmResourceConditionRegistrar;
 import net.blay09.mods.balm.stats.BalmCustomStatRegistrar;
 import net.blay09.mods.balm.world.inventory.BalmMenuTypeRegistrar;
@@ -17,6 +15,7 @@ import net.blay09.mods.balm.world.item.BalmCreativeModeTabRegistrar;
 import net.blay09.mods.balm.world.item.BalmItemRegistrar;
 import net.blay09.mods.balm.world.level.block.BalmBlockRegistrar;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityTypeRegistrar;
+import net.blay09.mods.balm.world.level.levelgen.BalmWorldGen;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.command.ModCommands;
@@ -33,7 +32,7 @@ import net.blay09.mods.waystones.resources.ForceSpawnInVillagesCondition;
 import net.blay09.mods.waystones.stats.ModStats;
 import net.blay09.mods.waystones.worldgen.ModWorldGen;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,13 +42,13 @@ public class Waystones implements BalmModule {
 
     public static final String MOD_ID = "waystones";
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
     @Override
-    public ResourceLocation getId() {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, "common");
+    public Identifier getId() {
+        return Identifier.fromNamespaceAndPath(MOD_ID, "common");
     }
 
     @Override
@@ -60,11 +59,6 @@ public class Waystones implements BalmModule {
     @Override
     public void registerCustomStats(BalmCustomStatRegistrar stats) {
         ModStats.initialize(stats);
-    }
-
-    @Override
-    public void registerEvents(BalmEvents events) {
-        ModEventHandlers.initialize(events);
     }
 
     @Override
@@ -131,6 +125,7 @@ public class Waystones implements BalmModule {
 
     @Override
     public void initialize() {
+        ModEventHandlers.initialize();
         RequirementRegistry.registerDefaults();
 
         Balm.initializeIfLoaded("bluemap", "net.blay09.mods.waystones.compat.BlueMapIntegration");

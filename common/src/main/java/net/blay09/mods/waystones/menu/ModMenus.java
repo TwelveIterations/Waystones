@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.menu;
 
-import net.blay09.mods.balm.api.menu.BalmMenuFactory;
+import net.blay09.mods.balm.world.BalmMenuFactory;
 import net.blay09.mods.balm.world.inventory.BalmMenuTypeRegistrar;
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.Waystone;

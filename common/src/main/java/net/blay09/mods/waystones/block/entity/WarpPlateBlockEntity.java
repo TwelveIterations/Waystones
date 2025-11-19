@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.block.entity;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
@@ -18,7 +18,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -83,7 +83,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    protected ResourceLocation getWaystoneType() {
+    protected Identifier getWaystoneType() {
         return WaystoneTypes.WARP_PLATE;
     }
 

@@ -11,14 +11,14 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Supplier;
 
 public class WaystoneInventoryButton extends Button {
 
-    private static final ResourceLocation INVENTORY_BUTTON_SPRITE = ResourceLocation.withDefaultNamespace("waystones/inventory_button");
+    private static final Identifier INVENTORY_BUTTON_SPRITE = Identifier.withDefaultNamespace("waystones/inventory_button");
 
     private final AbstractContainerScreen<?> parentScreen;
     private final ItemStack iconItem;
@@ -43,7 +43,7 @@ public class WaystoneInventoryButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         visible = visiblePredicate.get();
         if (visible) {
             setX(((AbstractContainerScreenAccessor) parentScreen).getLeftPos() + xPosition.get());

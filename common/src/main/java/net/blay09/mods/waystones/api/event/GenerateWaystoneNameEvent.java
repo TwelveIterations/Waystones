@@ -1,10 +1,11 @@
 package net.blay09.mods.waystones.api.event;
 
-import net.blay09.mods.balm.api.event.BalmEvent;
 import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.network.chat.Component;
 
-public class GenerateWaystoneNameEvent extends BalmEvent {
+// TODO
+@Deprecated
+public class GenerateWaystoneNameEvent {
 
     private final Waystone waystone;
     private Component name;

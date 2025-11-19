@@ -8,7 +8,7 @@ import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -19,7 +19,7 @@ import java.util.function.Consumer;
  */
 public class WaystonesWailaUtils {
 
-    public static final ResourceLocation WAYSTONE_UID = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "waystone");
+    public static final Identifier WAYSTONE_UID = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "waystone");
 
     public static void appendTooltip(BlockEntity blockEntity, Player player, Consumer<Component> tooltipConsumer) {
         if (blockEntity instanceof WarpPlateBlockEntity warpPlate) {

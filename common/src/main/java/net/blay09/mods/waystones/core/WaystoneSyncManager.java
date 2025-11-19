@@ -1,11 +1,11 @@
 package net.blay09.mods.waystones.core;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.network.message.*;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -49,7 +49,7 @@ public class WaystoneSyncManager {
         Balm.networking().sendTo(player, new ClientboundKnownWaystonesPacket(WaystoneTypes.WAYSTONE, waystones));
     }
 
-    public static void sendWaystonesOfType(ResourceLocation waystoneType, ServerPlayer player) {
+    public static void sendWaystonesOfType(Identifier waystoneType, ServerPlayer player) {
         List<Waystone> warpPlates = new ArrayList<>(SavedDataWaystonesStore.get(player.level().getServer()).getWaystonesByType(waystoneType));
         Balm.networking().sendTo(player, new ClientboundKnownWaystonesPacket(waystoneType, warpPlates));
     }

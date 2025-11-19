@@ -4,7 +4,7 @@ import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.blay09.mods.waystones.api.requirement.WarpRequirementsContext;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class WarpRequirementsContextImpl implements WarpRequirementsContext {
 
-    private final Map<ResourceLocation, WarpRequirement> requirements = new HashMap<>();
+    private final Map<Identifier, WarpRequirement> requirements = new HashMap<>();
     private final WaystoneTeleportContext context;
 
     public WarpRequirementsContextImpl(WaystoneTeleportContext context) {
@@ -37,7 +37,7 @@ public class WarpRequirementsContextImpl implements WarpRequirementsContext {
         requirements.put(modifier.getRequirementType(), modifier.apply(existing, this, parameters));
     }
 
-    public float getContextValue(ResourceLocation id) {
+    public float getContextValue(Identifier id) {
         final var resolver = RequirementRegistry.getVariableResolver(id);
         if (resolver != null) {
             return resolver.resolve(context);

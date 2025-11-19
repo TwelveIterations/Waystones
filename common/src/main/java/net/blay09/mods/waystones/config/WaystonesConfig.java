@@ -1,15 +1,15 @@
 package net.blay09.mods.waystones.config;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.config.reflection.Comment;
-import net.blay09.mods.balm.api.config.reflection.Config;
-import net.blay09.mods.balm.api.config.reflection.NestedType;
-import net.blay09.mods.balm.api.config.reflection.Synced;
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.platform.config.reflection.Comment;
+import net.blay09.mods.balm.platform.config.reflection.Config;
+import net.blay09.mods.balm.platform.config.reflection.NestedType;
+import net.blay09.mods.balm.platform.config.reflection.Synced;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.List;
@@ -112,8 +112,8 @@ public class WaystonesConfig {
         public TransportMobs transportLeashed = TransportMobs.ENABLED;
 
         @Comment("List of entities that cannot be teleported, either as pet, leashed, or on warp plates.")
-        @NestedType(ResourceLocation.class)
-        public Set<ResourceLocation> entityDenyList = Set.of(ResourceLocation.withDefaultNamespace("wither"));
+        @NestedType(Identifier.class)
+        public Set<Identifier> entityDenyList = Set.of(Identifier.withDefaultNamespace("wither"));
 
         @Comment("Set to true to enable warp modifier items for applying status effects on teleports.")
         public boolean enableModifiers = true;
@@ -149,12 +149,12 @@ public class WaystonesConfig {
         public int chunksBetweenWildWaystones = 25;
 
         @Comment("List of dimensions that wild waystones are allowed to spawn in. If left empty, all dimensions except those in wildWaystonesDimensionDenyList are used.")
-        @NestedType(ResourceLocation.class)
-        public Set<ResourceLocation> wildWaystonesDimensionAllowList = Set.of(ResourceLocation.withDefaultNamespace("overworld"), ResourceLocation.withDefaultNamespace("the_nether"), ResourceLocation.withDefaultNamespace("the_end"));
+        @NestedType(Identifier.class)
+        public Set<Identifier> wildWaystonesDimensionAllowList = Set.of(Identifier.withDefaultNamespace("overworld"), Identifier.withDefaultNamespace("the_nether"), Identifier.withDefaultNamespace("the_end"));
 
         @Comment("List of dimensions that wild waystones are not allowed to spawn in. Only used if wildWaystonesDimensionAllowList is empty.")
-        @NestedType(ResourceLocation.class)
-        public Set<ResourceLocation> wildWaystonesDimensionDenyList = Set.of();
+        @NestedType(Identifier.class)
+        public Set<Identifier> wildWaystonesDimensionDenyList = Set.of();
 
         @Comment("Set to 'preset_first' to first use names from the nameGenerationPresets. Set to 'preset_only' to use only those custom names. Set to 'mixed' to have some waystones use custom names, and others random names.")
         public NameGenerationMode nameGenerationMode = NameGenerationMode.PRESET_FIRST;

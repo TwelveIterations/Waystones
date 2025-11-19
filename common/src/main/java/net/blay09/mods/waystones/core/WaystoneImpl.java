@@ -14,7 +14,7 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -26,7 +26,7 @@ import java.util.*;
 public class WaystoneImpl implements Waystone, MutableWaystone {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Waystone> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC,
+            Identifier.STREAM_CODEC,
             Waystone::getWaystoneType,
             UUIDUtil.STREAM_CODEC,
             Waystone::getWaystoneUid,
@@ -45,7 +45,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     public static final StreamCodec<RegistryFriendlyByteBuf, List<Waystone>> LIST_STREAM_CODEC = ByteBufCodecs.collection(ArrayList::new, STREAM_CODEC);
 
     public static final MapCodec<Waystone> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("Type").forGetter(Waystone::getWaystoneType),
+            Identifier.CODEC.fieldOf("Type").forGetter(Waystone::getWaystoneType),
             UUIDUtil.CODEC.fieldOf("WaystoneUid").forGetter(Waystone::getWaystoneUid),
             ResourceKey.codec(Registries.DIMENSION).fieldOf("World").forGetter(Waystone::getDimension),
             BlockPos.CODEC.fieldOf("BlockPos").forGetter(Waystone::getPos),
@@ -55,7 +55,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
             WaystoneVisibility.CODEC.fieldOf("Visibility").forGetter(Waystone::getVisibility)
     ).apply(instance, WaystoneImpl::new));
 
-    private final ResourceLocation waystoneType;
+    private final Identifier waystoneType;
     private final UUID waystoneUid;
     private final WaystoneOrigin origin;
 
@@ -68,7 +68,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
 
     private UUID ownerUid;
 
-    public WaystoneImpl(ResourceLocation waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @Nullable UUID ownerUid) {
+    public WaystoneImpl(Identifier waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @Nullable UUID ownerUid) {
         this.waystoneType = waystoneType;
         this.waystoneUid = waystoneUid;
         this.dimension = dimension;
@@ -78,7 +78,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         this.visibility = WaystoneVisibility.fromWaystoneType(waystoneType);
     }
 
-    public WaystoneImpl(ResourceLocation waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, Component name, WaystoneVisibility visibility) {
+    public WaystoneImpl(Identifier waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, Component name, WaystoneVisibility visibility) {
         this.waystoneType = waystoneType;
         this.waystoneUid = waystoneUid;
         this.dimension = dimension;
@@ -88,7 +88,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         this.visibility = visibility;
     }
 
-    public WaystoneImpl(ResourceLocation waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<UUID> ownerUid, Component name, WaystoneVisibility visibility) {
+    public WaystoneImpl(Identifier waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<UUID> ownerUid, Component name, WaystoneVisibility visibility) {
         this.waystoneType = waystoneType;
         this.waystoneUid = waystoneUid;
         this.dimension = dimension;
@@ -168,7 +168,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     }
 
     @Override
-    public ResourceLocation getWaystoneType() {
+    public Identifier getWaystoneType() {
         return waystoneType;
     }
 

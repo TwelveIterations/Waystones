@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.compat;
 
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import snownee.jade.api.*;
 import snownee.jade.api.config.IPluginConfig;
 
@@ -21,7 +21,7 @@ public class JadeIntegration implements IWailaPlugin {
         }
 
         @Override
-        public ResourceLocation getUid() {
+        public Identifier getUid() {
             return WaystonesWailaUtils.WAYSTONE_UID;
         }
     }

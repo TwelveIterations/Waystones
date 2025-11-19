@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 
@@ -39,7 +39,7 @@ public enum WaystoneVisibility implements StringRepresentable {
     public static Codec<WaystoneVisibility> CODEC = Codec.withAlternative(StringRepresentable.fromEnum(WaystoneVisibility::values), Codec.STRING,
             WaystoneVisibility::valueOf);
 
-    public static WaystoneVisibility fromWaystoneType(ResourceLocation waystoneType) {
+    public static WaystoneVisibility fromWaystoneType(Identifier waystoneType) {
         if (WaystoneTypes.isSharestone(waystoneType)) {
             return switch (waystoneType.getPath()) {
                 case "orange_sharestone" -> WaystoneVisibility.ORANGE_SHARESTONE;

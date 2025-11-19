@@ -1,7 +1,8 @@
 package net.blay09.mods.waystones.component;
 
 import com.mojang.serialization.Codec;
-import net.blay09.mods.balm.api.Balm;
+import com.mojang.serialization.MapCodec;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponentGetter;
@@ -14,7 +15,7 @@ import java.util.function.Consumer;
 
 public record ReturnScrollComponent() implements TooltipProvider {
     public static final ReturnScrollComponent INSTANCE = new ReturnScrollComponent();
-    public static final Codec<ReturnScrollComponent> CODEC = Codec.unit(INSTANCE);
+    public static final Codec<ReturnScrollComponent> CODEC = MapCodec.unitCodec(INSTANCE);
 
     @Override
     public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag flag, DataComponentGetter components) {

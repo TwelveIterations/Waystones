@@ -4,7 +4,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.blay09.mods.waystones.requirement.NoRequirement;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -19,7 +19,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
 
     private final List<Entity> additionalEntities = new ArrayList<>();
     private final List<Mob> leashedEntities = new ArrayList<>();
-    private final Set<ResourceLocation> flags = new HashSet<>();
+    private final Set<Identifier> flags = new HashSet<>();
 
     private Waystone fromWaystone;
 
@@ -147,18 +147,18 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     }
 
     @Override
-    public Set<ResourceLocation> getFlags() {
+    public Set<Identifier> getFlags() {
         return flags;
     }
 
     @Override
-    public WaystoneTeleportContext addFlag(ResourceLocation flag) {
+    public WaystoneTeleportContext addFlag(Identifier flag) {
         flags.add(flag);
         return this;
     }
 
     @Override
-    public WaystoneTeleportContext removeFlag(ResourceLocation flag) {
+    public WaystoneTeleportContext removeFlag(Identifier flag) {
         flags.remove(flag);
         return this;
     }

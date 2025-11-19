@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.mixin;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.worldgen.WaystoneStructurePoolElement;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -34,7 +34,7 @@ public abstract class SinglePoolElementMixin implements WaystoneStructurePoolEle
     private Boolean waystones$isWaystone;
 
     @Accessor
-    public abstract Either<ResourceLocation, StructureTemplate> getTemplate();
+    public abstract Either<Identifier, StructureTemplate> getTemplate();
 
     @Override
     public boolean waystones$isWaystone() {

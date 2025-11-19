@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.block.entity;
 
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.core.*;
@@ -11,7 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,7 +31,7 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    protected ResourceLocation getWaystoneType() {
+    protected Identifier getWaystoneType() {
         return WaystoneTypes.getSharestone(((SharestoneBlock) getBlockState().getBlock()).getColor())
                 .orElse(WaystoneTypes.WAYSTONE); // fallback to regular waystone if invalid
     }

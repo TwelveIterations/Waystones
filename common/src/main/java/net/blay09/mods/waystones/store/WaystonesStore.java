@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.store;
 
 import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockGetter;
 
 import java.util.Collection;
@@ -26,7 +26,7 @@ public interface WaystonesStore {
 
     List<Waystone> getWaystones();
 
-    Collection<Waystone> getWaystonesByType(ResourceLocation type);
+    Collection<Waystone> getWaystonesByType(Identifier type);
 
     List<Waystone> getGlobalWaystones();
 }

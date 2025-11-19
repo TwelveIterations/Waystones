@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.event.WaystoneUpdateReceivedEvent;
 import net.blay09.mods.waystones.client.WaystonesClient;
@@ -23,7 +23,7 @@ public record ClientboundUpdateWaystonePacket(Waystone waystone) implements Cust
 
     public static void handle(Player player, ClientboundUpdateWaystonePacket message) {
         WaystonesClient.getWaystonesStore().updateWaystone(message.waystone);
-        Balm.events().fireEvent(new WaystoneUpdateReceivedEvent(message.waystone));
+        // TODO Balm.events().fireEvent(new WaystoneUpdateReceivedEvent(message.waystone));
     }
 
     @Override

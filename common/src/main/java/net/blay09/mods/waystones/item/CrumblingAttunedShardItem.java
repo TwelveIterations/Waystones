@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.component.WaystoneReferenceComponent;
 import net.blay09.mods.waystones.menu.WaystoneModifierMenu;

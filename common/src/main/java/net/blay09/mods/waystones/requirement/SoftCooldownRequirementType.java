@@ -2,14 +2,14 @@ package net.blay09.mods.waystones.requirement;
 
 import net.blay09.mods.waystones.api.WaystoneCooldowns;
 import net.blay09.mods.waystones.api.requirement.RequirementType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SoftCooldownRequirementType implements RequirementType<SoftCooldownRequirement> {
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("waystones", "soft_cooldown");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath("waystones", "soft_cooldown");
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 

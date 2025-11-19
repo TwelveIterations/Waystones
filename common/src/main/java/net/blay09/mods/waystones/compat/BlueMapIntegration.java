@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.compat;
 import de.bluecolored.bluemap.api.BlueMapAPI;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
@@ -12,7 +12,7 @@ import net.blay09.mods.waystones.api.event.WaystoneUpdatedEvent;
 import net.blay09.mods.waystones.api.event.WaystonesLoadedEvent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
@@ -36,10 +36,10 @@ public class BlueMapIntegration {
         });
         BlueMapAPI.onDisable(api -> this.api = null);
 
-        Balm.events().onEvent(WaystonesLoadedEvent.class, this::onWaystonesLoaded);
-        Balm.events().onEvent(WaystoneInitializedEvent.class, this::onWaystoneInitialized);
-        Balm.events().onEvent(WaystoneUpdatedEvent.class, this::onWaystoneUpdated);
-        Balm.events().onEvent(WaystoneRemovedEvent.class, this::onWaystoneRemoved);
+        // TODO Balm.events().onEvent(WaystonesLoadedEvent.class, this::onWaystonesLoaded);
+        // TODO Balm.events().onEvent(WaystoneInitializedEvent.class, this::onWaystoneInitialized);
+        // TODO Balm.events().onEvent(WaystoneUpdatedEvent.class, this::onWaystoneUpdated);
+        // TODO Balm.events().onEvent(WaystoneRemovedEvent.class, this::onWaystoneRemoved);
     }
 
     public static String getMarkerId(Waystone waystone) {
@@ -58,7 +58,7 @@ public class BlueMapIntegration {
         return isSupportedWaystoneType(waystone.getWaystoneType());
     }
 
-    private static boolean isSupportedWaystoneType(ResourceLocation waystoneType) {
+    private static boolean isSupportedWaystoneType(Identifier waystoneType) {
         return waystoneType.equals(WaystoneTypes.WAYSTONE) || WaystoneTypes.isSharestone(waystoneType);
     }
 

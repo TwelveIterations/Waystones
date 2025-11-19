@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.store;
 
 import net.blay09.mods.waystones.api.Waystone;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
@@ -9,7 +9,7 @@ import java.util.*;
 public class InMemoryWaystonesPlayerStore implements WaystonesPlayerStore {
     private final List<UUID> sortingIndex = new ArrayList<>();
     private final Map<UUID, Waystone> waystones = new HashMap<>();
-    private final Map<ResourceLocation, Long> cooldowns = new HashMap<>();
+    private final Map<Identifier, Long> cooldowns = new HashMap<>();
 
     @Override
     public void activateWaystone(Player player, Waystone waystone) {
@@ -29,7 +29,7 @@ public class InMemoryWaystonesPlayerStore implements WaystonesPlayerStore {
     }
 
     @Override
-    public Map<ResourceLocation, Long> getCooldowns(Player player) {
+    public Map<Identifier, Long> getCooldowns(Player player) {
         return cooldowns;
     }
 
@@ -39,12 +39,12 @@ public class InMemoryWaystonesPlayerStore implements WaystonesPlayerStore {
     }
 
     @Override
-    public long getCooldownUntil(Player player, ResourceLocation key) {
+    public long getCooldownUntil(Player player, Identifier key) {
         return cooldowns.getOrDefault(key, 0L);
     }
 
     @Override
-    public void setCooldownUntil(Player player, ResourceLocation key, long timeStamp) {
+    public void setCooldownUntil(Player player, Identifier key, long timeStamp) {
         cooldowns.put(key, timeStamp);
     }
 

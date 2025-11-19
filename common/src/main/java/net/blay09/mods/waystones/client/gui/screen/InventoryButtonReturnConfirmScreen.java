@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.message.ServerboundInventoryButtonPacket;

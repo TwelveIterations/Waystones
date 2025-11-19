@@ -12,7 +12,7 @@ import journeymap.api.v2.client.event.MappingEvent;
 import journeymap.api.v2.common.event.ClientEventRegistry;
 import journeymap.api.v2.common.waypoint.WaypointFactory;
 import journeymap.api.v2.common.waypoint.WaypointGroup;
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
@@ -22,7 +22,7 @@ import net.blay09.mods.waystones.api.event.WaystonesListReceivedEvent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -32,11 +32,11 @@ public class JourneyMapIntegration implements IClientPlugin {
 
     private static final Gson gson = new Gson();
 
-    private record WaystonesWaypointData(UUID waystoneId, ResourceLocation waystoneType) {
+    private record WaystonesWaypointData(UUID waystoneId, Identifier waystoneType) {
 
         private static final MapCodec<WaystonesWaypointData> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
                 UUIDUtil.CODEC.fieldOf("waystoneId").forGetter(WaystonesWaypointData::waystoneId),
-                ResourceLocation.CODEC.fieldOf("type").forGetter(WaystonesWaypointData::waystoneType)).apply(builder, WaystonesWaypointData::new));
+                Identifier.CODEC.fieldOf("type").forGetter(WaystonesWaypointData::waystoneType)).apply(builder, WaystonesWaypointData::new));
 
         public static Optional<WaystonesWaypointData> decode(String customData) {
             final var jsonElement = gson.fromJson(customData, JsonElement.class);
@@ -59,9 +59,9 @@ public class JourneyMapIntegration implements IClientPlugin {
 
     public JourneyMapIntegration() {
         instance = this;
-        Balm.events().onEvent(WaystonesListReceivedEvent.class, this::onWaystonesListReceived);
-        Balm.events().onEvent(WaystoneUpdateReceivedEvent.class, this::onWaystoneUpdateReceived);
-        Balm.events().onEvent(WaystoneRemoveReceivedEvent.class, this::onWaystoneRemoveReceived);
+        // TODO Balm.events().onEvent(WaystonesListReceivedEvent.class, this::onWaystonesListReceived);
+        // TODO Balm.events().onEvent(WaystoneUpdateReceivedEvent.class, this::onWaystoneUpdateReceived);
+        // TODO Balm.events().onEvent(WaystoneRemoveReceivedEvent.class, this::onWaystoneRemoveReceived);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class JourneyMapIntegration implements IClientPlugin {
         }
     }
 
-    private boolean isSupportedWaystoneType(ResourceLocation waystoneType) {
+    private boolean isSupportedWaystoneType(Identifier waystoneType) {
         return waystoneType.equals(WaystoneTypes.WAYSTONE) || WaystoneTypes.isSharestone(waystoneType);
     }
 
@@ -144,7 +144,7 @@ public class JourneyMapIntegration implements IClientPlugin {
         }
     }
 
-    private void updateAllWaypoints(ResourceLocation waystoneType, List<Waystone> waystones) {
+    private void updateAllWaypoints(Identifier waystoneType, List<Waystone> waystones) {
         final var stillExistingIds = new HashSet<UUID>();
         for (final var waystone : waystones) {
             stillExistingIds.add(waystone.getWaystoneUid());

@@ -2,11 +2,13 @@ package net.blay09.mods.waystones.worldgen;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.event.server.ServerStartingEvent;
-import net.blay09.mods.balm.api.world.BalmWorldGen;
-import net.blay09.mods.balm.api.world.BiomePredicate;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.core.BalmRegistrar;
+import net.blay09.mods.balm.platform.event.callback.ServerLifecycleCallback;
+import net.blay09.mods.balm.world.level.biome.BiomeModificationBuilder;
+import net.blay09.mods.balm.world.level.biome.BiomeModifier;
+import net.blay09.mods.balm.world.level.biome.BiomePredicate;
+import net.blay09.mods.balm.world.level.levelgen.BalmWorldGen;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.ModBlocks;
@@ -19,13 +21,14 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.levelgen.structure.pools.LegacySinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
@@ -38,16 +41,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ModWorldGen {
-    private static final ResourceLocation waystone = ResourceLocation.fromNamespaceAndPath("waystones", "waystone");
-    private static final ResourceLocation mossyWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "mossy_waystone");
-    private static final ResourceLocation sandyWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "sandy_waystone");
-    private static final ResourceLocation blackstoneWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "blackstone_waystone");
-    private static final ResourceLocation deepslateWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "deepslate_waystone");
-    private static final ResourceLocation endStoneWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "end_stone_waystone");
-    private static final ResourceLocation villageWaystoneStructure = ResourceLocation.fromNamespaceAndPath("waystones", "village/common/waystone");
-    private static final ResourceLocation desertVillageWaystoneStructure = ResourceLocation.fromNamespaceAndPath("waystones", "village/desert/waystone");
+    private static final Identifier waystone = Identifier.fromNamespaceAndPath("waystones", "waystone");
+    private static final Identifier mossyWaystone = Identifier.fromNamespaceAndPath("waystones", "mossy_waystone");
+    private static final Identifier sandyWaystone = Identifier.fromNamespaceAndPath("waystones", "sandy_waystone");
+    private static final Identifier blackstoneWaystone = Identifier.fromNamespaceAndPath("waystones", "blackstone_waystone");
+    private static final Identifier deepslateWaystone = Identifier.fromNamespaceAndPath("waystones", "deepslate_waystone");
+    private static final Identifier endStoneWaystone = Identifier.fromNamespaceAndPath("waystones", "end_stone_waystone");
+    private static final Identifier villageWaystoneStructure = Identifier.fromNamespaceAndPath("waystones", "village/common/waystone");
+    private static final Identifier desertVillageWaystoneStructure = Identifier.fromNamespaceAndPath("waystones", "village/desert/waystone");
     private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(Registries.PROCESSOR_LIST,
-            ResourceLocation.fromNamespaceAndPath("minecraft", "empty"));
+            Identifier.fromNamespaceAndPath("minecraft", "empty"));
 
     public static Holder<PlacementModifierType<?>> waystonePlacement;
 
@@ -73,24 +76,29 @@ public class ModWorldGen {
 
     public static void initialize(BalmWorldGen worldGen) {
         Balm.config().onConfigAvailable(WaystonesConfig.class, (config) -> {
-            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE),
-                    GenerationStep.Decoration.VEGETAL_DECORATION,
-                    getWaystoneFeature(WorldGenStyle.SANDY));
-            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_MOSSY_WAYSTONE),
-                    GenerationStep.Decoration.VEGETAL_DECORATION,
-                    getWaystoneFeature(WorldGenStyle.MOSSY));
-            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE),
-                    GenerationStep.Decoration.VEGETAL_DECORATION,
-                    getWaystoneFeature(WorldGenStyle.BLACKSTONE));
-            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE),
-                    GenerationStep.Decoration.VEGETAL_DECORATION,
-                    getWaystoneFeature(WorldGenStyle.END_STONE));
-            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE),
-                    GenerationStep.Decoration.VEGETAL_DECORATION,
-                    getWaystoneFeature(WorldGenStyle.DEFAULT));
+            worldGen.modifyBiome(
+                    id("add_sandy_waystone"),
+                    matchesTag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE),
+                    (biome, builder) -> builder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY)));
+            worldGen.modifyBiome(
+                    id("add_mossy_waystone"),
+                    matchesTag(ModBiomeTags.HAS_STRUCTURE_MOSSY_WAYSTONE),
+                    (biome, builder) -> builder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY)));
+            worldGen.modifyBiome(
+                    id("add_blackstone_waystone"),
+                    matchesTag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE),
+                    (biome, builder) -> builder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.BLACKSTONE)));
+            worldGen.modifyBiome(
+                    id("add_end_stone_waystone"),
+                    matchesTag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE),
+                    (biome, builder) -> builder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.END_STONE)));
+            worldGen.modifyBiome(
+                    id("add_waystone"),
+                    matchesTag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE),
+                    (biome, builder) -> builder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.DEFAULT)));
         });
 
-        Balm.events().onEvent(ServerStartingEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
+        ServerLifecycleCallback.Starting.EVENT.register(server -> setupDynamicRegistries(server.registryAccess()));
     }
 
     private static Set<BlockState> gatherWaystonesOfOrigin(WaystoneOrigin origin) {
@@ -106,21 +114,16 @@ public class ModWorldGen {
     }
 
     private static BiomePredicate matchesTag(TagKey<Biome> tag) {
-        return new BiomePredicate() {
-            @Override
-            public boolean test(Holder<Biome> biomeHolder) {
-                return biomeHolder.is(tag);
-            }
-        };
+        return biomeHolder -> biomeHolder.is(tag);
     }
 
-    private static ResourceLocation id(String name) {
-        return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
+    private static Identifier id(String name) {
+        return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, name);
     }
 
-    private static ResourceLocation getWaystoneFeature(WorldGenStyle biomeWorldGenStyle) {
+    private static ResourceKey<PlacedFeature> getWaystoneFeature(WorldGenStyle biomeWorldGenStyle) {
         WorldGenStyle worldGenStyle = WaystonesConfig.getActive().worldGen.wildWaystoneStyle;
-        return switch (worldGenStyle) {
+        final var identifier = switch (worldGenStyle) {
             case MOSSY -> mossyWaystone;
             case SANDY -> sandyWaystone;
             case BLACKSTONE -> blackstoneWaystone;
@@ -136,6 +139,7 @@ public class ModWorldGen {
             };
             default -> waystone;
         };
+        return ResourceKey.create(Registries.PLACED_FEATURE, identifier);
     }
 
     public static void setupDynamicRegistries(RegistryAccess registryAccess) {
@@ -149,7 +153,7 @@ public class ModWorldGen {
         }
     }
 
-    private static void addWaystoneStructureToVillageConfig(RegistryAccess registryAccess, String villagePiece, ResourceLocation waystoneStructure, int weight) {
+    private static void addWaystoneStructureToVillageConfig(RegistryAccess registryAccess, String villagePiece, Identifier waystoneStructure, int weight) {
         Holder<StructureProcessorList> emptyProcessorList = registryAccess.lookupOrThrow(Registries.PROCESSOR_LIST)
                 .getOrThrow(EMPTY_PROCESSOR_LIST_KEY);
         LegacySinglePoolElement piece = StructurePoolElement.legacy(waystoneStructure.toString(), emptyProcessorList)
@@ -158,7 +162,7 @@ public class ModWorldGen {
             element.waystones$setIsWaystone(true);
         }
         StructureTemplatePool pool = registryAccess.lookupOrThrow(Registries.TEMPLATE_POOL)
-                .getOptional(ResourceLocation.withDefaultNamespace(villagePiece))
+                .getOptional(Identifier.withDefaultNamespace(villagePiece))
                 .orElse(null);
         if (pool != null) {
             var poolAccessor = (StructureTemplatePoolAccessor) pool;

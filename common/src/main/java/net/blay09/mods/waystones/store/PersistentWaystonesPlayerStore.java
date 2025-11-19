@@ -1,12 +1,12 @@
 
 package net.blay09.mods.waystones.store;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.nbt.*;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
@@ -158,12 +158,12 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     }
 
     @Override
-    public Map<ResourceLocation, Long> getCooldowns(Player player) {
+    public Map<Identifier, Long> getCooldowns(Player player) {
         final var waystonesData = getWaystonesData(player);
-        final var cooldownMap = new HashMap<ResourceLocation, Long>();
+        final var cooldownMap = new HashMap<Identifier, Long>();
         waystonesData.getCompound(COOLDOWNS).ifPresent(cooldowns -> {
             for (final var key : cooldowns.keySet()) {
-                cooldownMap.put(ResourceLocation.parse(key), cooldowns.getLongOr(key, 0));
+                cooldownMap.put(Identifier.parse(key), cooldowns.getLongOr(key, 0));
             }
         });
 
@@ -177,7 +177,7 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     }
 
     @Override
-    public long getCooldownUntil(Player player, ResourceLocation key) {
+    public long getCooldownUntil(Player player, Identifier key) {
         final var waystonesData = getWaystonesData(player);
         return waystonesData.getCompound(COOLDOWNS)
                 .flatMap(it -> it.getLong(key.toString()))
@@ -185,7 +185,7 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     }
 
     @Override
-    public void setCooldownUntil(Player player, ResourceLocation key, long timeStamp) {
+    public void setCooldownUntil(Player player, Identifier key, long timeStamp) {
         final var waystonesData = getWaystonesData(player);
         final var cooldowns = waystonesData.getCompoundOrEmpty(COOLDOWNS);
         cooldowns.putLong(key.toString(), timeStamp);

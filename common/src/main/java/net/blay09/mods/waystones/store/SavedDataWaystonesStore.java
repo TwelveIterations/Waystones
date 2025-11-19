@@ -6,7 +6,7 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -24,8 +24,8 @@ public class SavedDataWaystonesStore extends SavedData implements WaystonesStore
 
     public static final SavedDataType<SavedDataWaystonesStore> TYPE = new SavedDataType<>(
             DATA_NAME,
-            (context) -> new SavedDataWaystonesStore(List.of()),
-            ctx -> CODEC,
+            () -> new SavedDataWaystonesStore(List.of()),
+            CODEC,
             null // TODO this can't be null but mod loaders will save us soon I'm sure
     );
 
@@ -74,7 +74,7 @@ public class SavedDataWaystonesStore extends SavedData implements WaystonesStore
     }
 
     @Override
-    public Collection<Waystone> getWaystonesByType(ResourceLocation type) {
+    public Collection<Waystone> getWaystonesByType(Identifier type) {
         return store.getWaystonesByType(type);
     }
 

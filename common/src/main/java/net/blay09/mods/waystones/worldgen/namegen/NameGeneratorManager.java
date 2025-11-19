@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.worldgen.namegen;
 import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.event.GenerateWaystoneNameEvent;
@@ -30,8 +30,8 @@ public class NameGeneratorManager extends SavedData {
 
     public static final SavedDataType<NameGeneratorManager> TYPE = new SavedDataType<>(
             DATA_NAME,
-            (context) -> new NameGeneratorManager(List.of()),
-            ctx -> CODEC,
+            () -> new NameGeneratorManager(List.of()),
+            CODEC,
             null // TODO this can't be null but mod loaders will save us soon I'm sure
     );
 
@@ -73,7 +73,7 @@ public class NameGeneratorManager extends SavedData {
         var name = resolveDuplicate(originalName);
 
         final var event = new GenerateWaystoneNameEvent(waystone, name);
-        Balm.events().fireEvent(event);
+        // TODO Balm.events().fireEvent(event);
         name = event.getName();
 
         usedNames.add(name.getString());

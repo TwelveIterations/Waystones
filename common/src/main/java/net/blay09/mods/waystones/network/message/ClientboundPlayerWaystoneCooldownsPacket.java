@@ -5,7 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record ClientboundPlayerWaystoneCooldownsPacket(Map<ResourceLocation, Long> cooldowns) implements CustomPacketPayload {
+public record ClientboundPlayerWaystoneCooldownsPacket(Map<Identifier, Long> cooldowns) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<ClientboundPlayerWaystoneCooldownsPacket> TYPE = new CustomPacketPayload.Type<>(id("player_waystone_cooldowns"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundPlayerWaystoneCooldownsPacket> STREAM_CODEC = StreamCodec.of(
@@ -22,17 +22,17 @@ public record ClientboundPlayerWaystoneCooldownsPacket(Map<ResourceLocation, Lon
 
     public static void encode(FriendlyByteBuf buf, ClientboundPlayerWaystoneCooldownsPacket message) {
         buf.writeByte(message.cooldowns.size());
-        for (Map.Entry<ResourceLocation, Long> entry : message.cooldowns.entrySet()) {
-            buf.writeResourceLocation(entry.getKey());
+        for (Map.Entry<Identifier, Long> entry : message.cooldowns.entrySet()) {
+            buf.writeIdentifier(entry.getKey());
             buf.writeLong(entry.getValue());
         }
     }
 
     public static ClientboundPlayerWaystoneCooldownsPacket decode(FriendlyByteBuf buf) {
         final var size = buf.readByte();
-        final var cooldowns = new HashMap<ResourceLocation, Long>(size);
+        final var cooldowns = new HashMap<Identifier, Long>(size);
         for (var i = 0; i < size; i++) {
-            cooldowns.put(buf.readResourceLocation(), buf.readLong());
+            cooldowns.put(buf.readIdentifier(), buf.readLong());
         }
         return new ClientboundPlayerWaystoneCooldownsPacket(cooldowns);
     }

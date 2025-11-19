@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.resources;
 
 import com.mojang.serialization.MapCodec;
-import net.blay09.mods.balm.api.resources.BalmResourceCondition;
-import net.blay09.mods.balm.api.resources.ResourceConditionContext;
+import net.blay09.mods.balm.server.packs.resources.BalmResourceCondition;
+import net.blay09.mods.balm.server.packs.resources.ResourceConditionContext;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 
 public class ForceSpawnInVillagesCondition implements BalmResourceCondition {

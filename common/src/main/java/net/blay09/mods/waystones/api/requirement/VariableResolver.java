@@ -1,9 +1,9 @@
 package net.blay09.mods.waystones.api.requirement;
 
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface VariableResolver {
-    ResourceLocation getId();
+    Identifier getId();
     float resolve(WaystoneTeleportContext context);
 }

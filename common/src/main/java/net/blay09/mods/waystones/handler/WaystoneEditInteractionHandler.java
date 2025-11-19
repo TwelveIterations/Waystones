@@ -1,39 +1,36 @@
 package net.blay09.mods.waystones.handler;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.event.UseBlockEvent;
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.platform.event.callback.BlockCallback;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 
 public class WaystoneEditInteractionHandler {
-    public static void onUseBlock(UseBlockEvent event) {
-        final var level = event.getLevel();
-        final var player = event.getPlayer();
-        if (player == null) {
-            return;
-        }
+    public static void register() {
+        BlockCallback.Use.EVENT.register((player, level, hand, hitResult) -> {
+            if (!player.isShiftKeyDown()) {
+                return InteractionResult.PASS;
+            }
 
-        if (!player.isShiftKeyDown()) {
-            return;
-        }
+            final var itemStack = player.getItemInHand(hand);
+            if (itemStack.getItem() instanceof BlockItem) {
+                return InteractionResult.PASS;
+            }
 
-        final var itemStack = player.getItemInHand(event.getHand());
-        if (itemStack.getItem() instanceof BlockItem) {
-            return;
-        }
+            final var pos = hitResult.getBlockPos();
+            final var blockEntity = level.getBlockEntity(pos);
+            if (!(blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity)) {
+                return InteractionResult.PASS;
+            }
 
-        final var pos = event.getHitResult().getBlockPos();
-        final var blockEntity = level.getBlockEntity(pos);
-        if (!(blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity)) {
-            return;
-        }
+            if (!level.isClientSide()) {
+                waystoneBlockEntity.getSettingsMenuProvider()
+                        .ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
+            }
 
-        if (!level.isClientSide()) {
-            waystoneBlockEntity.getSettingsMenuProvider()
-                    .ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
-        }
-
-        event.setResult(InteractionResult.SUCCESS);
+            return InteractionResult.SUCCESS;
+        });
     }
+
 }

@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.api;
 
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -53,20 +53,20 @@ public interface WaystoneTeleportContext {
 
     WaystoneTeleportContext setAppliesModifiers(boolean appliesModifiers);
 
-    Set<ResourceLocation> getFlags();
+    Set<Identifier> getFlags();
 
-    WaystoneTeleportContext addFlag(ResourceLocation flag);
+    WaystoneTeleportContext addFlag(Identifier flag);
 
-    WaystoneTeleportContext removeFlag(ResourceLocation flag);
+    WaystoneTeleportContext removeFlag(Identifier flag);
 
-    default WaystoneTeleportContext addFlags(Set<ResourceLocation> flags) {
-        for (ResourceLocation flag : flags) {
+    default WaystoneTeleportContext addFlags(Set<Identifier> flags) {
+        for (Identifier flag : flags) {
             addFlag(flag);
         }
         return this;
     }
 
-    default boolean hasFlag(ResourceLocation flag) {
+    default boolean hasFlag(Identifier flag) {
         return getFlags().contains(flag);
     }
 }

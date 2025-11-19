@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.balm.api.BalmEnvironment;
+import net.blay09.mods.balm.platform.BalmEnvironment;
 import net.blay09.mods.waystones.store.InMemoryWaystonesPlayerStore;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.core.UUIDUtil;

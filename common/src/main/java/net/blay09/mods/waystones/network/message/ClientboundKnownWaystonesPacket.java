@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.BalmEnvironment;
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.platform.BalmEnvironment;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.event.WaystonesListReceivedEvent;
 import net.blay09.mods.waystones.api.WaystoneTypes;
@@ -11,18 +11,18 @@ import net.blay09.mods.waystones.store.InMemoryWaystonesPlayerStore;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record ClientboundKnownWaystonesPacket(ResourceLocation waystoneType, List<Waystone> waystones) implements CustomPacketPayload {
+public record ClientboundKnownWaystonesPacket(Identifier waystoneType, List<Waystone> waystones) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<ClientboundKnownWaystonesPacket> TYPE = new CustomPacketPayload.Type<>(id("known_waystones"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundKnownWaystonesPacket> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC,
+            Identifier.STREAM_CODEC,
             ClientboundKnownWaystonesPacket::waystoneType,
             WaystoneImpl.LIST_STREAM_CODEC,
             ClientboundKnownWaystonesPacket::waystones,
@@ -35,7 +35,7 @@ public record ClientboundKnownWaystonesPacket(ResourceLocation waystoneType, Lis
             playerWaystoneData.setWaystones(message.waystones);
         }
 
-        Balm.events().fireEvent(new WaystonesListReceivedEvent(message.waystoneType, message.waystones));
+        // TODO Balm.events().fireEvent(new WaystonesListReceivedEvent(message.waystoneType, message.waystones));
 
         for (Waystone waystone : message.waystones) {
             WaystonesClient.getWaystonesStore().updateWaystone(waystone);

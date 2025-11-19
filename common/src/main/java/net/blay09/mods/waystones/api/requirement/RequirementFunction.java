@@ -1,11 +1,11 @@
 package net.blay09.mods.waystones.api.requirement;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface RequirementFunction<TRequirement extends WarpRequirement, TParameter> extends WarpRequirementModifierFunction<TRequirement, TParameter> {
-    ResourceLocation getId();
+    Identifier getId();
 
-    ResourceLocation getRequirementType();
+    Identifier getRequirementType();
 
     Class<TParameter> getParameterType();
 

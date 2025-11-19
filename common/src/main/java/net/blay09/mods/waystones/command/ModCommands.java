@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.command;
 
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.blay09.mods.balm.api.command.BalmCommands;
+import net.blay09.mods.balm.commands.BalmCommands;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystonesAPI;
@@ -15,8 +15,9 @@ import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 
 import static net.minecraft.commands.Commands.argument;
 
@@ -24,18 +25,18 @@ public class ModCommands {
     private static final SimpleCommandExceptionType ERROR_WAYSTONE_NOT_FOUND = new SimpleCommandExceptionType(Component.translatable(
             "commands.waystones.waystone_not_found"));
 
-    private static final ResourceLocation PERMISSION_WAYSTONES_ACTIVATE = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.activate");
-    private static final ResourceLocation PERMISSION_WAYSTONES_FORGET = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.forget");
-    private static final ResourceLocation PERMISSION_WAYSTONES_COUNT = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.count");
-    private static final ResourceLocation PERMISSION_WAYSTONES_LIST = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.list");
-    private static final ResourceLocation PERMISSION_WAYSTONES_GUI = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.gui");
+    private static final Identifier PERMISSION_WAYSTONES_ACTIVATE = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.activate");
+    private static final Identifier PERMISSION_WAYSTONES_FORGET = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.forget");
+    private static final Identifier PERMISSION_WAYSTONES_COUNT = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.count");
+    private static final Identifier PERMISSION_WAYSTONES_LIST = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.list");
+    private static final Identifier PERMISSION_WAYSTONES_GUI = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.gui");
 
     public static void initialize(BalmCommands commands) {
-        BalmCommands.registerPermission(PERMISSION_WAYSTONES_ACTIVATE, 2);
-        BalmCommands.registerPermission(PERMISSION_WAYSTONES_FORGET, 2);
-        BalmCommands.registerPermission(PERMISSION_WAYSTONES_COUNT, 2);
-        BalmCommands.registerPermission(PERMISSION_WAYSTONES_LIST, 2);
-        BalmCommands.registerPermission(PERMISSION_WAYSTONES_GUI, 2);
+        BalmCommands.registerPermission(PERMISSION_WAYSTONES_ACTIVATE, Permissions.COMMANDS_GAMEMASTER);
+        BalmCommands.registerPermission(PERMISSION_WAYSTONES_FORGET, Permissions.COMMANDS_GAMEMASTER);
+        BalmCommands.registerPermission(PERMISSION_WAYSTONES_COUNT, Permissions.COMMANDS_GAMEMASTER);
+        BalmCommands.registerPermission(PERMISSION_WAYSTONES_LIST, Permissions.COMMANDS_GAMEMASTER);
+        BalmCommands.registerPermission(PERMISSION_WAYSTONES_GUI, Permissions.COMMANDS_GAMEMASTER);
         commands.register(dispatcher -> dispatcher.register(Commands.literal("waystones")
                 .requires(BalmCommands.requireAnyPermission(PERMISSION_WAYSTONES_ACTIVATE, PERMISSION_WAYSTONES_FORGET, PERMISSION_WAYSTONES_COUNT, PERMISSION_WAYSTONES_LIST, PERMISSION_WAYSTONES_GUI))
                 .then(Commands.literal("activate")
@@ -158,7 +159,7 @@ public class ModCommands {
     }
 
     private static Component componentForWaystoneList(ServerPlayer caller, ServerPlayer target, Waystone waystone) {
-        final var waystoneDimensionId = waystone.getDimension().location();
+        final var waystoneDimensionId = waystone.getDimension().identifier();
         final var waystonePos = waystone.getPos();
         Component location;
         if (waystone.getDimension() != caller.level().dimension()) {

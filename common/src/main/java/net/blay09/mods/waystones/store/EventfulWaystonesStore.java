@@ -1,11 +1,8 @@
 package net.blay09.mods.waystones.store;
 
-import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.event.WaystoneRemovedEvent;
-import net.blay09.mods.waystones.api.event.WaystoneUpdatedEvent;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockGetter;
 
 import java.util.Collection;
@@ -22,13 +19,13 @@ public record EventfulWaystonesStore(WaystonesStore delegate) implements Wayston
     @Override
     public void updateWaystone(Waystone waystone) {
         delegate.updateWaystone(waystone);
-        Balm.events().fireEvent(new WaystoneUpdatedEvent(waystone));
+        // TODO Balm.events().fireEvent(new WaystoneUpdatedEvent(waystone));
     }
 
     @Override
     public void removeWaystone(Waystone waystone) {
         delegate.removeWaystone(waystone);
-        Balm.events().fireEvent(new WaystoneRemovedEvent(waystone));
+        // TODO Balm.events().fireEvent(new WaystoneRemovedEvent(waystone));
     }
 
     @Override
@@ -52,7 +49,7 @@ public record EventfulWaystonesStore(WaystonesStore delegate) implements Wayston
     }
 
     @Override
-    public Collection<Waystone> getWaystonesByType(ResourceLocation type) {
+    public Collection<Waystone> getWaystonesByType(Identifier type) {
         return delegate.getWaystonesByType(type);
     }
 

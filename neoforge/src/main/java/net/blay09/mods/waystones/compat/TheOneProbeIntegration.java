@@ -8,7 +8,7 @@ import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -38,8 +38,8 @@ public class TheOneProbeIntegration {
     public static class ProbeInfoProvider implements IProbeInfoProvider {
 
         @Override
-        public ResourceLocation getID() {
-            return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "top");
+        public Identifier getID() {
+            return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "top");
         }
 
         @Override

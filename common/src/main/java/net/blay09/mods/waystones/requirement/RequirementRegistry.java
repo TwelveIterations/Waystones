@@ -13,7 +13,7 @@ import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,11 +28,11 @@ import java.util.function.Supplier;
 
 public class RequirementRegistry {
 
-    private static final Map<ResourceLocation, RequirementType<?>> requirementTypes = new HashMap<>();
-    private static final Map<ResourceLocation, RequirementFunction<?, ?>> requirementFunctions = new HashMap<>();
+    private static final Map<Identifier, RequirementType<?>> requirementTypes = new HashMap<>();
+    private static final Map<Identifier, RequirementFunction<?, ?>> requirementFunctions = new HashMap<>();
     private static final Map<Class<?>, ParameterSerializer<?>> parameterSerializers = new HashMap<>();
-    private static final Map<ResourceLocation, VariableResolver> variableResolvers = new HashMap<>();
-    private static final Map<ResourceLocation, ConditionResolver<?>> conditionResolvers = new HashMap<>();
+    private static final Map<Identifier, VariableResolver> variableResolvers = new HashMap<>();
+    private static final Map<Identifier, ConditionResolver<?>> conditionResolvers = new HashMap<>();
 
     public record NoParameter() {
         public static final NoParameter INSTANCE = new NoParameter();
@@ -47,13 +47,13 @@ public class RequirementRegistry {
     public record StringParameter(String value) {
     }
 
-    public record IdParameter(ResourceLocation value) {
+    public record IdParameter(Identifier value) {
     }
 
-    public record TaggableIdParameter(ResourceLocation value, boolean isTag) {
+    public record TaggableIdParameter(Identifier value, boolean isTag) {
     }
 
-    public record WaystonesIdParameter(ResourceLocation value) {
+    public record WaystonesIdParameter(Identifier value) {
     }
 
     public record ComponentParameter(Component value) {
@@ -300,11 +300,11 @@ public class RequirementRegistry {
         registerSerializer(IntParameter.class, it -> new IntParameter(Integer.parseInt(it)));
         registerSerializer(FloatParameter.class, it -> new FloatParameter(Float.parseFloat(it)));
         registerSerializer(StringParameter.class, StringParameter::new);
-        registerSerializer(IdParameter.class, it -> new IdParameter(ResourceLocation.parse(it)));
+        registerSerializer(IdParameter.class, it -> new IdParameter(Identifier.parse(it)));
         registerSerializer(TaggableIdParameter.class,
-                it -> it.startsWith("#") ? new TaggableIdParameter(ResourceLocation.tryParse(it.substring(1)),
-                        true) : new TaggableIdParameter(ResourceLocation.tryParse(it), false));
-        registerSerializer(WaystonesIdParameter.class, it -> new WaystonesIdParameter(RequirementModifierParser.waystonesResourceLocation(it)));
+                it -> it.startsWith("#") ? new TaggableIdParameter(Identifier.tryParse(it.substring(1)),
+                        true) : new TaggableIdParameter(Identifier.tryParse(it), false));
+        registerSerializer(WaystonesIdParameter.class, it -> new WaystonesIdParameter(RequirementModifierParser.waystonesIdentifier(it)));
         registerSerializer(ComponentParameter.class,
                 it -> new ComponentParameter(it.startsWith("$") ? Component.translatable(it.substring(1)) : Component.literal(it)));
         registerDefaultSerializer(VariableScaledParameter.class);
@@ -387,17 +387,17 @@ public class RequirementRegistry {
         registerConditionResolver("source_is_dimension",
                 IdParameter.class,
                 (context, parameters) -> context.getFromWaystone()
-                        .map(waystone -> waystone.getDimension().location())
-                        .orElseGet(() -> context.getEntity().level().dimension().location())
+                        .map(waystone -> waystone.getDimension().identifier())
+                        .orElseGet(() -> context.getEntity().level().dimension().identifier())
                         .equals(parameters.value));
         registerBoundConditionResolver("target_is_dimension",
                 IdParameter.class,
-                (context, parameters) -> context.getTargetWaystone().getDimension().location().equals(parameters.value));
+                (context, parameters) -> context.getTargetWaystone().getDimension().identifier().equals(parameters.value));
         registerConditionResolver("involves_dimension",
                 IdParameter.class,
-                (context, parameters) -> context.getTargetWaystone().getDimension().location().equals(parameters.value) || context.getFromWaystone()
-                        .map(waystone -> waystone.getDimension().location())
-                        .orElseGet(() -> context.getEntity().level().dimension().location())
+                (context, parameters) -> context.getTargetWaystone().getDimension().identifier().equals(parameters.value) || context.getFromWaystone()
+                        .map(waystone -> waystone.getDimension().identifier())
+                        .orElseGet(() -> context.getEntity().level().dimension().identifier())
                         .equals(parameters.value));
         registerBoundConditionResolver("is_within_distance",
                 FloatParameter.class,
@@ -462,8 +462,8 @@ public class RequirementRegistry {
     private static <T extends WarpRequirement> RequirementType<T> createDefaultType(String name, Class<T> requirementClass) {
         final var requirementType = new RequirementType<T>() {
             @Override
-            public ResourceLocation getId() {
-                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
+            public Identifier getId() {
+                return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, name);
             }
 
             @Override
@@ -502,8 +502,8 @@ public class RequirementRegistry {
     public static void registerVariableResolver(String name, Function<WaystoneTeleportContext, Float> resolver) {
         register(new VariableResolver() {
             @Override
-            public ResourceLocation getId() {
-                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
+            public Identifier getId() {
+                return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, name);
             }
 
             @Override
@@ -516,8 +516,8 @@ public class RequirementRegistry {
     public static void registerBoundVariableResolver(String name, Function<WaystoneTeleportContext, Float> resolver) {
         register(new VariableResolver() {
             @Override
-            public ResourceLocation getId() {
-                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
+            public Identifier getId() {
+                return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, name);
             }
 
             @Override
@@ -533,8 +533,8 @@ public class RequirementRegistry {
     public static <P> void registerConditionResolver(String name, Class<P> parameterType, BiFunction<WaystoneTeleportContext, P, Boolean> resolver) {
         register(new ConditionResolver<P>() {
             @Override
-            public ResourceLocation getId() {
-                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
+            public Identifier getId() {
+                return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, name);
             }
 
             @Override
@@ -552,8 +552,8 @@ public class RequirementRegistry {
         final var notName = index != -1 ? name.substring(0, index + 3) + "not_" + name.substring(index + 3) : "not_" + name;
         register(new ConditionResolver<P>() {
             @Override
-            public ResourceLocation getId() {
-                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, notName);
+            public Identifier getId() {
+                return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, notName);
             }
 
             @Override
@@ -571,8 +571,8 @@ public class RequirementRegistry {
     public static <P> void registerBoundConditionResolver(String name, Class<P> parameterType, BiFunction<WaystoneTeleportContext, P, Boolean> resolver) {
         register(new ConditionResolver<P>() {
             @Override
-            public ResourceLocation getId() {
-                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
+            public Identifier getId() {
+                return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, name);
             }
 
             @Override
@@ -594,8 +594,8 @@ public class RequirementRegistry {
         final var notName = index != -1 ? name.substring(0, index + 3) + "not_" + name.substring(index + 3) : "not_" + name;
         register(new ConditionResolver<P>() {
             @Override
-            public ResourceLocation getId() {
-                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, notName);
+            public Identifier getId() {
+                return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, notName);
             }
 
             @Override
@@ -635,12 +635,12 @@ public class RequirementRegistry {
     private static <T extends WarpRequirement, P> void registerModifier(String name, RequirementType<T> requirementType, Class<P> parameterType, WarpRequirementModifierFunction<T, P> function, Supplier<Boolean> predicate) {
         register(new RequirementFunction<T, P>() {
             @Override
-            public ResourceLocation getId() {
-                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
+            public Identifier getId() {
+                return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, name);
             }
 
             @Override
-            public ResourceLocation getRequirementType() {
+            public Identifier getRequirementType() {
                 return requirementType.getId();
             }
 
@@ -662,20 +662,20 @@ public class RequirementRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends WarpRequirement> RequirementType<T> getRequirementType(ResourceLocation id) {
+    public static <T extends WarpRequirement> RequirementType<T> getRequirementType(Identifier id) {
         return (RequirementType<T>) requirementTypes.get(id);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends WarpRequirement, P> RequirementFunction<T, P> getRequirementFunction(ResourceLocation id) {
+    public static <T extends WarpRequirement, P> RequirementFunction<T, P> getRequirementFunction(Identifier id) {
         return (RequirementFunction<T, P>) requirementFunctions.get(id);
     }
 
-    public static VariableResolver getVariableResolver(ResourceLocation id) {
+    public static VariableResolver getVariableResolver(Identifier id) {
         return variableResolvers.get(id);
     }
 
-    public static ConditionResolver<?> getConditionResolver(ResourceLocation id) {
+    public static ConditionResolver<?> getConditionResolver(Identifier id) {
         return conditionResolvers.get(id);
     }
 

@@ -1,13 +1,11 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.core.particles.ParticleTypes;
