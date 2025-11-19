@@ -1,8 +1,8 @@
 plugins {
     alias libs.plugins.fabricLoom apply(false)
-    alias libs.plugins.neoModDev apply(false)
-    alias libs.plugins.curseForge apply(false)
-    alias libs.plugins.modrinth apply(false)
+    alias libs.plugins.modDevGradle apply(false)
+    alias libs.plugins.curseForgeGradle apply(false)
+    alias libs.plugins.modrinthMinotaur apply(false)
 }
 
 subprojects {

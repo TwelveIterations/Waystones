@@ -3,8 +3,8 @@ import net.darkhax.curseforgegradle.TaskPublishCurseForge
 plugins {
     id 'multiloader-loader'
     alias libs.plugins.fabricLoom
-    alias libs.plugins.curseForge
-    alias libs.plugins.modrinth
+    alias libs.plugins.curseForgeGradle
+    alias libs.plugins.modrinthMinotaur
 }
 
 dependencies {

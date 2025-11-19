@@ -2,10 +2,10 @@ import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
 plugins {
     id 'multiloader-loader'
-    alias libs.plugins.forge
-    alias libs.plugins.mixinPlugin
-    alias libs.plugins.curseForge
-    alias libs.plugins.modrinth
+    alias libs.plugins.forgeGradle
+    alias libs.plugins.mixin
+    alias libs.plugins.curseForgeGradle
+    alias libs.plugins.modrinthMinotaur
 }
 
 mixin {
@@ -82,7 +82,7 @@ dependencies {
     def mcVersion = libs.minecraft.get().version
     def forgeVersion = libs.forge.get().version
     minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
-    def mixinVersion = libs.mixinLib.get().version
+    def mixinVersion = libs.mixin.get().version
     annotationProcessor "org.spongepowered:mixin:${mixinVersion}:processor"
 }
 

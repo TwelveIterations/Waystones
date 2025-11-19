@@ -1,6 +1,6 @@
 plugins {
     id 'multiloader-common'
-    alias libs.plugins.neoModDev
+    alias libs.plugins.modDevGradle
 }
 
 neoForge {
@@ -14,7 +14,7 @@ neoForge {
 }
 
 dependencies {
-    compileOnly libs.mixinLib
+    compileOnly libs.mixin
 }
 
 apply from: rootProject.file('repositories.gradle')

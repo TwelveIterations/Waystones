@@ -1,56 +1,31 @@
 [versions]
-# The Balm version to use. You can find all versions on the Maven: https://maven.twelveiterations.com/service/rest/repository/browse/maven-public/net/blay09/mods/balm-common/
-# Balm versions follow the NeoForge versioning scheme since Minecraft 1.21.
-# For best stability, only use -SNAPSHOT versions if you need access to an unreleased Balm feature.
 balm = "21.11.1-SNAPSHOT"
+minecraft = "1.21.11-pre1"
+neoForm = "1.21.11-pre1-20251119.112005"
+neoForge = "21.10.52-beta"
+forge = "60.0.20"
+fabricApi = "0.139.1+1.21.11"
+fabricLoader = "0.17.3"
 
 [libraries]
-# Common
-
-# The Minecraft version your mod is built against. This is the version of Minecraft that will be loaded into your development environment.
-minecraft = { module = "com.mojang:minecraft", version = "1.21.11-pre1" }
-# Parchment adds human-readable names to parameters. You can find the latest version at: https://parchmentmc.org/docs/getting-started
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 parchment = { module = "org.parchmentmc.data:parchment-1.21.10", version = "2025.10.12" }
-
-
-# Balm
-
-# Balm version should be set in the versions block above
-
 balmCommon = { module = "net.blay09.mods:balm-common", version.ref = "balm" }
 balmNeoForge = { module = "net.blay09.mods:balm-neoforge", version.ref = "balm" }
 balmForge = { module = "net.blay09.mods:balm-forge", version.ref = "balm" }
 balmFabric = { module = "net.blay09.mods:balm-fabric", version.ref = "balm" }
+neoForm = { module = "net.neoforged:neoform", version.ref = "neoForm" }
+neoForge = { module = "net.neoforged:neoforge", version.ref = "neoForge" }
+forge = { module = "net.minecraftforge:forge", version.ref = "forge" }
+fabricApi = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabricApi" }
+fabricLoader = { module = "net.fabricmc:fabric-loader", version.ref = "fabricLoader" }
 
-
-# NeoForge
-
-neoForge = { module = "net.neoforged:neoforge", version = "21.10.52-beta" }
-# NeoForm is used for setting up Minecraft in the common project. You can find the latest version at: https://projects.neoforged.net/neoforged/neoform
-neoForm = { module = "net.neoforged:neoform", version = "1.21.11-pre1-20251119.112005" }
-
-
-# Forge
-
-forge = { module = "net.minecraftforge:forge", version = "60.0.20" }
-
-
-# Fabric
-
-# The Fabric versions to use. You can find the latest version on their website: https://fabricmc.net/develop/
-fabricApi = { module = "net.fabricmc.fabric-api:fabric-api", version = "0.139.1+1.21.11" }
-fabricLoader = { module = "net.fabricmc:fabric-loader", version = "0.17.3" }
-
-# Dependencies
-
-# You can add additional properties here and reference them in your `dependencies.gradle` files.
-mixinLib = { module = "org.spongepowered:mixin", version = "0.8.7" }
-
+mixin = { module = "org.spongepowered:mixin", version = "0.8.7" }
 
 [plugins]
 fabricLoom = { id = "fabric-loom", version = "1.13-SNAPSHOT" }
-neoModDev = { id = "net.neoforged.moddev", version = "2.0.107" }
+modDevGradle = { id = "net.neoforged.moddev", version = "2.0.107" }
 forge = { id = "net.minecraftforge.gradle", version = "[6.0.25,6.2)" }
-mixinPlugin = { id = "org.spongepowered.mixin", version = "0.7-SNAPSHOT" }
-curseForge = { id = "net.darkhax.curseforgegradle", version = "1.1.26" }
-modrinth = { id = "com.modrinth.minotaur", version = "2.+" }
+mixin = { id = "org.spongepowered.mixin", version = "0.7-SNAPSHOT" }
+curseForgeGradle = { id = "net.darkhax.curseforgegradle", version = "1.1.26" }
+modrinthMinotaur = { id = "com.modrinth.minotaur", version = "2.+" }
