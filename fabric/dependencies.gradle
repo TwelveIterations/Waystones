@@ -2,7 +2,7 @@ dependencies {
     modImplementation(libs.balmFabric) {
         changing = libs.versions.balm.get().contains("SNAPSHOT")
     }
-    if (jei_minecraft_version == minecraft_version) {
+    if (jei_minecraft_version == libs.minecraft.get().version) {
         modLocalRuntime "mezz.jei:jei-$jei_minecraft_version-fabric:$jei_version"
     }
     modCompileOnly group: 'info.journeymap', name: 'journeymap-api-fabric', version: project.journeymap_api_version, changing: true, transitive: false
