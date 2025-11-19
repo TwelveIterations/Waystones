@@ -1,28 +1,5 @@
 {
   "type": "minecraft:block",
-  "functions": [
-    {
-      "conditions": [
-        {
-          "condition": "minecraft:match_tool",
-          "predicate": {
-            "predicates": {
-              "minecraft:enchantments": [
-                {
-                  "enchantments": "minecraft:silk_touch",
-                  "levels": {
-                    "min": 1
-                  }
-                }
-              ]
-            }
-          }
-        }
-      ],
-      "function": "minecraft:copy_name",
-      "source": "block_entity"
-    }
-  ],
   "pools": [
     {
       "bonus_rolls": 0.0,
