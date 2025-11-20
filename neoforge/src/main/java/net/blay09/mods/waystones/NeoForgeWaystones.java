@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones;
 
 import net.blay09.mods.balm.Balm;
-import net.blay09.mods.balm.neoforge.NeoForgeLoadContext;
+import net.blay09.mods.balm.neoforge.platform.runtime.NeoForgeLoadContext;
 import net.blay09.mods.waystones.compat.Compat;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
