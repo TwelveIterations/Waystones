@@ -13,7 +13,7 @@ import java.util.List;
 public class LoginHandler {
 
     public static void register() {
-        ServerPlayerCallback.Login.EVENT.register(player -> {
+        ServerPlayerCallback.Join.EVENT.register(player -> {
             // Introduce all global waystones to this player
             List<Waystone> globalWaystones = SavedDataWaystonesStore.get(player.level().getServer()).getGlobalWaystones();
             for (Waystone waystone : globalWaystones) {

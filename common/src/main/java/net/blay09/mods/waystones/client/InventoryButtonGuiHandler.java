@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.client;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.client.gui.screens.BalmScreenUtils;
 import net.blay09.mods.balm.client.platform.event.callback.ScreenCallback;
-import net.blay09.mods.balm.mixin.ScreenAccessor;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
@@ -14,15 +13,11 @@ import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.message.ServerboundInventoryButtonPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 
@@ -36,7 +31,7 @@ public class InventoryButtonGuiHandler {
     private static WaystoneInventoryButton warpButton;
 
     public static void initialize() {
-        ScreenCallback.Init.AFTER.register(screen -> {
+        ScreenCallback.Init.After.EVENT.register(screen -> {
             if (!(screen instanceof InventoryScreen) && !(screen instanceof CreativeModeInventoryScreen)) {
                 return;
             }

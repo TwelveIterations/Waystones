@@ -7,7 +7,7 @@ import net.minecraft.world.entity.player.Player;
 public class WarpDamageResetHandler {
 
     public static void register() {
-        LivingEntityCallback.Damage.EVENT.register((entity, damageSource, damageAmount) -> {
+        LivingEntityCallback.Damage.Before.EVENT.register((entity, damageSource, damageAmount) -> {
             if (entity instanceof Player && entity.getUseItem().getItem() instanceof IResetUseOnDamage) {
                 entity.stopUsingItem();
             }
