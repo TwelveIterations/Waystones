@@ -130,6 +130,7 @@ public class WaystoneTeleportManager {
         double x = targetPos3d.x;
         double y = targetPos3d.y;
         double z = targetPos3d.z;
+        entity.resetFallDistance();
         if (entity instanceof ServerPlayer) {
             entity.stopRiding();
             if (((ServerPlayer) entity).isSleeping()) {
