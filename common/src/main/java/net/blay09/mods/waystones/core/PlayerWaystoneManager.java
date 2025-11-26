@@ -2,13 +2,14 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmEnvironment;
-import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.MutableWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
 import net.minecraft.resources.ResourceLocation;
@@ -40,6 +41,9 @@ public class PlayerWaystoneManager {
         if (!waystone.hasOwner() && waystone instanceof MutableWaystone mutableWaystone) {
             mutableWaystone.setOwnerUid(player.getUUID());
             mutableWaystone.setVisibility(WaystonesConfig.getActive().general.defaultVisibility);
+            if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
+                PlayerWaystoneManager.activeWaystoneForEveryone(player.getServer(), waystone);
+            }
         }
 
         if (player.getServer() != null) {
