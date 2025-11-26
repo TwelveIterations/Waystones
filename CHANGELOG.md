@@ -1,1 +1,1 @@
-- Updated JourneyMap support to place Waystones and Sharestones into Groups
+- Fixed waystones not activating for everyone immediately when default visibility is GLOBAL
