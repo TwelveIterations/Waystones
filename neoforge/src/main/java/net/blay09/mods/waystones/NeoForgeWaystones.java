@@ -19,8 +19,6 @@ public class NeoForgeWaystones {
         final var context = new NeoForgeLoadContext(modEventBus);
         Balm.initializeMod(Waystones.MOD_ID, context, new Waystones());
 
-        Balm.initializeIfLoaded(Compat.THEONEPROBE, "net.blay09.mods.waystones.compat.TheOneProbeIntegration");
-
         // TODO would be nice if we could use Balm.initializeIfLoaded here, but it might run too late at the moment)
         if (Balm.platform().isModLoaded("repurposed_structures")) {
             try {

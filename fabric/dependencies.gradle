@@ -9,9 +9,6 @@ dependencies {
     // modCompileOnly "mysticdrew:common-networking-fabric:$journeymap_networking_version"
     // modCompileOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_fabric_file_id}"
 
-    modCompileOnly "curse.maven:jade-324717:$jade_fabric_version"
-    modCompileOnly "mcp.mobius.waila:wthit-api:mojmap-$wthit_version"
-
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$rei_version") {
         transitive = false
     }

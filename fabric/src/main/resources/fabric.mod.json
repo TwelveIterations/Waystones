@@ -33,9 +33,6 @@
     ],
     "journeymap": [
       "net.blay09.mods.waystones.compat.JourneyMapIntegration"
-    ],
-    "jade": [
-      "net.blay09.mods.waystones.compat.JadeIntegration"
     ]
   },
   "mixins": [
@@ -57,10 +54,6 @@
         "modmenu.discord": "${discord}",
         "waystones.iconCredits": "https://opengameart.org/content/roguelikerpg-items"
       }
-    },
-    "waila:plugins": {
-      "id": "waystones:wthit",
-      "initializer": "net.blay09.mods.waystones.compat.WTHITIntegration"
     }
   }
 }

@@ -9,13 +9,13 @@ import java.util.UUID;
 
 public class ModComponents {
 
-    @Deprecated(forRemoval = true, since = "1.22")
+    @Deprecated
     public static Holder<DataComponentType<UUID>> waystone;
 
-    @Deprecated(forRemoval = true, since = "1.21.6")
+    @Deprecated
     public static Holder<DataComponentType<WaystoneNameComponent>> waystoneName;
 
-    @Deprecated(forRemoval = true, since = "1.22")
+    @Deprecated
     public static Holder<DataComponentType<UUID>> attunement;
 
     public static Holder<DataComponentType<DescriptionComponent>> description;

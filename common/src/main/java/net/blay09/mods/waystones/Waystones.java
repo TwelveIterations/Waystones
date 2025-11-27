@@ -5,6 +5,7 @@ import net.blay09.mods.balm.commands.BalmCommands;
 import net.blay09.mods.balm.core.BalmRegistrar;
 import net.blay09.mods.balm.core.component.BalmDataComponentTypeRegistrar;
 import net.blay09.mods.balm.network.BalmNetworking;
+import net.blay09.mods.balm.platform.compatibility.hudinfo.BalmModSupportHudInfo;
 import net.blay09.mods.balm.platform.config.BalmConfig;
 import net.blay09.mods.balm.platform.module.BalmModule;
 import net.blay09.mods.balm.platform.permissions.BalmPermissions;
@@ -20,19 +21,22 @@ import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.command.ModCommands;
 import net.blay09.mods.waystones.compat.Compat;
+import net.blay09.mods.waystones.compat.hudinfo.WarpPlateBlockInfoProvider;
+import net.blay09.mods.waystones.compat.hudinfo.WaystoneBlockInfoProvider;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.permission.ModPermissions;
-import net.blay09.mods.waystones.requirement.RequirementRegistry;
 import net.blay09.mods.waystones.handler.ModEventHandlers;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.network.ModNetworking;
+import net.blay09.mods.waystones.permission.ModPermissions;
+import net.blay09.mods.waystones.requirement.RequirementRegistry;
 import net.blay09.mods.waystones.resources.ForceSpawnInVillagesCondition;
 import net.blay09.mods.waystones.stats.ModStats;
 import net.blay09.mods.waystones.worldgen.ModWorldGen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,8 +132,19 @@ public class Waystones implements BalmModule {
         ModEventHandlers.initialize();
         RequirementRegistry.registerDefaults();
 
+        final var hudInfo = Balm.modSupport().hudInfo();
+        hudInfo.registerBlockInfo(id("waystone"), ModBlocks.waystone, new WaystoneBlockInfoProvider());
+        hudInfo.registerBlockInfo(id("sandy_waystone"), ModBlocks.sandyWaystone, new WaystoneBlockInfoProvider());
+        hudInfo.registerBlockInfo(id("mossy_waystone"), ModBlocks.mossyWaystone, new WaystoneBlockInfoProvider());
+        hudInfo.registerBlockInfo(id("blackstone_waystone"), ModBlocks.blackstoneWaystone, new WaystoneBlockInfoProvider());
+        hudInfo.registerBlockInfo(id("deepslate_waystone"), ModBlocks.deepslateWaystone, new WaystoneBlockInfoProvider());
+        hudInfo.registerBlockInfo(id("end_stone_waystone"), ModBlocks.endStoneWaystone, new WaystoneBlockInfoProvider());
+        hudInfo.registerBlockInfo(id("warp_plate"), ModBlocks.warpPlate, new WarpPlateBlockInfoProvider());
+        ModBlocks.sharestones.forEach((color, block) -> hudInfo.registerBlockInfo(block.unwrapKey().map(ResourceKey::identifier).orElseThrow(), block, new WaystoneBlockInfoProvider()));
+
         Balm.initializeIfLoaded("bluemap", "net.blay09.mods.waystones.compat.BlueMapIntegration");
         Balm.initializeIfLoaded("dynmap", "net.blay09.mods.waystones.compat.DynmapIntegration");
         Balm.initializeIfLoaded(Compat.UNBREAKABLES, "net.blay09.mods.waystones.compat.UnbreakablesIntegration");
     }
+
 }
