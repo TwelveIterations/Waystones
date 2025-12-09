@@ -11,6 +11,7 @@ import net.blay09.mods.balm.platform.module.BalmModule;
 import net.blay09.mods.balm.platform.permissions.BalmPermissions;
 import net.blay09.mods.balm.server.packs.resources.BalmResourceConditionRegistrar;
 import net.blay09.mods.balm.stats.BalmCustomStatRegistrar;
+import net.blay09.mods.balm.world.entity.ai.village.poi.BalmPoiTypeRegistrar;
 import net.blay09.mods.balm.world.inventory.BalmMenuTypeRegistrar;
 import net.blay09.mods.balm.world.item.BalmCreativeModeTabRegistrar;
 import net.blay09.mods.balm.world.item.BalmItemRegistrar;
@@ -104,7 +105,11 @@ public class Waystones implements BalmModule {
     public void registerAdditional(BalmRegistrar registrar) {
         ModWorldGen.initializeFeatures(registrar.scoped(Registries.FEATURE, getId().getNamespace()));
         ModWorldGen.initializePlacementModifierTypes(registrar.scoped(Registries.PLACEMENT_MODIFIER_TYPE, getId().getNamespace()));
-        ModWorldGen.initializePoiTypes(registrar.scoped(Registries.POINT_OF_INTEREST_TYPE, getId().getNamespace()));
+    }
+
+    @Override
+    public void registerPoiTypes(BalmPoiTypeRegistrar poiTypes) {
+        ModWorldGen.initializePoiTypes(poiTypes);
     }
 
     @Override

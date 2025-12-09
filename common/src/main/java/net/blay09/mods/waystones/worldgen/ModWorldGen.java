@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.core.BalmRegistrar;
 import net.blay09.mods.balm.platform.event.callback.ServerLifecycleCallback;
+import net.blay09.mods.balm.world.entity.ai.village.poi.BalmPoiTypeRegistrar;
 import net.blay09.mods.balm.world.level.biome.BiomeModificationBuilder;
 import net.blay09.mods.balm.world.level.biome.BiomeModifier;
 import net.blay09.mods.balm.world.level.biome.BiomePredicate;
@@ -62,9 +63,9 @@ public class ModWorldGen {
         waystonePlacement = registrar.register("waystone", (id) -> (PlacementModifierType<WaystonePlacement>) () -> WaystonePlacement.CODEC);
     }
 
-    public static void initializePoiTypes(BalmRegistrar.Scoped<PoiType> registrar) {
-        registrar.register("wild_waystone", (id) -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.WILDERNESS), 1, 1));
-        registrar.register("village_waystone", (id) -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.VILLAGE), 1, 1));
+    public static void initializePoiTypes(BalmPoiTypeRegistrar registrar) {
+        registrar.register("wild_waystone", () -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.WILDERNESS), 1, 1));
+        registrar.register("village_waystone", () -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.VILLAGE), 1, 1));
     }
 
     public static void initialize(BalmWorldGen worldGen) {
