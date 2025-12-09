@@ -1,11 +1,11 @@
 [versions]
-balm = "21.11.1-SNAPSHOT"
-minecraft = "1.21.11-pre1"
-neoForm = "1.21.11-pre1-20251119.112005"
-neoForge = "21.11.0-alpha.25w45a.20251119.221026"
+balm = "21.11.1"
+minecraft = "1.21.11"
+neoForm = "1.21.11-20251209.172050"
+neoForge = "21.11.0-beta"
 forge = "60.0.20"
-fabricApi = "0.139.1+1.21.11"
-fabricLoader = "0.17.3"
+fabricApi = "0.139.4+1.21.11"
+fabricLoader = "0.18.1"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
