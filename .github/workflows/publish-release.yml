@@ -17,6 +17,21 @@ on:
         required: true
         type: boolean
         default: true
+      maven:
+        description: 'Maven'
+        required: true
+        type: boolean
+        default: true
+      modrinth:
+        description: 'Modrinth'
+        required: true
+        type: boolean
+        default: true
+      curseforge:
+        description: 'CurseForge'
+        required: true
+        type: boolean
+        default: true
 
 jobs:
   create-release:
@@ -82,9 +97,12 @@ jobs:
             const curseForgeProjectId = gradleProperties.match(/^(?!#)curseforge_project_id\s*=\s*(.+)/m);
             const modrinthProjectId = gradleProperties.match(/^(?!#)modrinth_project_id\s*=\s*(.+)/m);
             const mavenReleases = gradleProperties.match(/^(?!#)maven_releases\s*=\s*(.+)/m);
+            const publishCurseForge = curseForgeProjectId && ${{inputs.curseforge}};
+            const publishModrinth = modrinthProjectId && ${{inputs.modrinth}};
+            const publishMaven = mavenReleases && ${{inputs.maven}};
             return {
               loader: ['common', includeFabric ? 'fabric' : false, includeForge ? 'forge' : false, includeNeoForge ? 'neoforge' : false].filter(Boolean),
-              site: [curseForgeProjectId ? 'curseforge' : '', modrinthProjectId ? 'modrinth' : '', mavenReleases ? 'publish' : ''].filter(Boolean),
+              site: [publishCurseForge ? 'curseforge' : false, publishModrinth ? 'modrinth' : false, publishMaven ? 'publish' : false].filter(Boolean),
               exclude: [
                 {loader: 'common', site: 'curseforge'},
                 {loader: 'common', site: 'modrinth'}
