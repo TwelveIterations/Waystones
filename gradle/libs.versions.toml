@@ -3,7 +3,7 @@ balm = "21.11.2"
 minecraft = "1.21.11"
 neoForm = "1.21.11-20251209.172050"
 neoForge = "21.11.0-beta"
-forge = "60.0.20"
+forge = "61.0.3"
 fabricApi = "0.139.4+1.21.11"
 fabricLoader = "0.18.1"
 
