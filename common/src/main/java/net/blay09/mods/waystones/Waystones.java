@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.common.config.ConfigLocalization;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
@@ -28,6 +29,7 @@ public class Waystones {
     public static final String MOD_ID = "waystones";
 
     public static void initialize() {
+        ConfigLocalization.enableModernTranslationKeys(MOD_ID);
         WaystonesAPI.__internalMethods = new InternalMethodsImpl();
         RequirementRegistry.registerDefaults();
 
