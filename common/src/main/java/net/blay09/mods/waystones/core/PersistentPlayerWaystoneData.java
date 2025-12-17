@@ -212,4 +212,8 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
         return sortingIndex;
     }
 
+    @Override
+    public Optional<Waystone> findWaystoneByName(Player player, String name) {
+        return WaystoneManagerImpl.get(player.getServer()).findWaystoneByName(name);
+    }
 }

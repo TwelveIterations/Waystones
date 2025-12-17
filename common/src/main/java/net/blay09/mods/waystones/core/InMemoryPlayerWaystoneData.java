@@ -105,4 +105,9 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
             this.waystones.put(waystone.getWaystoneUid(), waystone);
         }
     }
+
+    @Override
+    public Optional<Waystone> findWaystoneByName(Player player, String name) {
+        return this.waystones.values().stream().filter(it -> it.getName().getString().equals(name)).findFirst();
+    }
 }

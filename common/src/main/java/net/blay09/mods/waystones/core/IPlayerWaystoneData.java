@@ -4,10 +4,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public interface IPlayerWaystoneData {
     void activateWaystone(Player player, Waystone waystone);
@@ -26,4 +23,6 @@ public interface IPlayerWaystoneData {
     Map<ResourceLocation, Long> getCooldowns(Player player);
 
     void resetCooldowns(Player player);
+
+    Optional<Waystone> findWaystoneByName(Player player, String name);
 }
