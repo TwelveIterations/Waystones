@@ -19,6 +19,7 @@ import net.blay09.mods.balm.world.level.block.BalmBlockRegistrar;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityTypeRegistrar;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
+import net.blay09.mods.waystones.client.WaystonesClient;
 import net.blay09.mods.waystones.command.ModCommands;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.component.ModComponents;
@@ -31,9 +32,13 @@ import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.network.ModNetworking;
 import net.blay09.mods.waystones.resources.ForceSpawnInVillagesCondition;
 import net.blay09.mods.waystones.stats.ModStats;
+import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
+import net.blay09.mods.waystones.store.WaystonesStore;
 import net.blay09.mods.waystones.worldgen.ModWorldGen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +50,14 @@ public class Waystones implements BalmModule {
 
     public static ResourceLocation id(String path) {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    }
+
+    public static WaystonesStore getWaystoneStore(Player player) {
+        if (player instanceof ServerPlayer) {
+            return SavedDataWaystonesStore.get(player.level().getServer());
+        } else {
+            return WaystonesClient.getWaystonesStore();
+        }
     }
 
     @Override

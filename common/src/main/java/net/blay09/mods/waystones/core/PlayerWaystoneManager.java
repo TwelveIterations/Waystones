@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmEnvironment;
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
@@ -69,7 +70,7 @@ public class PlayerWaystoneManager {
         if (inventoryButtonMode.isReturnToNearest()) {
             return PlayerWaystoneManager.getNearestWaystone(player);
         } else if (inventoryButtonMode.hasNamedTarget()) {
-            return SavedDataWaystonesStore.get(player.level().getServer()).findWaystoneByName(inventoryButtonMode.getNamedTarget());
+            return Waystones.getWaystoneStore(player).findWaystoneByName(inventoryButtonMode.getNamedTarget());
         }
 
         return Optional.empty();
