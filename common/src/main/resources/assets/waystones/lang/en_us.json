@@ -195,6 +195,8 @@
   "waystones.configuration.teleports.enableCosts.tooltip": "Set to false to simply disable all xp costs. See warpRequirements for more fine-grained control.",
   "waystones.configuration.teleports.enableCooldowns": "Enable Cooldowns",
   "waystones.configuration.teleports.enableCooldowns.tooltip": "Set to false to simply disable all cooldowns. See warpRequirements for more fine-grained control.",
+  "waystones.configuration.teleports.enableModifiers": "Enable Modifiers",
+  "waystones.configuration.teleports.enableModifiers.tooltip": "Set to true to enable warp modifier items for applying status effects on teleports.",
   "waystones.configuration.teleports.warpRequirements": "Warp Requirements",
   "waystones.configuration.teleports.warpRequirements.tooltip": "List of warp requirements with comma-separated parameters in parentheses. Conditions can be defined as comma-separated list in square brackets. Will be applied in order.",
   "waystones.configuration.teleports.transportPets": "Transport Pets",
