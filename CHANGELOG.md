@@ -1,1 +1,3 @@
-- Fixed waystones not activating for everyone immediately when default visibility is GLOBAL
+- Fixed translation keys in config screens
+- Fixed crash when hovering over inventory button when it's configured with a named target
+- Fixed crash when running /waystones list from another dimension than the waystone it's listing
