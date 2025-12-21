@@ -11,9 +11,9 @@ public class WarpStoneFOVHandler {
     public static float onFOV(LivingEntity entity, float fov) {
         ItemStack activeItemStack = entity.getUseItem();
         if (isScrollItem(activeItemStack)) {
-            float newFov = entity.getUseItemRemainingTicks() / 32f * 2f;
-            return (float) Mth.lerp(Minecraft.getInstance().options.fovEffectScale().get(), 1f, newFov);
+            return entity.getUseItemRemainingTicks() / 32f * 2f;
         }
+
         return fov;
     }
 
