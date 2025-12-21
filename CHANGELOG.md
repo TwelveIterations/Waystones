@@ -1,1 +1,2 @@
-- Updated to Minecraft 1.21.11
+- Fixed FOV effects not having the correct strength when using latest Balm
+- Fixed crash when hovering over inventory button when it's configured with a named target
