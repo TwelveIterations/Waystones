@@ -6,8 +6,7 @@ import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.message.ServerboundInventoryButtonPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.network.chat.Component;
 
@@ -43,9 +42,10 @@ public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        Font font = Minecraft.getInstance().font;
-        guiGraphics.drawCenteredString(font, waystoneName, width / 2, 100, 0xFFFFFFFF);
+    protected void init() {
+        layout.defaultCellSetting().alignHorizontallyCenter();
+        layout.addChild(new StringWidget(waystoneName, font));
+        super.init();
     }
+
 }
