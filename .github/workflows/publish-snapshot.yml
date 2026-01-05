@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - '[0-9]+.[0-9]+.[0-9]+'
-      - '[0-9]+.[0-9]+'
 
 jobs:
   prepare-matrix:
@@ -34,6 +33,7 @@ jobs:
             };
   publish-snapshot:
     runs-on: ubuntu-latest
+    environment: Snapshots
     strategy:
       matrix: ${{fromJson(needs.prepare-matrix.outputs.matrix)}}
       fail-fast: false
