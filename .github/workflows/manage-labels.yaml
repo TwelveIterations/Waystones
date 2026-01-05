@@ -25,6 +25,6 @@ jobs:
         with:
           dry: ${{ inputs.dry }}
           remove_missing: ${{ inputs.remove_missing }}
-          source: https://raw.githubusercontent.com/TwelveIterationMods/.github/refs/heads/main/labels.yaml
+          source: https://raw.githubusercontent.com/TwelveIterations/.github/refs/heads/main/labels.yaml
         env:
           GITHUB_TOKEN: ${{ github.token }}
