@@ -6,7 +6,7 @@ Minecraft Mod. Teleport back to activated waystones. For Survival, Adventure or 
 
 #### Downloads
 
-[![Versions](http://cf.way2muchnoise.eu/versions/245755_latest.svg)](https://minecraft.curseforge.com/projects/waystones) [![Downloads](http://cf.way2muchnoise.eu/full_245755_downloads.svg)](https://minecraft.curseforge.com/projects/waystones)
+[![Versions](http://cf.way2muchnoise.eu/versions/245755_latest.svg)](https://www.curseforge.com/minecraft/mc-mods/waystones) [![Downloads](http://cf.way2muchnoise.eu/full_245755_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/waystones)
 
 ## Contributing
 
