@@ -107,8 +107,15 @@ public class JourneyMapIntegration implements IClientPlugin {
     }
 
     public void onWaystonesListReceived(WaystonesListReceivedEvent event) {
-        if (shouldManageWaypoints() && shouldProcessWaystoneType(event.getWaystoneType())) {
+        if (!shouldManageWaypoints()) {
+            return;
+        }
+
+        if (shouldProcessWaystoneType(event.getWaystoneType())) {
             runWhenJourneyMapIsReady(() -> updateAllWaypoints(event.getWaystoneType(), event.getWaystones()));
+        } else if (WaystoneTypes.isSharestone(event.getWaystoneType())
+                && !WaystonesConfig.getActive().compatibility.sharestonesSendCoordsToClients) {
+            runWhenJourneyMapIsReady(() -> clearWaypointsForType(event.getWaystoneType()));
         }
     }
 
@@ -163,6 +170,18 @@ public class JourneyMapIntegration implements IClientPlugin {
                 if (waystoneType.equals(customData.waystoneType()) && !stillExistingIds.contains(waystoneUid)) {
                     api.removeWaypoint(Waystones.MOD_ID, waypoint);
                     waystoneToWaypoint.remove(waystoneUid);
+                }
+            });
+        }
+    }
+
+    private void clearWaypointsForType(ResourceLocation waystoneType) {
+        final var waypoints = api.getWaypoints(Waystones.MOD_ID);
+        for (final var waypoint : waypoints) {
+            WaystonesWaypointData.decode(waypoint.getCustomData()).ifPresent(customData -> {
+                if (waystoneType.equals(customData.waystoneType())) {
+                    api.removeWaypoint(Waystones.MOD_ID, waypoint);
+                    waystoneToWaypoint.remove(customData.waystoneId());
                 }
             });
         }
