@@ -66,7 +66,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         waystones = container.getWaystones();
         if (container.hasRestrictedEntries()) {
             restrictedEntriesById = container.getRestrictedEntries().stream()
-                    .collect(Collectors.toMap(SharestoneSelectionEntry::id, entry -> entry));
+                    .collect(Collectors.toMap(SharestoneSelectionEntry::id, entry -> entry, (existing, duplicate) -> existing));
         } else {
             restrictedEntriesById = Collections.emptyMap();
         }
