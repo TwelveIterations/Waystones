@@ -161,6 +161,10 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Comment("If enabled, Waystones will add markers for waystones and sharestones to Dynmap.")
         public boolean dynmap = true;
+
+        @Synced
+        @Comment("If enabled, sharestone invites can include the sharestone's coordinates when sent to other players.")
+        public boolean sharestonesSendCoords = true;
     }
 
     public static class Client {
