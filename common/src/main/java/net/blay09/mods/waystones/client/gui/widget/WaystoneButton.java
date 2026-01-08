@@ -24,12 +24,18 @@ public class WaystoneButton extends Button {
 
     private final WarpRequirement warpRequirement;
     private final Waystone waystone;
+    private final Integer distanceOverride;
 
     public WaystoneButton(int x, int y, Waystone waystone, WarpRequirement warpRequirement, OnPress pressable) {
+        this(x, y, waystone, warpRequirement, pressable, null);
+    }
+
+    public WaystoneButton(int x, int y, Waystone waystone, WarpRequirement warpRequirement, OnPress pressable, Integer distanceOverride) {
         super(x, y, 200, 20, getWaystoneNameComponent(waystone), pressable, Button.DEFAULT_NARRATION);
         Player player = Minecraft.getInstance().player;
         this.warpRequirement = warpRequirement;
         this.waystone = waystone;
+        this.distanceOverride = distanceOverride;
         if (player == null) {
             active = false;
         } else if (!warpRequirement.canAfford(player) && !player.getAbilities().instabuild) {
@@ -59,7 +65,9 @@ public class WaystoneButton extends Button {
         // render distance
         if (isActive()) {
             Integer distance = null;
-            if (waystone instanceof WaystoneDistanceProvider distanceProvider && distanceProvider.hasDistance()) {
+            if (distanceOverride != null && distanceOverride >= 0) {
+                distance = distanceOverride;
+            } else if (waystone instanceof WaystoneDistanceProvider distanceProvider && distanceProvider.hasDistance()) {
                 distance = distanceProvider.getDistance();
             } else if (!(waystone instanceof RestrictedWaystone) && waystone.getDimension() == player.level().dimension()) {
                 distance = (int) player.position().distanceTo(waystone.getPos().getCenter());
