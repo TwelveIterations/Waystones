@@ -42,10 +42,14 @@ public class WaystoneManagerImpl extends SavedData implements WaystoneManager {
     }
 
     public void updateWaystone(Waystone waystone) {
-        WaystoneImpl mutableWaystone = (WaystoneImpl) waystones.getOrDefault(waystone.getWaystoneUid(), waystone);
-        mutableWaystone.setName(waystone.getName());
-        mutableWaystone.setVisibility(waystone.getVisibility());
-        waystones.put(waystone.getWaystoneUid(), mutableWaystone);
+        Waystone existing = waystones.get(waystone.getWaystoneUid());
+        if (existing instanceof WaystoneImpl existingWaystone && waystone instanceof WaystoneImpl updatedWaystone) {
+            existingWaystone.setName(updatedWaystone.getName());
+            existingWaystone.setVisibility(updatedWaystone.getVisibility());
+            waystones.put(waystone.getWaystoneUid(), existingWaystone);
+        } else {
+            waystones.put(waystone.getWaystoneUid(), waystone);
+        }
         setDirty();
         Balm.getEvents().fireEvent(new WaystoneUpdatedEvent(waystone));
     }

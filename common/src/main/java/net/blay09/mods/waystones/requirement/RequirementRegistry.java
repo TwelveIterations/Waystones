@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneDistanceProvider;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -368,8 +369,13 @@ public class RequirementRegistry {
                         .equals(parameters.value));
         registerBoundConditionResolver("is_within_distance",
                 FloatParameter.class,
-                (context, parameters) -> (float) Math.sqrt(context.getEntity()
-                        .distanceToSqr(context.getTargetWaystone().getPos().getCenter())) <= parameters.value);
+                (context, parameters) -> {
+                    if (context.getTargetWaystone() instanceof WaystoneDistanceProvider distanceProvider && distanceProvider.hasDistance()) {
+                        return distanceProvider.getDistance() <= parameters.value;
+                    }
+                    return (float) Math.sqrt(context.getEntity()
+                            .distanceToSqr(context.getTargetWaystone().getPos().getCenter())) <= parameters.value;
+                });
         registerConditionResolver("has_cooldown",
                 WaystonesIdParameter.class,
                 (context, parameters) -> {
@@ -416,7 +422,12 @@ public class RequirementRegistry {
                     return false;
                 });
 
-        registerBoundVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getTargetWaystone().getPos().getCenter())));
+        registerBoundVariableResolver("distance", it -> {
+            if (it.getTargetWaystone() instanceof WaystoneDistanceProvider distanceProvider && distanceProvider.hasDistance()) {
+                return distanceProvider.getDistance();
+            }
+            return (float) Math.sqrt(it.getEntity().distanceToSqr(it.getTargetWaystone().getPos().getCenter()));
+        });
         registerVariableResolver("leashed", it -> (float) WaystoneTeleportManager.findLeashedAnimals(it.getEntity()).size());
         registerVariableResolver("pets", it -> (float) WaystoneTeleportManager.findPets(it.getEntity()).size());
         registerVariableResolver("passengers", it -> (float) WaystoneTeleportManager.findPassengers(it.getEntity()).size());
