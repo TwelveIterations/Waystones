@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
+import net.blay09.mods.waystones.core.RestrictedWaystone;
 import net.blay09.mods.waystones.core.WaystoneDistanceProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -60,7 +61,7 @@ public class WaystoneButton extends Button {
             Integer distance = null;
             if (waystone instanceof WaystoneDistanceProvider distanceProvider && distanceProvider.hasDistance()) {
                 distance = distanceProvider.getDistance();
-            } else if (waystone.getDimension() == player.level().dimension()) {
+            } else if (!(waystone instanceof RestrictedWaystone) && waystone.getDimension() == player.level().dimension()) {
                 distance = (int) player.position().distanceTo(waystone.getPos().getCenter());
             }
 
