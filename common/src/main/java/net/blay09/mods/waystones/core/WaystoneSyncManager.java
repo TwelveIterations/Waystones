@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneCooldowns;
 import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.network.message.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -50,13 +51,30 @@ public class WaystoneSyncManager {
     }
 
     public static void sendWaystonesOfType(ResourceLocation waystoneType, ServerPlayer player) {
-        List<Waystone> warpPlates = WaystoneManagerImpl.get(player.server).getWaystonesByType(waystoneType).collect(Collectors.toList());
-        Balm.getNetworking().sendTo(player, new KnownWaystonesMessage(waystoneType, warpPlates));
+        if (WaystoneTypes.isSharestone(waystoneType)) {
+            sendSharestonesOfType(waystoneType, player);
+            return;
+        }
+        List<Waystone> waystones = WaystoneManagerImpl.get(player.server).getWaystonesByType(waystoneType).collect(Collectors.toList());
+        Balm.getNetworking().sendTo(player, new KnownWaystonesMessage(waystoneType, waystones));
     }
 
-    public static void sendWaystoneUpdate(Player player, Waystone waystone) {
+    public static void sendSharestonesOfType(ResourceLocation waystoneType, ServerPlayer player) {
+        List<Waystone> waystones = WaystoneManagerImpl.get(player.server).getWaystonesByType(waystoneType).collect(Collectors.toList());
+        if (!WaystonesConfig.getActive().compatibility.sharestonesSendCoordsToClients) {
+            Balm.getNetworking().sendTo(player, new RestrictedWaystonesMessage(waystoneType, buildSharestoneSyncData(player, waystones)));
+            return;
+        }
+        Balm.getNetworking().sendTo(player, new KnownWaystonesMessage(waystoneType, waystones));
+    }
+
+    public static void sendWaystoneUpdate(ServerPlayer player, Waystone waystone) {
         // If this is a waystone, only send an update if the player has activated it already
         if (!waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
+            if (WaystoneTypes.isSharestone(waystone.getWaystoneType()) && !WaystonesConfig.getActive().compatibility.sharestonesSendCoordsToClients) {
+                Balm.getNetworking().sendTo(player, new UpdateRestrictedWaystoneMessage(SharestoneSyncData.fromWaystone(player, waystone)));
+                return;
+            }
             Balm.getNetworking().sendTo(player, new UpdateWaystoneMessage(waystone));
         }
     }
@@ -71,5 +89,11 @@ public class WaystoneSyncManager {
     public static void sendWaystoneCooldowns(Player player) {
         final var cooldowns = PlayerWaystoneManager.getCooldowns(player);
         Balm.getNetworking().sendTo(player, new PlayerWaystoneCooldownsMessage(cooldowns));
+    }
+
+    private static List<SharestoneSyncData> buildSharestoneSyncData(ServerPlayer player, List<Waystone> waystones) {
+        return waystones.stream()
+                .map(waystone -> SharestoneSyncData.fromWaystone(player, waystone))
+                .collect(Collectors.toList());
     }
 }

@@ -6,6 +6,8 @@ import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
+import net.blay09.mods.waystones.core.RestrictedWaystone;
+import net.blay09.mods.waystones.core.WaystoneDistanceProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -55,17 +57,25 @@ public class WaystoneButton extends Button {
         final var player = Minecraft.getInstance().player;
 
         // render distance
-        if (waystone.getDimension() == player.level().dimension() && isActive()) {
-            int distance = (int) player.position().distanceTo(waystone.getPos().getCenter());
-            String distanceStr;
-            if (distance < 10000 && (font.width(getMessage()) < 120 || distance < 1000)) {
-                distanceStr = distance + "m";
-            } else {
-                // sorry for ugly code, chatgpt was down and this was the only thing my dumbed down brain could come up with
-                distanceStr = String.format("%.1f", distance / 1000f).replace(",0", "").replace(".0", "") + "km";
+        if (isActive()) {
+            Integer distance = null;
+            if (waystone instanceof WaystoneDistanceProvider distanceProvider && distanceProvider.hasDistance()) {
+                distance = distanceProvider.getDistance();
+            } else if (!(waystone instanceof RestrictedWaystone) && waystone.getDimension() == player.level().dimension()) {
+                distance = (int) player.position().distanceTo(waystone.getPos().getCenter());
             }
-            int xOffset = getWidth() - font.width(distanceStr);
-            guiGraphics.drawString(font, distanceStr, getX() + xOffset - 4, getY() + 6, 0xFFFFFF);
+
+            if (distance != null) {
+                String distanceStr;
+                if (distance < 10000 && (font.width(getMessage()) < 120 || distance < 1000)) {
+                    distanceStr = distance + "m";
+                } else {
+                    // sorry for ugly code, chatgpt was down and this was the only thing my dumbed down brain could come up with
+                    distanceStr = String.format("%.1f", distance / 1000f).replace(",0", "").replace(".0", "") + "km";
+                }
+                int xOffset = getWidth() - font.width(distanceStr);
+                guiGraphics.drawString(font, distanceStr, getX() + xOffset - 4, getY() + 6, 0xFFFFFF);
+            }
         }
 
         renderRequirements(warpRequirement, guiGraphics, mouseX, mouseY, partialTicks);

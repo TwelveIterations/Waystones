@@ -17,8 +17,12 @@ public class ModNetworking {
         networking.registerServerboundPacket(RequestManageWaystoneModifiersMessage.TYPE, RequestManageWaystoneModifiersMessage.class, RequestManageWaystoneModifiersMessage::encode, RequestManageWaystoneModifiersMessage::decode, RequestManageWaystoneModifiersMessage::handle);
 
         networking.registerClientboundPacket(UpdateWaystoneMessage.TYPE, UpdateWaystoneMessage.class, UpdateWaystoneMessage::encode, UpdateWaystoneMessage::decode, UpdateWaystoneMessage::handle);
+        networking.registerClientboundPacket(UpdateRestrictedWaystoneMessage.TYPE, UpdateRestrictedWaystoneMessage.class, UpdateRestrictedWaystoneMessage::encode,
+                UpdateRestrictedWaystoneMessage::decode, UpdateRestrictedWaystoneMessage::handle);
         networking.registerClientboundPacket(WaystoneRemovedMessage.TYPE, WaystoneRemovedMessage.class, WaystoneRemovedMessage::encode, WaystoneRemovedMessage::decode, WaystoneRemovedMessage::handle);
         networking.registerClientboundPacket(KnownWaystonesMessage.TYPE, KnownWaystonesMessage.class, KnownWaystonesMessage::encode, KnownWaystonesMessage::decode, KnownWaystonesMessage::handle);
+        networking.registerClientboundPacket(RestrictedWaystonesMessage.TYPE, RestrictedWaystonesMessage.class, RestrictedWaystonesMessage::encode,
+                RestrictedWaystonesMessage::decode, RestrictedWaystonesMessage::handle);
         networking.registerClientboundPacket(SortingIndexMessage.TYPE, SortingIndexMessage.class, SortingIndexMessage::encode, SortingIndexMessage::decode, SortingIndexMessage::handle);
         networking.registerClientboundPacket(TeleportEffectMessage.TYPE, TeleportEffectMessage.class, TeleportEffectMessage::encode, TeleportEffectMessage::decode, TeleportEffectMessage::handle);
         networking.registerClientboundPacket(PlayerWaystoneCooldownsMessage.TYPE, PlayerWaystoneCooldownsMessage.class, PlayerWaystoneCooldownsMessage::encode, PlayerWaystoneCooldownsMessage::decode, PlayerWaystoneCooldownsMessage::handle);

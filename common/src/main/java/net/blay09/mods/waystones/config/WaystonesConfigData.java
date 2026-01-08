@@ -165,6 +165,10 @@ public class WaystonesConfigData implements BalmConfigData {
         @Synced
         @Comment("If enabled, sharestone invites can include the sharestone's coordinates when sent to other players.")
         public boolean sharestonesSendCoords = true;
+
+        @Synced
+        @Comment("If enabled, clients receive sharestone coordinates when syncing sharestone lists.")
+        public boolean sharestonesSendCoordsToClients = true;
     }
 
     public static class Client {
