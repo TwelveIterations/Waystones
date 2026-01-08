@@ -40,7 +40,7 @@ public class ModMenus {
                     return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(),
                             data.fromWaystone(),
                             windowId,
-                            data.waystones(),
+                            data.resolveWaystones(),
                             Collections.emptySet());
                 }
 
@@ -118,7 +118,7 @@ public class ModMenus {
                     return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(),
                             data.fromWaystone(),
                             windowId,
-                            data.waystones(),
+                            data.resolveWaystones(),
                             Collections.emptySet());
                 }
 

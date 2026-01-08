@@ -180,6 +180,13 @@ public class PlayerWaystoneManager {
         return result;
     }
 
+    public static List<SharestoneSelectionEntry> getSharestoneSelectionEntries(ServerPlayer player, Waystone waystone) {
+        final var targets = getTargetsForWaystone(player, waystone);
+        return targets.stream()
+                .map(target -> SharestoneSelectionEntry.fromWaystone(player, target))
+                .toList();
+    }
+
     public static Collection<Waystone> getTargetsForWaystoneType(Player player, ResourceLocation waystoneType) {
         final var result = new ArrayList<Waystone>();
         if (WaystoneTypes.isSharestone(waystoneType)) {

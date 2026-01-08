@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
+import net.blay09.mods.waystones.core.SharestoneSelectionEntry;
 import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -13,7 +14,9 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.Comparator;
@@ -22,15 +25,32 @@ import java.util.stream.Collectors;
 
 public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
-    public record Data(Waystone fromWaystone, Collection<Waystone> waystones) {
+    public record Data(Waystone fromWaystone, List<Waystone> waystones, List<SharestoneSelectionEntry> restrictedEntries) {
+        public static Data forWaystones(Waystone fromWaystone, Collection<Waystone> waystones) {
+            return new Data(fromWaystone, new ArrayList<>(waystones), Collections.emptyList());
+        }
+
+        public static Data forRestrictedEntries(Waystone fromWaystone, Collection<SharestoneSelectionEntry> restrictedEntries) {
+            return new Data(fromWaystone, Collections.emptyList(), List.copyOf(restrictedEntries));
+        }
+
+        public boolean hasRestrictedEntries() {
+            return !restrictedEntries.isEmpty();
+        }
+
+        public Collection<Waystone> resolveWaystones() {
+            if (hasRestrictedEntries()) {
+                return restrictedEntries.stream()
+                        .map(SharestoneSelectionEntry::toRestrictedWaystone)
+                        .collect(Collectors.toList());
+            }
+            return waystones;
+        }
     }
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-            WaystoneImpl.STREAM_CODEC,
-            Data::fromWaystone,
-            WaystoneImpl.LIST_STREAM_CODEC,
-            Data::waystones,
-            Data::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.of(
+            WaystoneSelectionMenu::writeData,
+            WaystoneSelectionMenu::readData);
 
     private final Waystone fromWaystone;
     private final Collection<Waystone> waystones;
@@ -89,5 +109,25 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
     public WaystoneSelectionMenu setPostTeleportHandler(Consumer<WaystoneTeleportContext> postTeleportHandler) {
         this.postTeleportHandler = postTeleportHandler;
         return this;
+    }
+
+    private static void writeData(RegistryFriendlyByteBuf buf, Data data) {
+        WaystoneImpl.STREAM_CODEC.encode(buf, data.fromWaystone());
+        buf.writeBoolean(data.hasRestrictedEntries());
+        if (data.hasRestrictedEntries()) {
+            SharestoneSelectionEntry.LIST_STREAM_CODEC.encode(buf, data.restrictedEntries());
+        } else {
+            WaystoneImpl.LIST_STREAM_CODEC.encode(buf, data.waystones());
+        }
+    }
+
+    private static Data readData(RegistryFriendlyByteBuf buf) {
+        final var fromWaystone = WaystoneImpl.STREAM_CODEC.decode(buf);
+        if (buf.readBoolean()) {
+            final var entries = SharestoneSelectionEntry.LIST_STREAM_CODEC.decode(buf);
+            return Data.forRestrictedEntries(fromWaystone, entries);
+        }
+        final var waystones = WaystoneImpl.LIST_STREAM_CODEC.decode(buf);
+        return Data.forWaystones(fromWaystone, waystones);
     }
 }
