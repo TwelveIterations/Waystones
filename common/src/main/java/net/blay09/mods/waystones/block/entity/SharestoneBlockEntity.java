@@ -3,8 +3,11 @@ package net.blay09.mods.waystones.block.entity;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.SharestoneBlock;
-import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneBlockEntityBase;
+import net.blay09.mods.waystones.core.WaystoneSyncManager;
 import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.core.BlockPos;
@@ -24,9 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Optional;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
 
@@ -70,7 +70,11 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
 
             @Override
             public WaystoneSelectionMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                return new WaystoneSelectionMenu.Data(getWaystone(), PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, getWaystone()));
+                if (WaystonesConfig.getActive().compatibility.sharestonesSendCoordsToClients) {
+                    return WaystoneSelectionMenu.Data.forWaystones(getWaystone(), PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, getWaystone()));
+                }
+                return WaystoneSelectionMenu.Data.forRestrictedEntries(getWaystone(),
+                        PlayerWaystoneManager.getSharestoneSelectionEntries(serverPlayer, getWaystone()));
             }
 
             @Override

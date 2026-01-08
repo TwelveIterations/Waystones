@@ -53,7 +53,7 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
 
             @Override
             public WaystoneSelectionMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                return new WaystoneSelectionMenu.Data(getWaystone(), PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, getWaystone()));
+                return WaystoneSelectionMenu.Data.forWaystones(getWaystone(), PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, getWaystone()));
             }
 
             @Override
