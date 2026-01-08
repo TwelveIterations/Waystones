@@ -14,6 +14,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -26,7 +27,7 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
     public record Data(Waystone fromWaystone, List<Waystone> waystones, List<SharestoneSelectionEntry> restrictedEntries) {
         public static Data forWaystones(Waystone fromWaystone, Collection<Waystone> waystones) {
-            return new Data(fromWaystone, List.copyOf(waystones), Collections.emptyList());
+            return new Data(fromWaystone, new ArrayList<>(waystones), Collections.emptyList());
         }
 
         public static Data forRestrictedEntries(Waystone fromWaystone, Collection<SharestoneSelectionEntry> restrictedEntries) {
