@@ -54,15 +54,22 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
     private final Waystone fromWaystone;
     private final Collection<Waystone> waystones;
+    private final List<SharestoneSelectionEntry> restrictedEntries;
     private final Set<ResourceLocation> flags;
     private Consumer<WaystoneTeleportContext> postTeleportHandler = it -> {};
     private ItemStack warpItem = ItemStack.EMPTY;
 
     public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<Waystone> waystones, Set<ResourceLocation> flags) {
+        this(type, fromWaystone, windowId, waystones, flags, Collections.emptyList());
+    }
+
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<Waystone> waystones,
+                                 Set<ResourceLocation> flags, List<SharestoneSelectionEntry> restrictedEntries) {
         super(type, windowId);
         this.fromWaystone = fromWaystone;
         this.waystones = waystones;
         this.flags = flags;
+        this.restrictedEntries = restrictedEntries;
     }
 
     public WaystoneSelectionMenu withWarpItem(ItemStack warpItem) {
@@ -96,6 +103,14 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
     public Collection<Waystone> getWaystones() {
         return waystones;
+    }
+
+    public List<SharestoneSelectionEntry> getRestrictedEntries() {
+        return restrictedEntries;
+    }
+
+    public boolean hasRestrictedEntries() {
+        return !restrictedEntries.isEmpty();
     }
 
     public Set<ResourceLocation> getFlags() {

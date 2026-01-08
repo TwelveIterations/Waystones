@@ -119,7 +119,8 @@ public class ModMenus {
                             data.fromWaystone(),
                             windowId,
                             data.resolveWaystones(),
-                            Collections.emptySet());
+                            Collections.emptySet(),
+                            data.restrictedEntries());
                 }
 
                 @Override

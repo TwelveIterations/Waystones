@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneButton;
 import net.blay09.mods.waystones.comparator.UserSortingComparator;
+import net.blay09.mods.waystones.core.SharestoneSelectionEntry;
 import net.blay09.mods.waystones.requirement.NoRequirement;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -37,12 +38,14 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public abstract class WaystoneSelectionScreenBase extends AbstractContainerScreen<WaystoneSelectionMenu> {
 
     private final Collection<Waystone> waystones;
     private List<Waystone> filteredWaystones;
     private final List<ITooltipProvider> tooltipProviders = new ArrayList<>();
+    private final Map<UUID, SharestoneSelectionEntry> restrictedEntriesById;
 
     private String searchText = "";
 
@@ -61,6 +64,12 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     public WaystoneSelectionScreenBase(WaystoneSelectionMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
         waystones = container.getWaystones();
+        if (container.hasRestrictedEntries()) {
+            restrictedEntriesById = container.getRestrictedEntries().stream()
+                    .collect(Collectors.toMap(SharestoneSelectionEntry::id, entry -> entry, (existing, duplicate) -> existing));
+        } else {
+            restrictedEntriesById = Collections.emptyMap();
+        }
         PlayerWaystoneManager.ensureSortingIndex(Minecraft.getInstance().player, waystones);
         filteredWaystones = new ArrayList<>(waystones);
         final var sorting = getSorting();
@@ -206,7 +215,11 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         final var player = Minecraft.getInstance().player;
         final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).setFromWaystone(waystoneFrom).setWarpItem(menu.getWarpItem()).addFlags(flags);
         final var requirements = WaystonesAPI.resolveRequirements(context);
-        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, requirements, button -> onWaystoneSelected(waystone));
+        final var entry = restrictedEntriesById.get(waystone.getWaystoneUid());
+        final Integer distanceOverride = entry != null ? entry.distanceMeters() : null;
+        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, requirements,
+                button -> onWaystoneSelected(entry != null ? entry.id() : waystone.getWaystoneUid()),
+                distanceOverride);
         if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {
             btnWaystone.active = false;
         }
@@ -214,7 +227,11 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     protected void onWaystoneSelected(Waystone waystone) {
-        Balm.getNetworking().sendToServer(new SelectWaystoneMessage(waystone.getWaystoneUid()));
+        onWaystoneSelected(waystone.getWaystoneUid());
+    }
+
+    protected void onWaystoneSelected(UUID waystoneId) {
+        Balm.getNetworking().sendToServer(new SelectWaystoneMessage(waystoneId));
     }
 
     private void sortWaystone(Waystone waystone, int sortDir) {
