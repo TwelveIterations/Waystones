@@ -34,7 +34,7 @@ jobs:
         run: echo "version=$(cat gradle.properties | grep -w "\bversion" | cut -d= -f2)" >> $GITHUB_OUTPUT
         id: extract-version
       - name: Bumping version
-        uses: TwelveIterationMods/bump-version@v1
+        uses: TwelveIterations/bump-version@v1
         with:
           version: ${{ steps.extract-version.outputs.version }}
           bump: patch
@@ -94,7 +94,7 @@ jobs:
         with:
           ref: ${{ needs.create-release.outputs.ref }}
       - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
+        uses: gradle/actions/wrapper-validation@v5
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
@@ -122,7 +122,7 @@ jobs:
         with:
           ref: ${{ needs.create-release.outputs.ref }}
       - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
+        uses: gradle/actions/wrapper-validation@v5
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
@@ -162,7 +162,7 @@ jobs:
           name: ${{ matrix.loader }}-artifact
           path: ${{ matrix.loader }}/build
       - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
+        uses: gradle/actions/wrapper-validation@v5
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:

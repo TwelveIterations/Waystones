@@ -1,7 +1,7 @@
 modLoader="javafml"
 loaderVersion="${forge_loader_version_range}"
 license="All rights reserved"
-issueTrackerURL="https://github.com/TwelveIterationMods/Waystones/issues"
+issueTrackerURL="https://github.com/TwelveIterations/Waystones/issues"
 
 [[mods]]
 modId="waystones"
