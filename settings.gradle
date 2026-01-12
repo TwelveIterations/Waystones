@@ -12,4 +12,10 @@ pluginManagement {
     }
 }
 
-include("common", "fabric", "forge")
+include("common")
+if (include_fabric) {
+    include("fabric")
+}
+if (include_forge) {
+    include("forge")
+}
