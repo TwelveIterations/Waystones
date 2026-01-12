@@ -127,11 +127,11 @@ public class WaystonesConfigData implements BalmConfigData {
         @Comment("Approximate chunk distance between wild waystones being generated. Set to 0 to disable generation.")
         public int chunksBetweenWildWaystones = 25;
 
-        @Comment("List of dimensions that wild waystones are allowed to spawn in. If left empty, all dimensions except those in wildWaystonesDimensionDenyList are used.")
+        @Comment("List of dimensions that wild waystones are allowed to spawn in. If left empty, all dimensions except those in wildWaystonesDimensionDenyList will be able to spawn waystones, provided the biomes are in the `has_structure/waystone` tag.")
         @ExpectedType(ResourceLocation.class)
         public Set<ResourceLocation> wildWaystonesDimensionAllowList = Set.of(ResourceLocation.withDefaultNamespace("overworld"), ResourceLocation.withDefaultNamespace("the_nether"), ResourceLocation.withDefaultNamespace("the_end"));
 
-        @Comment("List of dimensions that wild waystones are not allowed to spawn in. Only used if wildWaystonesDimensionAllowList is empty.")
+        @Comment("List of dimensions that wild waystones are not allowed to spawn in, even if the biome is in the `has_structure/waystone` tag. Only used if wildWaystonesDimensionAllowList is empty.")
         @ExpectedType(ResourceLocation.class)
         public Set<ResourceLocation> wildWaystonesDimensionDenyList = Set.of();
 
