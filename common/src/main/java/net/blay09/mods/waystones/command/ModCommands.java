@@ -1,10 +1,16 @@
 package net.blay09.mods.waystones.command;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.blay09.mods.balm.commands.BalmCommands;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.MutableWaystone;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneStyles;
 import net.blay09.mods.waystones.api.WaystonesAPI;
+import net.blay09.mods.waystones.block.ModBlocks;
+import net.blay09.mods.waystones.block.WaystoneBlockBase;
+import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.comparator.WaystoneComparators;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.ChatFormatting;
@@ -16,8 +22,12 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 import static net.minecraft.commands.Commands.argument;
 
@@ -114,6 +124,19 @@ public class ModCommands {
                                                         targets.size()), true);
                                     }
                                     return totalDeactivated;
+                                }))))
+
+                .then(Commands.literal("place")
+                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_ACTIVATE))
+                        .then(argument("pos", BlockPosArgument.blockPos())
+                                .then(argument("name", StringArgumentType.word()).executes(context -> {
+                                    final var pos = BlockPosArgument.getLoadedBlockPos(context, "pos");
+                                    final var name = StringArgumentType.getString(context, "name");
+                                    ServerLevel level = context.getSource().getLevel();
+                                    WaystonesAPI.placeWaystone(context.getSource().getLevel(), pos, WaystoneStyles.DEFAULT).ifPresent(waystone -> {
+                                        ((MutableWaystone) waystone).setName(Component.literal(name));
+                                    });
+                                    return 1;
                                 }))))
                 .then(Commands.literal("count")
                         .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_COUNT))
