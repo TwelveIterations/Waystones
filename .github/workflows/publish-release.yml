@@ -17,24 +17,55 @@ on:
         required: true
         type: boolean
         default: true
+      maven:
+        description: 'Maven'
+        required: true
+        type: boolean
+        default: true
+      modrinth:
+        description: 'Modrinth'
+        required: true
+        type: boolean
+        default: true
+      curseforge:
+        description: 'CurseForge'
+        required: true
+        type: boolean
+        default: true
 
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    environment: Releases
     outputs:
       ref: v${{ steps.bump-version.outputs.version }}
       version: ${{ steps.bump-version.outputs.version }}
       build-matrix: ${{ steps.set-build-matrix.outputs.result }}
       publish-matrix: ${{ steps.set-publish-matrix.outputs.result }}
     steps:
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.AUTOMATIONS_APP_ID }}
+          private-key: ${{ secrets.AUTOMATIONS_PRIVATE_KEY }}
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+      - name: Get GitHub App User ID
+        id: get-user-id
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      - run: |
+          git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
+          git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
       - name: Extracting version from properties
         shell: bash
         run: echo "version=$(cat gradle.properties | grep -w "\bversion\s*=" | cut -d= -f2)" >> $GITHUB_OUTPUT
         id: extract-version
       - name: Bumping version
-        uses: TwelveIterationMods/bump-version@v1
+        uses: TwelveIterations/bump-version@v1
         with:
           version: ${{ steps.extract-version.outputs.version }}
           bump: patch
@@ -42,8 +73,6 @@ jobs:
       - name: Updating version properties
         run: |
           sed -i "s/^\s*version\s*=.*/version = ${{ steps.bump-version.outputs.version }}/g" gradle.properties
-          git config user.name "GitHub Actions"
-          git config user.email "<>"
           git commit -am "Set version to ${{ steps.bump-version.outputs.version }}"
           git push origin ${BRANCH_NAME}
           git tag -a "v${{ steps.bump-version.outputs.version }}" -m "Release ${{ steps.bump-version.outputs.version }}"
@@ -82,9 +111,12 @@ jobs:
             const curseForgeProjectId = gradleProperties.match(/^(?!#)curseforge_project_id\s*=\s*(.+)/m);
             const modrinthProjectId = gradleProperties.match(/^(?!#)modrinth_project_id\s*=\s*(.+)/m);
             const mavenReleases = gradleProperties.match(/^(?!#)maven_releases\s*=\s*(.+)/m);
+            const publishCurseForge = curseForgeProjectId && ${{inputs.curseforge}};
+            const publishModrinth = modrinthProjectId && ${{inputs.modrinth}};
+            const publishMaven = mavenReleases && ${{inputs.maven}};
             return {
               loader: ['common', includeFabric ? 'fabric' : false, includeForge ? 'forge' : false, includeNeoForge ? 'neoforge' : false].filter(Boolean),
-              site: [curseForgeProjectId ? 'curseforge' : '', modrinthProjectId ? 'modrinth' : '', mavenReleases ? 'publish' : ''].filter(Boolean),
+              site: [publishCurseForge ? 'curseforge' : false, publishModrinth ? 'modrinth' : false, publishMaven ? 'publish' : false].filter(Boolean),
               exclude: [
                 {loader: 'common', site: 'curseforge'},
                 {loader: 'common', site: 'modrinth'}
@@ -98,7 +130,7 @@ jobs:
         with:
           ref: ${{ needs.create-release.outputs.ref }}
       - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
+        uses: gradle/actions/wrapper-validation@v5
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
@@ -126,7 +158,7 @@ jobs:
         with:
           ref: ${{ needs.create-release.outputs.ref }}
       - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
+        uses: gradle/actions/wrapper-validation@v5
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
@@ -152,6 +184,7 @@ jobs:
       - build-common
   publish-release:
     runs-on: ubuntu-latest
+    environment: Releases
     strategy:
       matrix: ${{fromJson(needs.create-release.outputs.publish-matrix)}}
       fail-fast: false
@@ -166,7 +199,7 @@ jobs:
           name: ${{ matrix.loader }}-artifact
           path: ${{ matrix.loader }}/build
       - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
+        uses: gradle/actions/wrapper-validation@v5
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
