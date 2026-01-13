@@ -130,7 +130,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 
 modrinth {
 	token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
-	projectId = project.modrinth_fabric_project_id
+	projectId = project.modrinth_project_id
 	versionType = project.release_type
 	versionNumber = project.version + "+fabric-" + project.minecraft_version
 	uploadFile = remapJar
