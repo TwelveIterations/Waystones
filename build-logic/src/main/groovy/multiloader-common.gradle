@@ -92,7 +92,6 @@ processResources {
             "discord": discord,
             "issues": issues,
             "sources": sources,
-            "pack_format_number": pack_format_number,
             "balm_version": libs.versions.balm.get().split('\\+')[0],
     ]
 
