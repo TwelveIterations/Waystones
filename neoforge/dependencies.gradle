@@ -2,16 +2,8 @@ dependencies {
     implementation(libs.balmNeoForge) {
         changing = libs.versions.balm.get().contains("SNAPSHOT")
     }
-    compileOnly group: 'info.journeymap', name: 'journeymap-api-neoforge', version: project.journeymap_api_version, changing: true
-    // runtimeOnly "mysticdrew:common-networking-neoforge:$journeymap_networking_version"
-    // runtimeOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_neoforge_file_id}"
-    compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
-    compileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:$bluemap_version"
-    compileOnly "us.dynmap:DynmapCoreAPI:$dynmap_version"
-
-    compileOnly "net.blay09.mods:unbreakables-neoforge:${unbreakables_version}"
-}
-
-configurations {
-    testCompileOnly.extendsFrom compileOnly // for some reason needed for EMI
+    compileOnly(libs.journeyMapApiCommon)
+    compileOnly(libs.blueMap)
+    compileOnly(libs.dynmap)
+    compileOnly(libs.unbreakablesCommon)
 }
