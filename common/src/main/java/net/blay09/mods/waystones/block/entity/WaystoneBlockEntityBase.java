@@ -142,10 +142,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @Override
     public void onLoad() {
-        Waystone backingWaystone = waystone;
-        if (waystone instanceof WaystoneProxy) {
-            backingWaystone = ((WaystoneProxy) waystone).getBackingWaystone();
-        }
+        final var backingWaystone = loadBackingWaystone();
         if (backingWaystone instanceof WaystoneImpl && level != null) {
             ((WaystoneImpl) backingWaystone).setDimension(level.dimension());
             ((WaystoneImpl) backingWaystone).setPos(worldPosition);
@@ -163,8 +160,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
                 worldPosition.getZ() + 1);
     }
 
-    public Waystone getWaystone() {
-        if (!waystone.isValid() && level != null && !level.isClientSide && !shouldNotInitialize) {
+    private Waystone loadBackingWaystone() {
+        if (!waystone.isValid() && level != null && !level.isClientSide() && !shouldNotInitialize) {
             if (waystoneUid != null) {
                 waystone = new WaystoneProxy(level.getServer(), waystoneUid);
             }
@@ -187,10 +184,14 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
             if (waystone.isValid()) {
                 waystoneUid = waystone.getWaystoneUid();
-                sync();
+                setChanged();
             }
         }
 
+        return waystone;
+    }
+
+    public Waystone getWaystone() {
         return waystone;
     }
 
