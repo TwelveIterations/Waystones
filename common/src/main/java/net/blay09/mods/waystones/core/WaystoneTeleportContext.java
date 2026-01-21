@@ -26,6 +26,7 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     @Nullable
     private Boolean consumesWarpItem; // nullable for now so we can fallback to legacy warp mode implementation
     private int xpCost;
+    private int itemCost;
     private int cooldown;
     private boolean playsSound = true;
     private boolean playsEffect = true;
@@ -105,6 +106,16 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     @Override
     public void setXpCost(int xpCost) {
         this.xpCost = xpCost;
+    }
+
+    @Override
+    public int getItemCost() {
+        return itemCost;
+    }
+
+    @Override
+    public void setItemCost(int itemCost) {
+        this.itemCost = itemCost;
     }
 
     @Override

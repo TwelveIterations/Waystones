@@ -43,6 +43,7 @@
   "gui.waystones.waystone_selection.deleting_global_for_all": "Cela supprimera la waystone globale pour tout le monde.",
   "gui.waystones.waystone_selection.no_waystones_activated": "Aucune waystone d'activée.",
   "gui.waystones.waystone_selection.level_requirement": "Niveau requis: %d",
+  "gui.waystones.waystone_selection.item_requirement": "Objet requis: %dx %s",
   "gui.waystones.waystone_settings.is_global": "est globale",
   "gui.waystones.inventory.no_waystones_activated": "Aucune waystone d'activée.",
   "gui.waystones.inventory.confirm_return": "Voulez vous vraiment retourner à la Waystone?",

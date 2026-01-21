@@ -11,6 +11,7 @@ import java.util.List;
 @Config(Waystones.MOD_ID)
 public class WaystonesConfigData implements BalmConfigData {
     public XpCost xpCost = new XpCost();
+    public ItemCost itemCost = new ItemCost();
     public Restrictions restrictions = new Restrictions();
     public Cooldowns cooldowns = new Cooldowns();
     public InventoryButton inventoryButton = new InventoryButton();
@@ -70,6 +71,64 @@ public class WaystonesConfigData implements BalmConfigData {
         @Synced
         @Comment("The multiplier applied to the base xp cost when teleporting via the inventory button.")
         public double inventoryButtonXpCostMultiplier = 0f;
+    }
+
+    public static class ItemCost {
+        @Synced
+        @Comment("Item name used as price for teleportation if item cost is enable.")
+        public String itemName = "minecraft:diamond";
+
+        @Synced
+        @Comment("Set to true if item cost should be inverted, meaning the shorter the distance, the more expensive. Can be used to encourage other methods for short-distance travel.")
+        public boolean inverseItemCost = false;
+
+        @Synced
+        @Comment("The amount of blocks per item requirement. If set to 500, the base item count for travelling 1000 blocks will be 2 items.")
+        public int blocksPerItem = 1000;
+
+        @Synced
+        @Comment("The minimum base item cost (may be subceeded by multipliers defined below)")
+        public double minimumBaseItemCost = 0f;
+
+        @Synced
+        @Comment("The maximum base item cost (may be exceeded by multipliers defined below), set to 0 to disable all distance-based item costs")
+        public double maximumBaseItemCost = 3f;
+
+        @Synced
+        @Comment("How much item is needed per leashed animal to travel with you")
+        public int itemCostPerLeashed = 0;
+
+        @Synced
+        @Comment("The base item cost when travelling between dimensions. Ignores block distance.")
+        public int dimensionalWarpItemCost = 3;
+
+        @Synced
+        @Comment("The multiplier applied to the base item cost when teleporting to a global waystone through any method.")
+        public double globalWaystoneItemCostMultiplier = 0f;
+
+        @Synced
+        @Comment("The multiplier applied to the base item cost when teleporting using a Warp Stone item (not the Waystone block, Konstantin)")
+        public double warpStoneItemCostMultiplier = 0f;
+
+        @Synced
+        @Comment("The multiplier applied to the base item cost when teleporting from one waystone to another.")
+        public double waystoneItemCostMultiplier = 0f;
+
+        @Synced
+        @Comment("The multiplier applied to the base item cost when teleporting from one sharestone to another.")
+        public double sharestoneItemCostMultiplier = 0f;
+
+        @Synced
+        @Comment("The multiplier applied to the base item cost when teleporting from a portstone.")
+        public double portstoneItemCostMultiplier = 0f;
+
+        @Synced
+        @Comment("The multiplier applied to the base item cost when teleporting from one warp plate to another.")
+        public double warpPlateItemCostMultiplier = 0f;
+
+        @Synced
+        @Comment("The multiplier applied to the base item cost when teleporting via the inventory button.")
+        public double inventoryButtonItemCostMultiplier = 0f;
     }
 
     public static class Restrictions {

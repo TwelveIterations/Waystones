@@ -93,4 +93,7 @@ public class WaystoneTeleportError {
 
     public static class NotEnoughXp extends WaystoneTeleportError {
     }
+
+    public static class NotEnoughItem extends WaystoneTeleportError {
+    }
 }

@@ -43,6 +43,7 @@ public class InternalMethodsImpl implements InternalMethods {
 
             // Use the context so far to determine the xp cost
             context.setXpCost(PlayerWaystoneManager.getExperienceLevelCost(entity, waystone, warpMode, context));
+            context.setItemCost(PlayerWaystoneManager.getItemCost(entity, waystone, warpMode, context));
         });
     }
 

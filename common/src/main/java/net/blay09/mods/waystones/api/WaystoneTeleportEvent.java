@@ -31,6 +31,14 @@ public abstract class WaystoneTeleportEvent extends BalmEvent {
             context.setXpCost(xpCost);
         }
 
+        public int getItemCost() {
+            return context.getItemCost();
+        }
+
+        public void setItemCost(int itemCost) {
+            context.setItemCost(itemCost);
+        }
+
         public int getCooldown() {
             return context.getCooldown();
         }

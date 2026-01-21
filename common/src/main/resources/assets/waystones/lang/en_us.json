@@ -45,6 +45,7 @@
   "gui.waystones.waystone_selection.deleting_global_for_all": "This will remove the global waystone for everyone.",
   "gui.waystones.waystone_selection.no_waystones_activated": "You have not activated any waystones yet.",
   "gui.waystones.waystone_selection.level_requirement": "Level Requirement: %d",
+  "gui.waystones.waystone_selection.item_requirement": "Item Requirement: %dx %s",
   "gui.waystones.waystone_settings.is_global": "is Global",
   "gui.waystones.inventory.no_waystones_activated": "You have not activated any waystones yet.",
   "gui.waystones.inventory.confirm_return": "Do you really want to warp back to this waystone?",

@@ -182,7 +182,12 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                 waystone,
                 menu.getWarpMode(),
                 waystoneFrom));
-        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, xpLevelCost, button -> onWaystoneSelected(waystone));
+        int itemCost = Math.round(PlayerWaystoneManager.predictItemCost(Objects.requireNonNull(player),
+                waystone,
+                menu.getWarpMode(),
+                waystoneFrom));
+        int itemCountValidForPayment = PlayerWaystoneManager.countItemValidForPayment(Objects.requireNonNull(player));
+        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, xpLevelCost, itemCost, itemCountValidForPayment, button -> onWaystoneSelected(waystone));
         if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {
             btnWaystone.active = false;
         }

@@ -37,6 +37,10 @@ public interface IWaystoneTeleportContext {
 
     void setXpCost(int xpCost);
 
+    int getItemCost();
+
+    void setItemCost(int xpCost);
+
     void setCooldown(int cooldown);
 
     int getCooldown();

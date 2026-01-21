@@ -31,6 +31,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -133,6 +134,20 @@ public class PlayerWaystoneManager {
         return getExperienceLevelCost(player, waystone, warpMode, context);
     }
 
+    public static int predictItemCost(Entity player, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
+        WaystoneTeleportContext context = new WaystoneTeleportContext(player, waystone, null);
+        context.getLeashedEntities().addAll(findLeashedAnimals(player));
+        context.setFromWaystone(fromWaystone);
+        return getItemCost(player, waystone, warpMode, context);
+    }
+
+    public static int countItemValidForPayment(Player player) {
+        Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(WaystonesConfig.getActive().itemCost.itemName));
+        if (item == null) return 0;
+
+        return player.getInventory().countItem(item);
+    }
+
     public static int getExperienceLevelCost(Entity entity, IWaystone waystone, WarpMode warpMode, IWaystoneTeleportContext context) {
         if (!(entity instanceof Player player)) {
             return 0;
@@ -170,6 +185,45 @@ public class PlayerWaystoneManager {
         }
 
         return enableXPCost ? (int) Math.round((xpLevelCost + xpForLeashed) * xpCostMultiplier) : 0;
+    }
+
+    public static int getItemCost(Entity entity, IWaystone waystone, WarpMode warpMode, IWaystoneTeleportContext context) {
+        if (!(entity instanceof Player player)) {
+            return 0;
+        }
+
+        if (context.getFromWaystone() != null && waystone.getWaystoneUid().equals(context.getFromWaystone().getWaystoneUid())) {
+            return 0;
+        }
+
+        boolean enableItemCost = !player.getAbilities().instabuild;
+
+        int itemCountForLeashed = WaystonesConfig.getActive().itemCost.itemCostPerLeashed * context.getLeashedEntities().size();
+
+        double itemCostMultiplier = warpMode.getItemCostMultiplier();
+        if (waystone.isGlobal()) {
+            itemCostMultiplier *= WaystonesConfig.getActive().itemCost.globalWaystoneItemCostMultiplier;
+        }
+
+        BlockPos pos = waystone.getPos();
+        double dist = Math.sqrt(player.distanceToSqr(pos.getX(), player.getY(), pos.getZ())); // ignore y distance
+        final double minimumItemCost = WaystonesConfig.getActive().itemCost.minimumBaseItemCost;
+        final double maximumItemCost = WaystonesConfig.getActive().itemCost.maximumBaseItemCost;
+        double itemCost;
+        if (waystone.getDimension() != player.level().dimension()) {
+            int dimensionalWarpItemCost = WaystonesConfig.getActive().itemCost.dimensionalWarpItemCost;
+            itemCost = Mth.clamp(dimensionalWarpItemCost, minimumItemCost, dimensionalWarpItemCost);
+        } else if (WaystonesConfig.getActive().itemCost.blocksPerItem > 0) {
+            itemCost = Mth.clamp(Math.floor(dist / (float) WaystonesConfig.getActive().itemCost.blocksPerItem), minimumItemCost, maximumItemCost);
+
+            if (WaystonesConfig.getActive().itemCost.inverseItemCost) {
+                itemCost = maximumItemCost - itemCost;
+            }
+        } else {
+            itemCost = minimumItemCost;
+        }
+
+        return enableItemCost ? (int) Math.round((itemCost + itemCountForLeashed) * itemCostMultiplier) : 0;
     }
 
     @Nullable
@@ -262,6 +316,10 @@ public class PlayerWaystoneManager {
             return Either.right(new WaystoneTeleportError.NotEnoughXp());
         }
 
+        if (entity instanceof Player && countItemValidForPayment((Player) entity) < context.getItemCost()) {
+            return Either.right(new WaystoneTeleportError.NotEnoughItem());
+        }
+
         boolean isCreativeMode = entity instanceof Player && ((Player) entity).getAbilities().instabuild;
         if (!context.getWarpItem().isEmpty() && event.getConsumeItemResult().withDefault(() -> !isCreativeMode && context.consumesWarpItem())) {
             context.getWarpItem().shrink(1);
@@ -270,6 +328,7 @@ public class PlayerWaystoneManager {
         if (entity instanceof Player player) {
             applyCooldown(warpMode, player, context.getCooldown());
             applyXpCost(player, context.getXpCost());
+            applyItemCost(player, context.getItemCost());
         }
 
         final var teleportedEntities = doTeleport(context);
@@ -289,6 +348,27 @@ public class PlayerWaystoneManager {
     private static void applyXpCost(Player player, int xpLevelCost) {
         if (xpLevelCost > 0) {
             player.giveExperienceLevels(-xpLevelCost);
+        }
+    }
+
+    private static void applyItemCost(Player player, int itemCost) {
+        if (itemCost > 0) {
+            Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(WaystonesConfig.getActive().itemCost.itemName));
+            Inventory inv  = player.getInventory();
+
+            int remaining = itemCost;
+
+            for (int i = 0; i < inv.getContainerSize(); i++) {
+                ItemStack s = inv.getItem(i);
+
+                if (s.is(item)) {
+                    int c = Math.min(remaining, s.getCount());
+                    s.shrink(c);
+                    remaining -= c;
+
+                    if (s.getCount() == 0) inv.setItem(i, ItemStack.EMPTY);
+                }
+            }
         }
     }
 
@@ -557,7 +637,7 @@ public class PlayerWaystoneManager {
     }
 
     public static boolean mayTeleportToWaystone(Player player, IWaystone waystone) {
-        return true;
+        return true; // TODO : why ?
     }
 
     public static void swapWaystoneSorting(Player player, int index, int otherIndex) {
