@@ -109,7 +109,7 @@ tasks.register('curseforge', TaskPublishCurseForge) {
         projectId != null
     }
     if (projectId) {
-        def mainFile = upload(findProperty("curseforge_project_id"), file("${project.buildDir}/libs/${base.archivesName}-${version}.jar"))
+        def mainFile = upload(findProperty("curseforge_project_id"), jar.archiveFile.get().asFile)
         mainFile.changelog = rootProject.file('CHANGELOG.md').text
         mainFile.addRequirement("balm")
         mainFile.addGameVersion(libs.minecraft.get().version)
@@ -139,21 +139,3 @@ sourceSets.each {
     it.java.destinationDirectory = dir
 }
 
-// Implement mcgradleconventions loader attribute
-def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
-['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements'].each { variant ->
-    configurations.named("$variant") {
-        attributes {
-            attribute(loaderAttribute, 'forge')
-        }
-    }
-}
-sourceSets.configureEach {
-    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant->
-        configurations.named("$variant") {
-            attributes {
-                attribute(loaderAttribute, 'forge')
-            }
-        }
-    }
-}

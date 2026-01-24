@@ -2,20 +2,8 @@ dependencies {
     modImplementation(libs.balmFabric) {
         changing = libs.versions.balm.get().contains("SNAPSHOT")
     }
-    if (jei_minecraft_version == libs.minecraft.get().version) {
-        modLocalRuntime "mezz.jei:jei-$jei_minecraft_version-fabric:$jei_version"
-    }
-    modCompileOnly group: 'info.journeymap', name: 'journeymap-api-fabric', version: project.journeymap_api_version, changing: true, transitive: false
-    // modCompileOnly "mysticdrew:common-networking-fabric:$journeymap_networking_version"
-    // modCompileOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_fabric_file_id}"
-
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$rei_version") {
-        transitive = false
-    }
-    modCompileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:$bluemap_version"
-    modCompileOnly "us.dynmap:DynmapCoreAPI:$dynmap_version"
-
-    modCompileOnly("net.blay09.mods:unbreakables-common:${unbreakables_version}") {
-        transitive = false
-    }
+    modCompileOnly(libs.journeyMapApiCommon)
+    modCompileOnly(libs.blueMap)
+    modCompileOnly(libs.dynmap)
+    modCompileOnly(libs.unbreakablesCommon)
 }

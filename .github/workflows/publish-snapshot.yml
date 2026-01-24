@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - '[0-9]+.[0-9]+.[0-9]+'
-      - '[0-9]+.[0-9]+'
 
 jobs:
   prepare-matrix:
@@ -34,6 +33,7 @@ jobs:
             };
   publish-snapshot:
     runs-on: ubuntu-latest
+    environment: Snapshots
     strategy:
       matrix: ${{fromJson(needs.prepare-matrix.outputs.matrix)}}
       fail-fast: false
@@ -54,7 +54,7 @@ jobs:
         run: echo "version=$(cat gradle.properties | grep -w "\bversion\s*=" | cut -d= -f2)" >> $GITHUB_OUTPUT
         id: extract-version
       - name: Bumping version
-        uses: TwelveIterationMods/bump-version@v1
+        uses: TwelveIterations/bump-version@v1
         with:
           version: ${{ steps.extract-version.outputs.version }}
           bump: patch
