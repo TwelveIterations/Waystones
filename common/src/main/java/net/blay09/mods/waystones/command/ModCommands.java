@@ -22,9 +22,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.commands.SharedSuggestionProvider;
 
 import static net.minecraft.commands.Commands.argument;
