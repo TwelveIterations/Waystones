@@ -8,6 +8,8 @@ import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlock;
+import net.blay09.mods.waystones.block.WaystoneBlockBase;
+import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.core.*;
@@ -16,6 +18,7 @@ import net.blay09.mods.waystones.requirement.WarpRequirementsContextImpl;
 import net.blay09.mods.waystones.requirement.RequirementRegistry;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -133,9 +136,20 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public Optional<Waystone> placeWaystone(Level level, BlockPos pos, WaystoneStyle style) {
-        Block block = Balm.getRegistries().getBlock(style.getBlockRegistryName());
-        level.setBlock(pos, block.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER), 3);
-        level.setBlock(pos.above(), block.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.UPPER), 3);
+        Block block = BuiltInRegistries.BLOCK.get(style.getBlockRegistryName());
+        level.setBlock(pos, block.defaultBlockState()
+                .setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER)
+                .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.PLAYER), 3);
+        level.setBlock(pos.above(), block.defaultBlockState()
+                .setValue(WaystoneBlock.HALF, DoubleBlockHalf.UPPER)
+                .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.PLAYER), 3);
+        if (level.getBlockEntity(pos) instanceof WaystoneBlockEntityBase waystoneBlockEntity && level instanceof ServerLevel serverLevel) {
+            waystoneBlockEntity.initializeWaystone(serverLevel, null, WaystoneOrigin.PLAYER);
+            if (level.getBlockEntity(pos.above()) instanceof WaystoneBlockEntityBase waystoneBlockEntityAbove) {
+                waystoneBlockEntityAbove.initializeFromBase(waystoneBlockEntity);
+            }
+            return Optional.of(waystoneBlockEntity.getWaystone());
+        }
         return getWaystoneAt(level, pos);
     }
 
@@ -146,14 +160,30 @@ public class InternalMethodsImpl implements InternalMethods {
             return Optional.empty();
         }
 
-        level.setBlock(pos, sharestone.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER), 3);
-        level.setBlock(pos.above(), sharestone.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.UPPER), 3);
+        level.setBlock(pos, sharestone.defaultBlockState()
+                .setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER)
+                .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.PLAYER), 3);
+        level.setBlock(pos.above(), sharestone.defaultBlockState()
+                .setValue(WaystoneBlock.HALF, DoubleBlockHalf.UPPER)
+                .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.PLAYER), 3);
+        if (level.getBlockEntity(pos) instanceof WaystoneBlockEntityBase waystoneBlockEntity && level instanceof ServerLevel serverLevel) {
+            waystoneBlockEntity.initializeWaystone(serverLevel, null, WaystoneOrigin.PLAYER);
+            if (level.getBlockEntity(pos.above()) instanceof WaystoneBlockEntityBase waystoneBlockEntityAbove) {
+                waystoneBlockEntityAbove.initializeFromBase(waystoneBlockEntity);
+            }
+            return Optional.of(waystoneBlockEntity.getWaystone());
+        }
         return getWaystoneAt(level, pos);
     }
 
     @Override
     public Optional<Waystone> placeWarpPlate(Level level, BlockPos pos) {
-        level.setBlock(pos, ModBlocks.warpPlate.defaultBlockState(), 3);
+        level.setBlock(pos, ModBlocks.warpPlate.defaultBlockState()
+                .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.PLAYER), 3);
+        if (level.getBlockEntity(pos) instanceof WaystoneBlockEntityBase waystoneBlockEntity && level instanceof ServerLevel serverLevel) {
+            waystoneBlockEntity.initializeWaystone(serverLevel, null, WaystoneOrigin.PLAYER);
+            return Optional.of(waystoneBlockEntity.getWaystone());
+        }
         return getWaystoneAt(level, pos);
     }
 
