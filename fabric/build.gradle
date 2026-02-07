@@ -9,14 +9,9 @@ plugins {
 
 dependencies {
     minecraft libs.minecraft
-    mappings loom.layered() {
-        officialMojangMappings()
-        parchment variantOf(libs.parchment) {
-            artifactType('zip')
-        }
-    }
-    modImplementation libs.fabricLoader
-    modImplementation libs.fabricApi
+
+    implementation libs.fabricLoader
+    implementation libs.fabricApi
 }
 
 apply from: rootProject.file('repositories.gradle')
@@ -71,7 +66,7 @@ tasks.register('curseforge', TaskPublishCurseForge) {
         projectId != null
     }
     if (projectId) {
-        def mainFile = upload(findProperty("curseforge_project_id"), remapJar.archiveFile.get().asFile)
+        def mainFile = upload(findProperty("curseforge_project_id"), jar.archiveFile.get().asFile)
         mainFile.changelog = rootProject.file('CHANGELOG.md').text
         mainFile.addRequirement("fabric-api")
         mainFile.addRequirement("balm")
@@ -86,7 +81,7 @@ modrinth {
     projectId = findProperty("modrinth_project_id")
     versionType = "release"
     versionNumber = project.version + "+fabric-" + libs.minecraft.get().version
-    uploadFile = remapJar
+    uploadFile = jar
     changelog = rootProject.file("CHANGELOG.md").text
     gameVersions = [libs.minecraft.get().version]
     syncBodyFrom = rootProject.file("modpage.md").text

@@ -4,8 +4,8 @@ import net.blay09.mods.balm.world.level.block.DeferredBlock;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.*;
 import net.blay09.mods.waystones.item.ModItems;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -32,7 +32,7 @@ public class ModModelProvider extends FabricModelProvider {
             .select(Direction.WEST, Y_ROT_270)
             .select(Direction.NORTH, NOP);
 
-    public ModModelProvider(FabricDataOutput output) {
+    public ModModelProvider(FabricPackOutput output) {
         super(output);
     }
 

@@ -1,9 +1,9 @@
 dependencies {
-    modImplementation(libs.balmFabric) {
+    implementation(libs.balmFabric) {
         changing = libs.versions.balm.get().contains("SNAPSHOT")
     }
-    modCompileOnly(libs.journeyMapApiCommon)
-    modCompileOnly(libs.blueMap)
-    modCompileOnly(libs.dynmap)
-    modCompileOnly(libs.unbreakablesCommon)
+    compileOnly(libs.journeyMapApiCommon)
+    compileOnly(libs.blueMap)
+    compileOnly(libs.dynmap)
+    compileOnly(libs.unbreakablesCommon)
 }

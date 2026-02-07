@@ -1,11 +1,11 @@
 [versions]
 balm = "21.11.3"
-minecraft = "1.21.11"
-neoForm = "1.21.11-20251209.172050"
-neoForge = "21.11.0-beta"
+minecraft = "26.1-snapshot-6"
+neoForm = "26.1-snapshot-6-1"
+neoForge = "26.1.0.0-alpha.9+snapshot-6"
 forge = "61.0.3"
-fabricApi = "0.139.4+1.21.11"
-fabricLoader = "0.18.1"
+fabricApi = "0.143.2+26.1"
+fabricLoader = "0.18.4"
 journeyMapApi = "2.0.0-1.21.4-SNAPSHOT"
 unbreakables = "21.9.1-SNAPSHOT"
 
@@ -30,8 +30,8 @@ unbreakablesCommon = { module = "net.blay09.mods:unbreakables-common", version.r
 mixin = { module = "org.spongepowered:mixin", version = "0.8.7" }
 
 [plugins]
-fabricLoom = { id = "fabric-loom", version = "1.13-SNAPSHOT" }
-modDevGradle = { id = "net.neoforged.moddev", version = "2.0.107" }
+fabricLoom = { id = "net.fabricmc.fabric-loom", version = "1.14-SNAPSHOT" }
+modDevGradle = { id = "net.neoforged.moddev", version = "2.0.140" }
 forgeGradle = { id = "net.minecraftforge.gradle", version = "[6.0.25,6.2)" }
 mixin = { id = "org.spongepowered.mixin", version = "0.7-SNAPSHOT" }
 curseForgeGradle = { id = "net.darkhax.curseforgegradle", version = "1.1.26" }
