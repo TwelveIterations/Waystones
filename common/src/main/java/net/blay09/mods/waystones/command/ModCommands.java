@@ -33,17 +33,17 @@ public class ModCommands {
     private static final Identifier PERMISSION_WAYSTONES_ACTIVATE = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.activate");
     private static final Identifier PERMISSION_WAYSTONES_FORGET = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.forget");
     private static final Identifier PERMISSION_WAYSTONES_COUNT = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.count");
+    private static final Identifier PERMISSION_WAYSTONES_PLACE = Identifier.fromNamespaceAndPath(Waystones.MOD_ID,"command.waystones.place");
     private static final Identifier PERMISSION_WAYSTONES_LIST = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.list");
     private static final Identifier PERMISSION_WAYSTONES_GUI = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.gui");
-    private static final Identifier PERMISSION_WAYSTONES_PLACE = Identifier.fromNamespaceAndPath(Waystones.MOD_ID,"command.waystones.place");
 
     public static void initialize(BalmCommands commands) {
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_ACTIVATE, Permissions.COMMANDS_GAMEMASTER);
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_FORGET, Permissions.COMMANDS_GAMEMASTER);
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_COUNT, Permissions.COMMANDS_GAMEMASTER);
+        BalmCommands.registerPermission(PERMISSION_WAYSTONES_PLACE, Permissions.COMMANDS_GAMEMASTER);
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_LIST, Permissions.COMMANDS_GAMEMASTER);
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_GUI, Permissions.COMMANDS_GAMEMASTER);
-        BalmCommands.registerPermission(PERMISSION_WAYSTONES_PLACE, Permissions.COMMANDS_GAMEMASTER);
         commands.register(dispatcher -> dispatcher.register(Commands.literal("waystones")
                 .requires(BalmCommands.requireAnyPermission(PERMISSION_WAYSTONES_ACTIVATE, PERMISSION_WAYSTONES_FORGET, PERMISSION_WAYSTONES_COUNT, PERMISSION_WAYSTONES_LIST, PERMISSION_WAYSTONES_GUI))
                 .then(Commands.literal("activate")
@@ -128,39 +128,40 @@ public class ModCommands {
                         .then(argument("pos", BlockPosArgument.blockPos())
                                 .then(Commands.argument("style", StringArgumentType.word())
                                         .suggests((context, builder) -> {
-                                            return SharedSuggestionProvider.suggest(new String[]{
-                                                    "waystone",
-                                                    "mossy_waystone",
-                                                    "sandy_waystone",
-                                                    "blackstone_waystone",
-                                                    "deepslate_waystone",
-                                                    "end_stone_waystone"
-                                            }, builder);
+                                            return SharedSuggestionProvider.suggest(
+                                                    WaystoneStyles.getRegisteredStyles().stream()
+                                                            .map(style -> {
+                                                                String id = style.getBlockRegistryName().toString();
+                                                                return id.replace("waystones:", "");
+                                                            }),
+                                                    builder
+                                            );
                                         })
-                                        .then(argument("name", StringArgumentType.greedyString()).executes(context -> {
-                                            final var pos = BlockPosArgument.getLoadedBlockPos(context, "pos");
-                                            final var styleKey = StringArgumentType.getString(context, "style");
-                                            final var name = StringArgumentType.getString(context, "name");
-                                            final ServerLevel level = context.getSource().getLevel();
+                                        .then(Commands.argument("name", StringArgumentType.greedyString())
+                                                .executes(context -> {
+                                                    final var pos = BlockPosArgument.getLoadedBlockPos(context, "pos");
+                                                    final var styleKey = StringArgumentType.getString(context, "style");
+                                                    final var name = StringArgumentType.getString(context, "name");
+                                                    final ServerLevel level = context.getSource().getLevel();
 
-                                            Identifier styleId;
-                                            if (!styleKey.contains(":")) {
-                                                styleId = Identifier.fromNamespaceAndPath("waystones", styleKey);
-                                            } else {
-                                                styleId = Identifier.tryParse(styleKey);
-                                            }
+                                                    Identifier styleId;
+                                                    if (!styleKey.contains(":")) {
+                                                        styleId = Identifier.fromNamespaceAndPath("waystones", styleKey);
+                                                    } else {
+                                                        styleId = Identifier.tryParse(styleKey);
+                                                    }
 
-                                            WaystoneStyle style = styleId != null ? WaystoneStyles.getStyle(styleId) : null;
-                                            if (style == null) {
-                                                context.getSource().sendFailure(Component.literal("Unknown waystone style: " + styleKey));
-                                                return 0;
-                                            }
+                                                    WaystoneStyle style = styleId != null ? WaystoneStyles.getStyle(styleId) : null;
+                                                    if (style == null) {
+                                                        context.getSource().sendFailure(Component.literal("Unknown waystone style: " + styleKey));
+                                                        return 0;
+                                                    }
 
-                                            WaystonesAPI.placeWaystone(level, pos, style).ifPresent(waystone -> {
-                                                ((MutableWaystone) waystone).setName(Component.literal(name));
-                                            });
-                                            return 1;
-                                        })))))
+                                                    WaystonesAPI.placeWaystone(level, pos, style).ifPresent(waystone -> {
+                                                        ((MutableWaystone) waystone).setName(Component.literal(name));
+                                                    });
+                                                    return 1;
+                                                })))))
                 .then(Commands.literal("count")
                         .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_COUNT))
                         .then(argument("player", EntityArgument.player()).executes(new CountWaystonesCommand())))
