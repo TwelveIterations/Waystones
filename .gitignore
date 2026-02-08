@@ -26,3 +26,4 @@ runserver
 logs
 
 common/src/generated/resources/.cache
+.minecraft

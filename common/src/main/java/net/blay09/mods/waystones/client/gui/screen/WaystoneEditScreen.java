@@ -26,8 +26,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
     private Button saveButton;
 
     public WaystoneEditScreen(WaystoneEditMenu container, Inventory playerInventory, Component title) {
-        super(container, playerInventory, title);
-        imageHeight = 210;
+        super(container, playerInventory, title, 176, 210);
         titleLabelY = 44;
     }
 

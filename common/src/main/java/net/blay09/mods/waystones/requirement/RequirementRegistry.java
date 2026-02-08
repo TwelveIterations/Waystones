@@ -369,7 +369,7 @@ public class RequirementRegistry {
             final var vehicle = context.getEntity().getVehicle();
             if (vehicle != null) {
                 if (parameters.isTag()) {
-                    return vehicle.getType().is(TagKey.create(Registries.ENTITY_TYPE, parameters.value()));
+                    return vehicle.typeHolder().is(TagKey.create(Registries.ENTITY_TYPE, parameters.value()));
                 } else {
                     return BuiltInRegistries.ENTITY_TYPE.getKey(vehicle.getType()).equals(parameters.value());
                 }

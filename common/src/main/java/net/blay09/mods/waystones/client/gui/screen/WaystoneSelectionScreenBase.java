@@ -60,7 +60,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     private static final int entryHeight = 25;
 
     public WaystoneSelectionScreenBase(WaystoneSelectionMenu container, Inventory playerInventory, Component title) {
-        super(container, playerInventory, title);
+        super(container, playerInventory, title, 270, 200);
         waystones = container.getWaystones();
         PlayerWaystoneManager.ensureSortingIndex(Minecraft.getInstance().player, waystones);
         filteredWaystones = new ArrayList<>(waystones);
@@ -68,8 +68,6 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         if (sorting != null) {
             filteredWaystones.sort(getSorting());
         }
-        imageWidth = 270;
-        imageHeight = 200;
     }
 
     @Override
@@ -78,10 +76,6 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         final int maxButtonsPerPage = (maxContentHeight - headerHeight - footerHeight) / entryHeight;
         buttonsPerPage = Math.max(4, Math.min(maxButtonsPerPage, waystones.size()));
         final int contentHeight = headerHeight + buttonsPerPage * entryHeight + footerHeight;
-
-        // Leave no space for JEI!
-        imageWidth = width;
-        imageHeight = contentHeight;
 
         super.init();
 

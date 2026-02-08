@@ -10,7 +10,6 @@ import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -24,6 +23,7 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.MaterialSet;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Unit;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.Vec3;
@@ -87,7 +87,7 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
         if (renderState.showRunes) {
             poseStack.scale(1.05f, 1.05f, 1.05f);
             final var sprite = materials.get(MATERIAL);
-            submitNodeCollector.submitModel(model, Unit.INSTANCE, poseStack, MATERIAL.renderType(RenderTypes::entityCutout), renderState.glow ? LightTexture.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, renderState.runeColor, sprite, 0, renderState.breakProgress);
+            submitNodeCollector.submitModel(model, Unit.INSTANCE, poseStack, MATERIAL.renderType(RenderTypes::entityCutout), renderState.glow ? LightCoordsUtil.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, renderState.runeColor, sprite, 0, renderState.breakProgress);
         }
         poseStack.popPose();
     }

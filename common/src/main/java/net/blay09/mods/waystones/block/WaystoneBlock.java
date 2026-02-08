@@ -94,18 +94,19 @@ public class WaystoneBlock extends WaystoneBlockBase {
             notifyObserversOfAction(world, pos);
 
             if (world.isClientSide()) {
+                final var random = world.getRandom();
                 for (int i = 0; i < 32; i++) {
                     world.addParticle(ParticleTypes.ENCHANT,
-                            pos.getX() + 0.5 + (world.random.nextDouble() - 0.5) * 2,
+                            pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 2,
                             pos.getY() + 3,
-                            pos.getZ() + 0.5 + (world.random.nextDouble() - 0.5) * 2,
+                            pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 2,
                             0,
                             -5,
                             0);
                     world.addParticle(ParticleTypes.ENCHANT,
-                            pos.getX() + 0.5 + (world.random.nextDouble() - 0.5) * 2,
+                            pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 2,
                             pos.getY() + 4,
-                            pos.getZ() + 0.5 + (world.random.nextDouble() - 0.5) * 2,
+                            pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 2,
                             0,
                             -5,
                             0);

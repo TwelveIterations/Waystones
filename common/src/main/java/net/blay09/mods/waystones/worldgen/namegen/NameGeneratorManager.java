@@ -23,13 +23,13 @@ import java.util.Set;
 
 public class NameGeneratorManager extends SavedData {
 
-    private static final String DATA_NAME = Waystones.MOD_ID + "_name_generator";
+    private static final String DATA_NAME = "name_generator";
     private static final Codec<NameGeneratorManager> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.listOf().fieldOf("UsedNames").forGetter(NameGeneratorManager::getUsedNames)
     ).apply(instance, NameGeneratorManager::new));
 
     public static final SavedDataType<NameGeneratorManager> TYPE = new SavedDataType<>(
-            DATA_NAME,
+            Waystones.id(DATA_NAME),
             () -> new NameGeneratorManager(List.of()),
             CODEC,
             null // TODO this can't be null but mod loaders will save us soon I'm sure

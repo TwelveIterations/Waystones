@@ -22,8 +22,9 @@ public record ClientboundTeleportEffectPacket(BlockPos pos) implements CustomPac
     public static void handle(Player player, ClientboundTeleportEffectPacket message) {
         Level level = player.level();
         if (level != null) {
+            final var random = level.getRandom();
             for (int i = 0; i < 128; i++) {
-                level.addParticle(ParticleTypes.PORTAL, message.pos.getX() + (level.random.nextDouble() - 0.5) * 3, message.pos.getY() + level.random.nextDouble() * 3, message.pos.getZ() + (level.random.nextDouble() - 0.5) * 3, (level.random.nextDouble() - 0.5) * 2, -level.random.nextDouble(), (level.random.nextDouble() - 0.5) * 2);
+                level.addParticle(ParticleTypes.PORTAL, message.pos.getX() + (random.nextDouble() - 0.5) * 3, message.pos.getY() + random.nextDouble() * 3, message.pos.getZ() + (random.nextDouble() - 0.5) * 3, (random.nextDouble() - 0.5) * 2, -random.nextDouble(), (random.nextDouble() - 0.5) * 2);
             }
         }
     }

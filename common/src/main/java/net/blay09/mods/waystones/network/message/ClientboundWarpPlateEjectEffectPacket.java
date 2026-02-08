@@ -22,8 +22,9 @@ public record ClientboundWarpPlateEjectEffectPacket(BlockPos pos) implements Cus
     public static void handle(Player player, ClientboundWarpPlateEjectEffectPacket message) {
         Level level = player.level();
         if (level != null) {
+            final var random = level.getRandom();
             for (int i = 0; i < 10; i++) {
-                level.addParticle(ParticleTypes.SMALL_GUST, message.pos.getX() + 0.5 + (level.random.nextDouble() - 0.5), message.pos.getY() + level.random.nextDouble(), message.pos.getZ() + 0.5 + (level.random.nextDouble() - 0.5), (level.random.nextDouble() - 0.5) * 2, -level.random.nextDouble(), (level.random.nextDouble() - 0.5) * 2);
+                level.addParticle(ParticleTypes.SMALL_GUST, message.pos.getX() + 0.5 + (random.nextDouble() - 0.5), message.pos.getY() + random.nextDouble(), message.pos.getZ() + 0.5 + (random.nextDouble() - 0.5), (random.nextDouble() - 0.5) * 2, -random.nextDouble(), (random.nextDouble() - 0.5) * 2);
                 // TODO sound
             }
         }

@@ -17,13 +17,13 @@ import java.util.*;
 
 public class SavedDataWaystonesStore extends SavedData implements WaystonesStore {
 
-    private static final String DATA_NAME = Waystones.MOD_ID;
+    private static final String DATA_NAME = "waystones";
     private static final Codec<SavedDataWaystonesStore> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             WaystoneImpl.CODEC.codec().listOf().fieldOf("Waystones").forGetter(WaystonesStore::getWaystones)
     ).apply(instance, SavedDataWaystonesStore::new));
 
     public static final SavedDataType<SavedDataWaystonesStore> TYPE = new SavedDataType<>(
-            DATA_NAME,
+            Waystones.id(DATA_NAME),
             () -> new SavedDataWaystonesStore(List.of()),
             CODEC,
             null // TODO this can't be null but mod loaders will save us soon I'm sure

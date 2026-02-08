@@ -15,8 +15,7 @@ public class WaystoneModifierScreen extends AbstractContainerScreen<WaystoneModi
     private static final Identifier WARP_PLATE_GUI_TEXTURES = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/menu/waystone_modifiers.png");
 
     public WaystoneModifierScreen(WaystoneModifierMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
-        imageHeight = 196;
+        super(menu, playerInventory, title, 176, 196);
         inventoryLabelY = 93;
     }
 
