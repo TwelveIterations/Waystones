@@ -68,7 +68,7 @@ jobs:
         uses: TwelveIterations/bump-version@v1
         with:
           version: ${{ steps.extract-version.outputs.version }}
-          bump: patch
+          bump: revision
         id: bump-version
       - name: Updating version properties
         run: |
@@ -86,12 +86,10 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const settingsGradle = fs.readFileSync('settings.gradle', 'utf8');
-            const includePattern = /^(?!\s*\/\/)\s*include\s*\(\s*(['"]([^'"]+)['"](?:,\s*['"]([^'"]+)['"])*\s*)\)/gm;
-            const includes = [...settingsGradle.matchAll(includePattern)].flatMap(match => match[0].match(/['"]([^'"]+)['"]/g).map(item => item.replace(/['"]/g, '')));
-            const includeFabric = includes.includes('fabric') && ${{inputs.fabric}};
-            const includeForge = includes.includes('forge') && ${{inputs.forge}};
-            const includeNeoForge = includes.includes('neoforge') && ${{inputs.neoforge}};
+            const gradleProperties = fs.readFileSync('gradle.properties', 'utf8');
+            const includeFabric = gradleProperties.match(/^(?!#)include_fabric\s*=\s*true/m) && ${{inputs.fabric}};
+            const includeForge = gradleProperties.match(/^(?!#)include_forge\s*=\s*true/m) && ${{inputs.forge}};
+            const includeNeoForge = gradleProperties.match(/^(?!#)include_neoforge\s*=\s*true/m) && ${{inputs.neoforge}};
             return {
               loader: [includeFabric ? 'fabric' : false, includeForge ? 'forge' : false, includeNeoForge ? 'neoforge' : false].filter(Boolean),
             }
@@ -101,13 +99,10 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const settingsGradle = fs.readFileSync('settings.gradle', 'utf8');
-            const includePattern = /^(?!\s*\/\/)\s*include\s*\(\s*(['"]([^'"]+)['"](?:,\s*['"]([^'"]+)['"])*\s*)\)/gm;
-            const includes = [...settingsGradle.matchAll(includePattern)].flatMap(match => match[0].match(/['"]([^'"]+)['"]/g).map(item => item.replace(/['"]/g, '')));
-            const includeFabric = includes.includes('fabric') && ${{inputs.fabric}};
-            const includeForge = includes.includes('forge') && ${{inputs.forge}};
-            const includeNeoForge = includes.includes('neoforge') && ${{inputs.neoforge}};
             const gradleProperties = fs.readFileSync('gradle.properties', 'utf8');
+            const includeFabric = gradleProperties.match(/^(?!#)include_fabric\s*=\s*true/m) && ${{inputs.fabric}};
+            const includeForge = gradleProperties.match(/^(?!#)include_forge\s*=\s*true/m) && ${{inputs.forge}};
+            const includeNeoForge = gradleProperties.match(/^(?!#)include_neoforge\s*=\s*true/m) && ${{inputs.neoforge}};
             const curseForgeProjectId = gradleProperties.match(/^(?!#)curseforge_project_id\s*=\s*(.+)/m);
             const modrinthProjectId = gradleProperties.match(/^(?!#)modrinth_project_id\s*=\s*(.+)/m);
             const mavenReleases = gradleProperties.match(/^(?!#)maven_releases\s*=\s*(.+)/m);
@@ -134,7 +129,7 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: 25
           distribution: temurin
           cache: 'gradle'
       - name: Make gradle wrapper executable
@@ -162,7 +157,7 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: 25
           distribution: temurin
           cache: 'gradle'
       - name: Make gradle wrapper executable
@@ -172,6 +167,9 @@ jobs:
         with:
           name: common-artifact
           path: common/build
+      - name: Workaround for FG7
+        run: ./gradlew
+        if: matrix.loader == 'forge'
       - name: Build ${{ matrix.loader }} artifact
         run: ./gradlew :${{ matrix.loader }}:build '-Pversion=${{needs.create-release.outputs.version}}'
       - name: Upload ${{ matrix.loader }} artifact
@@ -203,11 +201,14 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: 25
           distribution: temurin
           cache: 'gradle'
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
+      - name: Workaround for FG7
+        run: ./gradlew
+        if: matrix.loader == 'forge'
       - name: Publish
         run: ./gradlew :${{ matrix.loader }}:${{ matrix.site }} '-Pversion=${{needs.create-release.outputs.version}}' '-PmavenUsername=${{ secrets.MAVEN_USER }}' '-PmavenPassword=${{ secrets.MAVEN_PASSWORD }}'
         env:

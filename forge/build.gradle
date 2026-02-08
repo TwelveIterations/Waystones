@@ -3,99 +3,61 @@ import net.darkhax.curseforgegradle.TaskPublishCurseForge
 plugins {
     id 'multiloader-loader'
     alias libs.plugins.forgeGradle
-    alias libs.plugins.mixin
     alias libs.plugins.curseForgeGradle
     alias libs.plugins.modrinthMinotaur
 }
 
-mixin {
-    config("${mod_id}.mixins.json")
-    config("${mod_id}.forge.mixins.json")
-}
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
-jar {
-    manifest {
-        attributes["MixinConfigs"] = "${mod_id}.mixins.json,${mod_id}.forge.mixins.json"
-    }
-}
 
 minecraft {
     mappings channel: 'official', version: libs.minecraft.get().version
-
-    copyIdeResources = true //Calls processResources when in dev
-
-    reobf = false // Forge 1.20.6+ uses official mappings at runtime, so we shouldn't reobf from official to SRG
-
-    // Automatically enable forge AccessTransformers if the file exists
-    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
-    if (at.exists()) {
-        accessTransformer = at
-    }
-
     runs {
-        client {
-            workingDirectory file('runs/client')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName "Client"
-
-            property 'forge.enabledGameTestNamespaces', mod_id
-
-            mods {
-                modClientRun {
-                    source sourceSets.main
-                }
-            }
+        configureEach {
+            workingDir.convention layout.projectDirectory.dir('run')
+            // Mixin requires either specifying the config via command line, or in the Manifest
+            args "--mixin.config=${mod_id}.mixins.json,${mod_id}-api.mixins.json,${mod_id}-forge.mixins.json"
         }
-
-        server {
-            workingDirectory file('runs/server')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName "Server"
-
-            property 'forge.enabledGameTestNamespaces', mod_id
-
-            mods {
-                modServerRun {
-                    source sourceSets.main
-                }
-            }
+        register('client') {
+            systemProperty 'forge.enabledGameTestNamespaces', mod_id
         }
+    }
+}
 
-        data {
-            workingDirectory file('runs/data')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-            taskName "Data"
+repositories {
+    maven minecraft.mavenizer
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+    mavenCentral()
+}
 
-            mods {
-                modDataRun {
-                    source sourceSets.main
-                }
-            }
-        }
+dependencies {
+    def mcVersion = libs.minecraft.get().version
+    def forgeVersion = libs.forge.get().version
+    implementation minecraft.dependency("net.minecraftforge:forge:$mcVersion-$forgeVersion")
+    annotationProcessor 'net.minecraftforge:eventbus-validator:7.0.0'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+tasks.named('jar', Jar) {
+    manifest {
+        attributes["MixinConfigs"] = "${mod_id}.mixins.json,${mod_id}.api.mixins.json,${mod_id}.forge.mixins.json"
+    }
+}
+
+fgtools {
+    configure('mavenizer') {
+        classpath = configurations.detachedConfiguration(dependencies.create('net.minecraftforge:minecraft-mavenizer:0.4.19'))
     }
 }
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
-dependencies {
-    def mcVersion = libs.minecraft.get().version
-    def forgeVersion = libs.forge.get().version
-    minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
-    def mixinVersion = libs.mixin.get().version
-    annotationProcessor "org.spongepowered:mixin:${mixinVersion}:processor"
-}
-
 apply from: rootProject.file('repositories.gradle')
 apply from: 'dependencies.gradle'
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            fg.component(it)
-        }
-    }
-}
 
 tasks.register('curseforge', TaskPublishCurseForge) {
     dependsOn('build')
