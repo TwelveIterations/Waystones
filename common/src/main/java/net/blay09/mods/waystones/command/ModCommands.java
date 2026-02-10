@@ -129,11 +129,8 @@ public class ModCommands {
                                 .then(Commands.argument("style", StringArgumentType.word())
                                         .suggests((context, builder) -> {
                                             return SharedSuggestionProvider.suggest(
-                                                    WaystoneStyles.getRegisteredStyles().stream()
-                                                            .map(style -> {
-                                                                String id = style.getBlockRegistryName().toString();
-                                                                return id.replace("waystones:", "");
-                                                            }),
+                                                    WaystoneStyles.getRegisteredKeys().stream()
+                                                            .map(id -> id.toString().replace("waystones:", "")),
                                                     builder
                                             );
                                         })

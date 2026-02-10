@@ -38,4 +38,8 @@ public class WaystoneStyles {
     public static Collection<WaystoneStyle> getRegisteredStyles() {
         return styles.values();
     }
+
+    public static Collection<Identifier> getRegisteredKeys() {
+        return styles.keySet();
+    }
 }
