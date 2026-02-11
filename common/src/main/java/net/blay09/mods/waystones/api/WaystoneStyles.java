@@ -35,10 +35,6 @@ public class WaystoneStyles {
         return styles.get(name);
     }
 
-    public static Collection<WaystoneStyle> getRegisteredStyles() {
-        return styles.values();
-    }
-
     public static Collection<Identifier> getRegisteredKeys() {
         return styles.keySet();
     }
