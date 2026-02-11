@@ -130,7 +130,7 @@ public class ModCommands {
                                         .suggests((context, builder) -> {
                                             return SharedSuggestionProvider.suggest(
                                                     WaystoneStyles.getRegisteredKeys().stream()
-                                                            .map(id -> id.toString().replace("waystones:", "")),
+                                                            .map(id -> id.getNamespace().equals(Waystones.MOD_ID) ? id.getPath() : id.toString()),
                                                     builder
                                             );
                                         })
