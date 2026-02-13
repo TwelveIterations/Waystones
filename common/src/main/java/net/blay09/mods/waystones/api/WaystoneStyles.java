@@ -5,6 +5,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,5 +33,9 @@ public class WaystoneStyles {
     @Nullable
     public static WaystoneStyle getStyle(Identifier name) {
         return styles.get(name);
+    }
+
+    public static Collection<Identifier> getRegisteredKeys() {
+        return styles.keySet();
     }
 }
