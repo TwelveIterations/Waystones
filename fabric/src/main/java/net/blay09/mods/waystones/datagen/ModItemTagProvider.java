@@ -11,6 +11,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class ModItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
@@ -39,13 +40,9 @@ public class ModItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
                 ModBlocks.endStoneWaystone.asItem());
 
         final var sharestonesTag = tag(ModItemTags.SHARESTONES);
-        for (final var sharestone : ModBlocks.sharestones.values()) {
-            sharestonesTag.add(sharestone.asItem());
-        }
+        ModBlocks.sharestones.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue).forEach(it ->sharestonesTag.add(it.asItem()));
 
         final var portstonestag = tag(ModItemTags.PORTSTONES);
-        for (final var portstone : ModBlocks.portstones.values()) {
-            portstonestag.add(portstone.asItem());
-        }
+        ModBlocks.portstones.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue).forEach(it -> portstonestag.add(it.asItem()));
     }
 }
