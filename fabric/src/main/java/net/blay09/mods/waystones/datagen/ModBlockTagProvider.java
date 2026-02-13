@@ -10,6 +10,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class ModBlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
@@ -28,12 +29,8 @@ public class ModBlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
                 ModBlocks.blackstoneWaystone.asBlock(),
                 ModBlocks.endStoneWaystone.asBlock(),
                 ModBlocks.warpPlate.asBlock());
-        for (final var portstone : ModBlocks.portstones.values()) {
-            mineableBuilder.add(portstone.asBlock());
-        }
-        for (final var sharestone : ModBlocks.sharestones.values()) {
-            mineableBuilder.add(sharestone.asBlock());
-        }
+        ModBlocks.portstones.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue).forEach(it -> mineableBuilder.add(it.asBlock()));
+        ModBlocks.sharestones.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue).forEach(it -> mineableBuilder.add(it.asBlock()));
 
         final var isTeleportTargetBuilder = tag(ModBlockTags.IS_TELEPORT_TARGET);
         isTeleportTargetBuilder.add(ModBlocks.waystone.asBlock(),
@@ -43,12 +40,8 @@ public class ModBlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
                 ModBlocks.blackstoneWaystone.asBlock(),
                 ModBlocks.endStoneWaystone.asBlock(),
                 ModBlocks.warpPlate.asBlock());
-        for (final var portstone : ModBlocks.portstones.values()) {
-            isTeleportTargetBuilder.add(portstone.asBlock());
-        }
-        for (final var sharestone : ModBlocks.sharestones.values()) {
-            isTeleportTargetBuilder.add(sharestone.asBlock());
-        }
+        ModBlocks.portstones.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue).forEach(it -> isTeleportTargetBuilder.add(it.asBlock()));
+        ModBlocks.sharestones.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue).forEach(it -> isTeleportTargetBuilder.add(it.asBlock()));
 
         tag(ModBlockTags.WAYSTONES).add(ModBlocks.waystone.asBlock(),
                 ModBlocks.sandyWaystone.asBlock(),
@@ -58,14 +51,10 @@ public class ModBlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
                 ModBlocks.endStoneWaystone.asBlock());
 
         final var sharestonesBuilder = tag(ModBlockTags.SHARESTONES);
-        for (final var sharestone : ModBlocks.sharestones.values()) {
-            sharestonesBuilder.add(sharestone.asBlock());
-        }
+        ModBlocks.sharestones.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue).forEach(it -> sharestonesBuilder.add(it.asBlock()));
 
         final var portstonesBuilder = tag(ModBlockTags.PORTSTONES);
-        for (final var portstone : ModBlocks.portstones.values()) {
-            portstonesBuilder.add(portstone.asBlock());
-        }
+        ModBlocks.portstones.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue).forEach(it -> portstonesBuilder.add(it.asBlock()));
     }
 
 }
