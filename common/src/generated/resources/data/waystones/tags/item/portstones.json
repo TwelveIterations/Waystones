@@ -1,20 +1,20 @@
 {
   "values": [
-    "waystones:pink_portstone",
-    "waystones:blue_portstone",
-    "waystones:purple_portstone",
-    "waystones:light_gray_portstone",
-    "waystones:orange_portstone",
-    "waystones:gray_portstone",
-    "waystones:yellow_portstone",
-    "waystones:lime_portstone",
     "waystones:light_blue_portstone",
-    "waystones:red_portstone",
-    "waystones:magenta_portstone",
-    "waystones:cyan_portstone",
-    "waystones:black_portstone",
-    "waystones:brown_portstone",
+    "waystones:yellow_portstone",
     "waystones:white_portstone",
-    "waystones:green_portstone"
+    "waystones:gray_portstone",
+    "waystones:orange_portstone",
+    "waystones:green_portstone",
+    "waystones:cyan_portstone",
+    "waystones:brown_portstone",
+    "waystones:magenta_portstone",
+    "waystones:black_portstone",
+    "waystones:light_gray_portstone",
+    "waystones:red_portstone",
+    "waystones:pink_portstone",
+    "waystones:purple_portstone",
+    "waystones:blue_portstone",
+    "waystones:lime_portstone"
   ]
 }
