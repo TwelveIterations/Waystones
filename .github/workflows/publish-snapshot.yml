@@ -5,8 +5,32 @@ on:
       - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
+  check-datagen:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v5
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+      - name: Make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: Run data generation
+        run: ./gradlew :fabric:runData
+      - name: Check for uncommitted datagen changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::Generated resources are out of date. Please run data generation and commit the changes."
+            git diff
+            exit 1
+          fi
   prepare-matrix:
     runs-on: ubuntu-latest
+    needs: check-datagen
     outputs:
       matrix: ${{ steps.set-matrix.outputs.result }}
     steps:
@@ -31,29 +55,6 @@ jobs:
               loader: ['common', includeFabric ? 'fabric' : false, includeForge ? 'forge' : false, includeNeoForge ? 'neoforge' : false].filter(Boolean),
               task: [mavenSnapshots ? 'publish' : 'build']
             };
-  check-datagen:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v5
-      - name: Setup JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: temurin
-      - name: Make gradle wrapper executable
-        run: chmod +x ./gradlew
-      - name: Run data generation
-        run: ./gradlew :fabric:runData
-      - name: Check for uncommitted datagen changes
-        run: |
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "::error::Generated resources are out of date. Please run data generation and commit the changes."
-            git diff
-            exit 1
-          fi
   publish-snapshot:
     runs-on: ubuntu-latest
     environment: Snapshots
