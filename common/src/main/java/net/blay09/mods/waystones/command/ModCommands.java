@@ -13,6 +13,7 @@ import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.comparator.WaystoneComparators;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneSyncManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -38,6 +39,7 @@ public class ModCommands {
     private static final ResourceLocation PERMISSION_WAYSTONES_LIST = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.list");
     private static final ResourceLocation PERMISSION_WAYSTONES_PLACE = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.place");
     private static final ResourceLocation PERMISSION_WAYSTONES_GUI = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.gui");
+    private static final ResourceLocation PERMISSION_WAYSTONES_COOLDOWN = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.cooldown");
 
     public static void initialize(BalmCommands commands) {
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_ACTIVATE, 2);
@@ -46,8 +48,9 @@ public class ModCommands {
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_PLACE, 2);
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_LIST, 2);
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_GUI, 2);
+        BalmCommands.registerPermission(PERMISSION_WAYSTONES_COOLDOWN, 2);
         commands.register(dispatcher -> dispatcher.register(Commands.literal("waystones")
-                .requires(BalmCommands.requireAnyPermission(PERMISSION_WAYSTONES_ACTIVATE, PERMISSION_WAYSTONES_FORGET, PERMISSION_WAYSTONES_COUNT, PERMISSION_WAYSTONES_LIST, PERMISSION_WAYSTONES_GUI))
+                .requires(BalmCommands.requireAnyPermission(PERMISSION_WAYSTONES_ACTIVATE, PERMISSION_WAYSTONES_FORGET, PERMISSION_WAYSTONES_COUNT, PERMISSION_WAYSTONES_LIST, PERMISSION_WAYSTONES_GUI, PERMISSION_WAYSTONES_PLACE, PERMISSION_WAYSTONES_COOLDOWN))
                 .then(Commands.literal("activate")
                         .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_ACTIVATE))
                         .then(argument("targets", EntityArgument.players())
@@ -201,6 +204,64 @@ public class ModCommands {
                 .then(Commands.literal("gui")
                         .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_GUI))
                         .then(argument("player", EntityArgument.player()).executes(new OpenPlayerWaystonesGuiCommand())))
+                .then(Commands.literal("cooldown")
+                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_COOLDOWN))
+                        .then(argument("targets", EntityArgument.players())
+                                .then(Commands.literal("reset")
+                                        .then(Commands.literal("all").executes(context -> {
+                                            final var targets = EntityArgument.getPlayers(context, "targets");
+                                            for (final var player : targets) {
+                                                PlayerWaystoneManager.resetCooldowns(player);
+                                                WaystoneSyncManager.sendWaystoneCooldowns(player);
+                                            }
+
+                                            if (targets.size() == 1) {
+                                                context.getSource().sendSuccess(() -> Component.translatable("commands.waystones.cooldown.reset.all.success.single",
+                                                        targets.iterator().next().getDisplayName()), true);
+                                            } else {
+                                                context.getSource().sendSuccess(() -> Component.translatable("commands.waystones.cooldown.reset.all.success.multiple",
+                                                        targets.size()), true);
+                                            }
+                                            return targets.size();
+                                        }))
+                                        .then(argument("identifier", StringArgumentType.word())
+                                                .suggests((context, builder) -> {
+                                                    try {
+                                                        final var targets = EntityArgument.getPlayers(context, "targets");
+                                                        final var keys = new java.util.HashSet<String>();
+                                                        for (final var player : targets) {
+                                                            for (final var key : PlayerWaystoneManager.getCooldowns(player).keySet()) {
+                                                                keys.add(key.toString());
+                                                            }
+                                                        }
+                                                        return SharedSuggestionProvider.suggest(keys, builder);
+                                                    } catch (Exception e) {
+                                                        return builder.buildFuture();
+                                                    }
+                                                })
+                                                .executes(context -> {
+                                                    final var targets = EntityArgument.getPlayers(context, "targets");
+                                                    final var identifierStr = StringArgumentType.getString(context, "identifier");
+                                                    final var cooldownKey = Identifier.tryParse(identifierStr);
+                                                    if (cooldownKey == null) {
+                                                        context.getSource().sendFailure(Component.translatable("commands.waystones.cooldown.reset.invalid_identifier", identifierStr));
+                                                        return 0;
+                                                    }
+
+                                                    for (final var player : targets) {
+                                                        PlayerWaystoneManager.setCooldownUntil(player, cooldownKey, 0);
+                                                        WaystoneSyncManager.sendWaystoneCooldowns(player);
+                                                    }
+
+                                                    if (targets.size() == 1) {
+                                                        context.getSource().sendSuccess(() -> Component.translatable("commands.waystones.cooldown.reset.success.single",
+                                                                cooldownKey.toString(), targets.iterator().next().getDisplayName()), true);
+                                                    } else {
+                                                        context.getSource().sendSuccess(() -> Component.translatable("commands.waystones.cooldown.reset.success.multiple",
+                                                                cooldownKey.toString(), targets.size()), true);
+                                                    }
+                                                    return targets.size();
+                                                })))))
         ));
     }
 
