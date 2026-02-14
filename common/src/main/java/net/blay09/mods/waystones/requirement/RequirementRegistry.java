@@ -451,6 +451,9 @@ public class RequirementRegistry {
                     }
                     return false;
                 });
+        registerConditionResolver("has_tag",
+                StringParameter.class,
+                (context, parameters) -> context.getEntity().getTags().contains(parameters.value()));
 
         registerBoundVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getTargetWaystone().getPos().getCenter())));
         registerVariableResolver("leashed", it -> (float) WaystoneTeleportManager.findLeashedAnimals(it.getEntity()).size());
