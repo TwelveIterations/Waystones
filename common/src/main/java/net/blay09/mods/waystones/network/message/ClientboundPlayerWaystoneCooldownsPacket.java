@@ -38,6 +38,7 @@ public record ClientboundPlayerWaystoneCooldownsPacket(Map<Identifier, Long> coo
     }
 
     public static void handle(Player player, ClientboundPlayerWaystoneCooldownsPacket message) {
+        PlayerWaystoneManager.resetCooldowns(player);
         message.cooldowns.forEach((key, timestamp) -> PlayerWaystoneManager.setCooldownUntil(player, key, timestamp));
     }
 
