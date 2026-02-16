@@ -1,4 +1,6 @@
-- Fixed FOV effects not having the correct strength when using latest Balm
-- Fixed crash when hovering over inventory button when it's configured with a named target
-- Fixed Bound to label overlapping other text on inventory button confirmation screen
-- Fixed inventory button tooltip not showing
+- Added `/waystones place` command
+- Added `/waystones cooldown reset` command
+- Added `has_tag` condition to check for entity tags in warp requirements
+- Fixed cooldown update not applying on client if cooldown became 0
+- Fixed chunks becoming desynced when placing a waystone via `setblock`
+- Fixed block update reentrance that caused a crash when used with C2ME 
