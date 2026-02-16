@@ -35,7 +35,7 @@ public class WaystoneStyles {
         return styles.get(name);
     }
 
-    public static Collection<Identifier> getRegisteredKeys() {
+    public static Collection<ResourceLocation> getRegisteredKeys() {
         return styles.keySet();
     }
 }

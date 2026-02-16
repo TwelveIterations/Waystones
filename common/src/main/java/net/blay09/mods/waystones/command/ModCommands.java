@@ -146,11 +146,11 @@ public class ModCommands {
                                                     final var name = StringArgumentType.getString(context, "name");
                                                     final ServerLevel level = context.getSource().getLevel();
 
-                                                    Identifier styleId;
+                                                    ResourceLocation styleId;
                                                     if (!styleKey.contains(":")) {
-                                                        styleId = Identifier.fromNamespaceAndPath("waystones", styleKey);
+                                                        styleId = ResourceLocation.fromNamespaceAndPath("waystones", styleKey);
                                                     } else {
-                                                        styleId = Identifier.tryParse(styleKey);
+                                                        styleId = ResourceLocation.tryParse(styleKey);
                                                     }
 
                                                     WaystoneStyle style = styleId != null ? WaystoneStyles.getStyle(styleId) : null;
@@ -242,7 +242,7 @@ public class ModCommands {
                                                 .executes(context -> {
                                                     final var targets = EntityArgument.getPlayers(context, "targets");
                                                     final var identifierStr = StringArgumentType.getString(context, "identifier");
-                                                    final var cooldownKey = Identifier.tryParse(identifierStr);
+                                                    final var cooldownKey = ResourceLocation.tryParse(identifierStr);
                                                     if (cooldownKey == null) {
                                                         context.getSource().sendFailure(Component.translatable("commands.waystones.cooldown.reset.invalid_identifier", identifierStr));
                                                         return 0;
