@@ -39,6 +39,7 @@ public class PlayerWaystoneCooldownsMessage implements CustomPacketPayload {
     }
 
     public static void handle(Player player, PlayerWaystoneCooldownsMessage message) {
+        PlayerWaystoneManager.resetCooldowns(player);
         message.cooldowns.forEach((key, timestamp) -> PlayerWaystoneManager.setCooldownUntil(player, key, timestamp));
     }
 
