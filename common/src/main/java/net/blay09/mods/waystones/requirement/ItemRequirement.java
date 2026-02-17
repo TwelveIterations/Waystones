@@ -20,37 +20,12 @@ public class ItemRequirement implements WarpRequirement {
 
     @Override
     public boolean canAfford(Player player) {
-        int count = 0;
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            final var slotStack = player.getInventory().getItem(i);
-            if (ItemStack.isSameItemSameComponents(itemStack, slotStack)) {
-                count += slotStack.getCount();
-
-                if (count >= this.count) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return InventoryItemResolver.countMatchingInPlayerInventory(player, this::matchesItem) >= this.count;
     }
 
     @Override
     public void consume(Player player) {
-        var consumed = 0;
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            final var leftToConsume = this.count - consumed;
-            final var slotStack = player.getInventory().getItem(i);
-            if (ItemStack.isSameItemSameComponents(itemStack, slotStack)) {
-                final var count = Math.min(slotStack.getCount(), leftToConsume);
-                slotStack.shrink(count);
-                consumed += count;
-
-                if (consumed >= this.count) {
-                    return;
-                }
-            }
-        }
+        InventoryItemResolver.consumeFromPlayerInventory(player, this::matchesItem, this.count);
     }
 
     @Override
@@ -93,5 +68,9 @@ public class ItemRequirement implements WarpRequirement {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    private boolean matchesItem(ItemStack stack) {
+        return ItemStack.isSameItemSameComponents(itemStack, stack);
     }
 }
