@@ -383,7 +383,7 @@ public class RequirementRegistry {
                 (context, parameters) -> {
                     if (context.getEntity() instanceof Player player) {
                         final var item = BuiltInRegistries.ITEM.get(parameters.item().value());
-                        return player.getInventory().countItem(item) >= parameters.count().value();
+                        return InventoryItemResolver.countMatchingInPlayerInventory(player, stack -> stack.is(item)) >= parameters.count().value();
                     }
                     return false;
                 });
