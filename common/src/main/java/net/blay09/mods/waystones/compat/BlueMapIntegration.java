@@ -127,6 +127,10 @@ public class BlueMapIntegration {
                 .label("Waystones")
                 .build();
 
+        private final MarkerSet undiscoveredWaystoneMarkers = MarkerSet.builder()
+                .label("Waystones (undiscovered)")
+                .build();
+
         private final MarkerSet sharestoneMarkers = MarkerSet.builder()
                 .label("Sharestones")
                 .build();
@@ -141,6 +145,7 @@ public class BlueMapIntegration {
             api.getWorld(level).ifPresent(world -> {
                 for (var map : world.getMaps()) {
                     map.getMarkerSets().put("waystones:waystones", waystoneMarkers);
+                    map.getMarkerSets().put("waystones:undiscovered_waystones", undiscoveredWaystoneMarkers);
                     map.getMarkerSets().put("waystones:sharestones", sharestoneMarkers);
                 }
             });
@@ -148,6 +153,7 @@ public class BlueMapIntegration {
 
         public void createFromWaystones(List<Waystone> waystones) {
             waystoneMarkers.getMarkers().clear();
+            undiscoveredWaystoneMarkers.getMarkers().clear();
             sharestoneMarkers.getMarkers().clear();
 
             for (final var waystone : waystones) {
@@ -161,7 +167,11 @@ public class BlueMapIntegration {
             if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
                 sharestoneMarkers.put(markerId, marker);
             } else {
-                waystoneMarkers.put(markerId, marker);
+                if (waystone.hasName()) {
+                    waystoneMarkers.put(markerId, marker);
+                } else {
+                    undiscoveredWaystoneMarkers.put(markerId, marker);
+                }
             }
         }
 
@@ -171,6 +181,7 @@ public class BlueMapIntegration {
                 sharestoneMarkers.remove(markerId);
             } else {
                 waystoneMarkers.remove(markerId);
+                undiscoveredWaystoneMarkers.remove(markerId);
             }
         }
     }
