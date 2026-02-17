@@ -4,6 +4,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.item.component.ItemContainerContents;
 
@@ -27,7 +28,7 @@ public class InventoryItemResolver {
                     },
                     parentStack -> {
                         final var containerContents = parentStack.get(DataComponents.CONTAINER);
-                        return containerContents != null ? containerContents.stream().collect(Collectors.toCollection(ArrayList::new)) : List.of();
+                        return containerContents != null ? containerContents.allItemsCopyStream().collect(Collectors.toCollection(ArrayList::new)) : List.of();
                     },
                     (parentStack, items) -> parentStack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(items))
             ),
@@ -42,7 +43,7 @@ public class InventoryItemResolver {
                         return bundleContents != null ? bundleContents.itemCopyStream().collect(Collectors.toCollection(ArrayList::new)) : List.of();
                     },
                     (parentStack, items) -> {
-                        final var compactedBundleItems = items.stream().filter(it -> !it.isEmpty()).toList();
+                        final var compactedBundleItems = items.stream().filter(it -> !it.isEmpty()).map(ItemStackTemplate::fromNonEmptyStack).toList();
                         parentStack.set(DataComponents.BUNDLE_CONTENTS, new BundleContents(compactedBundleItems));
                     }
             )
@@ -60,7 +61,7 @@ public class InventoryItemResolver {
                 count += slotStack.getCount();
             }
 
-            count += countMatchingInNestedContainers(slotStack, matcher, 0);
+            count += countMatchingInNestedContainers(ItemStackTemplate.fromNonEmptyStack(slotStack), matcher, 0);
         }
         return count;
     }
@@ -106,20 +107,16 @@ public class InventoryItemResolver {
         return consumed;
     }
 
-    private static int countMatchingInNestedContainers(ItemStack parentStack, Predicate<ItemStack> matcher, int depth) {
-        if (depth >= MAX_NESTING_DEPTH || parentStack.isEmpty()) {
+    private static int countMatchingInNestedContainers(ItemStackTemplate parentStack, Predicate<ItemStack> matcher, int depth) {
+        if (depth >= MAX_NESTING_DEPTH) {
             return 0;
         }
 
         int count = 0;
         for (final var componentHandler : NESTED_COMPONENT_HANDLERS) {
             for (final var childStack : componentHandler.nonEmptyItems().apply(parentStack)) {
-                if (childStack.isEmpty()) {
-                    continue;
-                }
-
-                if (matcher.test(childStack)) {
-                    count += childStack.getCount();
+                if (matcher.test(childStack.create())) {
+                    count += childStack.count();
                 }
                 count += countMatchingInNestedContainers(childStack, matcher, depth + 1);
             }
@@ -129,7 +126,7 @@ public class InventoryItemResolver {
     }
 
     private static int consumeFromNestedContainers(ItemStack parentStack, Predicate<ItemStack> matcher, int count, int depth) {
-        if (count <= 0 || depth >= MAX_NESTING_DEPTH || parentStack.isEmpty()) {
+        if (count <= 0 || depth >= MAX_NESTING_DEPTH) {
             return 0;
         }
 
@@ -182,7 +179,7 @@ public class InventoryItemResolver {
 
     public record NestedInventoryComponentHandler(
             DataComponentType<?> componentType,
-            Function<ItemStack, Iterable<ItemStack>> nonEmptyItems,
+            Function<ItemStackTemplate, Iterable<ItemStackTemplate>> nonEmptyItems,
             Function<ItemStack, List<ItemStack>> mutableItems,
             BiConsumer<ItemStack, List<ItemStack>> writeBack
     ) {
