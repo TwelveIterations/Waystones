@@ -138,7 +138,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     }
 
     public void initializeFromBase(WaystoneBlockEntityBase tileEntity) {
-        waystone = tileEntity.getWaystone();
+        waystone = tileEntity.loadBackingWaystone();
         setChanged();
         sync();
     }
