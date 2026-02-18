@@ -228,7 +228,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
     }
 
     public void initializeFromBase(WaystoneBlockEntityBase tileEntity) {
-        waystone = tileEntity.getWaystone();
+        waystone = tileEntity.loadBackingWaystone();
         setChanged();
         BalmBlockEntityUtils.sync(this);
     }
