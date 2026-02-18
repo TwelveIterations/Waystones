@@ -1,6 +1,3 @@
-- Added `/waystones place` command
-- Added `/waystones cooldown reset` command
-- Added `has_tag` condition to check for entity tags in warp requirements
-- Fixed cooldown update not applying on client if cooldown became 0
-- Fixed chunks becoming desynced when placing a waystone via `setblock`
-- Fixed block update reentrance that caused a crash when used with C2ME
+- Fixed invalid waystone activation when clicking the top half
+- Changed waystones etc. to require a tool in order to be dropped
+- Fixed waystones not respecting needs_..._tool tags despite being stone-based
