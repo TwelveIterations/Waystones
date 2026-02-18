@@ -65,19 +65,19 @@ public class ModBlocks {
     public static DiscriminatedBlocks<DyeColor> sharestones;
 
     public static void initialize(BalmBlockRegistrar blocks) {
-        waystone = blocks.register("waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withItem(WaystoneBlockItem::new).asDeferredBlock();
-        mossyWaystone = blocks.register("mossy_waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withItem(WaystoneBlockItem::new).asDeferredBlock();
-        sandyWaystone = blocks.register("sandy_waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withItem(WaystoneBlockItem::new).asDeferredBlock();
-        deepslateWaystone = blocks.register("deepslate_waystone", WaystoneBlock::new, it -> it.sound(SoundType.DEEPSLATE).strength(5f, 2000f)).withItem(WaystoneBlockItem::new).asDeferredBlock();
-        blackstoneWaystone = blocks.register("blackstone_waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withItem(WaystoneBlockItem::new).asDeferredBlock();
-        endStoneWaystone = blocks.register("end_stone_waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withItem(WaystoneBlockItem::new).asDeferredBlock();
-        warpPlate = blocks.register("warp_plate", WarpPlateBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withDefaultItem().asDeferredBlock();
+        waystone = blocks.register("waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f).requiresCorrectToolForDrops()).withItem(WaystoneBlockItem::new).asDeferredBlock();
+        mossyWaystone = blocks.register("mossy_waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f).requiresCorrectToolForDrops()).withItem(WaystoneBlockItem::new).asDeferredBlock();
+        sandyWaystone = blocks.register("sandy_waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f).requiresCorrectToolForDrops()).withItem(WaystoneBlockItem::new).asDeferredBlock();
+        deepslateWaystone = blocks.register("deepslate_waystone", WaystoneBlock::new, it -> it.sound(SoundType.DEEPSLATE).strength(5f, 2000f).requiresCorrectToolForDrops()).withItem(WaystoneBlockItem::new).asDeferredBlock();
+        blackstoneWaystone = blocks.register("blackstone_waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f).requiresCorrectToolForDrops()).withItem(WaystoneBlockItem::new).asDeferredBlock();
+        endStoneWaystone = blocks.register("end_stone_waystone", WaystoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f).requiresCorrectToolForDrops()).withItem(WaystoneBlockItem::new).asDeferredBlock();
+        warpPlate = blocks.register("warp_plate", WarpPlateBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f).requiresCorrectToolForDrops()).withDefaultItem().asDeferredBlock();
 
-        portstones = blocks.registerDiscriminated(portstoneColors, color -> DiscriminatedBlocks.prefix(color, "portstone"), PortstoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f))
+        portstones = blocks.registerDiscriminated(portstoneColors, color -> DiscriminatedBlocks.prefix(color, "portstone"), PortstoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f).requiresCorrectToolForDrops())
                 .withItems(PortstoneBlockItem::new, it -> it.component(ModComponents.description.value(), new DescriptionComponent(Component.translatable("tooltip.waystones.portstone").withStyle(ChatFormatting.GRAY))))
                 .asDiscriminatedBlocks();
 
-        sharestones = blocks.registerDiscriminated(sharestoneColors, color -> DiscriminatedBlocks.prefix(color, "sharestone"), SharestoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f))
+        sharestones = blocks.registerDiscriminated(sharestoneColors, color -> DiscriminatedBlocks.prefix(color, "sharestone"), SharestoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f).requiresCorrectToolForDrops())
                 .withItems(SharestoneBlockItem::new, (color, it) -> it.component(ModComponents.description.value(), new DescriptionComponent(Component.translatable("tooltip.waystones." + color + "_sharestone").withStyle(ChatFormatting.GRAY))))
                 .asDiscriminatedBlocks();
     }
