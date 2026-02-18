@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,5 +34,9 @@ public class WaystoneStyles {
     @Nullable
     public static WaystoneStyle getStyle(ResourceLocation name) {
         return styles.get(name);
+    }
+
+    public static Collection<ResourceLocation> getRegisteredKeys() {
+        return styles.keySet();
     }
 }
