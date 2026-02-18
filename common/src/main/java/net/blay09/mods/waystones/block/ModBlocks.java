@@ -69,6 +69,6 @@ public class ModBlocks {
     }
 
     private static BlockBehaviour.Properties defaultProperties() {
-        return Balm.getBlocks().blockProperties().sound(SoundType.STONE).strength(5f, 2000f);
+        return Balm.getBlocks().blockProperties().sound(SoundType.STONE).strength(5f, 2000f).requiresCorrectToolForDrops();
     }
 }
