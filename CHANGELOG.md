@@ -1,3 +1,5 @@
+- Added support for counting and consuming bundle and shulker box items in warp requirements
 - Fixed invalid waystone activation when clicking the top half
-- Changed waystones etc. to require a tool in order to be dropped
 - Fixed waystones not respecting needs_..._tool tags despite being stone-based
+- Changed waystones etc. to require a tool in order to be dropped
+- Changed undiscovered waystones to use a separate marker set in BlueMap integration
