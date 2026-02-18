@@ -110,7 +110,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             BlockState offsetState = world.getBlockState(offset);
             if (offsetState.getBlock() == this && offsetState.getValue(HALF) != half) {
                 world.destroyBlock(half == DoubleBlockHalf.LOWER ? pos : offset, false, player);
-                if (!world.isClientSide() && !player.getAbilities().instabuild) {
+                if (!world.isClientSide() && !player.getAbilities().instabuild && player.hasCorrectToolForDrops(state)) {
                     dropResources(state, world, pos, blockEntity, player, player.getMainHandItem());
                     dropResources(offsetState, world, offset, offsetTileEntity, player, player.getMainHandItem());
                 }
