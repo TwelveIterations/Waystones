@@ -1,1 +1,5 @@
-- Fixed desert village waystones and waterlogged waystone structures all being considered the same waystone
+- Added `/waystones place`, `activate`, `forget`, `count`, `list`, `cooldown reset` commands
+- Changed waystones etc. to require a tool in order to be dropped
+- Fixed waystones not respecting needs_..._tool tags despite being stone-based
+- Fixed chunks becoming desynced when placing a waystone via `setblock`
+- Fixed block update reentrance that caused a crash when used with C2ME
