@@ -47,6 +47,7 @@ public class WaystonesConfig {
     public WorldGen worldGen = new WorldGen();
     public Client client = new Client();
     public Compatibility compatibility = new Compatibility();
+    public BlueMap blueMap = new BlueMap();
 
     public static class General {
 
@@ -177,11 +178,22 @@ public class WaystonesConfig {
         @Comment("If enabled, JourneyMap waypoints will only be created if the mod 'JourneyMap Integration' is not installed")
         public boolean preferJourneyMapIntegrationMod = true;
 
-        @Comment("If enabled, Waystones will add markers for waystones and sharestones to BlueMap.")
-        public boolean blueMap = true;
-
         @Comment("If enabled, Waystones will add markers for waystones and sharestones to Dynmap.")
         public boolean dynmap = true;
+    }
+
+    public static class BlueMap {
+        @Comment("Controls whether Waystones' BlueMap integration should be loaded")
+        public boolean enabled = true;
+
+        @Comment("If enabled, waystones will be tracked as markers on BlueMap")
+        public boolean includeWaystones = true;
+
+        @Comment("If enabled, sharestones will be tracked as markers on BlueMap.")
+        public boolean includeSharestones = true;
+
+        @Comment("If enabled, undiscovered waystones will be tracked as markers on BlueMap.")
+        public boolean includeUndiscoveredWaystones = false;
     }
 
     public static class Client {

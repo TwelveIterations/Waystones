@@ -58,11 +58,17 @@ public class BlueMapIntegration {
     }
 
     private static boolean isSupportedWaystoneType(Identifier waystoneType) {
-        return waystoneType.equals(WaystoneTypes.WAYSTONE) || WaystoneTypes.isSharestone(waystoneType);
+        final var config = WaystonesConfig.getActive().blueMap;
+        if (waystoneType.equals(WaystoneTypes.WAYSTONE)) {
+            return config.includeWaystones || config.includeUndiscoveredWaystones;
+        } else if (WaystoneTypes.isSharestone(waystoneType)) {
+            return config.includeSharestones;
+        }
+        return false;
     }
 
     public boolean isEnabled() {
-        return WaystonesConfig.getActive().compatibility.blueMap;
+        return WaystonesConfig.getActive().blueMap.enabled;
     }
 
     private void onWaystoneInitialized(WaystoneInitializedEvent event) {
@@ -141,11 +147,24 @@ public class BlueMapIntegration {
         }
 
         public void update(BlueMapAPI api) {
+            final var config = WaystonesConfig.getActive().blueMap;
             api.getWorld(level).ifPresent(world -> {
                 for (var map : world.getMaps()) {
-                    map.getMarkerSets().put("waystones:waystones", waystoneMarkers);
-                    map.getMarkerSets().put("waystones:undiscovered_waystones", undiscoveredWaystoneMarkers);
-                    map.getMarkerSets().put("waystones:sharestones", sharestoneMarkers);
+                    if (config.includeWaystones) {
+                        map.getMarkerSets().put("waystones:waystones", waystoneMarkers);
+                    } else {
+                        map.getMarkerSets().remove("waystones:waystones");
+                    }
+                    if (config.includeUndiscoveredWaystones) {
+                        map.getMarkerSets().put("waystones:undiscovered_waystones", undiscoveredWaystoneMarkers);
+                    } else {
+                        map.getMarkerSets().remove("waystones:undiscovered_waystones");
+                    }
+                    if (config.includeSharestones) {
+                        map.getMarkerSets().put("waystones:sharestones", sharestoneMarkers);
+                    } else {
+                        map.getMarkerSets().remove("waystones:sharestones");
+                    }
                 }
             });
         }
@@ -163,13 +182,20 @@ public class BlueMapIntegration {
         public void addWaystoneMarker(Waystone waystone) {
             final var marker = createWaystoneMarker(waystone);
             final var markerId = getMarkerId(waystone);
+            final var config = WaystonesConfig.getActive().blueMap;
             if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
-                sharestoneMarkers.put(markerId, marker);
+                if (config.includeSharestones) {
+                    sharestoneMarkers.put(markerId, marker);
+                }
             } else {
                 if (waystone.hasName()) {
-                    waystoneMarkers.put(markerId, marker);
+                    if (config.includeWaystones) {
+                        waystoneMarkers.put(markerId, marker);
+                    }
                 } else {
-                    undiscoveredWaystoneMarkers.put(markerId, marker);
+                    if (config.includeUndiscoveredWaystones) {
+                        undiscoveredWaystoneMarkers.put(markerId, marker);
+                    }
                 }
             }
         }
