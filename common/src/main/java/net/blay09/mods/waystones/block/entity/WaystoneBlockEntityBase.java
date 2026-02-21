@@ -339,15 +339,27 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
     public Collection<? extends Waystone> getAuxiliaryTargets() {
         final var result = new ArrayList<Waystone>();
-        for (int i = 0; i < container.getContainerSize(); i++) {
-            final var item = container.getItem(i);
-            WaystonesAPI.getBoundWaystone(null, item).ifPresent(result::add);
+        final var baseContainer = getContainer();
+        if (baseContainer != null) {
+            for (int i = 0; i < baseContainer.getContainerSize(); i++) {
+                final var item = baseContainer.getItem(i);
+                WaystonesAPI.getBoundWaystone(null, item).ifPresent(result::add);
+            }
         }
         return result;
     }
 
     @Override
     public Container getContainer() {
+        // If we're the upper half, return the lower half's container if it exists
+        final var state = getBlockState();
+        if (state.getValueOrElse(WaystoneBlockBase.HALF, DoubleBlockHalf.LOWER) == DoubleBlockHalf.UPPER) {
+            final var baseBlockEntity = level.getBlockEntity(worldPosition.below());
+            if (baseBlockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
+                return waystoneBlockEntity.container;
+            }
+        }
+
         return container;
     }
 
@@ -360,24 +372,27 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
         int witherSeconds = 0;
         int potency = 1;
         List<ItemStack> curativeItems = new ArrayList<>();
-        for (int i = 0; i < container.getContainerSize(); i++) {
-            ItemStack itemStack = container.getItem(i);
-            if (itemStack.getItem() == Items.BLAZE_POWDER) {
-                fireSeconds += itemStack.getCount();
-            } else if (itemStack.getItem() == Items.POISONOUS_POTATO) {
-                poisonSeconds += itemStack.getCount();
-            } else if (itemStack.getItem() == Items.INK_SAC) {
-                blindSeconds += itemStack.getCount();
-            } else if (itemStack.getItem() == Items.MILK_BUCKET || itemStack.getItem() == Items.HONEY_BLOCK) {
-                curativeItems.add(itemStack);
-            } else if (itemStack.getItem() == Items.DIAMOND) {
-                potency = Math.min(4, potency + itemStack.getCount());
-            } else if (itemStack.getItem() == Items.FEATHER) {
-                featherFallSeconds = Math.min(8, featherFallSeconds + itemStack.getCount());
-            } else if (itemStack.getItem() == Items.MAGMA_CREAM) {
-                fireResistanceSeconds = Math.min(8, fireResistanceSeconds + itemStack.getCount());
-            } else if (itemStack.getItem() == Items.WITHER_ROSE) {
-                witherSeconds += itemStack.getCount();
+        final var baseContainer = getContainer();
+        if (baseContainer != null) {
+            for (int i = 0; i < baseContainer.getContainerSize(); i++) {
+                ItemStack itemStack = baseContainer.getItem(i);
+                if (itemStack.getItem() == Items.BLAZE_POWDER) {
+                    fireSeconds += itemStack.getCount();
+                } else if (itemStack.getItem() == Items.POISONOUS_POTATO) {
+                    poisonSeconds += itemStack.getCount();
+                } else if (itemStack.getItem() == Items.INK_SAC) {
+                    blindSeconds += itemStack.getCount();
+                } else if (itemStack.getItem() == Items.MILK_BUCKET || itemStack.getItem() == Items.HONEY_BLOCK) {
+                    curativeItems.add(itemStack);
+                } else if (itemStack.getItem() == Items.DIAMOND) {
+                    potency = Math.min(4, potency + itemStack.getCount());
+                } else if (itemStack.getItem() == Items.FEATHER) {
+                    featherFallSeconds = Math.min(8, featherFallSeconds + itemStack.getCount());
+                } else if (itemStack.getItem() == Items.MAGMA_CREAM) {
+                    fireResistanceSeconds = Math.min(8, fireResistanceSeconds + itemStack.getCount());
+                } else if (itemStack.getItem() == Items.WITHER_ROSE) {
+                    witherSeconds += itemStack.getCount();
+                }
             }
         }
 
@@ -409,28 +424,31 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
     private int getModifierCount() {
         // TODO I'm sorry, Future Blay will create a proper system for these modifiers (I promise)
         var modifiers = 0;
-        for (int i = 0; i < container.getContainerSize(); i++) {
-            ItemStack itemStack = container.getItem(i);
-            if (itemStack.getItem() == Items.BLAZE_POWDER) {
-                modifiers += 1;
-            } else if (itemStack.getItem() == Items.POISONOUS_POTATO) {
-                modifiers += 1;
-            } else if (itemStack.getItem() == Items.INK_SAC) {
-                modifiers += 1;
-            } else if (itemStack.getItem() == Items.MILK_BUCKET || itemStack.getItem() == Items.HONEY_BLOCK) {
-                modifiers += 1;
-            } else if (itemStack.getItem() == Items.DIAMOND) {
-                modifiers += 1;
-            } else if (itemStack.getItem() == Items.FEATHER) {
-                modifiers += 1;
-            } else if (itemStack.getItem() == Items.MAGMA_CREAM) {
-                modifiers += 1;
-            } else if (itemStack.getItem() == Items.WITHER_ROSE) {
-                modifiers += 1;
-            } else if (itemStack.getItem() == Items.QUARTZ) {
-                modifiers += 1;
-            } else if (itemStack.getItem() == Items.SPIDER_EYE) {
-                modifiers += 1;
+        final var baseContainer = getContainer();
+        if (baseContainer != null) {
+            for (int i = 0; i < baseContainer.getContainerSize(); i++) {
+                ItemStack itemStack = baseContainer.getItem(i);
+                if (itemStack.getItem() == Items.BLAZE_POWDER) {
+                    modifiers += 1;
+                } else if (itemStack.getItem() == Items.POISONOUS_POTATO) {
+                    modifiers += 1;
+                } else if (itemStack.getItem() == Items.INK_SAC) {
+                    modifiers += 1;
+                } else if (itemStack.getItem() == Items.MILK_BUCKET || itemStack.getItem() == Items.HONEY_BLOCK) {
+                    modifiers += 1;
+                } else if (itemStack.getItem() == Items.DIAMOND) {
+                    modifiers += 1;
+                } else if (itemStack.getItem() == Items.FEATHER) {
+                    modifiers += 1;
+                } else if (itemStack.getItem() == Items.MAGMA_CREAM) {
+                    modifiers += 1;
+                } else if (itemStack.getItem() == Items.WITHER_ROSE) {
+                    modifiers += 1;
+                } else if (itemStack.getItem() == Items.QUARTZ) {
+                    modifiers += 1;
+                } else if (itemStack.getItem() == Items.SPIDER_EYE) {
+                    modifiers += 1;
+                }
             }
         }
         return modifiers;
