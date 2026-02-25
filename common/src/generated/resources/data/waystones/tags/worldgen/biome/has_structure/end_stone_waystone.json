@@ -1,8 +1,9 @@
 {
   "values": [
-    {
-      "id": "#minecraft:is_end",
-      "required": false
-    }
+    "minecraft:the_end",
+    "minecraft:end_highlands",
+    "minecraft:end_midlands",
+    "minecraft:small_end_islands",
+    "minecraft:end_barrens"
   ]
 }
