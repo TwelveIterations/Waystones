@@ -9,6 +9,7 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ModBiomeTagProvider extends FabricTagProvider<Biome> {
@@ -18,12 +19,13 @@ public class ModBiomeTagProvider extends FabricTagProvider<Biome> {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        final var hasMossyWaystones = getOrCreateTagBuilder(ModBiomeTags.HAS_STRUCTURE_MOSSY_WAYSTONE);
-        hasMossyWaystones.add(Biomes.SWAMP, Biomes.MANGROVE_SWAMP, Biomes.MUSHROOM_FIELDS);
-        hasMossyWaystones.addOptionalTag(BiomeTags.IS_JUNGLE);
-        getOrCreateTagBuilder(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE).add(Biomes.DESERT);
-        getOrCreateTagBuilder(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE).addOptionalTag(BiomeTags.IS_NETHER);
-        getOrCreateTagBuilder(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE).addOptionalTag(BiomeTags.IS_END);
+        tag(ModBiomeTags.HAS_STRUCTURE_MOSSY_WAYSTONE)
+                .addAll(List.of(Biomes.SWAMP, Biomes.MANGROVE_SWAMP, Biomes.MUSHROOM_FIELDS, Biomes.BAMBOO_JUNGLE, Biomes.JUNGLE, Biomes.SPARSE_JUNGLE));
+        tag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE).add(Biomes.DESERT);
+        tag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE)
+                .addAll(List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.CRIMSON_FOREST, Biomes.WARPED_FOREST, Biomes.BASALT_DELTAS));
+        tag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE)
+                .addAll(List.of(Biomes.THE_END, Biomes.END_HIGHLANDS, Biomes.END_MIDLANDS, Biomes.SMALL_END_ISLANDS, Biomes.END_BARRENS));
 
         final var hasWaystones = getOrCreateTagBuilder(ModBiomeTags.HAS_STRUCTURE_WAYSTONE);
         hasWaystones.add(
@@ -46,9 +48,6 @@ public class ModBiomeTagProvider extends FabricTagProvider<Biome> {
                 Biomes.WINDSWEPT_GRAVELLY_HILLS,
                 Biomes.WINDSWEPT_FOREST,
                 Biomes.WINDSWEPT_SAVANNA,
-                Biomes.JUNGLE,
-                Biomes.SPARSE_JUNGLE,
-                Biomes.BAMBOO_JUNGLE,
                 Biomes.BADLANDS,
                 Biomes.ERODED_BADLANDS,
                 Biomes.WOODED_BADLANDS,
