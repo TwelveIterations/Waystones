@@ -204,7 +204,9 @@ public class JourneyMapIntegration implements IClientPlugin {
 
                 final var group = getWaystoneGroup(waystone);
                 if (group != null) {
+                    group.setLocked(false);
                     group.addWaypoint(waypoint);
+                    group.setLocked(true);
                 }
             }
             waystoneToWaypoint.put(waystone.getWaystoneUid(), waypoint.getGuid());
