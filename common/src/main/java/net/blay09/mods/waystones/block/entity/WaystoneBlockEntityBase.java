@@ -204,17 +204,19 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
     protected abstract Identifier getWaystoneType();
 
     public void initializeWaystone(ServerLevelAccessor level, @Nullable LivingEntity player, WaystoneOrigin origin) {
-        WaystoneImpl waystone = new WaystoneImpl(getWaystoneType(),
-                UUID.randomUUID(),
-                level.getLevel().dimension(),
-                worldPosition,
-                origin,
-                player != null ? player.getUUID() : null);
-        SavedDataWaystonesStore.get(level.getLevel().getServer()).addWaystone(waystone);
-        WaystoneInitializedEvent.EVENT.invoker().accept(new WaystoneInitializedEvent(waystone));
-        this.waystone = waystone;
-        setChanged();
-        BalmBlockEntityUtils.sync(this);
+        if (!this.waystone.isValid()) {
+            WaystoneImpl waystone = new WaystoneImpl(getWaystoneType(),
+                    UUID.randomUUID(),
+                    level.getLevel().dimension(),
+                    worldPosition,
+                    origin,
+                    player != null ? player.getUUID() : null);
+            SavedDataWaystonesStore.get(level.getLevel().getServer()).addWaystone(waystone);
+            WaystoneInitializedEvent.EVENT.invoker().accept(new WaystoneInitializedEvent(waystone));
+            this.waystone = waystone;
+            setChanged();
+            BalmBlockEntityUtils.sync(this);
+        }
     }
 
     public void initializeFromExisting(ServerLevelAccessor level, WaystoneImpl existingWaystone, ItemStack itemStack) {
