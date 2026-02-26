@@ -1,5 +1,1 @@
-- Added `blueMap` compatibility configuration options `includeWaystones`, `includeSharestones` and `includeUndiscoveredWaystones` options
-- Fixed waypoints not being added to JourneyMap Waystones group
-- Fixed feature order cycle crash when `wildWaystoneStyle` is set to `MOSSY`
-- Fixed waystones being added to third party biomes even though they're supposed to target explicit biomes only
-- Removed old `compatibility.blueMap` option
+- Fixed unnamed sharestones being created when placing a new one on Forge
