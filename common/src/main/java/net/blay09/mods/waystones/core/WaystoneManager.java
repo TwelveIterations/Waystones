@@ -82,6 +82,10 @@ public class WaystoneManager extends SavedData {
         for (Tag tag : tagList) {
             CompoundTag compound = (CompoundTag) tag;
             IWaystone waystone = Waystone.read(compound);
+            // Remove unnamed sharestones as a cleanup workaround for #1133.
+            if (!waystone.hasName() && WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
+                continue;
+            }
             waystoneManager.waystones.put(waystone.getWaystoneUid(), waystone);
         }
         return waystoneManager;

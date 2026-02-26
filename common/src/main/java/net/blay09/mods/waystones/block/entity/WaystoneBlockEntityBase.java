@@ -122,11 +122,13 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     protected abstract ResourceLocation getWaystoneType();
 
     public void initializeWaystone(ServerLevelAccessor world, @Nullable LivingEntity player, WaystoneOrigin origin) {
-        Waystone waystone = new Waystone(getWaystoneType(), UUID.randomUUID(), world.getLevel().dimension(), worldPosition, origin, player != null ? player.getUUID() : null);
-        WaystoneManager.get(world.getServer()).addWaystone(waystone);
-        this.waystone = waystone;
-        setChanged();
-        sync();
+        if (!this.waystone.isValid()) {
+            Waystone waystone = new Waystone(getWaystoneType(), UUID.randomUUID(), world.getLevel().dimension(), worldPosition, origin, player != null ? player.getUUID() : null);
+            WaystoneManager.get(world.getServer()).addWaystone(waystone);
+            this.waystone = waystone;
+            setChanged();
+            sync();
+        }
     }
 
     public void initializeFromExisting(ServerLevelAccessor world, Waystone existingWaystone, ItemStack itemStack) {
