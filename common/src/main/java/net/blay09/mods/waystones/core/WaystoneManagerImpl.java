@@ -98,6 +98,10 @@ public class WaystoneManagerImpl extends SavedData implements WaystoneManager {
         for (Tag tag : tagList) {
             CompoundTag compound = (CompoundTag) tag;
             Waystone waystone = WaystoneImpl.read(compound, provider);
+            // Remove unnamed sharestones as a cleanup workaround for #1133.
+            if (!waystone.hasName() && WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
+                continue;
+            }
             waystoneManager.waystones.put(waystone.getWaystoneUid(), waystone);
         }
         Balm.getEvents().fireEvent(new WaystonesLoadedEvent(waystoneManager));
