@@ -8,6 +8,7 @@ fabricApi = "0.143.2+26.1"
 fabricLoader = "0.18.4"
 journeyMapApi = "2.0.0-1.21.4-SNAPSHOT"
 unbreakables = "21.9.1-SNAPSHOT"
+shogi = "26.1.0.1-SNAPSHOT"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -21,6 +22,7 @@ neoForge = { module = "net.neoforged:neoforge", version.ref = "neoForge" }
 forge = { module = "net.minecraftforge:forge", version.ref = "forge" }
 fabricApi = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabricApi" }
 fabricLoader = { module = "net.fabricmc:fabric-loader", version.ref = "fabricLoader" }
+shogiApi = { module = "net.blay09.mods:shogi-api", version.ref = "shogi" }
 
 journeyMapApiCommon = { module = "info.journeymap:journeymap-api-common", version.ref = "journeyMapApi" }
 blueMap = { module = "com.github.BlueMap-Minecraft:BlueMapAPI", version = "v2.5.1" }

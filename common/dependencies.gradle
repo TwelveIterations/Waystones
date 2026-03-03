@@ -3,6 +3,7 @@ dependencies {
         changing = libs.versions.balm.get().endsWith("SNAPSHOT")
     }
     accessTransformers(libs.balmCommon)
+    implementation(libs.shogiApi)
     compileOnly(libs.journeyMapApiCommon)
     compileOnly(libs.blueMap)
     compileOnly(libs.dynmap)
