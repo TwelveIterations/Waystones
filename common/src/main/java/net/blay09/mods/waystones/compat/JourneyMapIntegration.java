@@ -108,8 +108,12 @@ public class JourneyMapIntegration implements IClientPlugin {
 
     public void onWaystonesListReceived(WaystonesListReceivedEvent event) {
         if (shouldManageWaypoints() && isSupportedWaystoneType(event.getWaystoneType())) {
-            runWhenJourneyMapIsReady(() -> updateAllWaypoints(event.getWaystoneType(), event.getWaystones()));
+            runWhenJourneyMapIsReady(() -> updateAllWaypoints(event.getWaystoneType(), event.getWaystones().stream().filter(this::isSupportedWaystone).toList()));
         }
+    }
+
+    private boolean isSupportedWaystone(Waystone waystone) {
+        return isSupportedWaystoneType(waystone.getWaystoneType()) && !waystone.isTransient();
     }
 
     private boolean isSupportedWaystoneType(ResourceLocation waystoneType) {
@@ -126,8 +130,12 @@ public class JourneyMapIntegration implements IClientPlugin {
     }
 
     public void onWaystoneUpdateReceived(WaystoneUpdateReceivedEvent event) {
-        if (shouldManageWaypoints() && isSupportedWaystoneType(event.getWaystone().getWaystoneType())) {
-            runWhenJourneyMapIsReady(() -> updateWaypoint(event.getWaystone()));
+        if (shouldManageWaypoints()) {
+            if (isSupportedWaystone(event.getWaystone())) {
+                runWhenJourneyMapIsReady(() -> updateWaypoint(event.getWaystone()));
+            } else {
+                runWhenJourneyMapIsReady(() -> removeWaypoint(event.getWaystone().getWaystoneUid()));
+            }
         }
     }
 
