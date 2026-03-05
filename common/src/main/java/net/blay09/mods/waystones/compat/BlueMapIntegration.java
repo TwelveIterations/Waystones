@@ -53,8 +53,8 @@ public class BlueMapIntegration {
                 .build();
     }
 
-    private static boolean isSupportedWaystoneType(Waystone waystone) {
-        return isSupportedWaystoneType(waystone.getWaystoneType());
+    private static boolean isSupportedWaystone(Waystone waystone) {
+        return isSupportedWaystoneType(waystone.getWaystoneType()) && !waystone.isTransient();
     }
 
     private static boolean isSupportedWaystoneType(Identifier waystoneType) {
@@ -116,7 +116,7 @@ public class BlueMapIntegration {
         }
 
         final var waystonesByDimension = event.waystoneManager().getWaystones().stream()
-                .filter(BlueMapIntegration::isSupportedWaystoneType)
+                .filter(BlueMapIntegration::isSupportedWaystone)
                 .collect(Collectors.groupingBy(Waystone::getDimension));
         for (final var entry : waystonesByDimension.entrySet()) {
             final var levelMarkers = levelMarkersByDimension.computeIfAbsent(entry.getKey(), LevelMarkers::new);
