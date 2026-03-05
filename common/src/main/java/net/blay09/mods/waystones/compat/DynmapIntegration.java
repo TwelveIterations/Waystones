@@ -59,8 +59,8 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
         };
     }
 
-    private static boolean isSupportedWaystoneType(Waystone waystone) {
-        return isSupportedWaystoneType(waystone.getWaystoneType());
+    private static boolean isSupportedWaystone(Waystone waystone) {
+        return isSupportedWaystoneType(waystone.getWaystoneType()) && !waystone.isTransient();
     }
 
     private static boolean isSupportedWaystoneType(Identifier waystoneType) {
@@ -157,7 +157,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
         }
 
         final var waystones = event.waystoneManager().getWaystones().stream()
-                .filter(DynmapIntegration::isSupportedWaystoneType)
+                .filter(DynmapIntegration::isSupportedWaystone)
                 .toList();
         runWhenDynmapIsReady(() -> createFromWaystones(waystones));
     }
