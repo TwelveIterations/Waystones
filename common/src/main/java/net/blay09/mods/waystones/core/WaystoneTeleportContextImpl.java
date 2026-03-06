@@ -1,14 +1,21 @@
 package net.blay09.mods.waystones.core;
 
+import com.mojang.datafixers.util.Either;
+import net.blay09.mods.shogi.coercion.Coercion;
+import net.blay09.mods.shogi.context.MutableShogiContext;
+import net.blay09.mods.shogi.context.executor.EffectExecutor;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
-import net.blay09.mods.waystones.api.requirement.WarpRequirement;
-import net.blay09.mods.waystones.requirement.NoRequirement;
+import net.blay09.mods.waystones.config.WaystonesRules;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -20,17 +27,19 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     private final List<Entity> additionalEntities = new ArrayList<>();
     private final List<Mob> leashedEntities = new ArrayList<>();
     private final Set<Identifier> flags = new HashSet<>();
+    private EffectExecutor executor = EffectExecutor.deferred();
 
     private Waystone fromWaystone;
 
     private ItemStack warpItem = ItemStack.EMPTY;
     private InteractionHand warpHand = InteractionHand.MAIN_HAND;
 
-    private WarpRequirement warpRequirement = NoRequirement.INSTANCE;
-
     private boolean playsSound = true;
     private boolean playsEffect = true;
     private boolean appliesModifiers = true;
+
+    private Either<List<Object>, List<Object>> requirements = Either.left(List.of());
+    private boolean requirementsDirty = true;
 
     public WaystoneTeleportContextImpl(Entity entity, Waystone targetWaystone) {
         this.entity = entity;
@@ -72,6 +81,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public WaystoneTeleportContext setFromWaystone(@Nullable Waystone fromWaystone) {
         this.fromWaystone = fromWaystone;
+        this.requirementsDirty = true;
         return this;
     }
 
@@ -83,6 +93,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public WaystoneTeleportContext setWarpItem(ItemStack warpItem) {
         this.warpItem = warpItem;
+        this.requirementsDirty = true;
         return this;
     }
 
@@ -94,23 +105,13 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public WaystoneTeleportContext setWarpHand(InteractionHand warpHand) {
         this.warpHand = warpHand;
+        this.requirementsDirty = true;
         return this;
     }
 
     @Override
     public boolean isDimensionalTeleport() {
         return targetWaystone.getDimension() != entity.level().dimension();
-    }
-
-    @Override
-    public WarpRequirement getRequirements() {
-        return warpRequirement;
-    }
-
-    @Override
-    public WaystoneTeleportContext setRequirements(WarpRequirement warpRequirement) {
-        this.warpRequirement = warpRequirement;
-        return this;
     }
 
     @Override
@@ -153,13 +154,81 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
 
     @Override
     public WaystoneTeleportContext addFlag(Identifier flag) {
-        flags.add(flag);
+        if (flags.add(flag)) {
+            requirementsDirty = true;
+        }
         return this;
     }
 
     @Override
     public WaystoneTeleportContext removeFlag(Identifier flag) {
-        flags.remove(flag);
+        if (flags.remove(flag)) {
+            requirementsDirty = true;
+        }
         return this;
+    }
+
+    @Override
+    public Either<List<Object>, List<Object>> getRequirements() {
+        if (requirementsDirty) {
+            //noinspection unchecked
+            requirements = (Either<List<Object>, List<Object>>) (Either<?, ?>) WaystonesRules.warpRequirements.get(this)
+                    .mapLeft(Coercion.LIST)
+                    .mapRight(Coercion.LIST);
+            requirementsDirty = false;
+        }
+        return requirements;
+    }
+
+    @Override
+    public void setRequirements(Either<List<Object>, List<Object>> warpRequirements) {
+        this.requirements = warpRequirements;
+        this.requirementsDirty = false;
+    }
+
+    @Override
+    public EffectExecutor executor() {
+        return executor;
+    }
+
+    public WaystoneTeleportContextImpl setExecutor(EffectExecutor executor) {
+        this.executor = executor;
+        return this;
+    }
+
+    @Override
+    public Level level() {
+        return entity.level();
+    }
+
+    @Override
+    public Entity entity() {
+        return entity;
+    }
+
+    @Override
+    public BlockPos blockPos() {
+        return entity.blockPosition();
+    }
+
+    @Override
+    public BlockState blockState() {
+        return level().getBlockState(blockPos());
+    }
+
+    @Override
+    public ItemStack itemStack() {
+        return warpItem;
+    }
+
+    @Override
+    public Optional<Object> getVariable(String path) {
+        return switch (path) {
+            case "distance" -> Optional.of((float) Math.sqrt(entity.distanceToSqr(targetWaystone.getPos().getCenter())));
+            case "leashed" -> Optional.of((float) WaystoneTeleportManager.findLeashedAnimals(entity).size());
+            case "pets" -> Optional.of(entity instanceof LivingEntity livingEntity ? (float) WaystoneTeleportManager.findPets(livingEntity).size() : 0f);
+            case "passengers" -> Optional.of((float) WaystoneTeleportManager.findPassengers(entity).size());
+            default -> Optional.empty();
+        };
     }
 }

@@ -95,14 +95,11 @@ public class WaystonesConfig {
         @NestedType(String.class)
         @Comment("List of warp requirements with comma-separated parameters in parentheses. Conditions can be defined as comma-separated list in square brackets. Will be applied in order.")
         public List<String> warpRequirements = List.of(
-                "[is_not_interdimensional] scaled_add_xp_cost(distance, 0.01)",
-                "[is_interdimensional] add_xp_cost(27)",
-                "[source_is_warp_plate] multiply_xp_cost(0)",
-                "[source_is_warp_stone] add_durability_cost(80)",
-                "[target_is_global] multiply_xp_cost(0)",
-                "min_xp_cost(0)",
-                "max_xp_cost(27)",
-                "[source_is_inventory_button] add_cooldown(inventory_button, 300)");
+                "$xp_points_cost = if(condition = is_interdimensional, then = 27, else = $distance * 0.01)",
+                "source_is_warp_plate, target_is_global -> $xp_points_cost = 0",
+                "$xp_points_cost = clamp($xp_points_cost, 0, 27)",
+                "source_is_warp_stone -> damage_item(80)",
+                "source_is_inventory_button -> cooldown_cost('inventory_button', '300s')");
 
         @Synced
         @Comment("Set to \"enabled\" to have nearby pets teleport with you. Set to \"same_dimension\" to have nearby pets teleport with you only if you're not changing dimensions. Set to \"disabled\" to disable.")

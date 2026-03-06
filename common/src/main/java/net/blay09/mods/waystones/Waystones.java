@@ -5,7 +5,6 @@ import net.blay09.mods.balm.commands.BalmCommands;
 import net.blay09.mods.balm.core.BalmRegistrar;
 import net.blay09.mods.balm.core.component.BalmDataComponentTypeRegistrar;
 import net.blay09.mods.balm.network.BalmNetworking;
-import net.blay09.mods.balm.platform.compatibility.hudinfo.BalmModSupportHudInfo;
 import net.blay09.mods.balm.platform.config.BalmConfig;
 import net.blay09.mods.balm.platform.module.BalmModule;
 import net.blay09.mods.balm.platform.permissions.BalmPermissions;
@@ -32,7 +31,6 @@ import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.network.ModNetworking;
 import net.blay09.mods.waystones.permission.ModPermissions;
-import net.blay09.mods.waystones.requirement.RequirementRegistry;
 import net.blay09.mods.waystones.resources.ForceSpawnInVillagesCondition;
 import net.blay09.mods.waystones.stats.ModStats;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
@@ -148,7 +146,6 @@ public class Waystones implements BalmModule {
     @Override
     public void initialize() {
         ModEventHandlers.initialize();
-        RequirementRegistry.registerDefaults();
 
         final var hudInfo = Balm.modSupport().hudInfo();
         hudInfo.registerBlockInfo(id("waystone"), ModBlocks.waystone, new WaystoneBlockInfoProvider());

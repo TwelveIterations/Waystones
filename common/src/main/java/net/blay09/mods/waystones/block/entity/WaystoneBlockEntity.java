@@ -49,12 +49,15 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
             public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
                 final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone()));
                 PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.value(), getWaystone(), windowId, waystones, Collections.emptySet());
+                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.value(), getWaystone(), windowId, waystones, Collections.emptyMap(), Collections.emptySet());
             }
 
             @Override
             public WaystoneSelectionMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                return new WaystoneSelectionMenu.Data(getWaystone(), new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, getWaystone())));
+                final var fromWaystone = getWaystone();
+                final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, fromWaystone));
+                final var warpRequirements = WaystoneSelectionMenu.buildWarpRequirements(serverPlayer, fromWaystone, waystones, Collections.emptySet());
+                return new WaystoneSelectionMenu.Data(fromWaystone, waystones, warpRequirements);
             }
 
             @Override

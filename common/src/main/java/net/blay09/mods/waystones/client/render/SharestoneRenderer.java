@@ -18,13 +18,12 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.MaterialSet;
+import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.resources.model.SpriteId;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Unit;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -43,16 +42,16 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
         public float itemOffsetY;
     }
 
-    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, Identifier.withDefaultNamespace("waystone_overlays/sharestone_color"));
+    private static final SpriteId MATERIAL = new SpriteId(TextureAtlas.LOCATION_BLOCKS, Identifier.withDefaultNamespace("waystone_overlays/sharestone_color"));
 
     private static ItemStack warpStoneItem;
 
-    private final MaterialSet materials;
+    private final SpriteGetter materials;
     private final ItemModelResolver itemModelResolver;
     private final SharestoneModel model;
 
     public SharestoneRenderer(BlockEntityRendererProvider.Context context) {
-        materials = context.materials();
+        materials = context.sprites();
         itemModelResolver = context.itemModelResolver();
         model = new SharestoneModel(context.bakeLayer(ModRenderers.sharestoneModel));
     }

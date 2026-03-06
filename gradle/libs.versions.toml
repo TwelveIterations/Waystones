@@ -23,6 +23,10 @@ forge = { module = "net.minecraftforge:forge", version.ref = "forge" }
 fabricApi = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabricApi" }
 fabricLoader = { module = "net.fabricmc:fabric-loader", version.ref = "fabricLoader" }
 shogiApi = { module = "net.blay09.mods:shogi-api", version.ref = "shogi" }
+shogiCommon = { module = "net.blay09.mods:shogi-common", version.ref = "shogi" }
+shogiNeoForge = { module = "net.blay09.mods:shogi-neoforge", version.ref = "shogi" }
+shogiForge = { module = "net.blay09.mods:shogi-forge", version.ref = "shogi" }
+shogiFabric = { module = "net.blay09.mods:shogi-fabric", version.ref = "shogi" }
 
 journeyMapApiCommon = { module = "info.journeymap:journeymap-api-common", version.ref = "journeyMapApi" }
 blueMap = { module = "com.github.BlueMap-Minecraft:BlueMapAPI", version = "v2.5.1" }

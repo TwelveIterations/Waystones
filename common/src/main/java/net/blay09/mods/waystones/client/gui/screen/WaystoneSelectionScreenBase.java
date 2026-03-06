@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
+import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.mixin.ScreenAccessor;
 import net.blay09.mods.kuma.api.Kuma;
@@ -143,7 +144,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
             if (entryIndex >= 0 && entryIndex < filteredWaystones.size()) {
                 Waystone waystone = filteredWaystones.get(entryIndex);
 
-                addRenderableWidget(createWaystoneButton(y, waystone));
+                addRenderableWidget(createWaystoneButton(y, waystone, menu.getWarpRequirements(waystone)));
 
                 if (allowSorting()) {
                     SortWaystoneButton sortUpButton = new SortWaystoneButton(width / 2 + 108, y + 2, -1, y, 20, it -> sortWaystone(waystone, -1));
@@ -195,12 +196,10 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         return allowDeletion();
     }
 
-    private WaystoneButton createWaystoneButton(int y, final Waystone waystone) {
+    private WaystoneButton createWaystoneButton(int y, final Waystone waystone, Either<List<Object>, List<Object>> requirements) {
         final var waystoneFrom = menu.getWaystoneFrom();
         final var flags = menu.getFlags();
         final var player = Minecraft.getInstance().player;
-        final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).setFromWaystone(waystoneFrom).setWarpItem(menu.getWarpItem()).setWarpHand(menu.getWarpHand()).addFlags(flags);
-        final var requirements = WaystonesAPI.resolveRequirements(context);
         WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, requirements, button -> onWaystoneSelected(waystone));
         if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {
             btnWaystone.active = false;

@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.core;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.Balm;
+import net.blay09.mods.shogi.context.executor.DeferredEffectExecutor;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
@@ -241,12 +242,12 @@ public class WaystoneTeleportManager {
             }
         }
 
-        if (entity instanceof Player player && !context.getRequirements().canAfford(player) && !player.getAbilities().instabuild) {
-            return Either.right(new WaystoneTeleportError.NotEnoughXp());
+        if (entity instanceof Player player && context.getRequirements().right().isPresent() && !player.getAbilities().instabuild) {
+            return Either.right(new WaystoneTeleportError.RequirementsNotMet());
         }
 
-        if (entity instanceof Player player) {
-            context.getRequirements().consume(context, player);
+        if (context.executor() instanceof DeferredEffectExecutor executor) {
+            executor.execute();
         }
 
         return doTeleport(context)

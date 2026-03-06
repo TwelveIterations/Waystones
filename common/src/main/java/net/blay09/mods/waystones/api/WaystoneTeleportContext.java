@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.api;
 
-import net.blay09.mods.waystones.api.requirement.WarpRequirement;
+import com.mojang.datafixers.util.Either;
+import net.blay09.mods.shogi.context.ShogiContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public interface WaystoneTeleportContext {
+public interface WaystoneTeleportContext extends ShogiContext {
     Entity getEntity();
 
     Waystone getTargetWaystone();
@@ -37,10 +38,6 @@ public interface WaystoneTeleportContext {
 
     boolean isDimensionalTeleport();
 
-    WarpRequirement getRequirements();
-
-    WaystoneTeleportContext setRequirements(WarpRequirement warpRequirement);
-
     boolean playsSound();
 
     WaystoneTeleportContext setPlaysSound(boolean playsSound);
@@ -58,6 +55,10 @@ public interface WaystoneTeleportContext {
     WaystoneTeleportContext addFlag(Identifier flag);
 
     WaystoneTeleportContext removeFlag(Identifier flag);
+
+    Either<List<Object>, List<Object>> getRequirements();
+
+    void setRequirements(Either<List<Object>, List<Object>> warpRequirements);
 
     default WaystoneTeleportContext addFlags(Set<Identifier> flags) {
         for (Identifier flag : flags) {

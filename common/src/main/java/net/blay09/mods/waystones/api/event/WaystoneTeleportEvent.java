@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.api.event;
 import net.blay09.mods.balm.Balmstrap;
 import net.blay09.mods.balm.platform.event.BidirectionalEventMapper;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
-import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.minecraft.world.entity.Entity;
 
 import java.util.List;
@@ -23,14 +22,6 @@ public abstract class WaystoneTeleportEvent {
 
         public WaystoneTeleportContext getContext() {
             return context;
-        }
-
-        public WarpRequirement getRequirements() {
-            return context.getRequirements();
-        }
-
-        public void setRequirements(WarpRequirement warpRequirement) {
-            context.setRequirements(warpRequirement);
         }
 
         public void addAdditionalEntity(Entity additionalEntity) {

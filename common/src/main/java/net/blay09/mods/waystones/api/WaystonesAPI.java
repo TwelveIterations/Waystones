@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.api;
 
 import com.mojang.datafixers.util.Either;
-import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
@@ -126,30 +125,6 @@ public class WaystonesAPI {
 
     public static ItemStack createBoundScroll(Waystone waystone) {
         return __internalMethods.createBoundScroll(waystone);
-    }
-
-    public static WarpRequirement resolveRequirements(WaystoneTeleportContext context) {
-        return __internalMethods.resolveRequirements(context);
-    }
-
-    public static void registerRequirementType(RequirementType<?> requirementType) {
-        __internalMethods.registerRequirementType(requirementType);
-    }
-
-    public static void registerRequirementModifier(RequirementFunction<?, ?> requirementModifier) {
-        __internalMethods.registerRequirementModifier(requirementModifier);
-    }
-
-    public static void registerVariableResolver(VariableResolver variableResolver) {
-        __internalMethods.registerVariableResolver(variableResolver);
-    }
-
-    public static void registerConditionPredicate(ConditionResolver<?> conditionResolver) {
-        __internalMethods.registerConditionResolver(conditionResolver);
-    }
-
-    public static void registerParameterSerializer(ParameterSerializer<?> parameterSerializer) {
-        __internalMethods.registerParameterSerializer(parameterSerializer);
     }
 
     public static void activateWaystone(ServerPlayer player, Waystone waystone) {

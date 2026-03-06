@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.api;
 
 import com.mojang.datafixers.util.Either;
-import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -53,19 +52,7 @@ public interface InternalMethods {
 
     Optional<Waystone> getWaystoneAt(MinecraftServer server, BlockGetter level, BlockPos pos);
 
-    WarpRequirement resolveRequirements(WaystoneTeleportContext context);
-
     Optional<Waystone> getWaystone(MinecraftServer level, UUID uuid);
-
-    void registerRequirementType(RequirementType<?> requirementType);
-
-    void registerRequirementModifier(RequirementFunction<?, ?> requirementModifier);
-
-    void registerVariableResolver(VariableResolver variableResolver);
-
-    void registerConditionResolver(ConditionResolver<?> conditionResolver);
-
-    void registerParameterSerializer(ParameterSerializer<?> parameterSerializer);
 
     boolean isWaystoneActivated(Player player, Waystone waystone);
 

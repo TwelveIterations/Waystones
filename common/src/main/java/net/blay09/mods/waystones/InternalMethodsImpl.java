@@ -3,7 +3,6 @@ package net.blay09.mods.waystones;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.*;
-import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.block.ModBlocks;
@@ -12,9 +11,6 @@ import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
-import net.blay09.mods.waystones.requirement.RequirementModifierParser;
-import net.blay09.mods.waystones.requirement.WarpRequirementsContextImpl;
-import net.blay09.mods.waystones.requirement.RequirementRegistry;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 import net.minecraft.core.BlockPos;
@@ -54,7 +50,6 @@ public class InternalMethodsImpl implements InternalMethods {
             context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(entity));
             context.setAppliesModifiers(config.teleports.enableModifiers);
             init.accept(context);
-            context.setRequirements(resolveRequirements(context));
         });
     }
 
@@ -196,49 +191,6 @@ public class InternalMethodsImpl implements InternalMethods {
         if (itemStack.getItem() instanceof IAttunementItem attunementItem) {
             attunementItem.setWaystoneAttunedTo(itemStack, waystone);
         }
-    }
-
-    @Override
-    public WarpRequirement resolveRequirements(WaystoneTeleportContext context) {
-        final var requirementsContext = new WarpRequirementsContextImpl(context);
-        final var configuredModifiers = WaystonesConfig.getActive().teleports.warpRequirements;
-        for (final var modifier : configuredModifiers) {
-            if (modifier.isBlank()) {
-                continue;
-            }
-
-            RequirementModifierParser.parse(modifier)
-                    .stream()
-                    .filter(configuredModifier -> configuredModifier.requirement().modifier().isEnabled())
-                    .forEach(requirementsContext::apply);
-        }
-
-        return requirementsContext.resolve();
-    }
-
-    @Override
-    public void registerRequirementType(RequirementType<?> requirementType) {
-        RequirementRegistry.register(requirementType);
-    }
-
-    @Override
-    public void registerRequirementModifier(RequirementFunction<?, ?> requirementModifier) {
-        RequirementRegistry.register(requirementModifier);
-    }
-
-    @Override
-    public void registerVariableResolver(VariableResolver variableResolver) {
-        RequirementRegistry.register(variableResolver);
-    }
-
-    @Override
-    public void registerConditionResolver(ConditionResolver<?> conditionResolver) {
-        RequirementRegistry.register(conditionResolver);
-    }
-
-    @Override
-    public void registerParameterSerializer(ParameterSerializer<?> parameterSerializer) {
-        RequirementRegistry.register(parameterSerializer);
     }
 
     @Override

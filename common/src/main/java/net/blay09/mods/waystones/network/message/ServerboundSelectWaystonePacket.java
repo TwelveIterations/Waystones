@@ -45,7 +45,7 @@ public record ServerboundSelectWaystonePacket(UUID waystoneUid) implements Custo
                 })
                 .ifLeft(WaystonesAPI::tryTeleport)
                 .ifLeft(selectionMenu.getPostTeleportHandler())
-                .ifRight(error -> player.displayClientMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED), false));
+                .ifRight(error -> player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED)));
         player.closeContainer();
     }
 

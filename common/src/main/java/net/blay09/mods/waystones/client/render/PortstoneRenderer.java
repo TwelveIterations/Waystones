@@ -19,8 +19,8 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.MaterialSet;
+import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.resources.model.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -43,15 +43,15 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
         public final ItemStackRenderState item = new ItemStackRenderState();
     }
 
-    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, Identifier.withDefaultNamespace("waystone_overlays/portstone"));
+    private static final SpriteId MATERIAL = new SpriteId(TextureAtlas.LOCATION_BLOCKS, Identifier.withDefaultNamespace("waystone_overlays/portstone"));
     private static ItemStack warpStoneItem;
 
-    private final MaterialSet materials;
+    private final SpriteGetter materials;
     private final ItemModelResolver itemModelResolver;
     private final PortstoneModel model;
 
     public PortstoneRenderer(BlockEntityRendererProvider.Context context) {
-        materials = context.materials();
+        materials = context.sprites();
         model = new PortstoneModel(context.bakeLayer(ModRenderers.portstoneModel));
         itemModelResolver = context.itemModelResolver();
     }

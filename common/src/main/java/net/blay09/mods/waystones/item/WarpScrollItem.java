@@ -11,6 +11,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -19,9 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage {
 
@@ -47,7 +46,7 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
 
                 @Override
                 public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-                    return new WaystoneSelectionMenu(ModMenus.warpScrollSelection.value(), null, windowId, waystones, Collections.emptySet())
+                    return new WaystoneSelectionMenu(ModMenus.warpScrollSelection.value(), null, windowId, waystones, Collections.emptyMap(), Collections.emptySet())
                             .withWarpItem(itemStack)
                             .setPostTeleportHandler(context -> itemStack.consume(1, inventory.player));
                 }
@@ -55,7 +54,8 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
 
                 @Override
                 public ModMenus.ItemInitiatedWaystoneMenuData getScreenOpeningData(ServerPlayer serverPlayer) {
-                    return new ModMenus.ItemInitiatedWaystoneMenuData(waystones, itemStack);
+                    final var warpRequirements = WaystoneSelectionMenu.buildWarpRequirements(serverPlayer, null, waystones, Collections.emptySet(), itemStack, InteractionHand.MAIN_HAND);
+                    return new ModMenus.ItemInitiatedWaystoneMenuData(waystones, itemStack, warpRequirements);
                 }
 
                 @Override

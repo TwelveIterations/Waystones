@@ -96,9 +96,9 @@ public class WaystoneTeleportError {
         }
     }
 
-    public static class NotEnoughXp extends WaystoneTeleportError {
-        public NotEnoughXp() {
-            super(Component.translatable("chat.waystones.not_enough_xp"));
+    public static class RequirementsNotMet extends WaystoneTeleportError {
+        public RequirementsNotMet() {
+            super(Component.translatable("chat.waystones.requirements_not_met"));
         }
     }
 }

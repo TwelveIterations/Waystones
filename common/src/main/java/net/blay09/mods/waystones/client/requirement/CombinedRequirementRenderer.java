@@ -1,18 +1,17 @@
 package net.blay09.mods.waystones.client.requirement;
 
 import com.mojang.datafixers.util.Pair;
-import net.blay09.mods.waystones.requirement.CombinedRequirement;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Comparator;
+import java.util.List;
 
-public class CombinedRequirementRenderer implements RequirementRenderer<CombinedRequirement> {
+public class CombinedRequirementRenderer implements RequirementRenderer<List<Object>> {
     @Override
-    public void renderWidget(Player player, CombinedRequirement requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
-        final var sortedChildren = requirement.getRequirements()
+    public void renderWidget(Player player, List<Object> requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
+        final var sortedChildren = requirement
                 .stream()
-                .filter(it -> !it.isEmpty())
                 .map(it -> Pair.of(it, RequirementClientRegistry.getRenderer(it)))
                 .sorted(Comparator.comparingInt(it -> it.getSecond() != null ? it.getSecond().getOrder() : 100))
                 .toList();
@@ -27,10 +26,9 @@ public class CombinedRequirementRenderer implements RequirementRenderer<Combined
     }
 
     @Override
-    public int getWidth(Player player, CombinedRequirement requirement) {
-        return requirement.getRequirements()
+    public int getWidth(Player player, List<Object> requirement) {
+        return requirement
                 .stream()
-                .filter(it -> !it.isEmpty())
                 .map(it -> Pair.of(it, RequirementClientRegistry.getRenderer(it)))
                 .filter(it -> it.getSecond() != null)
                 .mapToInt(it -> it.getSecond().getWidth(player, it.getFirst()))

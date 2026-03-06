@@ -11,7 +11,6 @@ import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
-import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -40,7 +39,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.Set;
 
 public class PortstoneBlock extends WaystoneBlockBase {
@@ -141,7 +140,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
             final var targetWaystoneType = getTargetWaystoneType();
             final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystoneType(player, targetWaystoneType));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            Balm.networking().openMenu(player, new BalmMenuProvider<List<Waystone>>() {
+            Balm.networking().openMenu(player, new BalmMenuProvider<ModMenus.WaystoneListMenuData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("container.waystones." + color.getSerializedName() + "_portstone");
@@ -149,17 +148,18 @@ public class PortstoneBlock extends WaystoneBlockBase {
 
                 @Override
                 public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.value(), null, windowId, waystones, Set.of(TeleportFlags.PORTSTONE));
+                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.value(), null, windowId, waystones, Collections.emptyMap(), Set.of(TeleportFlags.PORTSTONE));
                 }
 
                 @Override
-                public List<Waystone> getScreenOpeningData(ServerPlayer serverPlayer) {
-                    return waystones;
+                public ModMenus.WaystoneListMenuData getScreenOpeningData(ServerPlayer serverPlayer) {
+                    final var warpRequirements = WaystoneSelectionMenu.buildWarpRequirements(serverPlayer, null, waystones, Set.of(TeleportFlags.PORTSTONE));
+                    return new ModMenus.WaystoneListMenuData(waystones, warpRequirements);
                 }
 
                 @Override
-                public StreamCodec<RegistryFriendlyByteBuf, List<Waystone>> getScreenStreamCodec() {
-                    return WaystoneImpl.LIST_STREAM_CODEC;
+                public StreamCodec<RegistryFriendlyByteBuf, ModMenus.WaystoneListMenuData> getScreenStreamCodec() {
+                    return ModMenus.WaystoneListMenuData.STREAM_CODEC;
                 }
             });
         }

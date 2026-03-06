@@ -122,7 +122,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
             final var status = targetWaystone.isValid() ? WarpPlateBlock.WarpPlateStatus.WARPING : WarpPlateBlock.WarpPlateStatus.WARPING_INVALID;
             final var canAfford = WaystonesAPI.createDefaultTeleportContext(entity, targetWaystone, it -> it.setFromWaystone(getWaystone()))
                     .mapLeft(WaystoneTeleportContext::getRequirements)
-                    .mapLeft(it -> !(entity instanceof Player player) || player.getAbilities().instabuild || it.canAfford(player))
+                    .mapLeft(it -> !(entity instanceof Player player) || player.getAbilities().instabuild || it.left().isPresent())
                     .left().orElse(true);
             level.setBlock(worldPosition, getBlockState()
                     .setValue(WarpPlateBlock.STATUS, canAfford ? status : WarpPlateBlock.WarpPlateStatus.WARPING_INVALID), 3);
@@ -186,11 +186,11 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
                         if (targetWaystone == null) {
                             var chatComponent = Component.translatable("chat.waystones.warp_plate_has_no_target");
                             chatComponent.withStyle(ChatFormatting.DARK_RED);
-                            ((Player) entity).displayClientMessage(chatComponent, true);
+                            ((Player) entity).sendOverlayMessage(chatComponent);
                         } else if (!targetWaystone.isValid()) {
                             var chatComponent = Component.translatable("chat.waystones.warp_plate_has_invalid_target");
                             chatComponent.withStyle(ChatFormatting.DARK_RED);
-                            ((Player) entity).displayClientMessage(chatComponent, true);
+                            ((Player) entity).sendOverlayMessage(chatComponent);
                         }
                     }
 
@@ -238,7 +238,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
         return error -> {
             if (error.getComponent() != null && entityToInform instanceof Player player) {
                 var chatComponent = error.getComponent().copy().withStyle(ChatFormatting.DARK_RED);
-                player.displayClientMessage(chatComponent, true);
+                player.sendOverlayMessage(chatComponent);
             }
         };
     }

@@ -23,15 +23,15 @@ public class WaystoneDebugHandler {
                 if (heldItem.getItem() == Items.BAMBOO) {
                     if (!level.isClientSide()) {
                         waystoneBase.uninitializeWaystone();
-                        player.displayClientMessage(Component.literal("Waystone was successfully reset - it will re-initialize once it is next loaded."), false);
+                        player.sendSystemMessage(Component.literal("Waystone was successfully reset - it will re-initialize once it is next loaded."));
                     }
                     return InteractionEventResult.SUCCESS;
                 } else if (heldItem.getItem() == Items.STICK) {
                     if (!level.isClientSide()) {
-                        player.displayClientMessage(Component.literal("Server UUID: " + waystoneBase.getWaystone().getWaystoneUid()), false);
+                        player.sendSystemMessage(Component.literal("Server UUID: " + waystoneBase.getWaystone().getWaystoneUid()));
                     }
                     if (level.isClientSide()) {
-                        player.displayClientMessage(Component.literal("Client UUID: " + waystoneBase.getWaystone().getWaystoneUid()), false);
+                        player.sendSystemMessage(Component.literal("Client UUID: " + waystoneBase.getWaystone().getWaystoneUid()));
                     }
                     return InteractionEventResult.SUCCESS;
                 }

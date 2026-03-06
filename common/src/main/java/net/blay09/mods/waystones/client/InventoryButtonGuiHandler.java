@@ -3,7 +3,10 @@ package net.blay09.mods.waystones.client;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.client.gui.screens.BalmScreenUtils;
 import net.blay09.mods.balm.client.platform.event.callback.ScreenCallback;
+import net.blay09.mods.shogi.coercion.Coercion;
 import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
+import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
@@ -11,6 +14,7 @@ import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.message.ServerboundInventoryButtonPacket;
+import net.blay09.mods.waystones.network.message.ServerboundRequestInventoryButtonPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -25,7 +29,6 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public class InventoryButtonGuiHandler {
@@ -48,6 +51,8 @@ public class InventoryButtonGuiHandler {
                 return;
             }
 
+            Balm.networking().sendToServer(ServerboundRequestInventoryButtonPacket.INSTANCE);
+
             Supplier<Integer> xPosition = screen instanceof CreativeModeInventoryScreen ? () -> WaystonesConfig.getActive().inventoryButton.creativeInventoryButtonX : () -> WaystonesConfig.getActive().inventoryButton.inventoryButtonX;
             Supplier<Integer> yPosition = screen instanceof CreativeModeInventoryScreen ? () -> WaystonesConfig.getActive().inventoryButton.creativeInventoryButtonY : () -> WaystonesConfig.getActive().inventoryButton.inventoryButtonY;
             warpButton = new WaystoneInventoryButton((AbstractContainerScreen<?>) screen, button -> {
@@ -58,8 +63,10 @@ public class InventoryButtonGuiHandler {
                     PlayerWaystoneManager.resetCooldowns(player);
                 }
 
-                final var requirements = WaystonesAPI.resolveRequirements(WaystonesAPI.createUnboundTeleportContext(player).addFlag(TeleportFlags.INVENTORY_BUTTON));
-                if (requirements.canAfford(player)) {
+                final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
+                final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).addFlag(TeleportFlags.INVENTORY_BUTTON);
+                final var requirements = WaystonesRules.inventoryButtonWarpRequirements.get(context);
+                if (requirements.left().isPresent()) {
                     if (inventoryButtonMode.hasNamedTarget()) {
                         mc.setScreen(new InventoryButtonReturnConfirmScreen(inventoryButtonMode.getNamedTarget()));
                     } else if (inventoryButtonMode.isReturnToNearest()) {
@@ -92,10 +99,9 @@ public class InventoryButtonGuiHandler {
                     return;
                 }
 
-                long millisLeft = PlayerWaystoneManager.getCooldownMillisLeft(player, WaystoneCooldowns.INVENTORY_BUTTON);
                 final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
                 final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).addFlag(TeleportFlags.INVENTORY_BUTTON);
-                final var requirements = WaystonesAPI.resolveRequirements(context);
+                final var requirements = WaystonesRules.inventoryButtonWarpRequirements.get(context);
                 if (inventoryButtonMode.hasNamedTarget()) {
                     tooltip.add(Component.translatable("gui.waystones.inventory.return_to_waystone").withStyle(ChatFormatting.YELLOW));
                     final var targetComponent = Component.literal(inventoryButtonMode.getNamedTarget()).withStyle(ChatFormatting.DARK_AQUA);
@@ -113,9 +119,9 @@ public class InventoryButtonGuiHandler {
                     }
                 }
 
-                if (!requirements.canAfford(player)) {
-                    requirements.appendHoverText(player, tooltip);
-                }
+                requirements.mapRight(Coercion.LIST).ifRight(failures -> {
+                    RequirementClientRegistry.getListRenderer().appendHoverText(player, (List<Object>) failures, tooltip);
+                });
 
                 final var font = Minecraft.getInstance().font;
                 final var visualTooltip = tooltip.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();

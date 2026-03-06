@@ -1,16 +1,15 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
+import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
-import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,20 +17,14 @@ import java.util.Optional;
 
 public class WaystoneButton extends Button.Plain {
 
-
-    private final WarpRequirement warpRequirement;
+    private final Either<List<Object>, List<Object>> warpRequirements;
     private final Waystone waystone;
 
-    public WaystoneButton(int x, int y, Waystone waystone, WarpRequirement warpRequirement, OnPress pressable) {
+    public WaystoneButton(int x, int y, Waystone waystone, Either<List<Object>, List<Object>> warpRequirements, OnPress pressable) {
         super(x, y, 200, 20, getWaystoneNameComponent(waystone), pressable, Button.DEFAULT_NARRATION);
-        Player player = Minecraft.getInstance().player;
-        this.warpRequirement = warpRequirement;
+        this.warpRequirements = warpRequirements;
         this.waystone = waystone;
-        if (player == null) {
-            active = false;
-        } else if (!warpRequirement.canAfford(player) && !player.getAbilities().instabuild) {
-            active = false;
-        }
+        active = warpRequirements.left().isPresent();
     }
 
     private static Component getWaystoneNameComponent(Waystone waystone) {
@@ -66,20 +59,20 @@ public class WaystoneButton extends Button.Plain {
             guiGraphics.drawString(font, distanceStr, getX() + xOffset - 4, getY() + 6, 0xFFFFFFFF);
         }
 
-        renderRequirements(warpRequirement, guiGraphics, mouseX, mouseY, partialTicks);
+        renderRequirements(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    @SuppressWarnings("unchecked")
-    private <T extends WarpRequirement> void renderRequirements(T requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    private void renderRequirements(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         final var font = Minecraft.getInstance().font;
         final var player = Minecraft.getInstance().player;
-        final var renderer = RequirementClientRegistry.getRenderer((Class<T>) requirement.getClass());
+        final var requirement = Either.unwrap(warpRequirements);
+        final var renderer = RequirementClientRegistry.getListRenderer();
         if (renderer != null) {
             renderer.renderWidget(player, requirement, guiGraphics, mouseX, mouseY, partialTicks, getX() + 2, getY() + 2);
 
             if (isHovered && mouseX < getX() + 2 + renderer.getWidth(player, requirement)) {
                 final List<Component> tooltip = new ArrayList<>();
-                warpRequirement.appendHoverText(player, tooltip);
+                renderer.appendHoverText(player, requirement, tooltip);
                 guiGraphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), mouseX, mouseY + font.lineHeight);
             }
         }

@@ -2,6 +2,9 @@ dependencies {
     implementation(libs.balmFabric) {
         changing = libs.versions.balm.get().contains("SNAPSHOT")
     }
+    implementation(libs.shogiFabric) {
+        changing = libs.versions.shogi.get().contains("SNAPSHOT")
+    }
     compileOnly(libs.journeyMapApiCommon)
     compileOnly(libs.blueMap)
     compileOnly(libs.dynmap)

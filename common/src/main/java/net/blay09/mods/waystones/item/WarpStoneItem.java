@@ -136,14 +136,15 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
                 @Override
                 public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-                    return new WaystoneSelectionMenu(ModMenus.warpStoneSelection.value(), null, windowId, waystones, Collections.emptySet())
+                    return new WaystoneSelectionMenu(ModMenus.warpStoneSelection.value(), null, windowId, waystones, Collections.emptyMap(), Collections.emptySet())
                             .withWarpItem(itemStack)
                             .withHand(hand);
                 }
 
                 @Override
                 public ModMenus.ItemInitiatedWaystoneMenuData getScreenOpeningData(ServerPlayer serverPlayer) {
-                    return new ModMenus.ItemInitiatedWaystoneMenuData(waystones, itemStack);
+                    final var warpRequirements = WaystoneSelectionMenu.buildWarpRequirements(serverPlayer, null, waystones, Collections.emptySet(), itemStack, hand);
+                    return new ModMenus.ItemInitiatedWaystoneMenuData(waystones, itemStack, warpRequirements);
                 }
 
                 @Override

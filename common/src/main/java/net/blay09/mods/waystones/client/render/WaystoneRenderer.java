@@ -19,8 +19,8 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.MaterialSet;
+import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.resources.model.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
@@ -41,14 +41,14 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
         public int runeColor;
     }
 
-    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS,
+    private static final SpriteId MATERIAL = new SpriteId(TextureAtlas.LOCATION_BLOCKS,
             Identifier.withDefaultNamespace("waystone_overlays/waystone_active"));
 
-    private final MaterialSet materials;
+    private final SpriteGetter materials;
     private final SharestoneModel model;
 
     public WaystoneRenderer(BlockEntityRendererProvider.Context context) {
-        materials = context.materials();
+        materials = context.sprites();
         model = new SharestoneModel(context.bakeLayer(ModRenderers.waystoneModel));
     }
 

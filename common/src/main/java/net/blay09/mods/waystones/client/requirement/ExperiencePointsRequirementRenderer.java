@@ -1,13 +1,18 @@
 package net.blay09.mods.waystones.client.requirement;
 
-import net.blay09.mods.waystones.requirement.ExperiencePointsRequirement;
+import net.blay09.mods.shogi.common.effect.cost.ExperiencePointsCostInformation;
+import net.blay09.mods.waystones.util.ExperienceUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
-public class ExperiencePointsRequirementRenderer implements RequirementRenderer<ExperiencePointsRequirement> {
+import java.util.List;
+
+public class ExperiencePointsRequirementRenderer implements RequirementRenderer<ExperiencePointsCostInformation> {
 
     private static final Identifier[] ENABLED_LEVEL_SPRITES = new Identifier[]{
             Identifier.withDefaultNamespace("container/enchanting_table/level_1"),
@@ -19,11 +24,11 @@ public class ExperiencePointsRequirementRenderer implements RequirementRenderer<
             Identifier.withDefaultNamespace("container/enchanting_table/level_3_disabled")};
 
     @Override
-    public void renderWidget(Player player, ExperiencePointsRequirement requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
-        final var points = requirement.getPoints();
-        final var levels = points > 0 ? Math.max(1, ExperiencePointsRequirement.calculateLevelCostFromExperiencePoints(player.experienceLevel, points)) : 0;
+    public void renderWidget(Player player, ExperiencePointsCostInformation requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
+        final var points = requirement.required();
+        final var levels = points > 0 ? Math.max(1, ExperienceUtils.calculateLevelCostFromExperiencePoints(player.experienceLevel, points)) : 0;
         if (levels > 0) {
-            final var canAfford = requirement.canAfford(player);
+            final var canAfford = requirement.available() >= requirement.required();
             final var spriteIndex = Math.max(0, Math.min(levels, 3) - 1);
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, canAfford ? ENABLED_LEVEL_SPRITES[spriteIndex] : DISABLED_LEVEL_SPRITES[spriteIndex], x, y, 16, 16);
 
@@ -34,4 +39,10 @@ public class ExperiencePointsRequirementRenderer implements RequirementRenderer<
         }
     }
 
+    @Override
+    public void appendHoverText(Player player, ExperiencePointsCostInformation requirement, List<Component> tooltip) {
+        if (requirement.required() > 0) {
+            tooltip.add(Component.translatable("gui.waystones.waystone_selection.xp_requirement", requirement.required()).withStyle(ChatFormatting.GREEN));
+        }
+    }
 }

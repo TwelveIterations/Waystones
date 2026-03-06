@@ -61,12 +61,15 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
                 final var fromWaystone = getWaystone();
                 final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(player, fromWaystone));
                 PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-                return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.value(), fromWaystone, windowId, waystones, Collections.emptySet());
+                return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.value(), fromWaystone, windowId, waystones, Collections.emptyMap(), Collections.emptySet());
             }
 
             @Override
             public WaystoneSelectionMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                return new WaystoneSelectionMenu.Data(getWaystone(), new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, getWaystone())));
+                final var fromWaystone = getWaystone();
+                final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, fromWaystone));
+                final var warpRequirements = WaystoneSelectionMenu.buildWarpRequirements(serverPlayer, fromWaystone, waystones, Collections.emptySet());
+                return new WaystoneSelectionMenu.Data(fromWaystone, waystones, warpRequirements);
             }
 
             @Override
