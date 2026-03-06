@@ -11,6 +11,7 @@ import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +49,7 @@ public class WaystonesConfig {
     public Client client = new Client();
     public Compatibility compatibility = new Compatibility();
     public BlueMap blueMap = new BlueMap();
+    public PlayerCall playerCall = new PlayerCall();
 
     public static class General {
 
@@ -199,6 +201,30 @@ public class WaystonesConfig {
     public static class Client {
         @Comment("If enabled, the text overlay on waystones will no longer always render at full brightness.")
         public boolean disableTextGlow = false;
+    }
+
+    public static class PlayerCall {
+        @Synced
+        @Comment("Experience level cost for teleporting to another player. Set to 0 for free teleportation.")
+        public int xpCost = 0;
+
+        @Synced
+        @Comment("Cooldown time in seconds before the player can use player teleportation again. Set to 0 for no cooldown.")
+        public int cooldownSeconds = 60;
+
+        @Comment("If enabled, the item held in hand will be consumed on teleport. Requires costItem to be set.")
+        public boolean consumeItem = false;
+
+        @Comment("The item that must be held to teleport to another player. Leave empty to allow teleportation with any item.")
+        public ItemStack costItem = ItemStack.EMPTY;
+
+        @Synced
+        @Comment("If enabled, pets will be teleported with the player.")
+        public boolean transportPets = false;
+
+        @Synced
+        @Comment("If enabled, leashed mobs will be teleported with the player.")
+        public boolean transportLeashed = true;
     }
 
     public InventoryButtonMode getInventoryButtonMode() {

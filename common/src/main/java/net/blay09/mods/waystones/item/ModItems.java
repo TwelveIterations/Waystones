@@ -18,6 +18,7 @@ public class ModItems {
     public static DeferredItem attunedShard;
     public static DeferredItem deepslateShard;
     public static DeferredItem crumblingAttunedShard;
+    public static DeferredItem playerCall;
 
     public static void initialize(BalmItemRegistrar items) {
         returnScroll = items.register("return_scroll", ReturnScrollItem::new).asDeferredItem();
@@ -29,6 +30,7 @@ public class ModItems {
         attunedShard = items.register("attuned_shard", AttunedShardItem::new).asDeferredItem();
         deepslateShard = items.register("deepslate_shard", ShardItem::new).asDeferredItem();
         crumblingAttunedShard = items.register("crumbling_attuned_shard", CrumblingAttunedShardItem::new).asDeferredItem();
+        playerCall = items.register("player_call", PlayerCallItem::new).asDeferredItem();
     }
 
     public static void initialize(BalmCreativeModeTabRegistrar creativeModeTabs) {
@@ -45,6 +47,7 @@ public class ModItems {
                             output.accept(ModItems.warpScroll);
                             output.accept(ModItems.warpStone);
                             output.accept(ModItems.dormantShard);
+                            output.accept(ModItems.playerCall);
                             output.accept(ModBlocks.sandyWaystone);
                             output.accept(ModBlocks.mossyWaystone);
                             output.accept(ModBlocks.deepslateWaystone);

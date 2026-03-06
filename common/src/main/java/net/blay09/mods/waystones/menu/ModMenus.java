@@ -2,19 +2,25 @@ package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.balm.world.BalmMenuFactory;
 import net.blay09.mods.balm.world.inventory.BalmMenuTypeRegistrar;
+import net.blay09.mods.waystones.api.PlayerInfo;
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.core.Holder;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class ModMenus {
 
@@ -28,6 +34,19 @@ public class ModMenus {
         );
     }
 
+    /**
+     * 玩家选择菜单数据 - 用于客户端GUI显示在线玩家列表
+     */
+    public record PlayerSelectionMenuData(List<PlayerInfo> players, ItemStack itemStack) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, PlayerSelectionMenuData> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.collection(ArrayList::new, PlayerInfo.STREAM_CODEC),
+                PlayerSelectionMenuData::players,
+                ItemStack.STREAM_CODEC,
+                PlayerSelectionMenuData::itemStack,
+                PlayerSelectionMenuData::new
+        );
+    }
+
     public static Holder<MenuType<WaystoneSelectionMenu>> waystoneSelection;
     public static Holder<MenuType<WaystoneSelectionMenu>> warpScrollSelection;
     public static Holder<MenuType<WaystoneSelectionMenu>> warpStoneSelection;
@@ -35,6 +54,7 @@ public class ModMenus {
     public static Holder<MenuType<WaystoneSelectionMenu>> inventorySelection;
     public static Holder<MenuType<WaystoneSelectionMenu>> adminSelection;
     public static Holder<MenuType<WaystoneSelectionMenu>> sharestoneSelection;
+    public static Holder<MenuType<PlayerSelectionMenu>> playerSelection;
     public static Holder<MenuType<WaystoneModifierMenu>> waystoneModifiers;
     public static Holder<MenuType<WaystoneEditMenu>> waystoneSettings;
 
@@ -155,6 +175,19 @@ public class ModMenus {
                     @Override
                     public StreamCodec<RegistryFriendlyByteBuf, WaystoneEditMenu.Data> getStreamCodec() {
                         return WaystoneEditMenu.STREAM_CODEC;
+                    }
+                }).asHolder();
+        playerSelection = menus.register("player_selection",
+                new BalmMenuFactory<PlayerSelectionMenu, ModMenus.PlayerSelectionMenuData>() {
+                    @Override
+                    public PlayerSelectionMenu create(int windowId, Inventory inventory, ModMenus.PlayerSelectionMenuData data) {
+                        return new PlayerSelectionMenu(ModMenus.playerSelection.value(), windowId, data.players())
+                                .withWarpItem(data.itemStack());
+                    }
+
+                    @Override
+                    public StreamCodec<RegistryFriendlyByteBuf, ModMenus.PlayerSelectionMenuData> getStreamCodec() {
+                        return ModMenus.PlayerSelectionMenuData.STREAM_CODEC;
                     }
                 }).asHolder();
     }

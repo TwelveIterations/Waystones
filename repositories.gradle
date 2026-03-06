@@ -1,4 +1,16 @@
 repositories {
+    // 阿里云镜像 - Maven中央仓库
+    maven {
+        name = 'Aliyun Maven Central'
+        url = 'https://maven.aliyun.com/repository/central'
+    }
+
+    // 腾讯云镜像 - Maven中央仓库
+    maven {
+        name = 'Tencent Maven Central'
+        url = 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/'
+    }
+
     maven {
         name = 'Twelve Iterations'
         url = 'https://maven.twelveiterations.com/repository/maven-public/'
