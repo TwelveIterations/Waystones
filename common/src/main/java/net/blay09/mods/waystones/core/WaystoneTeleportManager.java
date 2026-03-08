@@ -242,7 +242,7 @@ public class WaystoneTeleportManager {
             }
         }
 
-        if (entity instanceof Player player && context.getRequirements().right().isPresent() && !player.getAbilities().instabuild) {
+        if (context.getRequirements().right().isPresent()) {
             return Either.right(new WaystoneTeleportError.RequirementsNotMet());
         }
 

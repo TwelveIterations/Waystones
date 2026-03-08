@@ -122,7 +122,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
             final var status = targetWaystone.isValid() ? WarpPlateBlock.WarpPlateStatus.WARPING : WarpPlateBlock.WarpPlateStatus.WARPING_INVALID;
             final var canAfford = WaystonesAPI.createDefaultTeleportContext(entity, targetWaystone, it -> it.setFromWaystone(getWaystone()))
                     .mapLeft(WaystoneTeleportContext::getRequirements)
-                    .mapLeft(it -> !(entity instanceof Player player) || player.getAbilities().instabuild || it.left().isPresent())
+                    .mapLeft(it -> it.left().isPresent())
                     .left().orElse(true);
             level.setBlock(worldPosition, getBlockState()
                     .setValue(WarpPlateBlock.STATUS, canAfford ? status : WarpPlateBlock.WarpPlateStatus.WARPING_INVALID), 3);

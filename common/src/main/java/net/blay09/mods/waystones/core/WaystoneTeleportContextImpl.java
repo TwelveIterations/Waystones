@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.config.WaystonesRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -175,6 +176,9 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
             requirements = (Either<List<Object>, List<Object>>) (Either<?, ?>) WaystonesRules.warpRequirements.get(this)
                     .mapLeft(Coercion.LIST)
                     .mapRight(Coercion.LIST);
+            if (requirements.right().isPresent() && entity instanceof ServerPlayer player && player.getAbilities().instabuild) {
+                requirements = requirements.swap();
+            }
             requirementsDirty = false;
         }
         return requirements;
