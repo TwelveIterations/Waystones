@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.api.client;
 
 import net.blay09.mods.waystones.client.requirement.RequirementRenderer;
+import net.blay09.mods.waystones.client.requirement.RequirementMerger;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -18,5 +19,9 @@ public class WaystonesClientAPI {
 
     public static <T> void registerRequirementRenderer(Class<T> clazz, RequirementRenderer<T> renderer) {
         __internalMethods.registerRequirementRenderer(clazz, renderer);
+    }
+
+    public static <T> void registerRequirementMerger(Class<T> clazz, RequirementMerger<T> merger) {
+        __internalMethods.registerRequirementMerger(clazz, merger);
     }
 }

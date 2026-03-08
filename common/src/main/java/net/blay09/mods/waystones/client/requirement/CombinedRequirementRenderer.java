@@ -11,7 +11,8 @@ import java.util.List;
 public class CombinedRequirementRenderer implements RequirementRenderer<List<Object>> {
     @Override
     public void renderWidget(Player player, List<Object> requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
-        final var sortedChildren = requirement
+        final var mergedRequirements = RequirementClientRegistry.mergeRequirements(requirement);
+        final var sortedChildren = mergedRequirements
                 .stream()
                 .map(it -> Pair.of(it, RequirementClientRegistry.getRenderer(it)))
                 .sorted(Comparator.comparingInt(it -> it.getSecond() != null ? it.getSecond().getOrder() : 100))
@@ -28,7 +29,7 @@ public class CombinedRequirementRenderer implements RequirementRenderer<List<Obj
 
     @Override
     public int getWidth(Player player, List<Object> requirement) {
-        return requirement
+        return RequirementClientRegistry.mergeRequirements(requirement)
                 .stream()
                 .map(it -> Pair.of(it, RequirementClientRegistry.getRenderer(it)))
                 .filter(it -> it.getSecond() != null)
@@ -38,7 +39,7 @@ public class CombinedRequirementRenderer implements RequirementRenderer<List<Obj
 
     @Override
     public void appendHoverText(Player player, List<Object> requirement, List<Component> tooltip) {
-        requirement
+        RequirementClientRegistry.mergeRequirements(requirement)
                 .stream()
                 .map(it -> Pair.of(it, RequirementClientRegistry.getRenderer(it)))
                 .filter(it -> it.getSecond() != null)
