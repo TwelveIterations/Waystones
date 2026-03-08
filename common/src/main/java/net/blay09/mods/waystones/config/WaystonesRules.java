@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.config;
 
 import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.DataResult;
 import net.blay09.mods.shogi.Shogi;
 import net.blay09.mods.shogi.ShogiValue;
 import net.blay09.mods.shogi.coercion.Coercion;
@@ -18,6 +17,8 @@ import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,8 @@ import java.util.stream.Collectors;
 import static net.blay09.mods.waystones.Waystones.id;
 
 public class WaystonesRules {
+
+    public static final Logger logger = LoggerFactory.getLogger(WaystonesRules.class);
 
     public static final ShogiValue<WaystoneTeleportContext, List<?>> warpRequirements = Shogi.maybe(id("warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST);
 
@@ -126,7 +129,10 @@ public class WaystonesRules {
     private static Either<?, ?> resolveWarpRequirements(WaystoneTeleportContext context) {
         final List<ShogiEffect<?>> rules = WaystonesConfig.getActive().teleports.warpRequirements.stream()
                 .map(it -> ShogiRuleParser.parse(scope, it))
-                .filter(DataResult::isSuccess)
+                .filter(shogiEffectDataResult -> {
+                    shogiEffectDataResult.error().ifPresent(error -> logger.error("Invalid warp requirements rule {}", error));
+                    return shogiEffectDataResult.isSuccess();
+                })
                 .map(it -> it.result().orElseThrow())
                 .collect(Collectors.toList());
         final var aggregate = AggregateEffect.withAutoApplied(scope, rules);
