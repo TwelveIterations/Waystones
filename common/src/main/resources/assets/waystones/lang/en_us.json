@@ -203,7 +203,7 @@
   "waystones.configuration.teleports.enableCooldowns": "Enable Cooldowns",
   "waystones.configuration.teleports.enableCooldowns.tooltip": "Set to false to simply disable all cooldowns. See warpRequirements for more fine-grained control.",
   "waystones.configuration.teleports.rules": "Warp Requirements",
-  "waystones.configuration.teleports.rules.tooltip": "List of warp requirements with comma-separated parameters in parentheses. Conditions can be defined as comma-separated list in square brackets. Will be applied in order.",
+  "waystones.configuration.teleports.rules.tooltip": "List of warp requirements in Shogi format.",
   "waystones.configuration.teleports.transportPets": "Transport Pets",
   "waystones.configuration.teleports.transportPets.tooltip": "Set to ENABLED to have nearby pets teleport with you. Set to SAME_DIMENSION to have nearby pets teleport with you only if you're not changing dimensions. Set to DISABLED to disable.",
   "waystones.configuration.teleports.transportLeashed": "Transport Leashed",
