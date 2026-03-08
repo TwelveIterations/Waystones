@@ -292,7 +292,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
         int fullWidth = locationPrefixWidth + locationWidth;
 
-        int startX = x - fullWidth / 2 + locationPrefixWidth;
+        int startX = leftPos + x - fullWidth / 2 + locationPrefixWidth;
         int startY = y + topPos;
         isLocationHeaderHovered = mouseX >= startX && mouseX < startX + locationWidth + 16
                 && mouseY >= startY && mouseY < startY + font.lineHeight;
