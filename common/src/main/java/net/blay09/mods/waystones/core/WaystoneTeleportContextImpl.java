@@ -2,10 +2,15 @@ package net.blay09.mods.waystones.core;
 
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.shogi.coercion.Coercion;
-import net.blay09.mods.shogi.context.MutableShogiContext;
+import net.blay09.mods.shogi.common.effect.cost.DamageItem;
+import net.blay09.mods.shogi.common.effect.cost.ExperienceLevelCost;
+import net.blay09.mods.shogi.common.effect.cost.ExperiencePointsCost;
+import net.blay09.mods.shogi.common.effect.server.cooldown.AddCooldown;
+import net.blay09.mods.shogi.common.effect.server.cooldown.CooldownCost;
 import net.blay09.mods.shogi.context.executor.EffectExecutor;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
@@ -45,6 +50,30 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     public WaystoneTeleportContextImpl(Entity entity, Waystone targetWaystone) {
         this.entity = entity;
         this.targetWaystone = targetWaystone;
+
+        executor.overrideConsume(DamageItem.IDENTIFIER, (operation, value) -> {
+            if (WaystonesConfig.getActive().teleports.enableDurability) {
+                operation.accept(value);
+            }
+        });
+
+        executor.overrideConsume(ExperienceLevelCost.IDENTIFIER, (operation, value) -> {
+            if (WaystonesConfig.getActive().teleports.enableCosts) {
+                operation.accept(value);
+            }
+        });
+
+        executor.overrideConsume(ExperiencePointsCost.IDENTIFIER, (operation, value) -> {
+            if (WaystonesConfig.getActive().teleports.enableCosts) {
+                operation.accept(value);
+            }
+        });
+
+        executor.overrideConsume(CooldownCost.IDENTIFIER, (operation, value) -> {
+            if (WaystonesConfig.getActive().teleports.enableCooldowns) {
+                operation.accept(value);
+            }
+        });
     }
 
     @Override
@@ -228,9 +257,11 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public Optional<Object> getVariable(String path) {
         return switch (path) {
-            case "distance" -> Optional.of((float) Math.sqrt(entity.distanceToSqr(targetWaystone.getPos().getCenter())));
+            case "distance" ->
+                    Optional.of((float) Math.sqrt(entity.distanceToSqr(targetWaystone.getPos().getCenter())));
             case "leashed" -> Optional.of((float) WaystoneTeleportManager.findLeashedAnimals(entity).size());
-            case "pets" -> Optional.of(entity instanceof LivingEntity livingEntity ? (float) WaystoneTeleportManager.findPets(livingEntity).size() : 0f);
+            case "pets" ->
+                    Optional.of(entity instanceof LivingEntity livingEntity ? (float) WaystoneTeleportManager.findPets(livingEntity).size() : 0f);
             case "passengers" -> Optional.of((float) WaystoneTeleportManager.findPassengers(entity).size());
             default -> Optional.empty();
         };
