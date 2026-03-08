@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.blay09.mods.balm.commands.BalmCommands;
+import net.blay09.mods.shogi.common.effect.server.cooldown.ShogiCooldowns;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.block.ModBlocks;
@@ -209,8 +210,7 @@ public class ModCommands {
                                         .then(Commands.literal("all").executes(context -> {
                                             final var targets = EntityArgument.getPlayers(context, "targets");
                                             for (final var player : targets) {
-                                                PlayerWaystoneManager.resetCooldowns(player);
-                                                WaystoneSyncManager.sendWaystoneCooldowns(player);
+                                                ShogiCooldowns.get(player).resetAllCooldowns();
                                             }
 
                                             if (targets.size() == 1) {
@@ -228,7 +228,7 @@ public class ModCommands {
                                                         final var targets = EntityArgument.getPlayers(context, "targets");
                                                         final var keys = new java.util.HashSet<String>();
                                                         for (final var player : targets) {
-                                                            for (final var key : PlayerWaystoneManager.getCooldowns(player).keySet()) {
+                                                            for (final var key : ShogiCooldowns.get(player).getCooldownIds()) {
                                                                 keys.add(key.toString());
                                                             }
                                                         }
@@ -247,8 +247,7 @@ public class ModCommands {
                                                     }
 
                                                     for (final var player : targets) {
-                                                        PlayerWaystoneManager.setCooldownUntil(player, cooldownKey, 0);
-                                                        WaystoneSyncManager.sendWaystoneCooldowns(player);
+                                                        ShogiCooldowns.get(player).resetCooldown(cooldownKey);
                                                     }
 
                                                     if (targets.size() == 1) {

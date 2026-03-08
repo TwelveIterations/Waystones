@@ -79,27 +79,6 @@ public class PlayerWaystoneManager {
         getPlayerWaystoneData(player.level()).deactivateWaystone(player, waystone);
     }
 
-    public static Map<Identifier, Long> getCooldowns(Player player) {
-        return getPlayerWaystoneData(player.level()).getCooldowns(player);
-    }
-
-    public static void resetCooldowns(Player player) {
-        getPlayerWaystoneData(player.level()).resetCooldowns(player);
-    }
-
-    public static long getCooldownUntil(Player player, Identifier key) {
-        return getPlayerWaystoneData(player.level()).getCooldownUntil(player, key);
-    }
-
-    public static long getCooldownMillisLeft(Player player, Identifier key) {
-        long cooldownUntil = getCooldownUntil(player, key);
-        return Math.max(0, cooldownUntil - System.currentTimeMillis());
-    }
-
-    public static void setCooldownUntil(Player player, Identifier key, long timestamp) {
-        getPlayerWaystoneData(player.level()).setCooldownUntil(player, key, timestamp);
-    }
-
     public static Optional<Waystone> getNearestWaystone(Player player) {
         return getPlayerWaystoneData(player.level()).getWaystones(player).stream()
                 .filter(it -> it.getDimension() == player.level().dimension())

@@ -80,15 +80,15 @@ public class WaystonesConfig {
 
     public static class Teleports {
         @Synced
-        @Comment("Set to false to simply disable all xp costs. See warpRequirements for more fine-grained control.")
+        @Comment("Set to false to simply disable all xp costs. See rules for more fine-grained control.")
         public boolean enableCosts = true;
 
         @Synced
-        @Comment("Set to false to simply disable all durability costs. See warpRequirements for more fine-grained control.")
+        @Comment("Set to false to simply disable all durability costs. See rules for more fine-grained control.")
         public boolean enableDurability = true;
 
         @Synced
-        @Comment("Set to false to simply disable all cooldowns. See warpRequirements for more fine-grained control.")
+        @Comment("Set to false to simply disable all cooldowns. See rules for more fine-grained control.")
         public boolean enableCooldowns = true;
 
         @Synced

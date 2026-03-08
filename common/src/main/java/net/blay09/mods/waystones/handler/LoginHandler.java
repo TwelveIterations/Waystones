@@ -28,7 +28,6 @@ public class LoginHandler {
             for (Identifier dyedSharestone : WaystoneTypes.SHARESTONES) {
                 WaystoneSyncManager.sendWaystonesOfType(dyedSharestone, player);
             }
-            WaystoneSyncManager.sendWaystoneCooldowns(player);
         });
     }
 }

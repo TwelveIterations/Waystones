@@ -6,7 +6,6 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.nbt.*;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
@@ -15,7 +14,6 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     private static final String TAG_NAME = "WaystonesData";
     private static final String ACTIVATED_WAYSTONES = "Waystones";
     private static final String SORTING_INDEX = "SortingIndex";
-    private static final String COOLDOWNS = "Cooldowns";
 
     @Override
     public void activateWaystone(Player player, Waystone waystone) {
@@ -155,41 +153,6 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
                 break;
             }
         }
-    }
-
-    @Override
-    public Map<Identifier, Long> getCooldowns(Player player) {
-        final var waystonesData = getWaystonesData(player);
-        final var cooldownMap = new HashMap<Identifier, Long>();
-        waystonesData.getCompound(COOLDOWNS).ifPresent(cooldowns -> {
-            for (final var key : cooldowns.keySet()) {
-                cooldownMap.put(Identifier.parse(key), cooldowns.getLongOr(key, 0));
-            }
-        });
-
-        return cooldownMap;
-    }
-
-    @Override
-    public void resetCooldowns(Player player) {
-        final var waystonesData = getWaystonesData(player);
-        waystonesData.put(COOLDOWNS, new CompoundTag());
-    }
-
-    @Override
-    public long getCooldownUntil(Player player, Identifier key) {
-        final var waystonesData = getWaystonesData(player);
-        return waystonesData.getCompound(COOLDOWNS)
-                .flatMap(it -> it.getLong(key.toString()))
-                .orElse(0L);
-    }
-
-    @Override
-    public void setCooldownUntil(Player player, Identifier key, long timeStamp) {
-        final var waystonesData = getWaystonesData(player);
-        final var cooldowns = waystonesData.getCompoundOrEmpty(COOLDOWNS);
-        cooldowns.putLong(key.toString(), timeStamp);
-        waystonesData.put(COOLDOWNS, cooldowns);
     }
 
     private static ListTag getActivatedWaystonesData(CompoundTag data) {

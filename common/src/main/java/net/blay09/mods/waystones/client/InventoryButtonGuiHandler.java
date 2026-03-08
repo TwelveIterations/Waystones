@@ -58,11 +58,6 @@ public class InventoryButtonGuiHandler {
             warpButton = new WaystoneInventoryButton((AbstractContainerScreen<?>) screen, button -> {
                 Player player = mc.player;
 
-                // Reset cooldowns if player is in creative mode
-                if (player.getAbilities().instabuild) {
-                    PlayerWaystoneManager.resetCooldowns(player);
-                }
-
                 final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
                 final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).addFlag(TeleportFlags.INVENTORY_BUTTON);
                 final var requirements = WaystonesRules.inventoryButtonWarpRequirements.get(context);

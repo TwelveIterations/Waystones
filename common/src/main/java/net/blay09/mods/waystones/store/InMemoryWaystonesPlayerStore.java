@@ -9,7 +9,6 @@ import java.util.*;
 public class InMemoryWaystonesPlayerStore implements WaystonesPlayerStore {
     private final List<UUID> sortingIndex = new ArrayList<>();
     private final Map<UUID, Waystone> waystones = new HashMap<>();
-    private final Map<Identifier, Long> cooldowns = new HashMap<>();
 
     @Override
     public void activateWaystone(Player player, Waystone waystone) {
@@ -26,26 +25,6 @@ public class InMemoryWaystonesPlayerStore implements WaystonesPlayerStore {
     public void deactivateWaystone(Player player, Waystone waystone) {
         waystones.remove(waystone.getWaystoneUid());
         sortingIndex.remove(waystone.getWaystoneUid());
-    }
-
-    @Override
-    public Map<Identifier, Long> getCooldowns(Player player) {
-        return cooldowns;
-    }
-
-    @Override
-    public void resetCooldowns(Player player) {
-        cooldowns.clear();
-    }
-
-    @Override
-    public long getCooldownUntil(Player player, Identifier key) {
-        return cooldowns.getOrDefault(key, 0L);
-    }
-
-    @Override
-    public void setCooldownUntil(Player player, Identifier key, long timeStamp) {
-        cooldowns.put(key, timeStamp);
     }
 
     @Override

@@ -43,11 +43,6 @@ public class ServerboundInventoryButtonPacket implements CustomPacketPayload {
             return;
         }
 
-        // Reset cooldown if player is in creative mode
-        if (player.getAbilities().instabuild) {
-            PlayerWaystoneManager.resetCooldowns(player);
-        }
-
         final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
         if (waystone.isPresent()) {
             WaystonesAPI.createDefaultTeleportContext(player, waystone.get(), it -> it.addFlag(TeleportFlags.INVENTORY_BUTTON))

@@ -68,8 +68,4 @@ public class WaystoneSyncManager {
         }
     }
 
-    public static void sendWaystoneCooldowns(Player player) {
-        final var cooldowns = PlayerWaystoneManager.getCooldowns(player);
-        Balm.networking().sendTo(player, new ClientboundPlayerWaystoneCooldownsPacket(cooldowns));
-    }
 }
