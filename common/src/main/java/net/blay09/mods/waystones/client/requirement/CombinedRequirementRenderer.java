@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.client.requirement;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Comparator;
@@ -35,4 +36,13 @@ public class CombinedRequirementRenderer implements RequirementRenderer<List<Obj
                 .sum();
     }
 
+    @Override
+    public void appendHoverText(Player player, List<Object> requirement, List<Component> tooltip) {
+        requirement
+                .stream()
+                .map(it -> Pair.of(it, RequirementClientRegistry.getRenderer(it)))
+                .filter(it -> it.getSecond() != null)
+                .sorted(Comparator.comparingInt(it -> it.getSecond().getOrder()))
+                .forEach(it -> it.getSecond().appendHoverText(player, it.getFirst(), tooltip));
+    }
 }
