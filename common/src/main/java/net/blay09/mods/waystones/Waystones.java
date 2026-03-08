@@ -26,6 +26,7 @@ import net.blay09.mods.waystones.compat.hudinfo.WarpPlateBlockInfoProvider;
 import net.blay09.mods.waystones.compat.hudinfo.WaystoneBlockInfoProvider;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.handler.ModEventHandlers;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.ModMenus;
@@ -146,6 +147,7 @@ public class Waystones implements BalmModule {
     @Override
     public void initialize() {
         ModEventHandlers.initialize();
+        WaystonesRules.initialize();
 
         final var hudInfo = Balm.modSupport().hudInfo();
         hudInfo.registerBlockInfo(id("waystone"), ModBlocks.waystone, new WaystoneBlockInfoProvider());

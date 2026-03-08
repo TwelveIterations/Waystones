@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.config;
 
 import com.mojang.datafixers.util.Either;
+import net.blay09.mods.balm.platform.event.callback.ConfigCallback;
 import net.blay09.mods.shogi.Shogi;
 import net.blay09.mods.shogi.ShogiValue;
 import net.blay09.mods.shogi.coercion.Coercion;
@@ -28,6 +29,8 @@ import static net.blay09.mods.waystones.Waystones.id;
 public class WaystonesRules {
 
     public static final Logger logger = LoggerFactory.getLogger(WaystonesRules.class);
+
+    private static ShogiEffect<?> cachedWarpRequirements;
 
     public static final ShogiValue<WaystoneTeleportContext, List<?>> warpRequirements = Shogi.maybe(id("warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST);
 
@@ -126,16 +129,30 @@ public class WaystonesRules {
         }
     });
 
+    public static void initialize() {
+        ConfigCallback.Reloaded.EVENT.register(schema -> {
+            if (schema.identifier().equals(id("common"))) {
+                cachedWarpRequirements = null;
+            }
+        });
+    }
+
+    private static ShogiEffect<?> getOrBuildWarpRequirementsEffect() {
+        if (cachedWarpRequirements == null) {
+            final List<ShogiEffect<?>> rules = WaystonesConfig.getActive().teleports.warpRequirements.stream()
+                    .map(it -> ShogiRuleParser.parse(scope, it))
+                    .filter(shogiEffectDataResult -> {
+                        shogiEffectDataResult.error().ifPresent(error -> logger.error("Invalid warp requirements rule {}", error));
+                        return shogiEffectDataResult.isSuccess();
+                    })
+                    .map(it -> it.result().orElseThrow())
+                    .collect(Collectors.toList());
+            cachedWarpRequirements = AggregateEffect.withAutoApplied(scope, rules);
+        }
+        return cachedWarpRequirements;
+    }
+
     private static Either<?, ?> resolveWarpRequirements(WaystoneTeleportContext context) {
-        final List<ShogiEffect<?>> rules = WaystonesConfig.getActive().teleports.warpRequirements.stream()
-                .map(it -> ShogiRuleParser.parse(scope, it))
-                .filter(shogiEffectDataResult -> {
-                    shogiEffectDataResult.error().ifPresent(error -> logger.error("Invalid warp requirements rule {}", error));
-                    return shogiEffectDataResult.isSuccess();
-                })
-                .map(it -> it.result().orElseThrow())
-                .collect(Collectors.toList());
-        final var aggregate = AggregateEffect.withAutoApplied(scope, rules);
-        return aggregate.apply(context);
+        return getOrBuildWarpRequirementsEffect().apply(context);
     }
 }
