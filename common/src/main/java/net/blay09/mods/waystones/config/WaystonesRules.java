@@ -51,79 +51,63 @@ public class WaystonesRules {
         it.registerEffect(IsWithinDistance.IDENTIFIER, IsWithinDistance.MAP_CODEC, List.of("distance"));
 
         it.registerSimpleEffect(id("is_interdimensional"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && waystoneContext.isDimensionalTeleport());
+                -> WaystoneRuleContext.isDimensionalTeleport(context));
 
         it.registerSimpleEffect(id("is_warp_plate"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && WaystoneRuleContext.getEffectiveWaystone(context, waystoneContext)
+                -> WaystoneRuleContext.getEffectiveWaystone(context)
                 .filter(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE))
                 .isPresent());
 
         it.registerSimpleEffect(id("is_portstone"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && waystoneContext.getFlags().contains(TeleportFlags.PORTSTONE));
+                -> WaystoneRuleContext.getFlags(context).contains(TeleportFlags.PORTSTONE));
 
         it.registerSimpleEffect(id("is_waystone"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && WaystoneRuleContext.getEffectiveWaystone(context, waystoneContext)
+                -> WaystoneRuleContext.getEffectiveWaystone(context)
                 .filter(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE))
                 .isPresent());
 
         it.registerSimpleEffect(id("is_sharestone"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && WaystoneRuleContext.getEffectiveWaystone(context, waystoneContext)
+                -> WaystoneRuleContext.getEffectiveWaystone(context)
                 .filter(waystone -> WaystoneTypes.isSharestone(waystone.getWaystoneType()))
                 .isPresent());
 
         it.registerSimpleEffect(id("is_inventory_button"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && waystoneContext.getFlags().contains(TeleportFlags.INVENTORY_BUTTON));
+                -> WaystoneRuleContext.getFlags(context).contains(TeleportFlags.INVENTORY_BUTTON));
 
         it.registerSimpleEffect(id("is_scroll"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && waystoneContext.getWarpItem().is(ModItemTags.SCROLLS));
+                -> context.itemStack().is(ModItemTags.SCROLLS));
 
         it.registerSimpleEffect(id("is_bound_scroll"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && waystoneContext.getWarpItem().is(ModItemTags.BOUND_SCROLLS));
+                -> context.itemStack().is(ModItemTags.BOUND_SCROLLS));
 
         it.registerSimpleEffect(id("is_return_scroll"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && waystoneContext.getWarpItem().is(ModItemTags.RETURN_SCROLLS));
+                -> context.itemStack().is(ModItemTags.RETURN_SCROLLS));
 
         it.registerSimpleEffect(id("is_warp_scroll"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && waystoneContext.getWarpItem().is(ModItemTags.WARP_SCROLLS));
+                -> context.itemStack().is(ModItemTags.WARP_SCROLLS));
 
         it.registerSimpleEffect(id("is_warp_stone"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && waystoneContext.getWarpItem().is(ModItemTags.WARP_STONES));
+                -> context.itemStack().is(ModItemTags.WARP_STONES));
 
         it.registerSimpleEffect(id("is_global"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && WaystoneRuleContext.getEffectiveWaystone(context, waystoneContext)
+                -> WaystoneRuleContext.getEffectiveWaystone(context)
                 .filter(waystone -> waystone.getVisibility() == WaystoneVisibility.GLOBAL)
                 .isPresent());
 
         it.registerSimpleEffect(id("is_with_pets"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && waystoneContext.getEntity() instanceof LivingEntity livingEntity
+                -> context.entity() instanceof LivingEntity livingEntity
                 && !WaystoneTeleportManager.findPets(livingEntity).isEmpty());
 
         it.registerSimpleEffect(id("is_with_passengers"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && !WaystoneTeleportManager.findPassengers(waystoneContext.getEntity()).isEmpty());
+                -> !WaystoneTeleportManager.findPassengers(context.entity()).isEmpty());
 
         it.registerSimpleEffect(id("is_with_leashed"), context
-                -> context instanceof WaystoneTeleportContext waystoneContext
-                && !WaystoneTeleportManager.findLeashedAnimals(waystoneContext.getEntity()).isEmpty());
+                -> !WaystoneTeleportManager.findLeashedAnimals(context.entity()).isEmpty());
 
         for (final var sharestoneType : WaystoneTypes.SHARESTONES) {
             final Identifier sharestoneIdentifier = id("is_" + sharestoneType.getPath());
             it.registerSimpleEffect(sharestoneIdentifier, context
-                    -> context instanceof WaystoneTeleportContext waystoneContext
-                    && WaystoneRuleContext.getEffectiveWaystone(context, waystoneContext)
+                    -> WaystoneRuleContext.getEffectiveWaystone(context)
                     .filter(waystone -> sharestoneType.equals(waystone.getWaystoneType()))
                     .isPresent());
         }

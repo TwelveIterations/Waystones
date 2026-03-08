@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.shogi.context.ShogiContext;
 import net.blay09.mods.shogi.effect.ShogiEffect;
 import net.blay09.mods.shogi.scope.ShogiScope;
-import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.minecraft.resources.Identifier;
 
 import static net.blay09.mods.waystones.Waystones.id;
@@ -28,9 +27,7 @@ public record Target<T>(ShogiEffect<T> effect) implements ShogiEffect<T> {
     @Override
     public Either<? extends T, ?> apply(ShogiContext context) {
         final var nestedContext = context.fork();
-        if (context instanceof WaystoneTeleportContext waystoneTeleportContext) {
-            WaystoneRuleContext.setEffectiveWaystone(nestedContext, waystoneTeleportContext.getTargetWaystone());
-        }
+        WaystoneRuleContext.setEffectiveWaystone(nestedContext, WaystoneRuleContext.getTargetWaystone(context).orElse(null));
         return effect.apply(nestedContext);
     }
 }

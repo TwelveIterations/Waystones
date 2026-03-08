@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.shogi.context.ShogiContext;
 import net.blay09.mods.shogi.effect.ShogiEffect;
-import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.minecraft.resources.Identifier;
 
 import static net.blay09.mods.waystones.Waystones.id;
@@ -23,13 +22,11 @@ public record InvolvesDimension(Identifier dimension) implements ShogiEffect<Boo
 
     @Override
     public Either<? extends Boolean, ?> apply(ShogiContext context) {
-        if (context instanceof WaystoneTeleportContext waystoneTeleportContext) {
-            final var targetDimension = waystoneTeleportContext.getTargetWaystone().getDimension().identifier();
-            final var sourceDimension = waystoneTeleportContext.getFromWaystone()
-                    .map(waystone -> waystone.getDimension().identifier())
-                    .orElseGet(() -> waystoneTeleportContext.getEntity().level().dimension().identifier());
-            return Either.left(targetDimension.equals(dimension) || sourceDimension.equals(dimension));
-        }
-        return Either.left(false);
+        final var targetDimension = WaystoneRuleContext.getTargetWaystone(context)
+                .map(waystone -> waystone.getDimension().identifier());
+        final var sourceDimension = WaystoneRuleContext.getSourceWaystone(context)
+                .map(waystone -> waystone.getDimension().identifier())
+                .orElseGet(() -> context.level().dimension().identifier());
+        return Either.left(targetDimension.map(it -> it.equals(dimension)).orElse(false) || sourceDimension.equals(dimension));
     }
 }

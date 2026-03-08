@@ -12,6 +12,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesRules;
+import net.blay09.mods.waystones.config.rules.WaystoneRuleContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
@@ -257,6 +258,9 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public Optional<Object> getVariable(String path) {
         return switch (path) {
+            case WaystoneRuleContext.SOURCE_WAYSTONE_VARIABLE -> Optional.ofNullable(getFromWaystone());
+            case WaystoneRuleContext.TARGET_WAYSTONE_VARIABLE -> Optional.of(targetWaystone);
+            case WaystoneRuleContext.FLAGS_VARIABLE -> Optional.of(flags);
             case "distance" ->
                     Optional.of((float) Math.sqrt(entity.distanceToSqr(targetWaystone.getPos().getCenter())));
             case "leashed" -> Optional.of((float) WaystoneTeleportManager.findLeashedAnimals(entity).size());

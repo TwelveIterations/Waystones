@@ -6,7 +6,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.shogi.context.ShogiContext;
 import net.blay09.mods.shogi.effect.ShogiEffect;
-import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.minecraft.resources.Identifier;
 
 import static net.blay09.mods.waystones.Waystones.id;
@@ -24,11 +23,8 @@ public record NameContains(String name) implements ShogiEffect<Boolean> {
 
     @Override
     public Either<? extends Boolean, ?> apply(ShogiContext context) {
-        if (context instanceof WaystoneTeleportContext waystoneTeleportContext) {
-            return Either.left(WaystoneRuleContext.getEffectiveWaystone(context, waystoneTeleportContext)
-                    .map(waystone -> waystone.getName().getString().contains(name))
-                    .orElse(false));
-        }
-        return Either.left(false);
+        return Either.left(WaystoneRuleContext.getEffectiveWaystone(context)
+                .map(waystone -> waystone.getName().getString().contains(name))
+                .orElse(false));
     }
 }
