@@ -16,11 +16,11 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.SpriteGetter;
-import net.minecraft.client.resources.model.SpriteId;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
@@ -60,14 +60,15 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
     @Override
     public void extractRenderState(WaystoneBlockEntity blockEntity, WaystoneRenderState renderState, float delta, Vec3 vec, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, delta, vec, crumblingOverlay);
-        if (renderState.blockState.getValue(SharestoneBlock.HALF) != DoubleBlockHalf.LOWER) {
+        final var blockState = blockEntity.getBlockState();
+        if (blockState.getValue(SharestoneBlock.HALF) != DoubleBlockHalf.LOWER) {
             renderState.skip = true;
             return;
         }
 
-        renderState.facing = renderState.blockState.getValue(PortstoneBlock.FACING);
+        renderState.facing = blockState.getValue(PortstoneBlock.FACING);
         renderState.glow = !WaystonesConfig.getActive().client.disableTextGlow;
-        final var style = WaystoneStyles.getStyle(renderState.blockState.getBlock());
+        final var style = WaystoneStyles.getStyle(blockState.getBlock());
         renderState.runeColor = style != null ? style.getRuneColor() : 0xFFFFFFFF;
         final var player = Minecraft.getInstance().player;
         renderState.showRunes = PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player), blockEntity.getWaystone());

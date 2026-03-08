@@ -15,11 +15,11 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.SpriteGetter;
-import net.minecraft.client.resources.model.SpriteId;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
@@ -64,7 +64,8 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
     @Override
     public void extractRenderState(SharestoneBlockEntity blockEntity, SharestoneRenderState renderState, float delta, Vec3 vec, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, delta, vec, crumblingOverlay);
-        if (renderState.blockState.getValue(SharestoneBlock.HALF) != DoubleBlockHalf.LOWER) {
+        final var blockState = blockEntity.getBlockState();
+        if (blockState.getValue(SharestoneBlock.HALF) != DoubleBlockHalf.LOWER) {
             renderState.skip = true;
             return;
         }

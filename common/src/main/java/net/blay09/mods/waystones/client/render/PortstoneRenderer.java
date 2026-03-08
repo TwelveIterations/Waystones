@@ -16,11 +16,11 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.SpriteGetter;
-import net.minecraft.client.resources.model.SpriteId;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -64,12 +64,13 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
     @Override
     public void extractRenderState(PortstoneBlockEntity blockEntity, PortstoneRenderState renderState, float delta, Vec3 vec, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, delta, vec, crumblingOverlay);
-        if (renderState.blockState.getValue(SharestoneBlock.HALF) != DoubleBlockHalf.LOWER) {
+        final var blockState = blockEntity.getBlockState();
+        if (blockState.getValue(SharestoneBlock.HALF) != DoubleBlockHalf.LOWER) {
             renderState.skip = true;
             return;
         }
 
-        renderState.facing = renderState.blockState.getValue(PortstoneBlock.FACING);
+        renderState.facing = blockState.getValue(PortstoneBlock.FACING);
         renderState.glow = !WaystonesConfig.getActive().client.disableTextGlow;
         renderState.runeColor = ((PortstoneBlock) blockEntity.getBlockState().getBlock()).getColor().getTextureDiffuseColor();
 

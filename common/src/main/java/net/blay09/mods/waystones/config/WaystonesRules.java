@@ -25,6 +25,11 @@ import java.util.stream.Collectors;
 import static net.blay09.mods.waystones.Waystones.id;
 
 public class WaystonesRules {
+
+    public static final ShogiValue<WaystoneTeleportContext, List<?>> warpRequirements = Shogi.maybe(id("warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST);
+
+    public static final ShogiValue<WaystoneTeleportContext, List<?>> inventoryButtonWarpRequirements = Shogi.maybe(id("inventory_button_warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST).networked();
+
     public static final ShogiScope scope = Shogi.scope(id("default"), it -> {
         it.setDefaultNamespaces(List.of("waystones", "shogi"));
 
@@ -117,10 +122,6 @@ public class WaystonesRules {
                     .isPresent());
         }
     });
-
-    public static final ShogiValue<WaystoneTeleportContext, List<?>> warpRequirements = Shogi.maybe(id("warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST);
-
-    public static final ShogiValue<WaystoneTeleportContext, List<?>> inventoryButtonWarpRequirements = Shogi.maybe(id("inventory_button_warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST).networked();
 
     private static Either<?, ?> resolveWarpRequirements(WaystoneTeleportContext context) {
         final List<ShogiEffect<?>> rules = WaystonesConfig.getActive().teleports.warpRequirements.stream()

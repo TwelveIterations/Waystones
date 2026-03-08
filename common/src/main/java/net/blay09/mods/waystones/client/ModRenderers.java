@@ -9,11 +9,12 @@ import net.blay09.mods.waystones.block.PortstoneBlock;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.client.render.*;
+import net.minecraft.client.color.block.BlockTintSources;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 
-import java.util.Objects;
+import java.util.List;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
@@ -38,9 +39,9 @@ public class ModRenderers {
     }
 
     public static void initialize(BalmBlockColorRegistrar blockColors) {
-        blockColors.register((state, view, pos, tintIndex) -> 0xffc456bd, ModBlocks.warpPlate);
-        blockColors.register((state, view, pos, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) state.getBlock()).getColor()).getTextColor() | 0xFF000000, ModBlocks.sharestones.values());
-        blockColors.register((state, view, pos, tintIndex) -> Objects.requireNonNull(((PortstoneBlock) state.getBlock()).getColor()).getTextColor() | 0xFF000000, ModBlocks.portstones.values());
+        blockColors.register(List.of(BlockTintSources.constant(0xffc456bd)), ModBlocks.warpPlate);
+        blockColors.register(List.of(state -> ((SharestoneBlock) state.getBlock()).getColor().getTextColor() | 0xFF000000), ModBlocks.sharestones.values());
+        blockColors.register(List.of(state -> ((PortstoneBlock) state.getBlock()).getColor().getTextColor() | 0xFF000000), ModBlocks.portstones.values());
     }
 
     public static void initialize(BalmBlockRenderTypeRegistrar blockRenderTypes) {
