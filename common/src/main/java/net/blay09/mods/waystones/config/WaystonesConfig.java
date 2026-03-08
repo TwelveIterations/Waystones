@@ -94,7 +94,7 @@ public class WaystonesConfig {
         @Synced
         @NestedType(String.class)
         @Comment("List of warp requirements with comma-separated parameters in parentheses. Conditions can be defined as comma-separated list in square brackets. Will be applied in order.")
-        public List<String> warpRequirements = List.of(
+        public List<String> rules = List.of(
                 "$xp_points_cost = if(condition = is_interdimensional, then = 27, else = $distance * 0.01)",
                 "source(is_warp_plate()), target(is_global()) -> $xp_points_cost = 0",
                 "$xp_points_cost = clamp($xp_points_cost, 0, 27)",

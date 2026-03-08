@@ -139,7 +139,7 @@ public class WaystonesRules {
 
     private static ShogiEffect<?> getOrBuildWarpRequirementsEffect() {
         if (cachedWarpRequirements == null) {
-            final List<ShogiEffect<?>> rules = WaystonesConfig.getActive().teleports.warpRequirements.stream()
+            final List<ShogiEffect<?>> rules = WaystonesConfig.getActive().teleports.rules.stream()
                     .map(it -> ShogiRuleParser.parse(scope, it))
                     .filter(shogiEffectDataResult -> {
                         shogiEffectDataResult.error().ifPresent(error -> logger.error("Invalid warp requirements rule {}", error));
