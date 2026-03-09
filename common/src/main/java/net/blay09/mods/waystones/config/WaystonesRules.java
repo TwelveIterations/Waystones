@@ -102,6 +102,11 @@ public class WaystonesRules {
                         .filter(ownerUid -> ownerUid.equals(player.getGameProfile().id())))
                 .isPresent());
 
+        it.registerSimpleEffect(id("has_owner"), context
+                -> WaystoneRuleContext.getEffectiveWaystone(context)
+                .map(waystone -> waystone.getOwnerUid().isPresent())
+                .orElse(false));
+
         it.registerSimpleEffect(id("is_with_pets"), context
                 -> context.entity() instanceof LivingEntity livingEntity
                 && !WaystoneTeleportManager.findPets(livingEntity).isEmpty());
