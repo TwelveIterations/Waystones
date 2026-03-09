@@ -4,7 +4,10 @@ import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.shogi.context.executor.DeferredEffectExecutor;
-import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.TeleportDestination;
+import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneTeleportContext;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
 import net.blay09.mods.waystones.block.WaystoneBlock;
@@ -22,10 +25,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -39,9 +42,12 @@ public class WaystoneTeleportManager {
         );
     }
 
-    public static List<Mob> findLeashedAnimals(Entity player) {
-        return player.level().getEntitiesOfClass(Mob.class, new AABB(player.blockPosition()).inflate(10),
-                e -> player.equals(e.getLeashHolder())
+    public static List<Mob> findLeashedAnimals(@Nullable Entity entity) {
+        if (entity == null) {
+            return Collections.emptyList();
+        }
+        return entity.level().getEntitiesOfClass(Mob.class, new AABB(entity.blockPosition()).inflate(10),
+                e -> entity.equals(e.getLeashHolder())
         );
     }
 
@@ -221,7 +227,7 @@ public class WaystoneTeleportManager {
         WaystoneTeleportEvent.Before event = new WaystoneTeleportEvent.Before(context);
         WaystoneTeleportEvent.Before.EVENT.invoker().accept(event);
         if (event.isCanceled()) {
-           return Either.right(new WaystoneTeleportError.CancelledByEvent());
+            return Either.right(new WaystoneTeleportError.CancelledByEvent());
         }
 
         final var entity = context.getEntity();
@@ -254,7 +260,10 @@ public class WaystoneTeleportManager {
                 .ifLeft(teleportedEntities -> WaystoneTeleportEvent.After.EVENT.invoker().accept(new WaystoneTeleportEvent.After(context, teleportedEntities)));
     }
 
-    public static Collection<Entity> findPassengers(Entity entity) {
+    public static Collection<Entity> findPassengers(@Nullable Entity entity) {
+        if (entity == null) {
+            return Collections.emptyList();
+        }
         final var passengers = entity.getPassengers();
         final var result = new ArrayList<>(passengers);
         final var vehicle = entity.getVehicle();

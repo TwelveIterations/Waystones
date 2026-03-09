@@ -51,8 +51,7 @@ public class WaystonesRules {
 
         it.registerEffect(IsWithinDistance.IDENTIFIER, IsWithinDistance.MAP_CODEC, List.of("distance"));
 
-        it.registerSimpleEffect(id("is_interdimensional"), context
-                -> WaystoneRuleContext.isDimensionalTeleport(context));
+        it.registerSimpleEffect(id("is_interdimensional"), WaystoneRuleContext::isDimensionalTeleport);
 
         it.registerSimpleEffect(id("is_warp_plate"), context
                 -> WaystoneRuleContext.getEffectiveWaystone(context)
