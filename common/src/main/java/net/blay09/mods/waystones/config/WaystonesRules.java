@@ -18,6 +18,7 @@ import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,6 +93,13 @@ public class WaystonesRules {
         it.registerSimpleEffect(id("is_global"), context
                 -> WaystoneRuleContext.getEffectiveWaystone(context)
                 .filter(waystone -> waystone.getVisibility() == WaystoneVisibility.GLOBAL)
+                .isPresent());
+
+        it.registerSimpleEffect(id("is_owner"), context
+                -> context.entity() instanceof Player player
+                && WaystoneRuleContext.getEffectiveWaystone(context)
+                .flatMap(waystone -> waystone.getOwnerUid()
+                        .filter(ownerUid -> ownerUid.equals(player.getGameProfile().id())))
                 .isPresent());
 
         it.registerSimpleEffect(id("is_with_pets"), context
