@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.config;
 
 import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.JsonOps;
 import net.blay09.mods.balm.platform.event.callback.ConfigCallback;
 import net.blay09.mods.shogi.Shogi;
 import net.blay09.mods.shogi.ShogiValue;
@@ -17,6 +18,7 @@ import net.blay09.mods.waystones.config.rules.*;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
@@ -133,22 +135,24 @@ public class WaystonesRules {
         });
     }
 
-    private static ShogiEffect<?> getOrBuildWarpRequirementsEffect() {
+    private static ShogiEffect<?> getOrBuildWarpRequirementsEffect(WaystoneTeleportContext context) {
         if (cachedWarpRequirements == null) {
+            final var level = context.requireLevel();
+            final var registryOps = RegistryOps.create(JsonOps.INSTANCE, level.registryAccess());
             final List<ShogiEffect<?>> rules = WaystonesConfig.getActive().teleports.rules.stream()
-                    .map(it -> ShogiRuleParser.parse(scope, it))
+                    .map(it -> ShogiRuleParser.parse(scope, registryOps, it))
                     .filter(shogiEffectDataResult -> {
                         shogiEffectDataResult.error().ifPresent(error -> logger.error("Invalid warp requirements rule {}", error));
                         return shogiEffectDataResult.isSuccess();
                     })
                     .map(it -> it.result().orElseThrow())
                     .collect(Collectors.toList());
-            cachedWarpRequirements = AggregateEffect.withAutoApplied(scope, rules);
+            cachedWarpRequirements = AggregateEffect.withAutoApplied(scope, registryOps, rules);
         }
         return cachedWarpRequirements;
     }
 
     private static Either<?, ?> resolveWarpRequirements(WaystoneTeleportContext context) {
-        return getOrBuildWarpRequirementsEffect().apply(context);
+        return getOrBuildWarpRequirementsEffect(context).apply(context);
     }
 }
