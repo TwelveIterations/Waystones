@@ -39,7 +39,7 @@ public class WaystonesRules {
 
     public static final ShogiValue<WaystoneTeleportContext, List<?>> inventoryButtonWarpRequirements = Shogi.maybe(id("inventory_button_warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST).networked();
 
-    public static final ShogiScope scope = Shogi.scope(id("default"), it -> {
+    public static final ShogiScope scope = Shogi.scope(id("rules"), it -> {
         it.setDefaultNamespaces(List.of("waystones", "shogi"));
 
         it.registerEffect(Source.IDENTIFIER, Source.mapCodec(it), List.of("effect"));
