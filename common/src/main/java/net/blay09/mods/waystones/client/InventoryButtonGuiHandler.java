@@ -120,7 +120,7 @@ public class InventoryButtonGuiHandler {
 
                 final var font = Minecraft.getInstance().font;
                 final var visualTooltip = tooltip.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();
-                guiGraphics.renderTooltip(font, visualTooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+                guiGraphics.tooltip(font, visualTooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
             }
         });
     }

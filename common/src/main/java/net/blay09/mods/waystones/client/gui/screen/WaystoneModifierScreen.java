@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.client.gui.screen;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -20,22 +20,22 @@ public class WaystoneModifierScreen extends AbstractContainerScreen<WaystoneModi
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int x, int y) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WARP_PLATE_GUI_TEXTURES, leftPos, topPos, 0f, 0f, imageWidth, imageHeight, 256, 256);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
-        super.renderLabels(guiGraphics, x, y);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
+        super.extractLabels(guiGraphics, x, y);
 
         Component galacticName = WarpPlateBlock.getGalacticName(menu.getWaystone().getWaystoneUid());
         int width = font.width(galacticName);
-        guiGraphics.drawString(font, galacticName, imageWidth - width - 5, 5, 0xFFFFFFFF);
+        guiGraphics.text(font, galacticName, imageWidth - width - 5, 5, 0xFFFFFFFF);
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        renderTooltip(guiGraphics, mouseX, mouseY);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+        extractTooltip(guiGraphics, mouseX, mouseY);
     }
 }

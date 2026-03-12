@@ -7,7 +7,7 @@ import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 
@@ -39,8 +39,8 @@ public class WaystoneButton extends Button.Plain {
     }
 
     @Override
-    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.renderContents(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractContents(guiGraphics, mouseX, mouseY, partialTicks);
 
         final var font = Minecraft.getInstance().font;
         final var player = Minecraft.getInstance().player;
@@ -56,13 +56,13 @@ public class WaystoneButton extends Button.Plain {
                 distanceStr = String.format("%.1f", distance / 1000f).replace(",0", "").replace(".0", "") + "km";
             }
             int xOffset = getWidth() - font.width(distanceStr);
-            guiGraphics.drawString(font, distanceStr, getX() + xOffset - 4, getY() + 6, 0xFFFFFFFF);
+            guiGraphics.text(font, distanceStr, getX() + xOffset - 4, getY() + 6, 0xFFFFFFFF);
         }
 
         renderRequirements(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    private void renderRequirements(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    private void renderRequirements(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         final var font = Minecraft.getInstance().font;
         final var player = Minecraft.getInstance().player;
         final var requirement = Either.unwrap(warpRequirements);

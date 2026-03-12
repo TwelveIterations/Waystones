@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.client.requirement;
 import net.blay09.mods.shogi.common.effect.cost.ExperienceLevelCostInformation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -23,7 +23,7 @@ public class ExperienceLevelRequirementRenderer implements RequirementRenderer<E
             Identifier.withDefaultNamespace("container/enchanting_table/level_3_disabled")};
 
     @Override
-    public void renderWidget(Player player, ExperienceLevelCostInformation requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
+    public void renderWidget(Player player, ExperienceLevelCostInformation requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
         final var levels = requirement.required();
         if (levels > 0) {
             final var canAfford = requirement.available() >= requirement.required();
@@ -32,7 +32,7 @@ public class ExperienceLevelRequirementRenderer implements RequirementRenderer<E
 
             final var font = Minecraft.getInstance().font;
             if (levels > 3) {
-                guiGraphics.drawString(font, "+", x + 15, y + 4, 0xFFC8FF8F);
+                guiGraphics.text(font, "+", x + 15, y + 4, 0xFFC8FF8F);
             }
         }
     }

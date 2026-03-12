@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.client.gui.widget;
 
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.input.InputWithModifiers;
@@ -42,7 +42,7 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
     }
 
     @Override
-    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
         final var sprite = getSprites().get(this.isActive(), this.isHoveredOrFocused());
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getX(), getY(), 20, 20);
     }

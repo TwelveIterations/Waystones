@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -25,7 +25,7 @@ public class SortWaystoneButton extends Button {
     }
 
     @Override
-    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
         if (mouseY >= visibleRegionStart && mouseY < visibleRegionStart + visibleRegionHeight) {
             this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
             int renderY = getY() - (sortDir == 1 ? 20 : 5);

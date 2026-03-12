@@ -8,7 +8,7 @@ import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -40,7 +40,7 @@ public class WaystoneInventoryButton extends Button {
     }
 
     @Override
-    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         visible = visiblePredicate.get();
         if (visible) {
             setX(((AbstractContainerScreenAccessor) parentScreen).getLeftPos() + xPosition.get());
@@ -53,8 +53,8 @@ public class WaystoneInventoryButton extends Button {
             final var requirements = WaystonesRules.inventoryButtonWarpRequirements.get(context);
             if (requirements.left().isPresent()) {
                 ItemStack icon = isHovered ? iconItemHovered : iconItem;
-                guiGraphics.renderItem(icon, getX(), getY());
-                guiGraphics.renderItemDecorations(Minecraft.getInstance().font, icon, getX(), getY());
+                guiGraphics.item(icon, getX(), getY());
+                guiGraphics.itemDecorations(Minecraft.getInstance().font, icon, getX(), getY());
             } else {
                 guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, INVENTORY_BUTTON_SPRITE, getX(), getY(), 16, 16, 0x80FFFFFF);
             }

@@ -7,7 +7,7 @@ import net.blay09.mods.waystones.network.message.ServerboundEditWaystonePacket;
 import net.blay09.mods.waystones.network.message.ServerboundRequestManageWaystoneModifiersPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
@@ -113,13 +113,13 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
-        renderTooltip(guiGraphics, mouseX, mouseY);
+        extractTooltip(guiGraphics, mouseX, mouseY);
 
         if (textField != null && textField.getValue().isEmpty()) {
-            guiGraphics.drawString(Minecraft.getInstance().font,
+            guiGraphics.text(Minecraft.getInstance().font,
                     Component.translatable("waystones.untitled_waystone"),
                     textField.getX() + 4,
                     textField.getY() + 6,
@@ -128,13 +128,13 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawCenteredString(font, title, 176 / 2, titleLabelY, 0xFFFFFFFF);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.centeredText(font, title, 176 / 2, titleLabelY, 0xFFFFFFFF);
         final var error = menu.getError();
         if (error != null) {
-            guiGraphics.drawCenteredString(font, error, 176 / 2, titleLabelY + 12, ChatFormatting.RED.getColor());
+            guiGraphics.centeredText(font, error, 176 / 2, titleLabelY + 12, ChatFormatting.RED.getColor());
         }
-        guiGraphics.drawString(font,
+        guiGraphics.text(font,
                 Component.translatable("gui.waystones.waystone_settings.visibility." + visibilityButton.getVisibility().name().toLowerCase(Locale.ROOT)),
                 24,
                 visibilityButton.getY() - topPos + 6,
@@ -144,7 +144,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
                 ? Component.translatable("gui.waystones.waystone_settings.modifiers_active", menu.getModifierCount())
                 : Component.translatable(
                 "gui.waystones.waystone_settings.no_modifiers_active");
-        guiGraphics.drawString(font,
+        guiGraphics.text(font,
                 modifiersComponent,
                 24,
                 modifierButton.getY() - topPos + 6,
@@ -153,7 +153,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float v, int i, int i1) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
     }
 
     @Override

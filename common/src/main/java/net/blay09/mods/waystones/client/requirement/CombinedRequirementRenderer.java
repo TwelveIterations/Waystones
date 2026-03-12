@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.client.requirement;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class CombinedRequirementRenderer implements RequirementRenderer<List<Object>> {
     @Override
-    public void renderWidget(Player player, List<Object> requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
+    public void renderWidget(Player player, List<Object> requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
         final var mergedRequirements = RequirementClientRegistry.mergeRequirements(requirement);
         final var sortedChildren = mergedRequirements
                 .stream()

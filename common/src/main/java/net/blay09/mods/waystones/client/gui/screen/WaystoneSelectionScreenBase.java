@@ -19,7 +19,7 @@ import net.blay09.mods.waystones.network.message.ServerboundSortWaystonePacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
@@ -248,9 +248,9 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        renderTooltip(guiGraphics, mouseX, mouseY);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+        extractTooltip(guiGraphics, mouseX, mouseY);
         for (ITooltipProvider tooltipProvider : tooltipProviders) {
             if (tooltipProvider.shouldShowTooltip()) {
                 guiGraphics.setTooltipForNextFrame(font, tooltipProvider.getTooltipComponents(), Optional.empty(), mouseX, mouseY);
@@ -259,19 +259,19 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         Waystone fromWaystone = menu.getWaystoneFrom();
-        guiGraphics.drawCenteredString(font, getTitle(), imageWidth / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFFFF);
+        guiGraphics.centeredText(font, getTitle(), imageWidth / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFFFF);
         if (fromWaystone != null) {
             drawLocationHeader(guiGraphics, fromWaystone, mouseX, mouseY, imageWidth / 2, headerY);
         }
 
         if (waystones.size() == 0) {
-            guiGraphics.drawCenteredString(font,
+            guiGraphics.centeredText(font,
                     ChatFormatting.RED + I18n.get("gui.waystones.waystone_selection.no_waystones_activated"),
                     imageWidth / 2,
                     imageHeight / 2 - 20,
@@ -279,7 +279,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         }
     }
 
-    private void drawLocationHeader(GuiGraphics guiGraphics, Waystone waystone, int mouseX, int mouseY, int x, int y) {
+    private void drawLocationHeader(GuiGraphicsExtractor guiGraphics, Waystone waystone, int mouseX, int mouseY, int x, int y) {
         Font font = Minecraft.getInstance().font;
 
         int locationPrefixWidth = font.width(Component.translatable("gui.waystones.waystone_selection.current_location", ""));
@@ -303,7 +303,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
         final var fullText = Component.translatable("gui.waystones.waystone_selection.current_location",
                 effectiveName.withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.YELLOW);
-        guiGraphics.drawString(font, fullText, x - fullWidth / 2, y, 0xFFFFFFFF);
+        guiGraphics.text(font, fullText, x - fullWidth / 2, y, 0xFFFFFFFF);
 
         if (isLocationHeaderHovered) {
             var poseStack = guiGraphics.pose();
@@ -311,7 +311,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
             float scale = 0.5f;
             poseStack.translate(x + fullWidth / 2f + 4, y);
             poseStack.scale(scale, scale);
-            guiGraphics.renderItem(new ItemStack(Items.WRITABLE_BOOK), 0, 0);
+            guiGraphics.item(new ItemStack(Items.WRITABLE_BOOK), 0, 0);
             poseStack.popMatrix();
         }
     }

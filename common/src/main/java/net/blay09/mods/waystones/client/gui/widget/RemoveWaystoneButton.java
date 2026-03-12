@@ -6,7 +6,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -50,7 +50,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
     }
 
     @Override
-    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
         boolean shiftDown = Kuma.hasShiftDown();
         if (!shiftDown) {
             shiftGuard = false;
