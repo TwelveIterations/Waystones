@@ -103,7 +103,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
 
     public boolean hasPotentialWarpTarget() {
         final var shardItem = getShardItem();
-        return !shardItem.isEmpty() && !shardItem.is(ModItems.deepslateShard);
+        return !shardItem.isEmpty();
     }
 
     @Override
@@ -139,8 +139,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
         final var shardItem = getShardItem();
         if (shardItem.isEmpty()) {
             return getBlockState().setValue(WarpPlateBlock.STATUS, WarpPlateBlock.WarpPlateStatus.EMPTY);
-        } else if (shardItem.is(ModItems.deepslateShard)) {
-            return getBlockState().setValue(WarpPlateBlock.STATUS, WarpPlateBlock.WarpPlateStatus.LOCKED);
         } else if (shardItem.is(ModItems.dormantShard)) {
             return getBlockState().setValue(WarpPlateBlock.STATUS, WarpPlateBlock.WarpPlateStatus.ATTUNING);
         }

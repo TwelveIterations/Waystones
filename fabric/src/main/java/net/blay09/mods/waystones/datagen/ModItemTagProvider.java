@@ -29,8 +29,7 @@ public class ModItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
         tag(ModItemTags.WARP_STONES).add(ModItems.warpStone.asItem());
         tag(ModItemTags.WARP_SHARDS).add(ModItems.attunedShard.asItem(),
                 ModItems.crumblingAttunedShard.asItem(),
-                ModItems.dormantShard.asItem(),
-                ModItems.deepslateShard.asItem());
+                ModItems.dormantShard.asItem());
         tag(ModItemTags.SINGLE_USE_WARP_SHARDS).add(ModItems.crumblingAttunedShard.asItem());
         tag(ModItemTags.WAYSTONES).add(ModBlocks.waystone.asItem(),
                 ModBlocks.mossyWaystone.asItem(),

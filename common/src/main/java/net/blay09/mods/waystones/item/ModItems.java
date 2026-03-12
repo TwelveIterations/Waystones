@@ -16,7 +16,6 @@ public class ModItems {
     public static DeferredItem warpStone;
     public static DeferredItem dormantShard;
     public static DeferredItem attunedShard;
-    public static DeferredItem deepslateShard;
     public static DeferredItem crumblingAttunedShard;
 
     public static void initialize(BalmItemRegistrar items) {
@@ -27,7 +26,6 @@ public class ModItems {
         warpStone = items.register("warp_stone", WarpStoneItem::new).asDeferredItem();
         dormantShard = items.register("dormant_shard", ShardItem::new).asDeferredItem();
         attunedShard = items.register("attuned_shard", AttunedShardItem::new).asDeferredItem();
-        deepslateShard = items.register("deepslate_shard", ShardItem::new).asDeferredItem();
         crumblingAttunedShard = items.register("crumbling_attuned_shard", CrumblingAttunedShardItem::new).asDeferredItem();
     }
 
