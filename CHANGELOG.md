@@ -1,1 +1,3 @@
-- Fixed unnamed sharestones being created when placing a new one on Forge
+- Fixed transient (silk-touched) waystones still showing up on JourneyMap
+- Fixed transient (silk-touched) waystones still showing up on Dynmap
+- Fixed transient (silk-touched) waystones still showing up on BlueMap
