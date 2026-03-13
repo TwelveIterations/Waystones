@@ -1,3 +1,4 @@
-- Added `blueMap` compatibility configuration options `includeWaystones`, `includeSharestones` and `includeUndiscoveredWaystones` options
-- Fixed unnamed sharestone being created when placing a new one on Forge
-- Removed old `compatibility.blueMap` option
+- Fixed waypoints not being added to JourneyMap Waystones group
+- Fixed transient (silk-touched) waystones still showing up on JourneyMap
+- Fixed transient (silk-touched) waystones still showing up on Dynmap
+- Fixed transient (silk-touched) waystones still showing up on BlueMap
