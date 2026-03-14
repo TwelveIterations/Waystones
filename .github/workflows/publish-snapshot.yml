@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v5
       - name: Setup JDK
@@ -36,7 +36,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.result }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Preparing matrix
         id: set-matrix
         uses: actions/github-script@v7
@@ -60,7 +60,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v5
       - name: Setup JDK
