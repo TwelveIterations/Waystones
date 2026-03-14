@@ -6,7 +6,7 @@ on:
       - '[0-9]+.[0-9]+'
 
 jobs:
-  check-datagen:
+  verify-resources:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -29,6 +29,8 @@ jobs:
             git diff
             exit 1
           fi
+      - name: Validate en_us.json file
+        uses: TwelveIterations/validate-minecraft-lang@v1
   prepare-matrix:
     runs-on: ubuntu-latest
     needs: check-datagen
