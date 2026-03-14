@@ -23,7 +23,7 @@ public class InMemoryWaystonesStore implements WaystonesStore {
         this.waystones.addAll(waystones);
         for (final var waystone : waystones) {
             waystonesById.put(waystone.getWaystoneUid(), waystone);
-            waystonesByType.put(waystone.getWaystoneType(), waystone);
+            waystonesByType.put(waystone.getWaystoneKind(), waystone);
         }
     }
 
@@ -31,7 +31,7 @@ public class InMemoryWaystonesStore implements WaystonesStore {
     public void addWaystone(Waystone waystone) {
         waystones.add(waystone);
         waystonesById.put(waystone.getWaystoneUid(), waystone);
-        waystonesByType.put(waystone.getWaystoneType(), waystone);
+        waystonesByType.put(waystone.getWaystoneKind(), waystone);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class InMemoryWaystonesStore implements WaystonesStore {
     public void removeWaystone(Waystone waystone) {
         final var removedWaystone = waystonesById.remove(waystone.getWaystoneUid());
         waystones.remove(removedWaystone);
-        waystonesByType.get(waystone.getWaystoneType()).remove(removedWaystone);
+        waystonesByType.get(waystone.getWaystoneKind()).remove(removedWaystone);
     }
 
     @Override

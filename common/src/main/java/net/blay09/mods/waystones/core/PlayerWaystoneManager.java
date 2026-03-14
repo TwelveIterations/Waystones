@@ -60,7 +60,7 @@ public class PlayerWaystoneManager {
             SavedDataWaystonesStore.get(serverLevel.getServer()).setDirty();
         }
 
-        if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneKinds.WAYSTONE)) {
+        if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneKind().equals(WaystoneKinds.WAYSTONE)) {
             getPlayerWaystoneData(player.level()).activateWaystone(player, waystone);
 
             WaystoneActivatedEvent.EVENT.invoker().accept(new WaystoneActivatedEvent(player, waystone));
@@ -161,7 +161,7 @@ public class PlayerWaystoneManager {
     }
 
     public static Collection<Waystone> getTargetsForWaystone(Player player, Waystone waystone) {
-        final var result = getTargetsForWaystoneType(player, waystone.getWaystoneType());
+        final var result = getTargetsForWaystoneType(player, waystone.getWaystoneKind());
 
         final var blockEntity = player.level().getBlockEntity(waystone.getPos());
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {

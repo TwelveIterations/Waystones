@@ -56,15 +56,15 @@ public class WaystoneSyncManager {
 
     public static void sendWaystoneUpdate(Player player, Waystone waystone) {
         // If this is a waystone, only send an update if the player has activated it already
-        if (!waystone.getWaystoneType().equals(WaystoneKinds.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
+        if (!waystone.getWaystoneKind().equals(WaystoneKinds.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
             Balm.networking().sendTo(player, new ClientboundUpdateWaystonePacket(waystone));
         }
     }
 
     public static void sendWaystoneRemoval(Player player, Waystone waystone, boolean wasDestroyed) {
         // If this is a waystone, only send an update if the player has activated it already
-        if (!waystone.getWaystoneType().equals(WaystoneKinds.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
-            Balm.networking().sendTo(player, new ClientboundWaystoneRemovedPacket(waystone.getWaystoneType(), waystone.getWaystoneUid(), wasDestroyed));
+        if (!waystone.getWaystoneKind().equals(WaystoneKinds.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
+            Balm.networking().sendTo(player, new ClientboundWaystoneRemovedPacket(waystone.getWaystoneKind(), waystone.getWaystoneUid(), wasDestroyed));
         }
     }
 

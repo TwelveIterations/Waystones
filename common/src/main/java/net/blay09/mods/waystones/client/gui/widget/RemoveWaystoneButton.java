@@ -31,7 +31,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
         this.visibleRegionHeight = visibleRegionHeight;
         tooltip = Lists.newArrayList(Component.translatable("gui.waystones.waystone_selection.hold_shift_to_delete"));
         activeTooltip = Lists.newArrayList(Component.translatable("gui.waystones.waystone_selection.click_to_delete"));
-        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL || WaystoneKinds.isSharestone(waystone.getWaystoneType())) {
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL || WaystoneKinds.isSharestone(waystone.getWaystoneKind())) {
             var component = Component.translatable("gui.waystones.waystone_selection.deleting_global_for_all");
             component.withStyle(ChatFormatting.DARK_RED);
             tooltip.add(component);

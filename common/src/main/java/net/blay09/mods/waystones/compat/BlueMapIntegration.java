@@ -54,7 +54,7 @@ public class BlueMapIntegration {
     }
 
     private static boolean isSupportedWaystone(Waystone waystone) {
-        return isSupportedWaystoneType(waystone.getWaystoneType()) && !waystone.isTransient();
+        return isSupportedWaystoneType(waystone.getWaystoneKind()) && !waystone.isTransient();
     }
 
     private static boolean isSupportedWaystoneType(Identifier waystoneType) {
@@ -183,7 +183,7 @@ public class BlueMapIntegration {
             final var marker = createWaystoneMarker(waystone);
             final var markerId = getMarkerId(waystone);
             final var config = WaystonesConfig.getActive().blueMap;
-            if (WaystoneKinds.isSharestone(waystone.getWaystoneType())) {
+            if (WaystoneKinds.isSharestone(waystone.getWaystoneKind())) {
                 if (config.includeSharestones) {
                     sharestoneMarkers.put(markerId, marker);
                 }
@@ -202,7 +202,7 @@ public class BlueMapIntegration {
 
         public void removeWaystoneMarker(Waystone waystone) {
             final var markerId = getMarkerId(waystone);
-            if (WaystoneKinds.isSharestone(waystone.getWaystoneType())) {
+            if (WaystoneKinds.isSharestone(waystone.getWaystoneKind())) {
                 sharestoneMarkers.remove(markerId);
             } else {
                 waystoneMarkers.remove(markerId);

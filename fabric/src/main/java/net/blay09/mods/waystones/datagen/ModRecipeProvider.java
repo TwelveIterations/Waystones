@@ -138,7 +138,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
 
             private void createSharestoneRecipe(RecipeOutput exporter, SharestoneType type) {
                 final var sharestone = ModBlocks.sharestones.get(type);
-                if (sharestone == null) {
+                if (sharestone == null || type == SharestoneType.RUINED) {
                     return;
                 }
 

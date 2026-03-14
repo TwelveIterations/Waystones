@@ -57,7 +57,7 @@ public class WaystonesRules {
 
         it.registerSimpleEffect(id("is_warp_plate"), context
                 -> WaystoneRuleContext.getEffectiveWaystone(context)
-                .filter(waystone -> waystone.getWaystoneType().equals(WaystoneKinds.WARP_PLATE))
+                .filter(waystone -> waystone.getWaystoneKind().equals(WaystoneKinds.WARP_PLATE))
                 .isPresent());
 
         it.registerSimpleEffect(id("is_portstone"), context
@@ -65,12 +65,12 @@ public class WaystonesRules {
 
         it.registerSimpleEffect(id("is_waystone"), context
                 -> WaystoneRuleContext.getEffectiveWaystone(context)
-                .filter(waystone -> waystone.getWaystoneType().equals(WaystoneKinds.WAYSTONE))
+                .filter(waystone -> waystone.getWaystoneKind().equals(WaystoneKinds.WAYSTONE))
                 .isPresent());
 
         it.registerSimpleEffect(id("is_sharestone"), context
                 -> WaystoneRuleContext.getEffectiveWaystone(context)
-                .filter(waystone -> WaystoneKinds.isSharestone(waystone.getWaystoneType()))
+                .filter(waystone -> WaystoneKinds.isSharestone(waystone.getWaystoneKind()))
                 .isPresent());
 
         it.registerSimpleEffect(id("is_inventory_button"), context
@@ -122,7 +122,7 @@ public class WaystonesRules {
             final Identifier sharestoneIdentifier = id("is_" + sharestoneType.getPath());
             it.registerSimpleEffect(sharestoneIdentifier, context
                     -> WaystoneRuleContext.getEffectiveWaystone(context)
-                    .filter(waystone -> sharestoneType.equals(waystone.getWaystoneType()))
+                    .filter(waystone -> sharestoneType.equals(waystone.getWaystoneKind()))
                     .isPresent());
         }
     });

@@ -14,7 +14,7 @@ public class WaystoneBlockInfoProvider implements BlockInfoProvider {
         final var blockEntity = context.blockEntity();
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
             final var waystone = waystoneBlockEntity.getWaystone();
-            final var isActivated = !waystone.getWaystoneType().equals(WaystoneKinds.WAYSTONE)
+            final var isActivated = !waystone.getWaystoneKind().equals(WaystoneKinds.WAYSTONE)
                     || PlayerWaystoneManager.isWaystoneActivated(context.player(), waystone);
             if (isActivated && waystone.hasName() && waystone.isValid()) {
                 output.text(waystone.getName());

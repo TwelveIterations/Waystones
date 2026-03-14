@@ -33,7 +33,7 @@ public record ServerboundRemoveWaystonePacket(UUID waystoneUid) implements Custo
         PlayerWaystoneManager.deactivateWaystone(player, waystone);
 
         if (player.getAbilities().instabuild) {
-            if (WaystoneKinds.isSharestone(waystone.getWaystoneType())) {
+            if (WaystoneKinds.isSharestone(waystone.getWaystoneKind())) {
                 // If this is a sharestone and the player is in creative mode, remove the sharestone from the database
                 SavedDataWaystonesStore.get(server).removeWaystone(waystone);
             } else if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {

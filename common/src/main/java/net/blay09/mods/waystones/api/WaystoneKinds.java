@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class WaystoneKinds {
+    public static final Identifier INVALID = Identifier.fromNamespaceAndPath("waystones", "invalid");
     public static final Identifier WAYSTONE = Identifier.fromNamespaceAndPath("waystones", "waystone");
     public static final Identifier WARP_PLATE = Identifier.fromNamespaceAndPath("waystones", "warp_plate");
 

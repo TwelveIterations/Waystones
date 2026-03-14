@@ -106,8 +106,8 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
     }
 
     @Override
-    public Identifier getWaystoneType() {
-        return getBackingWaystone().getWaystoneType();
+    public Identifier getWaystoneKind() {
+        return getBackingWaystone().getWaystoneKind();
     }
 
     @Override

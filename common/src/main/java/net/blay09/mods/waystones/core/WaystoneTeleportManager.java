@@ -209,7 +209,7 @@ public class WaystoneTeleportManager {
             break;
         }
 
-        final var waystoneType = waystone.getWaystoneType();
+        final var waystoneType = waystone.getWaystoneKind();
         final var shouldOffsetFacing = !(waystoneType.equals(WaystoneKinds.WARP_PLATE));
         final var targetPos = shouldOffsetFacing ? pos.relative(direction) : pos;
         final var location = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);

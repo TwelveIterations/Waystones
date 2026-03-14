@@ -60,7 +60,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     }
 
     private static boolean isSupportedWaystone(Waystone waystone) {
-        return isSupportedWaystoneType(waystone.getWaystoneType()) && !waystone.isTransient();
+        return isSupportedWaystoneType(waystone.getWaystoneKind()) && !waystone.isTransient();
     }
 
     private static boolean isSupportedWaystoneType(Identifier waystoneType) {
@@ -96,7 +96,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
 
     public void addWaystoneMarker(Waystone waystone) {
         prepareMarkerSets();
-        final var markerSet = WaystoneKinds.isSharestone(waystone.getWaystoneType()) ? sharestoneMarkers : waystoneMarkers;
+        final var markerSet = WaystoneKinds.isSharestone(waystone.getWaystoneKind()) ? sharestoneMarkers : waystoneMarkers;
         createWaystoneMarker(markerSet, waystone);
     }
 

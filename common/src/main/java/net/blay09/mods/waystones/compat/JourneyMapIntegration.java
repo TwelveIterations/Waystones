@@ -112,7 +112,7 @@ public class JourneyMapIntegration implements IClientPlugin {
     }
 
     private boolean isSupportedWaystone(Waystone waystone) {
-        return isSupportedWaystoneType(waystone.getWaystoneType()) && !waystone.isTransient();
+        return isSupportedWaystoneType(waystone.getWaystoneKind()) && !waystone.isTransient();
     }
 
     private boolean isSupportedWaystoneType(Identifier waystoneType) {
@@ -197,7 +197,7 @@ public class JourneyMapIntegration implements IClientPlugin {
                 waypoint.setPos(waystone.getPos().getX(), waystone.getPos().getY() + 2, waystone.getPos().getZ());
                 waypoint.setPrimaryDimension(waystone.getDimension());
             }
-            waypoint.setCustomData(new WaystonesWaypointData(waystone.getWaystoneUid(), waystone.getWaystoneType()).encode());
+            waypoint.setCustomData(new WaystonesWaypointData(waystone.getWaystoneUid(), waystone.getWaystoneKind()).encode());
             if (oldWaypoint == null) {
                 api.addWaypoint(Waystones.MOD_ID, waypoint);
 
@@ -215,7 +215,7 @@ public class JourneyMapIntegration implements IClientPlugin {
     }
 
     private WaypointGroup getWaystoneGroup(Waystone waystone) {
-        if (WaystoneKinds.isSharestone(waystone.getWaystoneType())) {
+        if (WaystoneKinds.isSharestone(waystone.getWaystoneKind())) {
             return Optional.ofNullable(api.getWaypointGroupByName(Waystones.MOD_ID, "Sharestones"))
                     .orElseGet(() -> {
                         final var group = WaypointFactory.createWaypointGroup(Waystones.MOD_ID, "Sharestones");

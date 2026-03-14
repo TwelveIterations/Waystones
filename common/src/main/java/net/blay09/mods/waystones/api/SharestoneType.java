@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 public enum SharestoneType implements StringRepresentable {
+    RUINED(Identifier.fromNamespaceAndPath("waystones", "ruined_sharestone"), DyeColor.BLACK, () -> Ingredient.of(Items.AIR)),
     COPPER(Identifier.fromNamespaceAndPath("waystones", "copper_sharestone"), DyeColor.ORANGE, () -> Ingredient.of(Items.COPPER_INGOT)),
     PRISMARINE(Identifier.fromNamespaceAndPath("waystones", "prismarine_sharestone"), DyeColor.LIGHT_BLUE, () -> Ingredient.of(Items.PRISMARINE_SHARD)),
     GOLD(Identifier.fromNamespaceAndPath("waystones", "gold_sharestone"), DyeColor.YELLOW, () -> Ingredient.of(Items.GOLD_INGOT)),

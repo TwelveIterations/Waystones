@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.core;
 
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.minecraft.core.BlockPos;
@@ -66,8 +66,8 @@ public class InvalidWaystone implements Waystone {
     }
 
     @Override
-    public Identifier getWaystoneType() {
-        return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "invalid");
+    public Identifier getWaystoneKind() {
+        return WaystoneKinds.INVALID;
     }
 
     @Override

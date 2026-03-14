@@ -32,7 +32,7 @@ public class WaystoneButton extends Button.Plain {
         if (effectiveName.getString().isEmpty()) {
             effectiveName = Component.translatable("gui.waystones.waystone_selection.unnamed_waystone");
         }
-        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && waystone.getWaystoneType().equals(WaystoneKinds.WAYSTONE)) {
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && waystone.getWaystoneKind().equals(WaystoneKinds.WAYSTONE)) {
             effectiveName.withStyle(ChatFormatting.YELLOW);
         }
         return effectiveName;

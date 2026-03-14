@@ -1,9 +1,9 @@
 package net.blay09.mods.waystones.core;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.migration.MigrationUtils;
 import net.blay09.mods.waystones.tag.ModBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
@@ -27,7 +27,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Waystone> STREAM_CODEC = StreamCodec.composite(
             Identifier.STREAM_CODEC,
-            Waystone::getWaystoneType,
+            Waystone::getWaystoneKind,
             UUIDUtil.STREAM_CODEC,
             Waystone::getWaystoneUid,
             ResourceKey.streamCodec(Registries.DIMENSION),
@@ -45,7 +45,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     public static final StreamCodec<RegistryFriendlyByteBuf, List<Waystone>> LIST_STREAM_CODEC = ByteBufCodecs.collection(ArrayList::new, STREAM_CODEC);
 
     public static final MapCodec<Waystone> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Identifier.CODEC.fieldOf("Type").forGetter(Waystone::getWaystoneType),
+            Identifier.CODEC.fieldOf("Type").validate(MigrationUtils::migrateWaystoneKind).forGetter(Waystone::getWaystoneKind),
             UUIDUtil.CODEC.fieldOf("WaystoneUid").forGetter(Waystone::getWaystoneUid),
             ResourceKey.codec(Registries.DIMENSION).fieldOf("World").forGetter(Waystone::getDimension),
             BlockPos.CODEC.fieldOf("BlockPos").forGetter(Waystone::getPos),
@@ -56,7 +56,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
             Codec.BOOL.fieldOf("Seen").orElse(false).forGetter(Waystone::wasSeen)
     ).apply(instance, WaystoneImpl::new));
 
-    private final Identifier waystoneType;
+    private final Identifier waystoneKind;
     private final UUID waystoneUid;
     private final WaystoneOrigin origin;
 
@@ -71,18 +71,18 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
 
     private boolean wasSeen;
 
-    public WaystoneImpl(Identifier waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @Nullable UUID ownerUid) {
-        this.waystoneType = waystoneType;
+    public WaystoneImpl(Identifier waystoneKind, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @Nullable UUID ownerUid) {
+        this.waystoneKind = waystoneKind;
         this.waystoneUid = waystoneUid;
         this.dimension = dimension;
         this.pos = pos;
         this.origin = origin;
         this.ownerUid = ownerUid;
-        this.visibility = WaystoneVisibility.fromWaystoneType(waystoneType);
+        this.visibility = WaystoneVisibility.fromWaystoneType(waystoneKind);
     }
 
-    public WaystoneImpl(Identifier waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, Component name, WaystoneVisibility visibility) {
-        this.waystoneType = waystoneType;
+    public WaystoneImpl(Identifier waystoneKind, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, Component name, WaystoneVisibility visibility) {
+        this.waystoneKind = waystoneKind;
         this.waystoneUid = waystoneUid;
         this.dimension = dimension;
         this.pos = pos;
@@ -92,8 +92,8 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         this.visibility = visibility;
     }
 
-    public WaystoneImpl(Identifier waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<UUID> ownerUid, Component name, WaystoneVisibility visibility, boolean wasSeen) {
-        this.waystoneType = waystoneType;
+    public WaystoneImpl(Identifier waystoneKind, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<UUID> ownerUid, Component name, WaystoneVisibility visibility, boolean wasSeen) {
+        this.waystoneKind = waystoneKind;
         this.waystoneUid = waystoneUid;
         this.dimension = dimension;
         this.pos = pos;
@@ -173,8 +173,8 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     }
 
     @Override
-    public Identifier getWaystoneType() {
-        return waystoneType;
+    public Identifier getWaystoneKind() {
+        return waystoneKind;
     }
 
     @Override

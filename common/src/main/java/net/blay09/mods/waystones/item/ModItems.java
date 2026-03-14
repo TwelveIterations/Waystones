@@ -58,7 +58,7 @@ public class ModItems {
                                 }
                             });
                             ModBlocks.sharestones.forEach((type, block) -> {
-                                if (type != SharestoneType.COPPER) {
+                                if (type != SharestoneType.COPPER && type != SharestoneType.RUINED) {
                                     output.accept(block);
                                 }
                             });
