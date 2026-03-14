@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.client.gui.widget;
 
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
 import net.minecraft.ChatFormatting;
@@ -32,7 +32,7 @@ public class WaystoneButton extends Button.Plain {
         if (effectiveName.getString().isEmpty()) {
             effectiveName = Component.translatable("gui.waystones.waystone_selection.unnamed_waystone");
         }
-        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && waystone.getWaystoneType().equals(WaystoneKinds.WAYSTONE)) {
             effectiveName.withStyle(ChatFormatting.YELLOW);
         }
         return effectiveName;

@@ -7,7 +7,7 @@ import net.blay09.mods.shogi.context.executor.DeferredEffectExecutor;
 import net.blay09.mods.waystones.api.TeleportDestination;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
 import net.blay09.mods.waystones.block.WaystoneBlock;
@@ -210,7 +210,7 @@ public class WaystoneTeleportManager {
         }
 
         final var waystoneType = waystone.getWaystoneType();
-        final var shouldOffsetFacing = !(waystoneType.equals(WaystoneTypes.WARP_PLATE));
+        final var shouldOffsetFacing = !(waystoneType.equals(WaystoneKinds.WARP_PLATE));
         final var targetPos = shouldOffsetFacing ? pos.relative(direction) : pos;
         final var location = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
         return Either.left(new TeleportDestination(level, location, direction));

@@ -15,7 +15,7 @@ import journeymap.api.v2.common.waypoint.WaypointGroup;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.event.WaystoneRemoveReceivedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneUpdateReceivedEvent;
 import net.blay09.mods.waystones.api.event.WaystonesListReceivedEvent;
@@ -116,7 +116,7 @@ public class JourneyMapIntegration implements IClientPlugin {
     }
 
     private boolean isSupportedWaystoneType(Identifier waystoneType) {
-        return waystoneType.equals(WaystoneTypes.WAYSTONE) || WaystoneTypes.isSharestone(waystoneType);
+        return waystoneType.equals(WaystoneKinds.WAYSTONE) || WaystoneKinds.isSharestone(waystoneType);
     }
 
     private static boolean shouldManageWaypoints() {
@@ -215,7 +215,7 @@ public class JourneyMapIntegration implements IClientPlugin {
     }
 
     private WaypointGroup getWaystoneGroup(Waystone waystone) {
-        if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
+        if (WaystoneKinds.isSharestone(waystone.getWaystoneType())) {
             return Optional.ofNullable(api.getWaypointGroupByName(Waystones.MOD_ID, "Sharestones"))
                     .orElseGet(() -> {
                         final var group = WaypointFactory.createWaypointGroup(Waystones.MOD_ID, "Sharestones");

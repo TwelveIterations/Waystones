@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.api;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
@@ -9,23 +10,29 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 public enum SharestoneType implements StringRepresentable {
-    COPPER(DyeColor.ORANGE, () -> Ingredient.of(Items.COPPER_INGOT)),
-    PRISMARINE(DyeColor.LIGHT_BLUE, () -> Ingredient.of(Items.PRISMARINE_SHARD)),
-    GOLD(DyeColor.YELLOW, () -> Ingredient.of(Items.GOLD_INGOT)),
-    DIAMOND(DyeColor.CYAN, () -> Ingredient.of(Items.DIAMOND)),
-    AMETHYST(DyeColor.PURPLE, () -> Ingredient.of(Items.AMETHYST_SHARD)),
-    LAPIS(DyeColor.BLUE, () -> Ingredient.of(Items.LAPIS_LAZULI)),
-    EMERALD(DyeColor.GREEN, () -> Ingredient.of(Items.EMERALD)),
-    REDSTONE(DyeColor.RED, () -> Ingredient.of(Items.REDSTONE));
+    COPPER(Identifier.fromNamespaceAndPath("waystones", "copper_sharestone"), DyeColor.ORANGE, () -> Ingredient.of(Items.COPPER_INGOT)),
+    PRISMARINE(Identifier.fromNamespaceAndPath("waystones", "prismarine_sharestone"), DyeColor.LIGHT_BLUE, () -> Ingredient.of(Items.PRISMARINE_SHARD)),
+    GOLD(Identifier.fromNamespaceAndPath("waystones", "gold_sharestone"), DyeColor.YELLOW, () -> Ingredient.of(Items.GOLD_INGOT)),
+    DIAMOND(Identifier.fromNamespaceAndPath("waystones", "diamond_sharestone"), DyeColor.CYAN, () -> Ingredient.of(Items.DIAMOND)),
+    AMETHYST(Identifier.fromNamespaceAndPath("waystones", "amethyst_sharestone"), DyeColor.PURPLE, () -> Ingredient.of(Items.AMETHYST_SHARD)),
+    LAPIS(Identifier.fromNamespaceAndPath("waystones", "lapis_sharestone"), DyeColor.BLUE, () -> Ingredient.of(Items.LAPIS_LAZULI)),
+    EMERALD(Identifier.fromNamespaceAndPath("waystones", "emerald_sharestone"), DyeColor.GREEN, () -> Ingredient.of(Items.EMERALD)),
+    REDSTONE(Identifier.fromNamespaceAndPath("waystones", "redstone_sharestone"), DyeColor.RED, () -> Ingredient.of(Items.REDSTONE));
 
     public static final StringRepresentable.EnumCodec<SharestoneType> CODEC = StringRepresentable.fromEnum(SharestoneType::values);
 
+    private final Identifier identifier;
     private final DyeColor color;
     private final Supplier<Ingredient> ingredientSupplier;
 
-    SharestoneType(DyeColor color, Supplier<Ingredient> ingredientSupplier) {
+    SharestoneType(Identifier identifier, DyeColor color, Supplier<Ingredient> ingredientSupplier) {
+        this.identifier = identifier;
         this.color = color;
         this.ingredientSupplier = ingredientSupplier;
+    }
+
+    public Identifier getIdentifier() {
+        return identifier;
     }
 
     @Override

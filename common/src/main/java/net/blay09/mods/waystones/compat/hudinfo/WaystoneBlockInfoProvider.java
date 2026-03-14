@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.compat.hudinfo;
 import net.blay09.mods.balm.platform.compatibility.hudinfo.BlockInfoContext;
 import net.blay09.mods.balm.platform.compatibility.hudinfo.BlockInfoProvider;
 import net.blay09.mods.balm.platform.compatibility.hudinfo.HudInfoOutput;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.network.chat.Component;
@@ -14,7 +14,7 @@ public class WaystoneBlockInfoProvider implements BlockInfoProvider {
         final var blockEntity = context.blockEntity();
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
             final var waystone = waystoneBlockEntity.getWaystone();
-            final var isActivated = !waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)
+            final var isActivated = !waystone.getWaystoneType().equals(WaystoneKinds.WAYSTONE)
                     || PlayerWaystoneManager.isWaystoneActivated(context.player(), waystone);
             if (isActivated && waystone.hasName() && waystone.isValid()) {
                 output.text(waystone.getName());

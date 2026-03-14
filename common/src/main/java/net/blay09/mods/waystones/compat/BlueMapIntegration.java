@@ -4,7 +4,7 @@ import de.bluecolored.bluemap.api.BlueMapAPI;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneRemovedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneUpdatedEvent;
@@ -59,9 +59,9 @@ public class BlueMapIntegration {
 
     private static boolean isSupportedWaystoneType(Identifier waystoneType) {
         final var config = WaystonesConfig.getActive().blueMap;
-        if (waystoneType.equals(WaystoneTypes.WAYSTONE)) {
+        if (waystoneType.equals(WaystoneKinds.WAYSTONE)) {
             return config.includeWaystones || config.includeUndiscoveredWaystones;
-        } else if (WaystoneTypes.isSharestone(waystoneType)) {
+        } else if (WaystoneKinds.isSharestone(waystoneType)) {
             return config.includeSharestones;
         }
         return false;
@@ -183,7 +183,7 @@ public class BlueMapIntegration {
             final var marker = createWaystoneMarker(waystone);
             final var markerId = getMarkerId(waystone);
             final var config = WaystonesConfig.getActive().blueMap;
-            if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
+            if (WaystoneKinds.isSharestone(waystone.getWaystoneType())) {
                 if (config.includeSharestones) {
                     sharestoneMarkers.put(markerId, marker);
                 }
@@ -202,7 +202,7 @@ public class BlueMapIntegration {
 
         public void removeWaystoneMarker(Waystone waystone) {
             final var markerId = getMarkerId(waystone);
-            if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
+            if (WaystoneKinds.isSharestone(waystone.getWaystoneType())) {
                 sharestoneMarkers.remove(markerId);
             } else {
                 waystoneMarkers.remove(markerId);

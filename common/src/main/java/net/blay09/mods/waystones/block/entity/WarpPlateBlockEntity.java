@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.block.entity;
 
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.*;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.component.ModComponents;
@@ -83,8 +83,8 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    protected Identifier getWaystoneType() {
-        return WaystoneTypes.WARP_PLATE;
+    protected Identifier getWaystoneKind() {
+        return WaystoneKinds.WARP_PLATE;
     }
 
     @Override

@@ -51,8 +51,8 @@ public record EventfulWaystonesStore(WaystonesStore delegate) implements Wayston
     }
 
     @Override
-    public Collection<Waystone> getWaystonesByType(Identifier type) {
-        return delegate.getWaystonesByType(type);
+    public Collection<Waystone> getWaystonesByKind(Identifier kind) {
+        return delegate.getWaystonesByKind(kind);
     }
 
     @Override

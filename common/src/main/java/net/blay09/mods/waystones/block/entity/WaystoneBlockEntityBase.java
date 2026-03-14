@@ -201,11 +201,11 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
         return waystone;
     }
 
-    protected abstract Identifier getWaystoneType();
+    protected abstract Identifier getWaystoneKind();
 
     public void initializeWaystone(ServerLevelAccessor level, @Nullable LivingEntity player, WaystoneOrigin origin) {
         if (!this.waystone.isValid()) {
-            WaystoneImpl waystone = new WaystoneImpl(getWaystoneType(),
+            WaystoneImpl waystone = new WaystoneImpl(getWaystoneKind(),
                     UUID.randomUUID(),
                     level.getLevel().dimension(),
                     worldPosition,

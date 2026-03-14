@@ -4,7 +4,7 @@ import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.core.*;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.core.BlockPos;
@@ -31,9 +31,9 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    protected Identifier getWaystoneType() {
-        return WaystoneTypes.getSharestone(((SharestoneBlock) getBlockState().getBlock()).getType())
-                .orElse(WaystoneTypes.WAYSTONE); // fallback to regular waystone if invalid
+    protected Identifier getWaystoneKind() {
+        return Optional.ofNullable(WaystoneKinds.getKind(((SharestoneBlock) getBlockState().getBlock()).getType()))
+                .orElse(WaystoneKinds.WAYSTONE); // fallback to regular waystone if invalid
     }
 
     @Override

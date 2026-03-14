@@ -1,10 +1,9 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.platform.BalmEnvironment;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.event.WaystonesListReceivedEvent;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.client.WaystonesClient;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.store.InMemoryWaystonesPlayerStore;
@@ -30,7 +29,7 @@ public record ClientboundKnownWaystonesPacket(Identifier waystoneType, List<Ways
     );
 
     public static void handle(Player player, ClientboundKnownWaystonesPacket message) {
-        if (message.waystoneType.equals(WaystoneTypes.WAYSTONE)) {
+        if (message.waystoneType.equals(WaystoneKinds.WAYSTONE)) {
             InMemoryWaystonesPlayerStore playerWaystoneData = (InMemoryWaystonesPlayerStore) PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
             playerWaystoneData.setWaystones(message.waystones);
         }

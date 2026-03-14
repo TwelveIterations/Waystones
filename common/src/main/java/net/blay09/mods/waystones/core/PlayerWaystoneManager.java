@@ -3,8 +3,9 @@ package net.blay09.mods.waystones.core;
 import net.blay09.mods.balm.platform.BalmEnvironment;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
+import net.blay09.mods.waystones.api.trait.SharestoneScoped;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -59,7 +60,7 @@ public class PlayerWaystoneManager {
             SavedDataWaystonesStore.get(serverLevel.getServer()).setDirty();
         }
 
-        if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
+        if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneKinds.WAYSTONE)) {
             getPlayerWaystoneData(player.level()).activateWaystone(player, waystone);
 
             WaystoneActivatedEvent.EVENT.invoker().accept(new WaystoneActivatedEvent(player, waystone));
@@ -153,6 +154,9 @@ public class PlayerWaystoneManager {
     }
 
     public static Collection<Waystone> getTargetsForItem(Player player, ItemStack itemStack) {
+        if (itemStack.getItem() instanceof SharestoneScoped sharestoneScoped) {
+            return getTargetsForScope(player, sharestoneScoped.getSharestoneType());
+        }
         return PlayerWaystoneManager.getActivatedWaystones(player);
     }
 
@@ -167,10 +171,16 @@ public class PlayerWaystoneManager {
         return result;
     }
 
+    public static Collection<Waystone> getTargetsForScope(Player player, @Nullable SharestoneType sharestoneType) {
+        final var kind = Optional.ofNullable(WaystoneKinds.getKind(sharestoneType)).orElse(WaystoneKinds.WAYSTONE);
+        return new ArrayList<>(SavedDataWaystonesStore.get(player.level().getServer()).getWaystonesByKind(kind));
+    }
+
+    @Deprecated
     public static Collection<Waystone> getTargetsForWaystoneType(Player player, Identifier waystoneType) {
         final var result = new ArrayList<Waystone>();
-        if (WaystoneTypes.isSharestone(waystoneType)) {
-            result.addAll(SavedDataWaystonesStore.get(player.level().getServer()).getWaystonesByType(waystoneType));
+        if (WaystoneKinds.isSharestone(waystoneType)) {
+            result.addAll(SavedDataWaystonesStore.get(player.level().getServer()).getWaystonesByKind(waystoneType));
         } else {
             result.addAll(PlayerWaystoneManager.getActivatedWaystones(player));
         }

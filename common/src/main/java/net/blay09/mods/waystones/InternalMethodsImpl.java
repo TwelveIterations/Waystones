@@ -226,7 +226,7 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public Collection<Waystone> getWaystonesByType(MinecraftServer server, Identifier type) {
-        return SavedDataWaystonesStore.get(server).getWaystonesByType(type);
+        return SavedDataWaystonesStore.get(server).getWaystonesByKind(type);
     }
 
     @Override

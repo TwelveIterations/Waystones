@@ -9,7 +9,6 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,7 +33,7 @@ public record ServerboundRemoveWaystonePacket(UUID waystoneUid) implements Custo
         PlayerWaystoneManager.deactivateWaystone(player, waystone);
 
         if (player.getAbilities().instabuild) {
-            if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
+            if (WaystoneKinds.isSharestone(waystone.getWaystoneType())) {
                 // If this is a sharestone and the player is in creative mode, remove the sharestone from the database
                 SavedDataWaystonesStore.get(server).removeWaystone(waystone);
             } else if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {

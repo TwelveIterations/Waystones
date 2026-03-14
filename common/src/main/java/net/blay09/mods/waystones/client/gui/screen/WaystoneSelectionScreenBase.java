@@ -182,11 +182,11 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
             return false;
         }
 
-        if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
+        if (WaystoneKinds.isSharestone(waystone.getWaystoneType())) {
             if (!isCreative) {
                 return false;
             }
-        } else if (!waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
+        } else if (!waystone.getWaystoneType().equals(WaystoneKinds.WAYSTONE)) {
             return false;
         }
 

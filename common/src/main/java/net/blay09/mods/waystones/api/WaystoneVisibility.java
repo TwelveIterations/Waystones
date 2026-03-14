@@ -40,7 +40,7 @@ public enum WaystoneVisibility implements StringRepresentable {
             WaystoneVisibility::valueOf);
 
     public static WaystoneVisibility fromWaystoneType(Identifier waystoneType) {
-        if (WaystoneTypes.isSharestone(waystoneType)) {
+        if (WaystoneKinds.isSharestone(waystoneType)) {
             return switch (waystoneType.getPath()) {
                 case "orange_sharestone" -> WaystoneVisibility.ORANGE_SHARESTONE;
                 case "magenta_sharestone" -> WaystoneVisibility.MAGENTA_SHARESTONE;
@@ -59,7 +59,7 @@ public enum WaystoneVisibility implements StringRepresentable {
                 case "black_sharestone" -> WaystoneVisibility.BLACK_SHARESTONE;
                 default -> WaystoneVisibility.ACTIVATION;
             };
-        } else if (waystoneType.equals(WaystoneTypes.WARP_PLATE)) {
+        } else if (waystoneType.equals(WaystoneKinds.WARP_PLATE)) {
             return WaystoneVisibility.SHARD_ONLY;
         } else {
             return WaystoneVisibility.ACTIVATION;

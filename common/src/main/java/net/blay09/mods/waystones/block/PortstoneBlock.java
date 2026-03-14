@@ -6,7 +6,7 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.waystones.api.SharestoneType;
 import net.blay09.mods.waystones.api.TeleportFlags;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
@@ -143,8 +143,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult blockHitResult) {
         if (!world.isClientSide()) {
-            final var targetWaystoneType = getTargetWaystoneType();
-            final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystoneType(player, targetWaystoneType));
+            final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForScope(player, type));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
             Balm.networking().openMenu(player, new BalmMenuProvider<ModMenus.WaystoneListMenuData>() {
                 @Override
@@ -170,10 +169,6 @@ public class PortstoneBlock extends WaystoneBlockBase {
             });
         }
         return InteractionResult.SUCCESS;
-    }
-
-    private Identifier getTargetWaystoneType() {
-        return WaystoneTypes.getSharestone(type).orElse(WaystoneTypes.WAYSTONE);
     }
 
     @Override

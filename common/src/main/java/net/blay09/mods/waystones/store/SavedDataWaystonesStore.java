@@ -2,7 +2,6 @@ package net.blay09.mods.waystones.store;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.core.BlockPos;
@@ -15,15 +14,16 @@ import net.minecraft.world.level.saveddata.SavedDataType;
 
 import java.util.*;
 
+import static net.blay09.mods.waystones.Waystones.id;
+
 public class SavedDataWaystonesStore extends SavedData implements WaystonesStore {
 
-    private static final String DATA_NAME = "waystones";
     private static final Codec<SavedDataWaystonesStore> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             WaystoneImpl.CODEC.codec().listOf().fieldOf("Waystones").forGetter(WaystonesStore::getWaystones)
     ).apply(instance, SavedDataWaystonesStore::new));
 
     public static final SavedDataType<SavedDataWaystonesStore> TYPE = new SavedDataType<>(
-            Waystones.id(DATA_NAME),
+            id("waystones"),
             () -> new SavedDataWaystonesStore(List.of()),
             CODEC,
             null // TODO this can't be null but mod loaders will save us soon I'm sure
@@ -74,8 +74,8 @@ public class SavedDataWaystonesStore extends SavedData implements WaystonesStore
     }
 
     @Override
-    public Collection<Waystone> getWaystonesByType(Identifier type) {
-        return store.getWaystonesByType(type);
+    public Collection<Waystone> getWaystonesByKind(Identifier kind) {
+        return store.getWaystonesByKind(kind);
     }
 
     @Override

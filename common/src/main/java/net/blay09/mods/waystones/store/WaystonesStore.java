@@ -26,7 +26,7 @@ public interface WaystonesStore {
 
     List<Waystone> getWaystones();
 
-    Collection<Waystone> getWaystonesByType(Identifier type);
+    Collection<Waystone> getWaystonesByKind(Identifier kind);
 
     List<Waystone> getGlobalWaystones();
 }

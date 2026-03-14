@@ -78,8 +78,8 @@ public class InMemoryWaystonesStore implements WaystonesStore {
     }
 
     @Override
-    public Collection<Waystone> getWaystonesByType(Identifier type) {
-        return waystonesByType.get(type);
+    public Collection<Waystone> getWaystonesByKind(Identifier kind) {
+        return waystonesByType.get(kind);
     }
 
     @Override

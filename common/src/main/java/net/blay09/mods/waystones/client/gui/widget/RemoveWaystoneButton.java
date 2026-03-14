@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.client.gui.widget;
 import com.google.common.collect.Lists;
 import net.blay09.mods.kuma.api.Kuma;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -31,7 +31,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
         this.visibleRegionHeight = visibleRegionHeight;
         tooltip = Lists.newArrayList(Component.translatable("gui.waystones.waystone_selection.hold_shift_to_delete"));
         activeTooltip = Lists.newArrayList(Component.translatable("gui.waystones.waystone_selection.click_to_delete"));
-        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL || WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL || WaystoneKinds.isSharestone(waystone.getWaystoneType())) {
             var component = Component.translatable("gui.waystones.waystone_selection.deleting_global_for_all");
             component.withStyle(ChatFormatting.DARK_RED);
             tooltip.add(component);

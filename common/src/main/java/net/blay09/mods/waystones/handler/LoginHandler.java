@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.handler;
 
 import net.blay09.mods.balm.platform.event.callback.ServerPlayerCallback;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
@@ -24,8 +24,8 @@ public class LoginHandler {
 
             WaystoneSyncManager.sendSortingIndex(player);
             WaystoneSyncManager.sendActivatedWaystones(player);
-            WaystoneSyncManager.sendWaystonesOfType(WaystoneTypes.WARP_PLATE, player);
-            for (Identifier dyedSharestone : WaystoneTypes.SHARESTONES) {
+            WaystoneSyncManager.sendWaystonesOfType(WaystoneKinds.WARP_PLATE, player);
+            for (Identifier dyedSharestone : WaystoneKinds.SHARESTONES) {
                 WaystoneSyncManager.sendWaystonesOfType(dyedSharestone, player);
             }
         });

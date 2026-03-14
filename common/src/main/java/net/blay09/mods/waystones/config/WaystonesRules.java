@@ -12,7 +12,7 @@ import net.blay09.mods.shogi.effect.ShogiEffect;
 import net.blay09.mods.shogi.scope.ShogiScope;
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.rules.*;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
@@ -57,7 +57,7 @@ public class WaystonesRules {
 
         it.registerSimpleEffect(id("is_warp_plate"), context
                 -> WaystoneRuleContext.getEffectiveWaystone(context)
-                .filter(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE))
+                .filter(waystone -> waystone.getWaystoneType().equals(WaystoneKinds.WARP_PLATE))
                 .isPresent());
 
         it.registerSimpleEffect(id("is_portstone"), context
@@ -65,12 +65,12 @@ public class WaystonesRules {
 
         it.registerSimpleEffect(id("is_waystone"), context
                 -> WaystoneRuleContext.getEffectiveWaystone(context)
-                .filter(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE))
+                .filter(waystone -> waystone.getWaystoneType().equals(WaystoneKinds.WAYSTONE))
                 .isPresent());
 
         it.registerSimpleEffect(id("is_sharestone"), context
                 -> WaystoneRuleContext.getEffectiveWaystone(context)
-                .filter(waystone -> WaystoneTypes.isSharestone(waystone.getWaystoneType()))
+                .filter(waystone -> WaystoneKinds.isSharestone(waystone.getWaystoneType()))
                 .isPresent());
 
         it.registerSimpleEffect(id("is_inventory_button"), context
@@ -118,7 +118,7 @@ public class WaystonesRules {
         it.registerSimpleEffect(id("is_with_leashed"), context
                 -> !WaystoneTeleportManager.findLeashedAnimals(context.entity()).isEmpty());
 
-        for (final var sharestoneType : WaystoneTypes.SHARESTONES) {
+        for (final var sharestoneType : WaystoneKinds.SHARESTONES) {
             final Identifier sharestoneIdentifier = id("is_" + sharestoneType.getPath());
             it.registerSimpleEffect(sharestoneIdentifier, context
                     -> WaystoneRuleContext.getEffectiveWaystone(context)

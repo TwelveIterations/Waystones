@@ -4,7 +4,7 @@ import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -28,8 +28,8 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    protected Identifier getWaystoneType() {
-        return WaystoneTypes.WAYSTONE;
+    protected Identifier getWaystoneKind() {
+        return WaystoneKinds.WAYSTONE;
     }
 
     @Override

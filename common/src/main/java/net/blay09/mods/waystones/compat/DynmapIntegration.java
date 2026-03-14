@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.compat;
 
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneRemovedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneUpdatedEvent;
@@ -64,7 +64,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     }
 
     private static boolean isSupportedWaystoneType(Identifier waystoneType) {
-        return waystoneType.equals(WaystoneTypes.WAYSTONE) || WaystoneTypes.isSharestone(waystoneType);
+        return waystoneType.equals(WaystoneKinds.WAYSTONE) || WaystoneKinds.isSharestone(waystoneType);
     }
 
     public boolean isEnabled() {
@@ -96,7 +96,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
 
     public void addWaystoneMarker(Waystone waystone) {
         prepareMarkerSets();
-        final var markerSet = WaystoneTypes.isSharestone(waystone.getWaystoneType()) ? sharestoneMarkers : waystoneMarkers;
+        final var markerSet = WaystoneKinds.isSharestone(waystone.getWaystoneType()) ? sharestoneMarkers : waystoneMarkers;
         createWaystoneMarker(markerSet, waystone);
     }
 
