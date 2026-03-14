@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "minecraft:copper_ingot",
+    "S": "minecraft:stone_bricks",
+    "W": "waystones:warp_stone"
+  },
+  "pattern": [
+    "SSS",
+    "DWD",
+    "SSS"
+  ],
+  "result": {
+    "id": "waystones:copper_ingot_sharestone"
+  }
+}

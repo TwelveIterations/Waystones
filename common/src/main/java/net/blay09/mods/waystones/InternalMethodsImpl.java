@@ -22,7 +22,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -145,8 +144,8 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Optional<Waystone> placeSharestone(ServerLevel level, BlockPos pos, DyeColor color) {
-        final var sharestone = ModBlocks.sharestones.get(color);
+    public Optional<Waystone> placeSharestone(ServerLevel level, BlockPos pos, SharestoneType type) {
+        final var sharestone = ModBlocks.sharestones.get(type);
         if (sharestone == null) {
             return Optional.empty();
         }

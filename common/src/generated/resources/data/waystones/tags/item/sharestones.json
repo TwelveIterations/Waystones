@@ -1,19 +1,12 @@
 {
   "values": [
-    "waystones:orange_sharestone",
-    "waystones:magenta_sharestone",
-    "waystones:light_blue_sharestone",
-    "waystones:yellow_sharestone",
-    "waystones:lime_sharestone",
-    "waystones:pink_sharestone",
-    "waystones:gray_sharestone",
-    "waystones:light_gray_sharestone",
-    "waystones:cyan_sharestone",
-    "waystones:purple_sharestone",
-    "waystones:blue_sharestone",
-    "waystones:brown_sharestone",
-    "waystones:green_sharestone",
-    "waystones:red_sharestone",
-    "waystones:black_sharestone"
+    "waystones:copper_ingot_sharestone",
+    "waystones:prismarine_shard_sharestone",
+    "waystones:gold_ingot_sharestone",
+    "waystones:diamond_sharestone",
+    "waystones:amethyst_shard_sharestone",
+    "waystones:lapis_lazuli_sharestone",
+    "waystones:emerald_sharestone",
+    "waystones:redstone_sharestone"
   ]
 }

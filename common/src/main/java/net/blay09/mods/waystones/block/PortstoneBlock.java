@@ -4,8 +4,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.waystones.api.SharestoneType;
 import net.blay09.mods.waystones.api.TeleportFlags;
-import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -22,7 +22,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -40,12 +39,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 
 public class PortstoneBlock extends WaystoneBlockBase {
 
-    public static final MapCodec<PortstoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(DyeColor.CODEC.fieldOf("color")
-                    .forGetter(PortstoneBlock::getColor), propertiesCodec())
+    public static final MapCodec<PortstoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(SharestoneType.CODEC.optionalFieldOf("color")
+                    .forGetter(PortstoneBlock::getType), propertiesCodec())
             .apply(instance, PortstoneBlock::new));
 
     private static final VoxelShape[] LOWER_SHAPES = new VoxelShape[]{
@@ -110,16 +110,22 @@ public class PortstoneBlock extends WaystoneBlockBase {
             ).optimize()
     };
 
-    private final DyeColor color;
+    @Nullable
+    private final SharestoneType type;
 
-    public PortstoneBlock(DyeColor color, Properties properties) {
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public PortstoneBlock(Optional<SharestoneType> type, Properties properties) {
+        this(type.orElse(null), properties);
+    }
+
+    public PortstoneBlock(@Nullable SharestoneType type, Properties properties) {
         super(properties);
-        this.color = color;
+        this.type = type;
         registerDefaultState(this.stateDefinition.any().setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, false));
     }
 
-    public DyeColor getColor() {
-        return color;
+    public Optional<SharestoneType> getType() {
+        return Optional.ofNullable(type);
     }
 
     @Override
@@ -143,7 +149,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
             Balm.networking().openMenu(player, new BalmMenuProvider<ModMenus.WaystoneListMenuData>() {
                 @Override
                 public Component getDisplayName() {
-                    return Component.translatable("container.waystones." + color.getSerializedName() + "_portstone");
+                    return Component.translatable("container.waystones." + type.getSerializedName() + "_portstone");
                 }
 
                 @Override
@@ -167,7 +173,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
     }
 
     private Identifier getTargetWaystoneType() {
-        return WaystoneTypes.getSharestone(color).orElse(WaystoneTypes.WAYSTONE);
+        return WaystoneTypes.getSharestone(type).orElse(WaystoneTypes.WAYSTONE);
     }
 
     @Override

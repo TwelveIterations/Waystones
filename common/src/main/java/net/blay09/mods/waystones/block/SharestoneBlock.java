@@ -3,13 +3,13 @@ package net.blay09.mods.waystones.block;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.Balm;
+import net.blay09.mods.waystones.api.SharestoneType;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -25,8 +25,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class SharestoneBlock extends WaystoneBlockBase {
 
-    public static final MapCodec<SharestoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(DyeColor.CODEC.fieldOf("color")
-                    .forGetter(SharestoneBlock::getColor), propertiesCodec())
+    public static final MapCodec<SharestoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(SharestoneType.CODEC.fieldOf("color")
+                    .forGetter(SharestoneBlock::getType), propertiesCodec())
             .apply(instance, SharestoneBlock::new));
 
     private static final VoxelShape LOWER_SHAPE = Shapes.or(
@@ -43,11 +43,11 @@ public class SharestoneBlock extends WaystoneBlockBase {
             box(0.0, 13.0, 0.0, 16.0, 16.0, 16.0)
     ).optimize();
 
-    private final DyeColor color;
+    private final SharestoneType type;
 
-    public SharestoneBlock(DyeColor color, Properties properties) {
+    public SharestoneBlock(SharestoneType type, Properties properties) {
         super(properties);
-        this.color = color;
+        this.type = type;
         registerDefaultState(this.stateDefinition.any().setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, false));
     }
 
@@ -78,8 +78,8 @@ public class SharestoneBlock extends WaystoneBlockBase {
         builder.add(HALF);
     }
 
-    public DyeColor getColor() {
-        return color;
+    public SharestoneType getType() {
+        return type;
     }
 
     @Override

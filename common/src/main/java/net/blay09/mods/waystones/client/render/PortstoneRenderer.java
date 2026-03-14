@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.blay09.mods.waystones.api.SharestoneType;
 import net.blay09.mods.waystones.block.PortstoneBlock;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
@@ -72,7 +73,7 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
 
         renderState.facing = blockState.getValue(PortstoneBlock.FACING);
         renderState.glow = !WaystonesConfig.getActive().client.disableTextGlow;
-        renderState.runeColor = ((PortstoneBlock) blockEntity.getBlockState().getBlock()).getColor().getTextureDiffuseColor();
+        renderState.runeColor = ((PortstoneBlock) blockEntity.getBlockState().getBlock()).getType().map(SharestoneType::getTextureDiffuseColor).orElse(0xFFFFFFFF);
 
         final var level = blockEntity.getLevel();
         if (warpStoneItem == null) {

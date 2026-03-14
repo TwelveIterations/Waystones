@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.datagen;
 
 import net.blay09.mods.balm.tags.BalmItemTags;
 import net.blay09.mods.waystones.block.ModBlocks;
+import net.blay09.mods.waystones.api.SharestoneType;
 import net.blay09.mods.waystones.item.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
@@ -9,9 +10,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
@@ -112,7 +110,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
                         .save(exporter);
 
-                shaped(RecipeCategory.DECORATIONS, ModBlocks.portstones.get(DyeColor.WHITE))
+                shaped(RecipeCategory.DECORATIONS, ModBlocks.portstones.get(null))
                         .pattern(" S ")
                         .pattern("SWS")
                         .pattern("BBB")
@@ -122,37 +120,23 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                         .save(exporter);
 
-                createPortstoneRecipe(exporter, DyeColor.ORANGE, BalmItemTags.ORANGE_DYES);
-                createPortstoneRecipe(exporter, DyeColor.MAGENTA, BalmItemTags.MAGENTA_DYES);
-                createPortstoneRecipe(exporter, DyeColor.LIGHT_BLUE, BalmItemTags.LIGHT_BLUE_DYES);
-                createPortstoneRecipe(exporter, DyeColor.YELLOW, BalmItemTags.YELLOW_DYES);
-                createPortstoneRecipe(exporter, DyeColor.LIME, BalmItemTags.LIME_DYES);
-                createPortstoneRecipe(exporter, DyeColor.PINK, BalmItemTags.PINK_DYES);
-                createPortstoneRecipe(exporter, DyeColor.GRAY, BalmItemTags.GRAY_DYES);
-                createPortstoneRecipe(exporter, DyeColor.LIGHT_GRAY, BalmItemTags.LIGHT_GRAY_DYES);
-                createPortstoneRecipe(exporter, DyeColor.CYAN, BalmItemTags.CYAN_DYES);
-                createPortstoneRecipe(exporter, DyeColor.PURPLE, BalmItemTags.PURPLE_DYES);
-                createPortstoneRecipe(exporter, DyeColor.BLUE, BalmItemTags.BLUE_DYES);
-                createPortstoneRecipe(exporter, DyeColor.BROWN, BalmItemTags.BROWN_DYES);
-                createPortstoneRecipe(exporter, DyeColor.GREEN, BalmItemTags.GREEN_DYES);
-                createPortstoneRecipe(exporter, DyeColor.RED, BalmItemTags.RED_DYES);
-                createPortstoneRecipe(exporter, DyeColor.BLACK, BalmItemTags.BLACK_DYES);
+                createPortstoneRecipe(exporter, SharestoneType.COPPER);
+                createPortstoneRecipe(exporter, SharestoneType.PRISMARINE);
+                createPortstoneRecipe(exporter, SharestoneType.GOLD);
+                createPortstoneRecipe(exporter, SharestoneType.DIAMOND);
+                createPortstoneRecipe(exporter, SharestoneType.AMETHYST);
+                createPortstoneRecipe(exporter, SharestoneType.LAPIS);
+                createPortstoneRecipe(exporter, SharestoneType.EMERALD);
+                createPortstoneRecipe(exporter, SharestoneType.REDSTONE);
 
-                createSharestoneRecipe(exporter, DyeColor.ORANGE, BalmItemTags.ORANGE_DYES);
-                createSharestoneRecipe(exporter, DyeColor.MAGENTA, BalmItemTags.MAGENTA_DYES);
-                createSharestoneRecipe(exporter, DyeColor.LIGHT_BLUE, BalmItemTags.LIGHT_BLUE_DYES);
-                createSharestoneRecipe(exporter, DyeColor.YELLOW, BalmItemTags.YELLOW_DYES);
-                createSharestoneRecipe(exporter, DyeColor.LIME, BalmItemTags.LIME_DYES);
-                createSharestoneRecipe(exporter, DyeColor.PINK, BalmItemTags.PINK_DYES);
-                createSharestoneRecipe(exporter, DyeColor.GRAY, BalmItemTags.GRAY_DYES);
-                createSharestoneRecipe(exporter, DyeColor.LIGHT_GRAY, BalmItemTags.LIGHT_GRAY_DYES);
-                createSharestoneRecipe(exporter, DyeColor.CYAN, BalmItemTags.CYAN_DYES);
-                createSharestoneRecipe(exporter, DyeColor.PURPLE, BalmItemTags.PURPLE_DYES);
-                createSharestoneRecipe(exporter, DyeColor.BLUE, BalmItemTags.BLUE_DYES);
-                createSharestoneRecipe(exporter, DyeColor.BROWN, BalmItemTags.BROWN_DYES);
-                createSharestoneRecipe(exporter, DyeColor.GREEN, BalmItemTags.GREEN_DYES);
-                createSharestoneRecipe(exporter, DyeColor.RED, BalmItemTags.RED_DYES);
-                createSharestoneRecipe(exporter, DyeColor.BLACK, BalmItemTags.BLACK_DYES);
+                createSharestoneRecipe(exporter, SharestoneType.COPPER);
+                createSharestoneRecipe(exporter, SharestoneType.PRISMARINE);
+                createSharestoneRecipe(exporter, SharestoneType.GOLD);
+                createSharestoneRecipe(exporter, SharestoneType.DIAMOND);
+                createSharestoneRecipe(exporter, SharestoneType.AMETHYST);
+                createSharestoneRecipe(exporter, SharestoneType.LAPIS);
+                createSharestoneRecipe(exporter, SharestoneType.EMERALD);
+                createSharestoneRecipe(exporter, SharestoneType.REDSTONE);
 
                 shaped(RecipeCategory.DECORATIONS, ModItems.warpStone)
                         .pattern("AEA")
@@ -194,8 +178,8 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .save(exporter);
             }
 
-            private void createSharestoneRecipe(RecipeOutput exporter, DyeColor color, TagKey<Item> dyeTag) {
-                final var sharestone = ModBlocks.sharestones.get(color);
+            private void createSharestoneRecipe(RecipeOutput exporter, SharestoneType type) {
+                final var sharestone = ModBlocks.sharestones.get(type);
                 if (sharestone == null) {
                     return;
                 }
@@ -206,13 +190,13 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("SSS")
                         .define('S', Blocks.STONE_BRICKS)
                         .define('W', ModItems.warpStone)
-                        .define('D', dyeTag)
+                        .define('D', type.getIngredient())
                         .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                         .save(exporter);
             }
 
-            private void createPortstoneRecipe(RecipeOutput exporter, DyeColor color, TagKey<Item> dyeTag) {
-                final var portstone = ModBlocks.portstones.get(color);
+            private void createPortstoneRecipe(RecipeOutput exporter, SharestoneType type) {
+                final var portstone = ModBlocks.portstones.get(type);
                 if (portstone == null) {
                     return;
                 }
@@ -224,7 +208,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .define('B', Blocks.STONE_BRICKS)
                         .define('W', ModItems.warpStone)
                         .define('S', Blocks.STONE_BRICK_SLAB)
-                        .define('D', dyeTag)
+                        .define('D', type.getIngredient())
                         .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                         .save(exporter);
             }

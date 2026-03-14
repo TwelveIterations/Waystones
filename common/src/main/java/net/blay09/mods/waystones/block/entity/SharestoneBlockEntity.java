@@ -32,7 +32,7 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
 
     @Override
     protected Identifier getWaystoneType() {
-        return WaystoneTypes.getSharestone(((SharestoneBlock) getBlockState().getBlock()).getColor())
+        return WaystoneTypes.getSharestone(((SharestoneBlock) getBlockState().getBlock()).getType())
                 .orElse(WaystoneTypes.WAYSTONE); // fallback to regular waystone if invalid
     }
 

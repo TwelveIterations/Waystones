@@ -9,7 +9,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import org.jetbrains.annotations.Nullable;
@@ -103,8 +102,8 @@ public class WaystonesAPI {
         return __internalMethods.placeWaystone(level, pos, style);
     }
 
-    public static Optional<Waystone> placeSharestone(ServerLevel level, BlockPos pos, @Nullable DyeColor color) {
-        return __internalMethods.placeSharestone(level, pos, color);
+    public static Optional<Waystone> placeSharestone(ServerLevel level, BlockPos pos, SharestoneType type) {
+        return __internalMethods.placeSharestone(level, pos, type);
     }
 
     public static Optional<Waystone> placeWarpPlate(ServerLevel level, BlockPos pos) {

@@ -4,8 +4,8 @@ import net.blay09.mods.balm.world.item.BalmCreativeModeTabRegistrar;
 import net.blay09.mods.balm.world.item.BalmItemRegistrar;
 import net.blay09.mods.balm.world.item.DeferredItem;
 import net.blay09.mods.waystones.block.ModBlocks;
+import net.blay09.mods.waystones.api.SharestoneType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 
 public class ModItems {
@@ -35,8 +35,8 @@ public class ModItems {
                         .icon(() -> new ItemStack(ModBlocks.waystone))
                         .displayItems((displayParameters, output) -> {
                             output.accept(ModBlocks.waystone);
-                            output.accept(ModBlocks.portstones.get(DyeColor.WHITE));
-                            output.accept(ModBlocks.sharestones.get(DyeColor.RED));
+                            output.accept(ModBlocks.portstones.get(null));
+                            output.accept(ModBlocks.sharestones.get(SharestoneType.REDSTONE));
                             output.accept(ModBlocks.warpPlate);
                             output.accept(ModItems.blankScroll);
                             output.accept(ModItems.returnScroll);
@@ -49,12 +49,12 @@ public class ModItems {
                             output.accept(ModBlocks.blackstoneWaystone);
                             output.accept(ModBlocks.endStoneWaystone);
                             ModBlocks.sharestones.forEach((color, block) -> {
-                                if (color != DyeColor.RED) {
+                                if (color != SharestoneType.REDSTONE) {
                                     output.accept(block);
                                 }
                             });
                             ModBlocks.portstones.forEach((color, block) -> {
-                                if (color != DyeColor.WHITE) {
+                                if (color != null) {
                                     output.accept(block);
                                 }
                             });

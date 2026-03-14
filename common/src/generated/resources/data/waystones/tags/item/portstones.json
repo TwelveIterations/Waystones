@@ -1,20 +1,13 @@
 {
   "values": [
-    "waystones:white_portstone",
-    "waystones:orange_portstone",
-    "waystones:magenta_portstone",
-    "waystones:light_blue_portstone",
-    "waystones:yellow_portstone",
-    "waystones:lime_portstone",
-    "waystones:pink_portstone",
-    "waystones:gray_portstone",
-    "waystones:light_gray_portstone",
-    "waystones:cyan_portstone",
-    "waystones:purple_portstone",
-    "waystones:blue_portstone",
-    "waystones:brown_portstone",
-    "waystones:green_portstone",
-    "waystones:red_portstone",
-    "waystones:black_portstone"
+    "waystones:copper_ingot_portstone",
+    "waystones:prismarine_shard_portstone",
+    "waystones:gold_ingot_portstone",
+    "waystones:diamond_portstone",
+    "waystones:amethyst_shard_portstone",
+    "waystones:lapis_lazuli_portstone",
+    "waystones:emerald_portstone",
+    "waystones:redstone_portstone",
+    "waystones:portstone"
   ]
 }

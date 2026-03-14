@@ -74,7 +74,7 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
         long gameTime = level != null ? level.getGameTime() : 0;
 
         renderState.glow = !WaystonesConfig.getActive().client.disableTextGlow;
-        renderState.runeColor = ((SharestoneBlock) blockEntity.getBlockState().getBlock()).getColor().getTextureDiffuseColor();
+        renderState.runeColor = ((SharestoneBlock) blockEntity.getBlockState().getBlock()).getType().getTextureDiffuseColor();
 
         if (warpStoneItem == null) {
             warpStoneItem = ModItems.warpStone.createStack();

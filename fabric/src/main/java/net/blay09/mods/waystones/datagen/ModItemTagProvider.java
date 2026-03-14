@@ -11,6 +11,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -39,9 +40,9 @@ public class ModItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
                 ModBlocks.endStoneWaystone.asItem());
 
         final var sharestonesTag = tag(ModItemTags.SHARESTONES);
-        ModBlocks.sharestones.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue).forEach(it ->sharestonesTag.add(it.asItem()));
+        ModBlocks.sharestones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it ->sharestonesTag.add(it.asItem()));
 
         final var portstonestag = tag(ModItemTags.PORTSTONES);
-        ModBlocks.portstones.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue).forEach(it -> portstonestag.add(it.asItem()));
+        ModBlocks.portstones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> portstonestag.add(it.asItem()));
     }
 }
