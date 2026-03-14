@@ -1,0 +1,7 @@
+{
+  "parent": "waystones:block/waystone_bottom",
+  "textures": {
+    "particle": "waystones:block/mossy_andesite_waystone",
+    "texture": "waystones:block/mossy_andesite_waystone"
+  }
+}

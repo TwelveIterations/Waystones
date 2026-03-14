@@ -1,0 +1,296 @@
+{
+  "parent": "block/block",
+  "credit": "Made with Blockbench",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "rotation": 90,
+          "texture": "#texture",
+          "uv": [
+            0,
+            0,
+            10,
+            10
+          ]
+        },
+        "east": {
+          "texture": "#texture",
+          "uv": [
+            0,
+            0,
+            10,
+            1
+          ]
+        },
+        "north": {
+          "texture": "#texture",
+          "uv": [
+            0,
+            0,
+            10,
+            0.5
+          ]
+        },
+        "south": {
+          "texture": "#texture",
+          "uv": [
+            0,
+            0,
+            10,
+            0.5
+          ]
+        },
+        "up": {
+          "rotation": 270,
+          "texture": "#texture",
+          "uv": [
+            0,
+            0,
+            10,
+            10
+          ]
+        },
+        "west": {
+          "texture": "#texture",
+          "uv": [
+            0,
+            0,
+            10,
+            0.5
+          ]
+        }
+      },
+      "from": [
+        2.5,
+        1,
+        2.5
+      ],
+      "name": "diag",
+      "rotation": {
+        "angle": -45,
+        "axis": "y",
+        "origin": [
+          8,
+          0,
+          8
+        ]
+      },
+      "to": [
+        13.5,
+        1.5,
+        13.5
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#texture",
+          "uv": [
+            0,
+            0,
+            10,
+            10
+          ]
+        },
+        "east": {
+          "texture": "#texture",
+          "uv": [
+            0,
+            9,
+            10,
+            10
+          ]
+        },
+        "north": {
+          "texture": "#texture",
+          "uv": [
+            0,
+            0,
+            10,
+            1
+          ]
+        },
+        "south": {
+          "texture": "#texture",
+          "uv": [
+            0,
+            9,
+            10,
+            10
+          ]
+        },
+        "up": {
+          "texture": "#texture",
+          "uv": [
+            0,
+            0,
+            10,
+            10
+          ]
+        },
+        "west": {
+          "texture": "#texture",
+          "uv": [
+            0,
+            0,
+            10,
+            1
+          ]
+        }
+      },
+      "from": [
+        3,
+        1,
+        3
+      ],
+      "name": "bordersouth",
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          8,
+          0,
+          8
+        ]
+      },
+      "to": [
+        13,
+        2,
+        13
+      ]
+    },
+    {
+      "faces": {
+        "up": {
+          "texture": "#3",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        }
+      },
+      "from": [
+        5,
+        2.01,
+        5
+      ],
+      "name": "tinted",
+      "to": [
+        11,
+        2.02,
+        11
+      ]
+    },
+    {
+      "faces": {
+        "up": {
+          "texture": "#texture",
+          "uv": [
+            2,
+            2,
+            8,
+            8
+          ]
+        }
+      },
+      "from": [
+        5,
+        1,
+        5
+      ],
+      "name": "inner",
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          0,
+          -1,
+          0
+        ]
+      },
+      "to": [
+        11,
+        2,
+        11
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#base",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#base",
+          "uv": [
+            0,
+            0,
+            16,
+            0.25
+          ]
+        },
+        "north": {
+          "texture": "#base",
+          "uv": [
+            0,
+            0,
+            16,
+            0.25
+          ]
+        },
+        "south": {
+          "texture": "#base",
+          "uv": [
+            0,
+            0,
+            16,
+            0.25
+          ]
+        },
+        "up": {
+          "texture": "#base",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#base",
+          "uv": [
+            0,
+            0,
+            16,
+            0.25
+          ]
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "name": "base",
+      "to": [
+        16,
+        1,
+        16
+      ]
+    }
+  ],
+  "textures": {
+    "3": "waystones:block/warp_plate_lock",
+    "base": "waystones:block/warp_plate_base",
+    "particle": "waystones:block/warp_plate",
+    "texture": "waystones:block/warp_plate"
+  }
+}
