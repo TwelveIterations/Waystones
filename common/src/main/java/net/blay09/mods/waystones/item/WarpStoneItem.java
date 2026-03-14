@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.waystones.api.SharestoneType;
 import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -28,15 +29,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
 public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
     private final Random random = new Random();
+    @Nullable
+    private final SharestoneType type;
 
-    public WarpStoneItem(Properties properties) {
+    public WarpStoneItem(@Nullable SharestoneType type, Properties properties) {
         super(properties.durability(10000));
+        this.type = type;
+    }
+
+    public @Nullable SharestoneType getType() {
+        return type;
     }
 
     @Override

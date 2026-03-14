@@ -7,13 +7,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
-import net.minecraft.data.tags.TagAppender;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
-import java.util.Comparator;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class ModItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
@@ -23,23 +21,25 @@ public class ModItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
 
     @Override
     protected void addTags(HolderLookup.Provider lookup) {
-        tag(TagKey.create(Registries.ITEM, Identifier.withDefaultNamespace("enchantable/durability"))).add(ModItems.warpStone.asItem());
+        final var enchantableDurabilityTag = tag(TagKey.create(Registries.ITEM, Identifier.withDefaultNamespace("enchantable/durability")));
+        ModItems.warpStones.sortedValues().map(ItemLike::asItem).forEach(enchantableDurabilityTag::add);
         tag(ModItemTags.SCROLLS).add(ModItems.warpScroll.asItem(), ModItems.returnScroll.asItem(), ModItems.boundScroll.asItem(), ModItems.blankScroll.asItem());
         tag(ModItemTags.WARP_SCROLLS).add(ModItems.warpScroll.asItem());
         tag(ModItemTags.RETURN_SCROLLS).add(ModItems.returnScroll.asItem());
         tag(ModItemTags.BOUND_SCROLLS).add(ModItems.boundScroll.asItem());
-        tag(ModItemTags.WARP_STONES).add(ModItems.warpStone.asItem());
+        final var warpStonesTag = tag(ModItemTags.WARP_STONES);
+        ModItems.warpStones.sortedValues().map(ItemLike::asItem).forEach(warpStonesTag::add);
         tag(ModItemTags.WARP_SHARDS).add(ModItems.attunedShard.asItem(),
                 ModItems.crumblingAttunedShard.asItem(),
                 ModItems.dormantShard.asItem());
         tag(ModItemTags.SINGLE_USE_WARP_SHARDS).add(ModItems.crumblingAttunedShard.asItem());
         final var waystonesTag = tag(ModItemTags.WAYSTONES);
-        ModBlocks.waystones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> waystonesTag.add(it.asItem()));
+        ModBlocks.waystones.sortedValues().map(ItemLike::asItem).forEach(waystonesTag::add);
 
         final var sharestonesTag = tag(ModItemTags.SHARESTONES);
-        ModBlocks.sharestones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> sharestonesTag.add(it.asItem()));
+        ModBlocks.sharestones.sortedValues().map(ItemLike::asItem).forEach(sharestonesTag::add);
 
         final var portstonestag = tag(ModItemTags.PORTSTONES);
-        ModBlocks.portstones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> portstonestag.add(it.asItem()));
+        ModBlocks.portstones.sortedValues().map(ItemLike::asItem).forEach(portstonestag::add);
     }
 }

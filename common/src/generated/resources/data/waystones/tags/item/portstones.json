@@ -1,5 +1,6 @@
 {
   "values": [
+    "waystones:portstone",
     "waystones:copper_portstone",
     "waystones:prismarine_portstone",
     "waystones:gold_portstone",
@@ -7,7 +8,6 @@
     "waystones:amethyst_portstone",
     "waystones:lapis_portstone",
     "waystones:emerald_portstone",
-    "waystones:redstone_portstone",
-    "waystones:portstone"
+    "waystones:redstone_portstone"
   ]
 }

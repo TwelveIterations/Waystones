@@ -32,8 +32,8 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                             .pattern("SWS")
                             .pattern("SSS")
                             .define('S', type.getIngredient())
-                            .define('W', ModItems.warpStone)
-                            .unlockedBy("has_warp_stone", has(ModItems.warpStone))
+                            .define('W', ModItems.warpStones.get(null))
+                            .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(null)))
                             .save(exporter);
                 });
 
@@ -73,9 +73,9 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("SWS")
                         .pattern("BBB")
                         .define('B', Blocks.STONE_BRICKS)
-                        .define('W', ModItems.warpStone)
+                        .define('W', ModItems.warpStones.get(null))
                         .define('S', Blocks.STONE_BRICK_SLAB)
-                        .unlockedBy("has_warp_stone", has(ModItems.warpStone))
+                        .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(null)))
                         .save(exporter);
 
                 createPortstoneRecipe(exporter, SharestoneType.COPPER);
@@ -96,7 +96,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 createSharestoneRecipe(exporter, SharestoneType.EMERALD);
                 createSharestoneRecipe(exporter, SharestoneType.REDSTONE);
 
-                shaped(RecipeCategory.DECORATIONS, ModItems.warpStone)
+                shaped(RecipeCategory.DECORATIONS, ModItems.warpStones.get(null))
                         .pattern("AEA")
                         .pattern("EGE")
                         .pattern("AEA")
@@ -147,9 +147,9 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("DWD")
                         .pattern("SSS")
                         .define('S', Blocks.STONE_BRICKS)
-                        .define('W', ModItems.warpStone)
+                        .define('W', ModItems.warpStones.get(null))
                         .define('D', type.getIngredient())
-                        .unlockedBy("has_warp_stone", has(ModItems.warpStone))
+                        .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(null)))
                         .save(exporter);
             }
 
@@ -164,10 +164,10 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("SWS")
                         .pattern("BBB")
                         .define('B', Blocks.STONE_BRICKS)
-                        .define('W', ModItems.warpStone)
+                        .define('W', ModItems.warpStones.get(null))
                         .define('S', Blocks.STONE_BRICK_SLAB)
                         .define('D', type.getIngredient())
-                        .unlockedBy("has_warp_stone", has(ModItems.warpStone))
+                        .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(null)))
                         .save(exporter);
             }
 
