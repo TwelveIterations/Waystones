@@ -45,7 +45,7 @@ public class ModItems {
                         .displayItems((_, output) -> {
                             output.accept(ModBlocks.waystones.get(WaystoneType.ANDESITE));
                             output.accept(ModBlocks.portstones.get(null));
-                            output.accept(ModBlocks.sharestones.get(SharestoneType.REDSTONE));
+                            output.accept(ModBlocks.sharestones.get(SharestoneType.COPPER));
                             output.accept(ModBlocks.warpPlate);
                             output.accept(ModItems.blankScroll);
                             output.accept(ModItems.returnScroll);
@@ -58,7 +58,7 @@ public class ModItems {
                                 }
                             });
                             ModBlocks.sharestones.forEach((type, block) -> {
-                                if (type != SharestoneType.REDSTONE) {
+                                if (type != SharestoneType.COPPER) {
                                     output.accept(block);
                                 }
                             });
