@@ -153,10 +153,6 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
-    }
-
-    @Override
     public void onClose() {
         if (textField != null && visibilityButton != null) {
             Balm.networking()

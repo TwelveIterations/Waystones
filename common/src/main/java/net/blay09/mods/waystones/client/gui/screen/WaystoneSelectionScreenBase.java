@@ -25,7 +25,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -35,7 +34,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -76,18 +74,17 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         final int maxContentHeight = (int) (height * 0.6f);
         final int maxButtonsPerPage = (maxContentHeight - headerHeight - footerHeight) / entryHeight;
         buttonsPerPage = Math.max(4, Math.min(maxButtonsPerPage, waystones.size()));
-        final int contentHeight = headerHeight + buttonsPerPage * entryHeight + footerHeight;
 
         super.init();
 
         tooltipProviders.clear();
-        btnPrevPage = Button.builder(Component.translatable("gui.waystones.waystone_selection.previous_page"), button -> {
+        btnPrevPage = Button.builder(Component.translatable("gui.waystones.waystone_selection.previous_page"), _ -> {
             pageOffset = Kuma.hasShiftDown() ? 0 : pageOffset - 1;
             updateList();
         }).pos(width / 2 - 100, height / 2 + 40).size(95, 20).build();
         addRenderableWidget(btnPrevPage);
 
-        btnNextPage = Button.builder(Component.translatable("gui.waystones.waystone_selection.next_page"), button -> {
+        btnNextPage = Button.builder(Component.translatable("gui.waystones.waystone_selection.next_page"), _ -> {
             pageOffset = Kuma.hasShiftDown() ? (waystones.size() - 1) / buttonsPerPage : pageOffset + 1;
             updateList();
         }).pos(width / 2 + 5, height / 2 + 40).size(95, 20).build();
@@ -147,13 +144,13 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                 addRenderableWidget(createWaystoneButton(y, waystone, menu.getWarpRequirements(waystone)));
 
                 if (allowSorting()) {
-                    SortWaystoneButton sortUpButton = new SortWaystoneButton(width / 2 + 108, y + 2, -1, y, 20, it -> sortWaystone(waystone, -1));
+                    SortWaystoneButton sortUpButton = new SortWaystoneButton(width / 2 + 108, y + 2, -1, y, 20, _ -> sortWaystone(waystone, -1));
                     if (entryIndex == 0) {
                         sortUpButton.active = false;
                     }
                     addRenderableWidget(sortUpButton);
 
-                    SortWaystoneButton sortDownButton = new SortWaystoneButton(width / 2 + 108, y + 13, 1, y, 20, it -> sortWaystone(waystone, 1));
+                    SortWaystoneButton sortDownButton = new SortWaystoneButton(width / 2 + 108, y + 13, 1, y, 20, _ -> sortWaystone(waystone, 1));
                     if (entryIndex == filteredWaystones.size() - 1) {
                         sortDownButton.active = false;
                     }
@@ -161,7 +158,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                 }
 
                 if (allowDeletion(waystone)) {
-                    RemoveWaystoneButton removeButton = new RemoveWaystoneButton(width / 2 + 122, y + 4, y, 20, waystone, button -> {
+                    RemoveWaystoneButton removeButton = new RemoveWaystoneButton(width / 2 + 122, y + 4, y, 20, waystone, _ -> {
                         Player player = Minecraft.getInstance().player;
                         PlayerWaystoneManager.deactivateWaystone(Objects.requireNonNull(player), waystone);
                         waystones.remove(waystone);
@@ -175,8 +172,8 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
             }
         }
 
-        btnPrevPage.setY(topPos + headerY + headerHeight + buttonsPerPage * 22 + (filteredWaystones.size() > 0 ? 10 : 0));
-        btnNextPage.setY(topPos + headerY + headerHeight + buttonsPerPage * 22 + (filteredWaystones.size() > 0 ? 10 : 0));
+        btnPrevPage.setY(topPos + headerY + headerHeight + buttonsPerPage * 22 + (!filteredWaystones.isEmpty() ? 10 : 0));
+        btnNextPage.setY(topPos + headerY + headerHeight + buttonsPerPage * 22 + (!filteredWaystones.isEmpty() ? 10 : 0));
     }
 
     private boolean allowDeletion(Waystone waystone) {
@@ -198,9 +195,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
     private WaystoneButton createWaystoneButton(int y, final Waystone waystone, Either<List<Object>, List<Object>> requirements) {
         final var waystoneFrom = menu.getWaystoneFrom();
-        final var flags = menu.getFlags();
-        final var player = Minecraft.getInstance().player;
-        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, requirements, button -> onWaystoneSelected(waystone));
+        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, requirements, _ -> onWaystoneSelected(waystone));
         if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {
             btnWaystone.active = false;
         }
@@ -259,10 +254,6 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
-    }
-
-    @Override
     protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         Waystone fromWaystone = menu.getWaystoneFrom();
         guiGraphics.centeredText(font, getTitle(), imageWidth / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFFFF);
@@ -270,7 +261,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
             drawLocationHeader(guiGraphics, fromWaystone, mouseX, mouseY, imageWidth / 2, headerY);
         }
 
-        if (waystones.size() == 0) {
+        if (waystones.isEmpty()) {
             guiGraphics.centeredText(font,
                     ChatFormatting.RED + I18n.get("gui.waystones.waystone_selection.no_waystones_activated"),
                     imageWidth / 2,
