@@ -85,6 +85,9 @@ public class ModModelProvider extends FabricModelProvider {
                 .with(PropertyDispatch.initial(WaystoneBlockBase.HALF)
                         .select(DoubleBlockHalf.LOWER, plainVariant(bottomModelLocation))
                         .select(DoubleBlockHalf.UPPER, plainVariant(topModelLocation)))
+                .with(PropertyDispatch.modify(WaystoneBlock.SEEN)
+                        .select(false, NOP)
+                        .select(true, NOP))
                 .with(ROTATION_HORIZONTAL_FACING);
         blockStateModelGenerator.blockStateOutput.accept(generator);
         blockStateModelGenerator.registerSimpleItemModel(block, ModelLocationUtils.getModelLocation(block.asItem()));

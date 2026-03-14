@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.block;
 import com.mojang.serialization.MapCodec;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -19,14 +18,15 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -39,6 +39,7 @@ import java.util.Objects;
 public class WaystoneBlock extends WaystoneBlockBase {
 
     public static final MapCodec<WaystoneBlock> CODEC = simpleCodec(WaystoneBlock::new);
+    public static final BooleanProperty SEEN = BooleanProperty.create("seen");
 
     private static final VoxelShape LOWER_SHAPE = Shapes.or(
             box(0.0, 0.0, 0.0, 16.0, 3.0, 16.0),
@@ -57,12 +58,21 @@ public class WaystoneBlock extends WaystoneBlockBase {
 
     public WaystoneBlock(Properties properties) {
         super(properties);
-        registerDefaultState(this.stateDefinition.any().setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, false).setValue(FACING, Direction.NORTH));
+        registerDefaultState(this.stateDefinition.any().setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, false).setValue(FACING, Direction.NORTH).setValue(SEEN, false));
     }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext context) {
         return state.getValue(HALF) == DoubleBlockHalf.UPPER ? UPPER_SHAPE : LOWER_SHAPE;
+    }
+
+    @Override
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        final var state = super.getStateForPlacement(context);
+        if (state != null) {
+            return state.setValue(SEEN, true);
+        }
+        return null;
     }
 
     @Nullable
@@ -72,38 +82,45 @@ public class WaystoneBlock extends WaystoneBlockBase {
     }
 
     @Override
-    protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
+    protected InteractionResult handleActivation(Level level, BlockPos pos, BlockState state, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
-            if (!world.isClientSide()) {
+            if (!level.isClientSide()) {
                 blockEntity.getSelectionMenuProvider().ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
             }
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);
 
-            if (!world.isClientSide()) {
+            if (!level.isClientSide()) {
+                level.setBlock(pos, state.setValue(SEEN, true), Block.UPDATE_ALL);
+                final var otherPos = state.getValue(HALF) == DoubleBlockHalf.UPPER ? pos.below() : pos.above();
+                final var otherState = level.getBlockState(otherPos);
+                if (otherState.hasProperty(SEEN)) {
+                    level.setBlock(otherPos, otherState.setValue(SEEN, true), Block.UPDATE_ALL);
+                }
+
                 final var nameComponent = waystone.getName().copy().withStyle(ChatFormatting.WHITE);
                 final var chatComponent = Component.translatable("chat.waystones.waystone_activated", nameComponent).withStyle(ChatFormatting.YELLOW);
                 player.sendOverlayMessage(chatComponent);
 
                 WaystoneSyncManager.sendActivatedWaystones(player);
 
-                world.playSound(null, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 0.2f, 1f);
+                level.playSound(null, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 0.2f, 1f);
             }
 
-            notifyObserversOfAction(world, pos);
+            notifyObserversOfAction(level, pos);
 
-            if (world.isClientSide()) {
-                final var random = world.getRandom();
+            if (level.isClientSide()) {
+                final var random = level.getRandom();
                 for (int i = 0; i < 32; i++) {
-                    world.addParticle(ParticleTypes.ENCHANT,
+                    level.addParticle(ParticleTypes.ENCHANT,
                             pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 2,
                             pos.getY() + 3,
                             pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 2,
                             0,
                             -5,
                             0);
-                    world.addParticle(ParticleTypes.ENCHANT,
+                    level.addParticle(ParticleTypes.ENCHANT,
                             pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 2,
                             pos.getY() + 4,
                             pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 2,
@@ -145,7 +162,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(HALF);
+        builder.add(HALF, SEEN);
     }
 
     @Override

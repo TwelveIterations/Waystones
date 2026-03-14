@@ -193,7 +193,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     }
 
     @Nullable
-    protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, Waystone waystone) {
+    protected InteractionResult handleActivation(Level level, BlockPos pos, BlockState state, Player player, WaystoneBlockEntityBase tileEntity, Waystone waystone) {
         return null;
     }
 
@@ -218,7 +218,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             return result;
         }
 
-        result = handleActivation(level, pos, player, waystoneBlockEntity, waystone);
+        result = handleActivation(level, pos, state, player, waystoneBlockEntity, waystone);
         if (result != null) {
             return result;
         }
