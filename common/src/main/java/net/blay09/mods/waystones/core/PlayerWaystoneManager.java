@@ -52,6 +52,8 @@ public class PlayerWaystoneManager {
                         PlayerWaystoneManager.activeWaystoneForEveryone(serverLevel.getServer(), waystone);
                     }
                 }
+
+                mutableWaystone.setSeen(true);
             }
 
             SavedDataWaystonesStore.get(serverLevel.getServer()).setDirty();

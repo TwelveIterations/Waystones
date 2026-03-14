@@ -40,6 +40,10 @@ public interface Waystone {
         return !getName().getString().isEmpty();
     }
 
+    default boolean wasSeen() {
+        return hasName();
+    }
+
     default boolean hasOwner() {
         return getOwnerUid().isPresent();
     }

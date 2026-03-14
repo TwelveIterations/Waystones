@@ -76,6 +76,21 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
     }
 
     @Override
+    public boolean hasName() {
+        return getBackingWaystone().hasName();
+    }
+
+    @Override
+    public boolean wasSeen() {
+        return getBackingWaystone().wasSeen();
+    }
+
+    @Override
+    public boolean hasOwner() {
+        return getBackingWaystone().hasOwner();
+    }
+
+    @Override
     public WaystoneOrigin getOrigin() {
         return getBackingWaystone().getOrigin();
     }
@@ -132,6 +147,14 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
         Waystone backingWaystone = getBackingWaystone();
         if (backingWaystone instanceof MutableWaystone) {
             ((MutableWaystone) backingWaystone).setTransient(isTransient);
+        }
+    }
+
+    @Override
+    public void setSeen(boolean wasSeen) {
+        Waystone backingWaystone = getBackingWaystone();
+        if (backingWaystone instanceof MutableWaystone) {
+            ((MutableWaystone) backingWaystone).setSeen(wasSeen);
         }
     }
 

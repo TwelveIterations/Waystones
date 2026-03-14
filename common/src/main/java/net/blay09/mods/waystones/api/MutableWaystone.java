@@ -19,4 +19,6 @@ public interface MutableWaystone {
     void setOwnerUid(UUID ownerUid);
 
     void setTransient(boolean isTransient);
+
+    void setSeen(boolean wasSeen);
 }

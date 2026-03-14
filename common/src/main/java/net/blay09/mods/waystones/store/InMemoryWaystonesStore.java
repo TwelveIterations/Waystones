@@ -40,6 +40,7 @@ public class InMemoryWaystonesStore implements WaystonesStore {
         if (backingWaystone instanceof MutableWaystone mutableWaystone) {
             mutableWaystone.setName(waystone.getName());
             mutableWaystone.setVisibility(waystone.getVisibility());
+            mutableWaystone.setSeen(waystone.wasSeen());
         } else if (!(waystone instanceof WaystoneProxy) && waystone.isValid()) {
             addWaystone(waystone);
         }

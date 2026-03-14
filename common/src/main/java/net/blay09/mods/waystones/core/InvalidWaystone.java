@@ -74,4 +74,24 @@ public class InvalidWaystone implements Waystone {
     public boolean isTransient() {
         return true;
     }
+
+    @Override
+    public boolean hasName() {
+        return false;
+    }
+
+    @Override
+    public boolean wasSeen() {
+        return false;
+    }
+
+    @Override
+    public boolean hasOwner() {
+        return false;
+    }
+
+    @Override
+    public boolean wasGenerated() {
+        return false;
+    }
 }

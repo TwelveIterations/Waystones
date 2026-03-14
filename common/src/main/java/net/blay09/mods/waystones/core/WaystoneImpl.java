@@ -52,7 +52,8 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
             WaystoneOrigin.CODEC.fieldOf("Origin").forGetter(Waystone::getOrigin),
             UUIDUtil.CODEC.optionalFieldOf("OwnerUid").forGetter(Waystone::getOwnerUid),
             ComponentSerialization.CODEC.fieldOf("NameV2").forGetter(Waystone::getName),
-            WaystoneVisibility.CODEC.fieldOf("Visibility").forGetter(Waystone::getVisibility)
+            WaystoneVisibility.CODEC.fieldOf("Visibility").forGetter(Waystone::getVisibility),
+            Codec.BOOL.fieldOf("Seen").orElse(false).forGetter(Waystone::wasSeen)
     ).apply(instance, WaystoneImpl::new));
 
     private final Identifier waystoneType;
@@ -67,6 +68,8 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     private WaystoneVisibility visibility;
 
     private UUID ownerUid;
+
+    private boolean wasSeen;
 
     public WaystoneImpl(Identifier waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @Nullable UUID ownerUid) {
         this.waystoneType = waystoneType;
@@ -85,10 +88,11 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         this.pos = pos;
         this.origin = origin;
         this.name = name;
+        this.wasSeen = true;
         this.visibility = visibility;
     }
 
-    public WaystoneImpl(Identifier waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<UUID> ownerUid, Component name, WaystoneVisibility visibility) {
+    public WaystoneImpl(Identifier waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<UUID> ownerUid, Component name, WaystoneVisibility visibility, boolean wasSeen) {
         this.waystoneType = waystoneType;
         this.waystoneUid = waystoneUid;
         this.dimension = dimension;
@@ -96,6 +100,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         this.origin = origin;
         this.ownerUid = ownerUid.orElse(null);
         this.name = name;
+        this.wasSeen = wasSeen;
         this.visibility = visibility;
     }
 
@@ -186,5 +191,15 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     @Override
     public void setTransient(boolean isTransient) {
         this.isTransient = isTransient;
+    }
+
+    @Override
+    public void setSeen(boolean wasSeen) {
+        this.wasSeen = wasSeen;
+    }
+
+    @Override
+    public boolean wasSeen() {
+        return wasSeen;
     }
 }
