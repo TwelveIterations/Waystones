@@ -5,6 +5,7 @@ import com.mojang.math.Axis;
 import net.blay09.mods.waystones.api.WaystoneStyles;
 import net.blay09.mods.waystones.block.PortstoneBlock;
 import net.blay09.mods.waystones.block.SharestoneBlock;
+import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -28,8 +29,6 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity, WaystoneRenderer.WaystoneRenderState> {
 
@@ -67,11 +66,16 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
         }
 
         renderState.facing = blockState.getValue(PortstoneBlock.FACING);
-        renderState.glow = !WaystonesConfig.getActive().client.disableTextGlow;
         final var style = WaystoneStyles.getStyle(blockState.getBlock());
         renderState.runeColor = style != null ? style.getRuneColor() : 0xFFFFFFFF;
         final var player = Minecraft.getInstance().player;
-        renderState.showRunes = PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player), blockEntity.getWaystone());
+        boolean isActivated = player != null && PlayerWaystoneManager.isWaystoneActivated(player, blockEntity.getWaystone());
+        renderState.showRunes = isActivated || blockState.getValue(WaystoneBlock.SEEN);
+        if (!isActivated) {
+            renderState.runeColor = 0xFF444444;
+        } else {
+            renderState.glow = !WaystonesConfig.getActive().client.disableTextGlow;
+        }
     }
 
     @Override
