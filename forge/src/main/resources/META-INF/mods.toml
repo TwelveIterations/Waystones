@@ -33,3 +33,9 @@ mandatory=true
 versionRange="[${balm_version},)"
 ordering="NONE"
 side="BOTH"
+[[dependencies.${mod_id}]]
+modId="shogi"
+mandatory=true
+versionRange="[${shogi_version},)"
+ordering="NONE"
+side="BOTH"

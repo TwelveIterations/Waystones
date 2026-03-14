@@ -74,6 +74,7 @@ tasks.register('curseforge', TaskPublishCurseForge) {
         def mainFile = upload(findProperty("curseforge_project_id"), jar.archiveFile.get().asFile)
         mainFile.changelog = rootProject.file('CHANGELOG.md').text
         mainFile.addRequirement("balm")
+        mainFile.addRequirement("shogi")
         mainFile.addGameVersion(libs.minecraft.get().version)
         mainFile.releaseType = "release"
         project.findProperty("curseforge_environments")?.split(",")?.toList()?.each { mainFile.addEnvironment(it) }
@@ -92,6 +93,7 @@ modrinth {
     loaders = ['forge']
     dependencies {
         required.project "balm"
+        required.project "shogi"
     }
 }
 
