@@ -33,7 +33,7 @@ jobs:
         uses: TwelveIterations/validate-minecraft-lang@v1
   prepare-matrix:
     runs-on: ubuntu-latest
-    needs: check-datagen
+    needs: verify-resources
     outputs:
       matrix: ${{ steps.set-matrix.outputs.result }}
     steps:

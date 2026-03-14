@@ -61,7 +61,7 @@ jobs:
         uses: TwelveIterations/validate-minecraft-lang@v1
   create-release:
     runs-on: ubuntu-latest
-    needs: check-datagen
+    needs: verify-resources
     environment: Releases
     outputs:
       ref: v${{ steps.bump-version.outputs.version }}
