@@ -54,10 +54,10 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
 
     @Override
     public List<Component> getTooltipComponents() {
-        final var visibilityValueComponent = Component.translatable("tooltip.waystones.visibility." + visibility.name().toLowerCase(Locale.ROOT))
+        final var visibilityValueComponent = Component.translatable("gui.waystones.waystone_settings.visibility." + visibility.name().toLowerCase(Locale.ROOT))
                 .withStyle(ChatFormatting.WHITE);
         final var result = new ArrayList<Component>();
-        result.add(Component.translatable("tooltip.waystones.visibility", visibilityValueComponent).withStyle(ChatFormatting.YELLOW));
+        result.add(visibilityValueComponent.withStyle(ChatFormatting.YELLOW));
         if (!canEdit) {
             result.add(Component.translatable("tooltip.waystones.edit_restricted").withStyle(ChatFormatting.RED));
         }
