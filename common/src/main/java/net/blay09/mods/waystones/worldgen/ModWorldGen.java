@@ -96,12 +96,7 @@ public class ModWorldGen {
     }
 
     private static Set<BlockState> gatherWaystonesOfOrigin(WaystoneOrigin origin) {
-        final var sourceBlocks = List.of(ModBlocks.waystone,
-                ModBlocks.sandyWaystone,
-                ModBlocks.mossyWaystone,
-                ModBlocks.blackstoneWaystone,
-                ModBlocks.endStoneWaystone);
-        return sourceBlocks.stream()
+        return ModBlocks.waystones.values().stream()
                 .flatMap(it -> it.asBlock().getStateDefinition().getPossibleStates().stream())
                 .filter(it -> it.getValue(WaystoneBlock.ORIGIN) == origin)
                 .collect(Collectors.toSet());

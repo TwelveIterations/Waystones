@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class SharestoneBlock extends WaystoneBlockBase {
 
-    public static final MapCodec<SharestoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(SharestoneType.CODEC.fieldOf("color")
+    public static final MapCodec<SharestoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(SharestoneType.CODEC.fieldOf("type")
                     .forGetter(SharestoneBlock::getType), propertiesCodec())
             .apply(instance, SharestoneBlock::new));
 

@@ -44,7 +44,7 @@ import java.util.Set;
 
 public class PortstoneBlock extends WaystoneBlockBase {
 
-    public static final MapCodec<PortstoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(SharestoneType.CODEC.optionalFieldOf("color")
+    public static final MapCodec<PortstoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(SharestoneType.CODEC.optionalFieldOf("type")
                     .forGetter(PortstoneBlock::getType), propertiesCodec())
             .apply(instance, PortstoneBlock::new));
 

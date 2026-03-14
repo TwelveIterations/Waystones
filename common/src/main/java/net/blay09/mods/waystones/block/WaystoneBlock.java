@@ -1,8 +1,10 @@
 package net.blay09.mods.waystones.block;
 
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneType;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -38,7 +40,10 @@ import java.util.Objects;
 
 public class WaystoneBlock extends WaystoneBlockBase {
 
-    public static final MapCodec<WaystoneBlock> CODEC = simpleCodec(WaystoneBlock::new);
+    public static final MapCodec<WaystoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(WaystoneType.CODEC.fieldOf("type")
+                    .forGetter(WaystoneBlock::getType), propertiesCodec())
+            .apply(instance, WaystoneBlock::new));
+
     public static final BooleanProperty SEEN = BooleanProperty.create("seen");
 
     private static final VoxelShape LOWER_SHAPE = Shapes.or(
@@ -56,9 +61,16 @@ public class WaystoneBlock extends WaystoneBlockBase {
             box(4.0, 14.0, 4.0, 12.0, 16.0, 12.0)
     ).optimize();
 
-    public WaystoneBlock(Properties properties) {
+    private final WaystoneType type;
+
+    public WaystoneBlock(WaystoneType type, Properties properties) {
         super(properties);
+        this.type = type;
         registerDefaultState(this.stateDefinition.any().setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, false).setValue(FACING, Direction.NORTH).setValue(SEEN, false));
+    }
+
+    public WaystoneType getType() {
+        return type;
     }
 
     @Override

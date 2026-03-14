@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.item;
 import net.blay09.mods.balm.world.item.BalmCreativeModeTabRegistrar;
 import net.blay09.mods.balm.world.item.BalmItemRegistrar;
 import net.blay09.mods.balm.world.item.DeferredItem;
+import net.blay09.mods.waystones.api.WaystoneType;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.api.SharestoneType;
 import net.minecraft.network.chat.Component;
@@ -32,9 +33,9 @@ public class ModItems {
     public static void initialize(BalmCreativeModeTabRegistrar creativeModeTabs) {
         creativeModeTabs.register("waystones", (id, builder) ->
                 builder.title(Component.translatable(id.toLanguageKey("itemGroup")))
-                        .icon(() -> new ItemStack(ModBlocks.waystone))
-                        .displayItems((displayParameters, output) -> {
-                            output.accept(ModBlocks.waystone);
+                        .icon(() -> new ItemStack(ModBlocks.waystones.get(WaystoneType.ANDESITE)))
+                        .displayItems((_, output) -> {
+                            output.accept(ModBlocks.waystones.get(WaystoneType.ANDESITE));
                             output.accept(ModBlocks.portstones.get(null));
                             output.accept(ModBlocks.sharestones.get(SharestoneType.REDSTONE));
                             output.accept(ModBlocks.warpPlate);
@@ -43,18 +44,18 @@ public class ModItems {
                             output.accept(ModItems.warpScroll);
                             output.accept(ModItems.warpStone);
                             output.accept(ModItems.dormantShard);
-                            output.accept(ModBlocks.sandyWaystone);
-                            output.accept(ModBlocks.mossyWaystone);
-                            output.accept(ModBlocks.deepslateWaystone);
-                            output.accept(ModBlocks.blackstoneWaystone);
-                            output.accept(ModBlocks.endStoneWaystone);
-                            ModBlocks.sharestones.forEach((color, block) -> {
-                                if (color != SharestoneType.REDSTONE) {
+                            ModBlocks.waystones.forEach((type, block) -> {
+                                if (type != WaystoneType.ANDESITE) {
                                     output.accept(block);
                                 }
                             });
-                            ModBlocks.portstones.forEach((color, block) -> {
-                                if (color != null) {
+                            ModBlocks.sharestones.forEach((type, block) -> {
+                                if (type != SharestoneType.REDSTONE) {
+                                    output.accept(block);
+                                }
+                            });
+                            ModBlocks.portstones.forEach((type, block) -> {
+                                if (type != null) {
                                     output.accept(block);
                                 }
                             });

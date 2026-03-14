@@ -150,14 +150,9 @@ public class Waystones implements BalmModule {
         WaystonesRules.initialize();
 
         final var hudInfo = Balm.modSupport().hudInfo();
-        hudInfo.registerBlockInfo(id("waystone"), ModBlocks.waystone, new WaystoneBlockInfoProvider());
-        hudInfo.registerBlockInfo(id("sandy_waystone"), ModBlocks.sandyWaystone, new WaystoneBlockInfoProvider());
-        hudInfo.registerBlockInfo(id("mossy_waystone"), ModBlocks.mossyWaystone, new WaystoneBlockInfoProvider());
-        hudInfo.registerBlockInfo(id("blackstone_waystone"), ModBlocks.blackstoneWaystone, new WaystoneBlockInfoProvider());
-        hudInfo.registerBlockInfo(id("deepslate_waystone"), ModBlocks.deepslateWaystone, new WaystoneBlockInfoProvider());
-        hudInfo.registerBlockInfo(id("end_stone_waystone"), ModBlocks.endStoneWaystone, new WaystoneBlockInfoProvider());
+        ModBlocks.waystones.forEach((_, block) -> hudInfo.registerBlockInfo(block.unwrapKey().map(ResourceKey::identifier).orElseThrow(), block, new WaystoneBlockInfoProvider()));
         hudInfo.registerBlockInfo(id("warp_plate"), ModBlocks.warpPlate, new WarpPlateBlockInfoProvider());
-        ModBlocks.sharestones.forEach((color, block) -> hudInfo.registerBlockInfo(block.unwrapKey().map(ResourceKey::identifier).orElseThrow(), block, new WaystoneBlockInfoProvider()));
+        ModBlocks.sharestones.forEach((_, block) -> hudInfo.registerBlockInfo(block.unwrapKey().map(ResourceKey::identifier).orElseThrow(), block, new WaystoneBlockInfoProvider()));
 
         Balm.initializeIfLoaded("bluemap", "net.blay09.mods.waystones.compat.BlueMapIntegration");
         Balm.initializeIfLoaded("dynmap", "net.blay09.mods.waystones.compat.DynmapIntegration");

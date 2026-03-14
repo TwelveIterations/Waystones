@@ -23,33 +23,19 @@ public class ModBlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
     protected void addTags(HolderLookup.Provider arg) {
         final var mineablePickaxeTag = TagKey.create(Registries.BLOCK, Identifier.withDefaultNamespace("mineable/pickaxe"));
         final var mineableBuilder = tag(mineablePickaxeTag);
-        mineableBuilder.add(ModBlocks.waystone.asBlock(),
-                ModBlocks.sandyWaystone.asBlock(),
-                ModBlocks.mossyWaystone.asBlock(),
-                ModBlocks.deepslateWaystone.asBlock(),
-                ModBlocks.blackstoneWaystone.asBlock(),
-                ModBlocks.endStoneWaystone.asBlock(),
-                ModBlocks.warpPlate.asBlock());
+        mineableBuilder.add(ModBlocks.warpPlate.asBlock());
+        ModBlocks.waystones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> mineableBuilder.add(it.asBlock()));
         ModBlocks.portstones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> mineableBuilder.add(it.asBlock()));
         ModBlocks.sharestones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> mineableBuilder.add(it.asBlock()));
 
         final var isTeleportTargetBuilder = tag(ModBlockTags.IS_TELEPORT_TARGET);
-        isTeleportTargetBuilder.add(ModBlocks.waystone.asBlock(),
-                ModBlocks.sandyWaystone.asBlock(),
-                ModBlocks.mossyWaystone.asBlock(),
-                ModBlocks.deepslateWaystone.asBlock(),
-                ModBlocks.blackstoneWaystone.asBlock(),
-                ModBlocks.endStoneWaystone.asBlock(),
-                ModBlocks.warpPlate.asBlock());
+        isTeleportTargetBuilder.add(ModBlocks.warpPlate.asBlock());
+        ModBlocks.waystones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> isTeleportTargetBuilder.add(it.asBlock()));
         ModBlocks.portstones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> isTeleportTargetBuilder.add(it.asBlock()));
         ModBlocks.sharestones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> isTeleportTargetBuilder.add(it.asBlock()));
 
-        tag(ModBlockTags.WAYSTONES).add(ModBlocks.waystone.asBlock(),
-                ModBlocks.sandyWaystone.asBlock(),
-                ModBlocks.mossyWaystone.asBlock(),
-                ModBlocks.deepslateWaystone.asBlock(),
-                ModBlocks.blackstoneWaystone.asBlock(),
-                ModBlocks.endStoneWaystone.asBlock());
+        final var waystonesTagBuilder = tag(ModBlockTags.WAYSTONES);
+        ModBlocks.waystones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> waystonesTagBuilder.add(it.asBlock()));
 
         final var sharestonesBuilder = tag(ModBlockTags.SHARESTONES);
         ModBlocks.sharestones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> sharestonesBuilder.add(it.asBlock()));

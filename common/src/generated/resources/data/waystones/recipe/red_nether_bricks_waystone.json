@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "minecraft:emerald",
+    "W": "waystones:warp_stone"
+  },
+  "pattern": [
+    " S ",
+    "SWS",
+    "SSS"
+  ],
+  "result": {
+    "id": "waystones:red_nether_bricks_waystone"
+  }
+}

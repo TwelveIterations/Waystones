@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.datagen;
 
 import net.blay09.mods.balm.tags.BalmItemTags;
+import net.blay09.mods.waystones.api.WaystoneType;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.api.SharestoneType;
 import net.blay09.mods.waystones.item.ModItems;
@@ -25,70 +26,27 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         return new RecipeProvider(registryLookup, exporter) {
             @Override
             public void buildRecipes() {
-                shaped(RecipeCategory.DECORATIONS, ModBlocks.waystone)
-                        .pattern(" S ")
-                        .pattern("SWS")
-                        .pattern("SSS")
-                        .define('S', Blocks.STONE_BRICKS)
-                        .define('W', ModItems.warpStone)
-                        .unlockedBy("has_warp_stone", has(ModItems.warpStone))
-                        .save(exporter);
+                ModBlocks.waystones.forEach((type, block) -> {
+                    shaped(RecipeCategory.DECORATIONS, block)
+                            .pattern(" S ")
+                            .pattern("SWS")
+                            .pattern("SSS")
+                            .define('S', type.getIngredient())
+                            .define('W', ModItems.warpStone)
+                            .unlockedBy("has_warp_stone", has(ModItems.warpStone))
+                            .save(exporter);
+                });
 
-                shaped(RecipeCategory.DECORATIONS, ModBlocks.sandyWaystone)
-                        .pattern(" S ")
-                        .pattern("SWS")
-                        .pattern("SSS")
-                        .define('S', Blocks.CHISELED_SANDSTONE)
-                        .define('W', ModItems.warpStone)
-                        .unlockedBy("has_warp_stone", has(ModItems.warpStone))
-                        .save(exporter);
-
-                shaped(RecipeCategory.DECORATIONS, ModBlocks.mossyWaystone)
-                        .pattern(" S ")
-                        .pattern("SWS")
-                        .pattern("SSS")
-                        .define('S', Blocks.MOSSY_STONE_BRICKS)
-                        .define('W', ModItems.warpStone)
-                        .unlockedBy("has_warp_stone", has(ModItems.warpStone))
-                        .save(exporter);
-
-                shaped(RecipeCategory.DECORATIONS, ModBlocks.deepslateWaystone)
-                        .pattern(" S ")
-                        .pattern("SWS")
-                        .pattern("SSS")
-                        .define('S', Blocks.DEEPSLATE)
-                        .define('W', ModItems.warpStone)
-                        .unlockedBy("has_warp_stone", has(ModItems.warpStone))
-                        .save(exporter);
-
-                shaped(RecipeCategory.DECORATIONS, ModBlocks.blackstoneWaystone)
-                        .pattern(" S ")
-                        .pattern("SWS")
-                        .pattern("SSS")
-                        .define('S', Blocks.BLACKSTONE)
-                        .define('W', ModItems.warpStone)
-                        .unlockedBy("has_warp_stone", has(ModItems.warpStone))
-                        .save(exporter);
-
-                shaped(RecipeCategory.DECORATIONS, ModBlocks.endStoneWaystone)
-                        .pattern(" S ")
-                        .pattern("SWS")
-                        .pattern("SSS")
-                        .define('S', Blocks.END_STONE_BRICKS)
-                        .define('W', ModItems.warpStone)
-                        .unlockedBy("has_warp_stone", has(ModItems.warpStone))
-                        .save(exporter);
-
-                shapeless(RecipeCategory.DECORATIONS, ModBlocks.mossyWaystone)
-                        .requires(ModBlocks.waystone)
+                shapeless(RecipeCategory.DECORATIONS, ModBlocks.waystones.get(WaystoneType.MOSSY))
+                        .requires(ModBlocks.waystones.get(WaystoneType.ANDESITE))
                         .requires(Blocks.VINE, 3)
-                        .unlockedBy("has_waystone", has(ModBlocks.waystone))
+                        .unlockedBy("has_waystone", has(ModBlocks.waystones.get(WaystoneType.ANDESITE)))
                         .save(exporter, "waystones:mossy_waystone_from_vines");
 
-                shapeless(RecipeCategory.DECORATIONS, ModBlocks.mossyWaystone)
-                        .requires(ModBlocks.waystone)
+                shapeless(RecipeCategory.DECORATIONS, ModBlocks.waystones.get(WaystoneType.MOSSY))
+                        .requires(ModBlocks.waystones.get(WaystoneType.ANDESITE))
                         .requires(Blocks.MOSS_BLOCK, 3)
-                        .unlockedBy("has_waystone", has(ModBlocks.waystone))
+                        .unlockedBy("has_waystone", has(ModBlocks.waystones.get(WaystoneType.ANDESITE)))
                         .save(exporter, "waystones:mossy_waystone_from_moss_blocks");
 
                 shaped(RecipeCategory.DECORATIONS, ModBlocks.warpPlate)

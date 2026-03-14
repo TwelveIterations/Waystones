@@ -25,12 +25,9 @@ public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
 
     @Override
     public void generate() {
-        add(ModBlocks.waystone.asBlock(), createDoubleBlockWaystoneLoot(ModBlocks.waystone));
-        add(ModBlocks.sandyWaystone.asBlock(), createDoubleBlockWaystoneLoot(ModBlocks.sandyWaystone));
-        add(ModBlocks.mossyWaystone.asBlock(), createDoubleBlockWaystoneLoot(ModBlocks.mossyWaystone));
-        add(ModBlocks.deepslateWaystone.asBlock(), createDoubleBlockWaystoneLoot(ModBlocks.deepslateWaystone));
-        add(ModBlocks.blackstoneWaystone.asBlock(), createDoubleBlockWaystoneLoot(ModBlocks.blackstoneWaystone));
-        add(ModBlocks.endStoneWaystone.asBlock(), createDoubleBlockWaystoneLoot(ModBlocks.endStoneWaystone));
+        for (final var waystone : ModBlocks.waystones.values()) {
+            add(waystone.asBlock(), createDoubleBlockWaystoneLoot(waystone));
+        }
         add(ModBlocks.warpPlate.asBlock(), createWaystoneLoot(ModBlocks.warpPlate));
         for (final var portstone : ModBlocks.portstones.values()) {
             add(portstone.asBlock(), createDoubleBlockWaystoneLoot(portstone));

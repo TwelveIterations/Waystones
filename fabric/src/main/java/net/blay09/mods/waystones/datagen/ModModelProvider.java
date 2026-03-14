@@ -49,12 +49,9 @@ public class ModModelProvider extends FabricModelProvider {
                         .select(WarpPlateBlock.WarpPlateStatus.LOCKED, plainVariant(id("block/warp_plate_locked")))
                 ));
         blockStateModelGenerator.registerSimpleTintedItemModel(ModBlocks.warpPlate.asBlock(), ModelLocationUtils.getModelLocation(ModBlocks.warpPlate.asBlock()), new Constant(0xffc456bd));
-        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.waystone.asBlock());
-        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.sandyWaystone.asBlock());
-        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.mossyWaystone.asBlock());
-        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.deepslateWaystone.asBlock());
-        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.blackstoneWaystone.asBlock());
-        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.endStoneWaystone.asBlock());
+        for (final var waystone : ModBlocks.waystones.values()) {
+            createDoubleBlockWaystone(blockStateModelGenerator, waystone.asBlock());
+        }
         for (final var entry : ModBlocks.portstones.entrySet()) {
             createPortstone(blockStateModelGenerator, entry.getKey(), entry.getValue());
         }

@@ -7,6 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -32,15 +33,11 @@ public class ModItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
                 ModItems.crumblingAttunedShard.asItem(),
                 ModItems.dormantShard.asItem());
         tag(ModItemTags.SINGLE_USE_WARP_SHARDS).add(ModItems.crumblingAttunedShard.asItem());
-        tag(ModItemTags.WAYSTONES).add(ModBlocks.waystone.asItem(),
-                ModBlocks.mossyWaystone.asItem(),
-                ModBlocks.sandyWaystone.asItem(),
-                ModBlocks.deepslateWaystone.asItem(),
-                ModBlocks.blackstoneWaystone.asItem(),
-                ModBlocks.endStoneWaystone.asItem());
+        final var waystonesTag = tag(ModItemTags.WAYSTONES);
+        ModBlocks.waystones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> waystonesTag.add(it.asItem()));
 
         final var sharestonesTag = tag(ModItemTags.SHARESTONES);
-        ModBlocks.sharestones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it ->sharestonesTag.add(it.asItem()));
+        ModBlocks.sharestones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> sharestonesTag.add(it.asItem()));
 
         final var portstonestag = tag(ModItemTags.PORTSTONES);
         ModBlocks.portstones.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.nullsLast(Comparator.naturalOrder()))).map(Map.Entry::getValue).forEach(it -> portstonestag.add(it.asItem()));

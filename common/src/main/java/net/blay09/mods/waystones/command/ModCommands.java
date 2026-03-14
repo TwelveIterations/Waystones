@@ -26,6 +26,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.commands.SharedSuggestionProvider;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import static net.minecraft.commands.Commands.argument;
 
 public class ModCommands {
@@ -130,35 +133,36 @@ public class ModCommands {
                 .then(Commands.literal("place")
                         .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_PLACE))
                         .then(argument("pos", BlockPosArgument.blockPos())
-                                .then(Commands.argument("style", StringArgumentType.word())
+                                .then(argument("type", StringArgumentType.word())
                                         .suggests((context, builder) -> {
                                             return SharedSuggestionProvider.suggest(
-                                                    WaystoneStyles.getRegisteredKeys().stream()
+                                                    Arrays.stream(WaystoneType.values())
+                                                            .map(it -> it.getIdentifier())
                                                             .map(id -> id.getNamespace().equals(Waystones.MOD_ID) ? id.getPath() : id.toString()),
                                                     builder
                                             );
                                         })
-                                        .then(Commands.argument("name", StringArgumentType.greedyString())
+                                        .then(argument("name", StringArgumentType.greedyString())
                                                 .executes(context -> {
                                                     final var pos = BlockPosArgument.getLoadedBlockPos(context, "pos");
                                                     final var styleKey = StringArgumentType.getString(context, "style");
                                                     final var name = StringArgumentType.getString(context, "name");
                                                     final ServerLevel level = context.getSource().getLevel();
 
-                                                    Identifier styleId;
+                                                    Identifier typeId;
                                                     if (!styleKey.contains(":")) {
-                                                        styleId = Identifier.fromNamespaceAndPath("waystones", styleKey);
+                                                        typeId = Identifier.fromNamespaceAndPath("waystones", styleKey);
                                                     } else {
-                                                        styleId = Identifier.tryParse(styleKey);
+                                                        typeId = Identifier.tryParse(styleKey);
                                                     }
 
-                                                    WaystoneStyle style = styleId != null ? WaystoneStyles.getStyle(styleId) : null;
-                                                    if (style == null) {
+                                                    final var type = typeId != null ? WaystoneType.getType(typeId) : null;
+                                                    if (type == null) {
                                                         context.getSource().sendFailure(Component.literal("Unknown waystone style: " + styleKey));
                                                         return 0;
                                                     }
 
-                                                    WaystonesAPI.placeWaystone(level, pos, style).ifPresent(waystone -> {
+                                                    WaystonesAPI.placeWaystone(level, pos, type).ifPresent(waystone -> {
                                                         ((MutableWaystone) waystone).setName(Component.literal(name));
                                                     });
                                                     return 1;
@@ -226,7 +230,7 @@ public class ModCommands {
                                                 .suggests((context, builder) -> {
                                                     try {
                                                         final var targets = EntityArgument.getPlayers(context, "targets");
-                                                        final var keys = new java.util.HashSet<String>();
+                                                        final var keys = new HashSet<String>();
                                                         for (final var player : targets) {
                                                             for (final var key : ShogiCooldowns.get(player).getCooldownIds()) {
                                                                 keys.add(key.toString());

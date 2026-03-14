@@ -39,7 +39,7 @@ public interface InternalMethods {
 
     ItemStack createBoundScroll(Waystone waystone);
 
-    Optional<Waystone> placeWaystone(ServerLevel level, BlockPos pos, WaystoneStyle style);
+    Optional<Waystone> placeWaystone(ServerLevel level, BlockPos pos, WaystoneType style);
 
     Optional<Waystone> placeSharestone(ServerLevel level, BlockPos pos, SharestoneType type);
 

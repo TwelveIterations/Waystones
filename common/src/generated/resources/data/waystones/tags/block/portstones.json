@@ -1,11 +1,11 @@
 {
   "values": [
-    "waystones:copper_ingot_portstone",
-    "waystones:prismarine_shard_portstone",
-    "waystones:gold_ingot_portstone",
+    "waystones:copper_portstone",
+    "waystones:prismarine_portstone",
+    "waystones:gold_portstone",
     "waystones:diamond_portstone",
-    "waystones:amethyst_shard_portstone",
-    "waystones:lapis_lazuli_portstone",
+    "waystones:amethyst_portstone",
+    "waystones:lapis_portstone",
     "waystones:emerald_portstone",
     "waystones:redstone_portstone",
     "waystones:portstone"
