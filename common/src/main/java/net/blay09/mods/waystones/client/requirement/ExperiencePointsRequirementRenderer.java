@@ -26,9 +26,9 @@ public class ExperiencePointsRequirementRenderer implements RequirementRenderer<
     @Override
     public void renderWidget(Player player, ExperiencePointsCostInformation requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
         final var points = requirement.required();
-        final var levels = points > 0 ? Math.max(1, ExperienceUtils.calculateLevelCostFromExperiencePoints(player.experienceLevel, points)) : 0;
+        final var levels = ExperienceUtils.calculateDisplayedLevelCostFromExperiencePoints(player.experienceLevel, requirement.available(), points);
         if (levels > 0) {
-            final var canAfford = requirement.available() >= requirement.required();
+            final var canAfford = requirement.available() >= points;
             final var spriteIndex = Math.max(0, Math.min(levels, 3) - 1);
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, canAfford ? ENABLED_LEVEL_SPRITES[spriteIndex] : DISABLED_LEVEL_SPRITES[spriteIndex], x, y, 16, 16);
 
@@ -42,7 +42,7 @@ public class ExperiencePointsRequirementRenderer implements RequirementRenderer<
     @Override
     public void appendHoverText(Player player, ExperiencePointsCostInformation requirement, List<Component> tooltip) {
         final var points = requirement.required();
-        final var levels = points > 0 ? ExperienceUtils.calculateLevelCostFromExperiencePoints(player.experienceLevel, points) : 0;
+        final var levels = ExperienceUtils.calculateDisplayedLevelCostFromExperiencePoints(player.experienceLevel, requirement.available(), points);
         if (levels > 0) {
             tooltip.add(Component.translatable("gui.waystones.waystone_selection.level_requirement", levels).withStyle(ChatFormatting.GREEN));
         } else if (points > 0) {
