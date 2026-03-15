@@ -17,24 +17,24 @@ import java.util.Locale;
 public class WaystoneVisbilityButton extends Button implements ITooltipProvider {
 
     private final WidgetSprites ACTIVATION_SPRITES = new WidgetSprites(
-            Identifier.withDefaultNamespace("waystones/visibility_button_activation"),
-            Identifier.withDefaultNamespace("waystones/visibility_button_activation_highlighted"));
+            Identifier.withDefaultNamespace("waystones/visibility_activation_button"),
+            Identifier.withDefaultNamespace("waystones/visibility_activation_button_highlighted"));
     private final WidgetSprites GLOBAL_SPRITES = new WidgetSprites(
-            Identifier.withDefaultNamespace("waystones/visibility_button_global"),
-            Identifier.withDefaultNamespace("waystones/visibility_button_global_highlighted"));
+            Identifier.withDefaultNamespace("waystones/visibility_global_button"),
+            Identifier.withDefaultNamespace("waystones/visibility_global_button_highlighted"));
     private final WidgetSprites SHARD_ONLY_SPRITES = new WidgetSprites(
-            Identifier.withDefaultNamespace("waystones/visibility_button_shard_only"),
-            Identifier.withDefaultNamespace("waystones/visibility_button_shard_only_highlighted"));
+            Identifier.withDefaultNamespace("waystones/visibility_shard_only_button"),
+            Identifier.withDefaultNamespace("waystones/visibility_shard_only_button_highlighted"));
     private final WidgetSprites SHARESTONE_SPRITES = new WidgetSprites(
-            Identifier.withDefaultNamespace("waystones/visibility_button_sharestone"),
-            Identifier.withDefaultNamespace("waystones/visibility_button_sharestone_highlighted"));
+            Identifier.withDefaultNamespace("waystones/visibility_sharestones_button"),
+            Identifier.withDefaultNamespace("waystones/visibility_sharestones_button_highlighted"));
 
     private final List<WaystoneVisibility> options;
     private final boolean canEdit;
     private WaystoneVisibility visibility;
 
     public WaystoneVisbilityButton(int x, int y, WaystoneVisibility visibility, List<WaystoneVisibility> options, boolean canEdit) {
-        super(x, y, 18, 18, Component.empty(), button -> {
+        super(x, y, 21, 21, Component.empty(), _ -> {
         }, Button.DEFAULT_NARRATION);
         this.options = options;
         this.visibility = visibility;
@@ -44,7 +44,7 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
     @Override
     public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
         final var sprite = getSprites().get(this.isActive(), this.isHoveredOrFocused());
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getX(), getY(), 20, 20);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getX(), getY(), 21, 21);
     }
 
     @Override
