@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Waystones",
-  "item.waystones.waystone": "Pedra do caminho",
-  "item.waystones.mossy_waystone": "Pedra do caminho com musgo",
-  "item.waystones.sandy_waystone": "Pedra do caminho areosa",
+  "item.waystones.andesite_waystone": "Pedra do caminho",
+  "item.waystones.mossy_andesite_waystone": "Pedra do caminho com musgo",
+  "item.waystones.sandstone_waystone": "Pedra do caminho areosa",
   "item.waystones.orange_sharestone": "Pedra partilhada laranja",
   "item.waystones.magenta_sharestone": "Pedra partilhada magenta",
   "item.waystones.light_blue_sharestone": "Pedra partilhada azul-claro",

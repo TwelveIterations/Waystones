@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Vardesteiner",
-  "item.waystones.waystone": "Vardestein",
-  "item.waystones.mossy_waystone": "Mosegrodd vardestein",
-  "item.waystones.sandy_waystone": "Sandette vardestein",
+  "item.waystones.andesite_waystone": "Vardestein",
+  "item.waystones.mossy_andesite_waystone": "Mosegrodd vardestein",
+  "item.waystones.sandstone_waystone": "Sandette vardestein",
   "item.waystones.orange_sharestone": "Oransje delestein",
   "item.waystones.magenta_sharestone": "Lyselilla delestein",
   "item.waystones.light_blue_sharestone": "Lyseblå delestein",

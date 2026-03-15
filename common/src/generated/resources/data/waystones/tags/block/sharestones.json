@@ -1,13 +1,13 @@
 {
   "values": [
-    "waystones:ruined_sharestone",
-    "waystones:copper_sharestone",
-    "waystones:prismarine_sharestone",
-    "waystones:gold_sharestone",
-    "waystones:diamond_sharestone",
     "waystones:amethyst_sharestone",
-    "waystones:lapis_sharestone",
+    "waystones:copper_sharestone",
+    "waystones:diamond_sharestone",
     "waystones:emerald_sharestone",
-    "waystones:redstone_sharestone"
+    "waystones:gold_sharestone",
+    "waystones:lapis_sharestone",
+    "waystones:prismarine_sharestone",
+    "waystones:redstone_sharestone",
+    "waystones:ruined_sharestone"
   ]
 }

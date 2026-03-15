@@ -73,7 +73,7 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
 
         renderState.facing = blockState.getValue(PortstoneBlock.FACING);
         renderState.glow = !WaystonesConfig.getActive().client.disableTextGlow;
-        renderState.runeColor = ((PortstoneBlock) blockEntity.getBlockState().getBlock()).getType().map(SharestoneType::getTextureDiffuseColor).orElse(0xFFFFFFFF);
+        renderState.runeColor = ((PortstoneBlock) blockEntity.getBlockState().getBlock()).getType().map(SharestoneType::textureDiffuseColor).orElse(0xFFFFFFFF);
 
         final var level = blockEntity.getLevel();
         if (warpStoneItem == null) {

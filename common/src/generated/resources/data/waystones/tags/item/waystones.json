@@ -1,8 +1,8 @@
 {
   "values": [
-    "waystones:waystone",
-    "waystones:mossy_waystone",
-    "waystones:sandy_waystone",
+    "waystones:andesite_waystone",
+    "waystones:mossy_andesite_waystone",
+    "waystones:sandstone_waystone",
     "waystones:deepslate_waystone",
     "waystones:blackstone_waystone",
     "waystones:end_stone_waystone",

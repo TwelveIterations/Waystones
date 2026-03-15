@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "传送石碑",
-  "item.waystones.waystone": "传送石碑",
-  "item.waystones.mossy_waystone": "传送石碑（苔石）",
-  "item.waystones.sandy_waystone": "传送石碑（砂岩）",
+  "item.waystones.andesite_waystone": "传送石碑",
+  "item.waystones.mossy_andesite_waystone": "传送石碑（苔石）",
+  "item.waystones.sandstone_waystone": "传送石碑（砂岩）",
   "item.waystones.blackstone_waystone": "黑石传送石碑",
   "item.waystones.deepslate_waystone": "深板岩传送石碑",
   "item.waystones.end_stone_waystone": "末地石传送石碑",

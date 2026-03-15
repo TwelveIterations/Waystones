@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Waystone",
-  "item.waystones.waystone": "Yoltaşı",
-  "item.waystones.mossy_waystone": "Yosunlu Yoltaşı",
-  "item.waystones.sandy_waystone": "Kumlu Yoltaşı",
+  "item.waystones.andesite_waystone": "Yoltaşı",
+  "item.waystones.mossy_andesite_waystone": "Yosunlu Yoltaşı",
+  "item.waystones.sandstone_waystone": "Kumlu Yoltaşı",
   "item.waystones.orange_sharestone": "Turuncu Paylaşımtaşı",
   "item.waystones.magenta_sharestone": "Eflatun Paylaşımtaşı",
   "item.waystones.light_blue_sharestone": "Açık Mavi Paylaşımtaşı",

@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Waystones",
-  "item.waystones.waystone": "Vägsten",
-  "item.waystones.mossy_waystone": "Mossig vägsten",
-  "item.waystones.sandy_waystone": "Sandig vägsten",
+  "item.waystones.andesite_waystone": "Vägsten",
+  "item.waystones.mossy_andesite_waystone": "Mossig vägsten",
+  "item.waystones.sandstone_waystone": "Sandig vägsten",
   "item.waystones.orange_sharestone": "Orange delsten",
   "item.waystones.magenta_sharestone": "Ljuslila delsten",
   "item.waystones.light_blue_sharestone": "Ljusblå delsten",

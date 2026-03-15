@@ -1,0 +1,79 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"texture": "waystones:block/andesite_waystone",
+		"particle": "minecraft:block/andesite"
+	},
+	"elements": [
+		{
+			"name": "baseBottom",
+			"from": [0, 0, 0],
+			"to": [16, 3, 16],
+			"faces": {
+				"north": {"uv": [0, 8, 4, 9.5], "texture": "#texture"},
+				"east": {"uv": [0, 8, 4, 9.5], "texture": "#texture"},
+				"south": {"uv": [0, 8, 4, 9.5], "texture": "#texture"},
+				"west": {"uv": [0, 8, 4, 9.5], "texture": "#texture"},
+				"up": {"uv": [0, 0, 4, 8], "texture": "#texture"},
+				"down": {"uv": [0, 0, 4, 8], "texture": "#texture"}
+			}
+		},
+		{
+			"name": "baseMiddle",
+			"from": [1, 3, 1],
+			"to": [15, 7, 15],
+			"faces": {
+				"north": {"uv": [4, 7, 7.5, 9], "texture": "#texture"},
+				"east": {"uv": [4, 7, 7.5, 9], "texture": "#texture"},
+				"south": {"uv": [4, 7, 7.5, 9], "texture": "#texture"},
+				"west": {"uv": [4, 7, 7.5, 9], "texture": "#texture"},
+				"up": {"uv": [4, 0, 7.5, 7], "texture": "#texture"}
+			}
+		},
+		{
+			"name": "baseTop",
+			"from": [2, 7, 2],
+			"to": [14, 9, 14],
+			"faces": {
+				"north": {"uv": [7.5, 6, 10.5, 7], "texture": "#texture"},
+				"east": {"uv": [7.5, 6, 10.5, 7], "texture": "#texture"},
+				"south": {"uv": [7.5, 6, 10.5, 7], "texture": "#texture"},
+				"west": {"uv": [7.5, 6, 10.5, 7], "texture": "#texture"},
+				"up": {"uv": [7.5, 0, 10.5, 6], "texture": "#texture"}
+			}
+		},
+		{
+			"name": "pillarBottom",
+			"from": [3, 9, 9],
+			"to": [13, 16, 13],
+			"faces": {
+				"north": {"uv": [10.5, 10, 13, 13.5], "texture": "#texture"},
+				"east": {"uv": [12, 10, 13, 13.5], "texture": "#texture"},
+				"south": {"uv": [10.5, 10, 13, 13.5], "texture": "#texture"},
+				"west": {"uv": [10.5, 10, 11.5, 13.5], "texture": "#texture"}
+			}
+		},
+		{
+			"name": "topBlock",
+			"from": [4, 9, 6],
+			"to": [12, 16, 9],
+			"faces": {
+				"north": {"uv": [13, 0, 15, 3.5], "texture": "#texture"},
+				"east": {"uv": [14.25, 0, 15, 3.5], "texture": "#texture"},
+				"west": {"uv": [13, 0, 13.75, 3.5], "texture": "#texture"},
+				"up": {"uv": [13, 0, 15, 1.5], "texture": "#texture"}
+			}
+		},
+		{
+			"name": "topBlock",
+			"from": [4, 9, 4],
+			"to": [12, 12, 6],
+			"faces": {
+				"north": {"uv": [13, 0, 15, 1.5], "texture": "#texture"},
+				"east": {"uv": [14.5, 0, 15, 1.5], "texture": "#texture"},
+				"west": {"uv": [13, 0, 13.5, 1.5], "texture": "#texture"},
+				"up": {"uv": [13, 0, 15, 1], "texture": "#texture"}
+			}
+		}
+	]
+}

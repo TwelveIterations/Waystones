@@ -4,6 +4,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import org.jspecify.annotations.Nullable;
@@ -14,9 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public enum WaystoneType implements StringRepresentable {
-    ANDESITE(Identifier.fromNamespaceAndPath("waystones", "waystone"), SoundType.STONE, 0xFFFFFFFF, () -> Ingredient.of(Blocks.STONE_BRICKS)),
-    MOSSY(Identifier.fromNamespaceAndPath("waystones", "mossy_waystone"), SoundType.STONE, 0xFFFFFFFF, () -> Ingredient.of(Blocks.MOSSY_STONE_BRICKS)),
-    SANDY(Identifier.fromNamespaceAndPath("waystones", "sandy_waystone"), SoundType.SAND, 0xFFFFFFFF, () -> Ingredient.of(Blocks.CHISELED_SANDSTONE)),
+    ANDESITE(Identifier.fromNamespaceAndPath("waystones", "andesite_waystone"), SoundType.STONE, 0xFFFFFFFF, () -> Ingredient.of(Blocks.STONE_BRICKS)),
+    MOSSY_ANDESITE(Identifier.fromNamespaceAndPath("waystones", "mossy_andesite_waystone"), SoundType.STONE, 0xFFFFFFFF, () -> Ingredient.of(Blocks.MOSSY_STONE_BRICKS)),
+    SANDSTONE(Identifier.fromNamespaceAndPath("waystones", "sandstone_waystone"), SoundType.SAND, 0xFFFFFFFF, () -> Ingredient.of(Blocks.CHISELED_SANDSTONE)),
     DEEPSLATE(Identifier.fromNamespaceAndPath("waystones", "deepslate_waystone"), SoundType.DEEPSLATE, 0xFFFFFFFF, () -> Ingredient.of(Blocks.DEEPSLATE)),
     BLACKSTONE(Identifier.fromNamespaceAndPath("waystones", "blackstone_waystone"), SoundType.STONE, 0xFF993333, () -> Ingredient.of(Blocks.BLACKSTONE)),
     END_STONE(Identifier.fromNamespaceAndPath("waystones", "end_stone_waystone"), SoundType.STONE, 0xFF7200FF, () -> Ingredient.of(Blocks.END_STONE_BRICKS)),
@@ -69,5 +70,9 @@ public enum WaystoneType implements StringRepresentable {
     @Override
     public String toString() {
         return getSerializedName();
+    }
+
+    public Block particleBlock() {
+        return Blocks.DIAMOND_BLOCK; // TODO
     }
 }

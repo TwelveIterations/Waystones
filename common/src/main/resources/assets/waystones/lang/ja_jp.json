@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "転移ポイント",
-  "item.waystones.waystone": "転移ポイント",
-  "item.waystones.mossy_waystone": "苔むした転移ポイント",
-  "item.waystones.sandy_waystone": "砂岩の転移ポイント",
+  "item.waystones.andesite_waystone": "転移ポイント",
+  "item.waystones.mossy_andesite_waystone": "苔むした転移ポイント",
+  "item.waystones.sandstone_waystone": "砂岩の転移ポイント",
   "item.waystones.orange_sharestone": "橙色の共有転移ポイント",
   "item.waystones.magenta_sharestone": "赤紫色の共有転移ポイント",
   "item.waystones.light_blue_sharestone": "空色の共有転移ポイント",

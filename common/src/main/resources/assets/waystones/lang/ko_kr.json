@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "전송석",
-  "item.waystones.waystone": "전송석",
-  "item.waystones.mossy_waystone": "이끼낀 전송석",
-  "item.waystones.sandy_waystone": "모래로 뒤덮인 전송석",
+  "item.waystones.andesite_waystone": "전송석",
+  "item.waystones.mossy_andesite_waystone": "이끼낀 전송석",
+  "item.waystones.sandstone_waystone": "모래로 뒤덮인 전송석",
   "item.waystones.orange_sharestone": "주황색 공명석",
   "item.waystones.magenta_sharestone": "자홍색 공명석",
   "item.waystones.light_blue_sharestone": "하늘색 공명석",

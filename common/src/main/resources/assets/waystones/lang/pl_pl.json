@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Waystones",
-  "item.waystones.waystone": "Kamień teleportacyjny",
-  "item.waystones.mossy_waystone": "Zamszony kamień teleportacyjny",
-  "item.waystones.sandy_waystone": "Piaskowy kamień teleportacyjny",
+  "item.waystones.andesite_waystone": "Kamień teleportacyjny",
+  "item.waystones.mossy_andesite_waystone": "Zamszony kamień teleportacyjny",
+  "item.waystones.sandstone_waystone": "Piaskowy kamień teleportacyjny",
   "item.waystones.orange_sharestone": "Pomarańczowy dzielikamień teleportacyjny",
   "item.waystones.magenta_sharestone": "Karmazynowy dzielikamień teleportacyjny",
   "item.waystones.light_blue_sharestone": "Jasnoniebieski dzielikamień teleportacyjny",

@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Waystones",
-  "item.waystones.waystone": "Wegstein",
-  "item.waystones.mossy_waystone": "Vermooster Wegstein",
-  "item.waystones.sandy_waystone": "Sandiger Wegstein",
+  "item.waystones.andesite_waystone": "Wegstein",
+  "item.waystones.mossy_andesite_waystone": "Vermooster Wegstein",
+  "item.waystones.sandstone_waystone": "Sandiger Wegstein",
   "item.waystones.orange_sharestone": "Orangener Teilstein",
   "item.waystones.magenta_sharestone": "Magenta Teilstein",
   "item.waystones.light_blue_sharestone": "Hellblauer Teilstein",

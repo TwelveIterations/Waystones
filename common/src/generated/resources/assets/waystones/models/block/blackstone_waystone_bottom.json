@@ -1,7 +1,7 @@
 {
   "parent": "waystones:block/waystone_bottom",
   "textures": {
-    "particle": "minecraft:block/blackstone",
+    "particle": "minecraft:block/diamond_block",
     "texture": "waystones:block/blackstone_waystone"
   }
 }

@@ -1,7 +1,6 @@
 {
   "parent": "waystones:item/waystone",
   "textures": {
-    "particle": "block/prismarine",
     "texture": "waystones:block/prismarine_waystone"
   }
 }

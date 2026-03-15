@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Waystones",
-  "item.waystones.waystone": "Waystone",
-  "item.waystones.mossy_waystone": "Waystone cubierto de musgo",
-  "item.waystones.sandy_waystone": "Waystone de Arena",
+  "item.waystones.andesite_waystone": "Waystone",
+  "item.waystones.mossy_andesite_waystone": "Waystone cubierto de musgo",
+  "item.waystones.sandstone_waystone": "Waystone de Arena",
   "item.waystones.orange_sharestone": "Sharestone Naranja",
   "item.waystones.magenta_sharestone": "Sharestone Magenta",
   "item.waystones.light_blue_sharestone": "Sharestone Azul Claro",

@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Waystones",
-  "item.waystones.waystone": "Дороговказ",
-  "item.waystones.mossy_waystone": "Моховитий дороговказ",
-  "item.waystones.sandy_waystone": "Піщаний дороговказ",
+  "item.waystones.andesite_waystone": "Дороговказ",
+  "item.waystones.mossy_andesite_waystone": "Моховитий дороговказ",
+  "item.waystones.sandstone_waystone": "Піщаний дороговказ",
   "item.waystones.blackstone_waystone": "Чорнокам'яний дороговказ",
   "item.waystones.deepslate_waystone": "Глибосланцевий дороговказ",
   "item.waystones.end_stone_waystone": "Ендер дороговказ",

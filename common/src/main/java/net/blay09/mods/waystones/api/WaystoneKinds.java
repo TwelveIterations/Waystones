@@ -29,6 +29,6 @@ public class WaystoneKinds {
 
     @Nullable
     public static Identifier getKind(@Nullable SharestoneType type) {
-        return type != null ? type.getIdentifier() : null;
+        return type != null ? type.kind() : null;
     }
 }

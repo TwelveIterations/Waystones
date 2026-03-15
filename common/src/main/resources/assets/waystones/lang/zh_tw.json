@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "傳送石碑",
-  "item.waystones.waystone": "傳送石碑",
-  "item.waystones.mossy_waystone": "青苔傳送石碑",
-  "item.waystones.sandy_waystone": "砂岩傳送石碑",
+  "item.waystones.andesite_waystone": "傳送石碑",
+  "item.waystones.mossy_andesite_waystone": "青苔傳送石碑",
+  "item.waystones.sandstone_waystone": "砂岩傳送石碑",
   "item.waystones.orange_sharestone": "橙色專用石碑",
   "item.waystones.magenta_sharestone": "洋紅色專用石碑",
   "item.waystones.light_blue_sharestone": "淺藍色專用石碑",

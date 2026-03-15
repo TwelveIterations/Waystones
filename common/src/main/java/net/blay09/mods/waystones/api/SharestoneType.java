@@ -1,60 +1,81 @@
 package net.blay09.mods.waystones.api;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
-import java.util.Locale;
-import java.util.function.Supplier;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Stream;
 
-public enum SharestoneType implements StringRepresentable {
-    RUINED(Identifier.fromNamespaceAndPath("waystones", "ruined_sharestone"), DyeColor.BLACK, () -> Ingredient.of(Items.AIR)),
-    COPPER(Identifier.fromNamespaceAndPath("waystones", "copper_sharestone"), DyeColor.ORANGE, () -> Ingredient.of(Items.COPPER_INGOT)),
-    PRISMARINE(Identifier.fromNamespaceAndPath("waystones", "prismarine_sharestone"), DyeColor.LIGHT_BLUE, () -> Ingredient.of(Items.PRISMARINE_SHARD)),
-    GOLD(Identifier.fromNamespaceAndPath("waystones", "gold_sharestone"), DyeColor.YELLOW, () -> Ingredient.of(Items.GOLD_INGOT)),
-    DIAMOND(Identifier.fromNamespaceAndPath("waystones", "diamond_sharestone"), DyeColor.CYAN, () -> Ingredient.of(Items.DIAMOND)),
-    AMETHYST(Identifier.fromNamespaceAndPath("waystones", "amethyst_sharestone"), DyeColor.PURPLE, () -> Ingredient.of(Items.AMETHYST_SHARD)),
-    LAPIS(Identifier.fromNamespaceAndPath("waystones", "lapis_sharestone"), DyeColor.BLUE, () -> Ingredient.of(Items.LAPIS_LAZULI)),
-    EMERALD(Identifier.fromNamespaceAndPath("waystones", "emerald_sharestone"), DyeColor.GREEN, () -> Ingredient.of(Items.EMERALD)),
-    REDSTONE(Identifier.fromNamespaceAndPath("waystones", "redstone_sharestone"), DyeColor.RED, () -> Ingredient.of(Items.REDSTONE));
-
-    public static final StringRepresentable.EnumCodec<SharestoneType> CODEC = StringRepresentable.fromEnum(SharestoneType::values);
+public class SharestoneType implements Comparable<SharestoneType> {
+    private static final Map<Identifier, SharestoneType> TYPES_BY_IDENTIFIER = new LinkedHashMap<>();
+    private static final Comparator<SharestoneType> COMPARATOR = Comparator.comparing(SharestoneType::identifier);
+    public static final Codec<SharestoneType> CODEC = Identifier.CODEC.comapFlatMap(identifier -> {
+        final var type = get(identifier);
+        return type != null ? DataResult.success(type) : DataResult.error(() -> "Unknown sharestone type: " + identifier);
+    }, SharestoneType::identifier);
 
     private final Identifier identifier;
     private final DyeColor color;
-    private final Supplier<Ingredient> ingredientSupplier;
 
-    SharestoneType(Identifier identifier, DyeColor color, Supplier<Ingredient> ingredientSupplier) {
+    private Identifier kind;
+
+    public SharestoneType(Identifier identifier, DyeColor color) {
         this.identifier = identifier;
+        this.kind = identifier;
         this.color = color;
-        this.ingredientSupplier = ingredientSupplier;
     }
 
-    public Identifier getIdentifier() {
-        return identifier;
+    public SharestoneType withKind(Identifier kind) {
+        this.kind = kind;
+        return this;
     }
 
-    @Override
-    public String getSerializedName() {
-        return name().toLowerCase(Locale.ROOT);
+    public static synchronized SharestoneType register(SharestoneType type) {
+        final var existingByIdentifier = TYPES_BY_IDENTIFIER.get(type.identifier);
+        if (existingByIdentifier != null) {
+            if (!existingByIdentifier.equals(type)) {
+                throw new IllegalArgumentException("Duplicate sharestone type identifier: " + type.identifier);
+            }
+            return existingByIdentifier;
+        }
+
+        TYPES_BY_IDENTIFIER.put(type.identifier, type);
+        return type;
     }
 
-    public int getTextColor() {
+    public static Stream<SharestoneType> values() {
+        return TYPES_BY_IDENTIFIER.values().stream();
+    }
+
+    @Nullable
+    public static SharestoneType get(Identifier identifier) {
+        return TYPES_BY_IDENTIFIER.get(identifier);
+    }
+
+    public int textColor() {
         return color.getTextColor();
     }
 
-    public int getTextureDiffuseColor() {
+    public int textureDiffuseColor() {
         return color.getTextureDiffuseColor();
     }
 
-    public Ingredient getIngredient() {
-        return ingredientSupplier.get();
+    public Identifier identifier() {
+        return identifier;
+    }
+
+    public Identifier kind() {
+        return kind;
     }
 
     @Override
-    public String toString() {
-        return getSerializedName();
+    public int compareTo(@NonNull SharestoneType o) {
+        return COMPARATOR.compare(this, o);
     }
 }

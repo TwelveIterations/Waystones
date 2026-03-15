@@ -1,9 +1,10 @@
 package net.blay09.mods.waystones.datagen;
 
 import net.blay09.mods.balm.tags.BalmItemTags;
+import net.blay09.mods.waystones.api.SharestoneTypes;
 import net.blay09.mods.waystones.api.WaystoneType;
+import net.blay09.mods.waystones.block.BuiltinSharestoneType;
 import net.blay09.mods.waystones.block.ModBlocks;
-import net.blay09.mods.waystones.api.SharestoneType;
 import net.blay09.mods.waystones.item.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
@@ -37,13 +38,13 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                             .save(exporter);
                 });
 
-                shapeless(RecipeCategory.DECORATIONS, ModBlocks.waystones.get(WaystoneType.MOSSY))
+                shapeless(RecipeCategory.DECORATIONS, ModBlocks.waystones.get(WaystoneType.MOSSY_ANDESITE))
                         .requires(ModBlocks.waystones.get(WaystoneType.ANDESITE))
                         .requires(Blocks.VINE, 3)
                         .unlockedBy("has_waystone", has(ModBlocks.waystones.get(WaystoneType.ANDESITE)))
                         .save(exporter, "waystones:mossy_waystone_from_vines");
 
-                shapeless(RecipeCategory.DECORATIONS, ModBlocks.waystones.get(WaystoneType.MOSSY))
+                shapeless(RecipeCategory.DECORATIONS, ModBlocks.waystones.get(WaystoneType.MOSSY_ANDESITE))
                         .requires(ModBlocks.waystones.get(WaystoneType.ANDESITE))
                         .requires(Blocks.MOSS_BLOCK, 3)
                         .unlockedBy("has_waystone", has(ModBlocks.waystones.get(WaystoneType.ANDESITE)))
@@ -78,23 +79,11 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(null)))
                         .save(exporter);
 
-                createPortstoneRecipe(exporter, SharestoneType.COPPER);
-                createPortstoneRecipe(exporter, SharestoneType.PRISMARINE);
-                createPortstoneRecipe(exporter, SharestoneType.GOLD);
-                createPortstoneRecipe(exporter, SharestoneType.DIAMOND);
-                createPortstoneRecipe(exporter, SharestoneType.AMETHYST);
-                createPortstoneRecipe(exporter, SharestoneType.LAPIS);
-                createPortstoneRecipe(exporter, SharestoneType.EMERALD);
-                createPortstoneRecipe(exporter, SharestoneType.REDSTONE);
-
-                createSharestoneRecipe(exporter, SharestoneType.COPPER);
-                createSharestoneRecipe(exporter, SharestoneType.PRISMARINE);
-                createSharestoneRecipe(exporter, SharestoneType.GOLD);
-                createSharestoneRecipe(exporter, SharestoneType.DIAMOND);
-                createSharestoneRecipe(exporter, SharestoneType.AMETHYST);
-                createSharestoneRecipe(exporter, SharestoneType.LAPIS);
-                createSharestoneRecipe(exporter, SharestoneType.EMERALD);
-                createSharestoneRecipe(exporter, SharestoneType.REDSTONE);
+                SharestoneTypes.builtinValues()
+                        .forEach(type -> {
+                            createPortstoneRecipe(exporter, type);
+                            createSharestoneRecipe(exporter, type);
+                        });
 
                 shaped(RecipeCategory.DECORATIONS, ModItems.warpStones.get(null))
                         .pattern("AEA")
@@ -136,9 +125,9 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .save(exporter);
             }
 
-            private void createSharestoneRecipe(RecipeOutput exporter, SharestoneType type) {
+            private void createSharestoneRecipe(RecipeOutput exporter, BuiltinSharestoneType type) {
                 final var sharestone = ModBlocks.sharestones.get(type);
-                if (sharestone == null || type == SharestoneType.RUINED) {
+                if (sharestone == null || type == SharestoneTypes.RUINED) {
                     return;
                 }
 
@@ -148,12 +137,12 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("SSS")
                         .define('S', Blocks.STONE_BRICKS)
                         .define('W', ModItems.warpStones.get(null))
-                        .define('D', type.getIngredient())
+                        .define('D', type.ingredient())
                         .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(null)))
                         .save(exporter);
             }
 
-            private void createPortstoneRecipe(RecipeOutput exporter, SharestoneType type) {
+            private void createPortstoneRecipe(RecipeOutput exporter, BuiltinSharestoneType type) {
                 final var portstone = ModBlocks.portstones.get(type);
                 if (portstone == null) {
                     return;
@@ -166,7 +155,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .define('B', Blocks.STONE_BRICKS)
                         .define('W', ModItems.warpStones.get(null))
                         .define('S', Blocks.STONE_BRICK_SLAB)
-                        .define('D', type.getIngredient())
+                        .define('D', type.ingredient())
                         .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(null)))
                         .save(exporter);
             }

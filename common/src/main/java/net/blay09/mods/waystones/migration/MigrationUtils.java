@@ -36,6 +36,10 @@ public class MigrationUtils {
     }
 
     public static void migrateBlocks(BalmBlockRegistrar blocks) {
+        blocks.addAlias("waystone", "andesite_waystone");
+        blocks.addAlias("sandy_waystone", "sandstone_waystone");
+        blocks.addAlias("mossy_waystone", "mossy_andesite_waystone");
+
         blocks.addAlias("orange_sharestone", "copper_sharestone");
         blocks.addAlias("magenta_sharestone", "ruined_sharestone");
         blocks.addAlias("light_blue_sharestone", "prismarine_sharestone");

@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Waystones",
-  "item.waystones.waystone": "Cestovní kámen",
-  "item.waystones.mossy_waystone": "Cestovní kámen porostlý mechem",
-  "item.waystones.sandy_waystone": "Pískový cestovní kámen",
+  "item.waystones.andesite_waystone": "Cestovní kámen",
+  "item.waystones.mossy_andesite_waystone": "Cestovní kámen porostlý mechem",
+  "item.waystones.sandstone_waystone": "Pískový cestovní kámen",
   "item.waystones.orange_sharestone": "Oranžový kámen sdílení",
   "item.waystones.magenta_sharestone": "Purpurový kámen sdílení",
   "item.waystones.light_blue_sharestone": "Světle modrý kámen sdílení",

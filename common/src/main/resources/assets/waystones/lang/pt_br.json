@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Obeliscos",
-  "item.waystones.waystone": "Obelisco",
-  "item.waystones.mossy_waystone": "Obelisco Musgoso",
-  "item.waystones.sandy_waystone": "Obelisco Arenoso",
+  "item.waystones.andesite_waystone": "Obelisco",
+  "item.waystones.mossy_andesite_waystone": "Obelisco Musgoso",
+  "item.waystones.sandstone_waystone": "Obelisco Arenoso",
   "item.waystones.blackstone_waystone": "Obelisco de Pedra Negra",
   "item.waystones.deepslate_waystone": "Obelisco de Ardósia Profunda",
   "item.waystones.end_stone_waystone": "Obelisco do End",

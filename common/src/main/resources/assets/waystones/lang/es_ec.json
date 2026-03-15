@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Waystones",
-  "item.waystones.waystone": "Piedra Guía",
-  "item.waystones.mossy_waystone": "Piedra Guía Musgosa",
-  "item.waystones.sandy_waystone": "Piedra Guía Arenosa",
+  "item.waystones.andesite_waystone": "Piedra Guía",
+  "item.waystones.mossy_andesite_waystone": "Piedra Guía Musgosa",
+  "item.waystones.sandstone_waystone": "Piedra Guía Arenosa",
   "item.waystones.blackstone_waystone": "Piedra Guía Negra",
   "item.waystones.deepslate_waystone": "Piedra Guía Profunda",
   "item.waystones.end_stone_waystone": "Piedra Guía de Ender",

@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Waystones",
-  "item.waystones.waystone": "Pietra miliare",
-  "item.waystones.mossy_waystone": "Pietra miliare muschiosa",
-  "item.waystones.sandy_waystone": "Pietra miliare desertica",
+  "item.waystones.andesite_waystone": "Pietra miliare",
+  "item.waystones.mossy_andesite_waystone": "Pietra miliare muschiosa",
+  "item.waystones.sandstone_waystone": "Pietra miliare desertica",
   "item.waystones.orange_sharestone": "Pietra miliare condivisa arancione",
   "item.waystones.magenta_sharestone": "Pietra miliare condivisa magenta",
   "item.waystones.light_blue_sharestone": "Pietra miliare condivisa azzurra",
