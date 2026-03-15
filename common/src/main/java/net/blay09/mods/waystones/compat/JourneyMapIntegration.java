@@ -121,11 +121,11 @@ public class JourneyMapIntegration implements IClientPlugin {
 
     private static boolean shouldManageWaypoints() {
         WaystonesConfig config = WaystonesConfig.getActive();
-        if (config.compatibility.preferJourneyMapIntegrationMod && Balm.platform().isModLoaded("jmi")) {
+        if (config.journeyMap.preferJourneyMapIntegrationMod && Balm.platform().isModLoaded("jmi")) {
             return false;
         }
 
-        return config.compatibility.journeyMap;
+        return config.journeyMap.enabled;
     }
 
     public void onWaystoneUpdateReceived(WaystoneUpdateReceivedEvent event) {

@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.component.WaystoneReferenceComponent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.message.ClientboundWarpPlateEjectEffectPacket;
@@ -211,7 +212,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
             }
         }
 
-        int configuredUseTime = WaystonesConfig.getActive().general.warpPlateUseTime;
+        int configuredUseTime = WaystonesRules.warpPlateUseTime.getOrDefault(this);
         return Mth.clamp((int) (configuredUseTime * useTimeMultiplier), 1, configuredUseTime * 2);
     }
 

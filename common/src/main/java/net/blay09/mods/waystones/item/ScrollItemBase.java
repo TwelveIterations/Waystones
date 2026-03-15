@@ -26,7 +26,7 @@ public class ScrollItemBase extends Item {
 
     @Override
     public ItemUseAnimation getUseAnimation(ItemStack itemStack) {
-        if (WaystonesConfig.getActive().general.scrollUseTime <= 0 || Compat.isVivecraftInstalled) {
+        if (Compat.isVivecraftInstalled) {
             return ItemUseAnimation.NONE;
         }
 

@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
 import net.blay09.mods.waystones.api.trait.WaystoneKindScoped;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
@@ -55,12 +56,12 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage, WaystoneKi
 
     @Override
     public int getUseDuration(ItemStack itemStack, LivingEntity entity) {
-        return WaystonesConfig.getActive().general.warpStoneUseTime;
+        return WaystonesRules.warpStoneUseTime.getOrDefault(entity);
     }
 
     @Override
     public ItemUseAnimation getUseAnimation(ItemStack itemStack) {
-        if (WaystonesConfig.getActive().general.warpStoneUseTime <= 0 || Compat.isVivecraftInstalled) {
+        if (Compat.isVivecraftInstalled) {
             return ItemUseAnimation.NONE;
         }
 

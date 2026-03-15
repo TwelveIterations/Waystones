@@ -46,39 +46,31 @@ public class WaystonesConfig {
     public InventoryButton inventoryButton = new InventoryButton();
     public WorldGen worldGen = new WorldGen();
     public Client client = new Client();
-    public Compatibility compatibility = new Compatibility();
+    public JourneyMap journeyMap = new JourneyMap();
     public BlueMap blueMap = new BlueMap();
+    public Dynmap dynmap = new Dynmap();
 
     public static class General {
-
         @Synced
         @Comment("List of waystone origins that should prevent others from editing. \"player\" is special in that it allows only edits by the owner of the waystone.")
         @NestedType(WaystoneOrigin.class)
+        @Deprecated
         public Set<WaystoneOrigin> restrictedWaystones = Set.of(WaystoneOrigin.PLAYER);
 
         @Synced
         @Comment("Set to \"global\" to have newly placed or found waystones be global by default.")
+        @Deprecated
         public WaystoneVisibility defaultVisibility = WaystoneVisibility.ACTIVATION;
 
         @Synced
         @Comment("Add \"global\" to allow every player to create global waystones.")
         @NestedType(WaystoneVisibility.class)
+        @Deprecated
         public Set<WaystoneVisibility> allowedVisibilities = Set.of();
-
-        @Synced
-        @Comment("The time in ticks that it takes to use a warp stone. This is the charge-up time when holding right-click.")
-        public int warpStoneUseTime = 32;
-
-        @Synced
-        @Comment("The time in ticks that it takes to use a warp plate. This is the time the player has to stand on top for.")
-        public int warpPlateUseTime = 15;
-
-        @Synced
-        @Comment("The time in ticks it takes to use a scroll. This is the charge-up time when holding right-click.")
-        public int scrollUseTime = 32;
     }
 
     public static class Teleports {
+
         @Synced
         @Comment("Set to false to simply disable all xp costs. See rules for more fine-grained control.")
         public boolean enableCosts = true;
@@ -168,15 +160,17 @@ public class WaystonesConfig {
         public VillageWaystoneGeneration spawnInVillages = VillageWaystoneGeneration.REGULAR;
     }
 
-    public static class Compatibility {
+    public static class JourneyMap {
         @Comment("If enabled, JourneyMap waypoints will be created for each activated waystone.")
-        public boolean journeyMap = true;
+        public boolean enabled = true;
 
         @Comment("If enabled, JourneyMap waypoints will only be created if the mod 'JourneyMap Integration' is not installed")
         public boolean preferJourneyMapIntegrationMod = true;
+    }
 
+    public static class Dynmap {
         @Comment("If enabled, Waystones will add markers for waystones and sharestones to Dynmap.")
-        public boolean dynmap = true;
+        public boolean enabled = true;
     }
 
     public static class BlueMap {

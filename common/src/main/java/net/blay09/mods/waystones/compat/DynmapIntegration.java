@@ -68,7 +68,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     }
 
     public boolean isEnabled() {
-        return WaystonesConfig.getActive().compatibility.dynmap;
+        return WaystonesConfig.getActive().dynmap.enabled;
     }
 
     private void prepareMarkerSets() {

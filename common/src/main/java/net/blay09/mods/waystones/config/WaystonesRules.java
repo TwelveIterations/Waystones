@@ -19,8 +19,10 @@ import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +38,10 @@ public class WaystonesRules {
     private static ShogiEffect<?> cachedWarpRequirements;
 
     public static final ShogiValue<WaystoneTeleportContext, List<?>> warpRequirements = Shogi.maybe(id("warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST);
-
     public static final ShogiValue<WaystoneTeleportContext, List<?>> inventoryButtonWarpRequirements = Shogi.maybe(id("inventory_button_warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST).networked();
+    public static final ShogiValue<Entity, Integer> warpStoneUseTime = Shogi.intValue(id("warp_stone_use_time"), _ -> 32);
+    public static final ShogiValue<BlockEntity, Integer> warpPlateUseTime = Shogi.intValue(id("warp_plate_use_time"), _ -> 15);
+    public static final ShogiValue<Entity, Integer> scrollUseTime = Shogi.intValue(id("scroll_use_time"), _ -> 32);
 
     public static final ShogiScope scope = Shogi.scope(id("rules"), it -> {
         it.setDefaultNamespaces(List.of("waystones", "shogi"));

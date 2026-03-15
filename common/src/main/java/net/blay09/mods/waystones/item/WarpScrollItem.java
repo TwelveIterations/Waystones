@@ -4,6 +4,7 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
@@ -30,7 +31,7 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
 
     @Override
     public int getUseDuration(ItemStack itemStack, LivingEntity entity) {
-        return WaystonesConfig.getActive().general.scrollUseTime;
+        return WaystonesRules.scrollUseTime.getOrDefault(entity);
     }
 
     @Override

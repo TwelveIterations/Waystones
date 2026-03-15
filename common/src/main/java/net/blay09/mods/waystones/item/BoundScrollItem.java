@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
 import net.blay09.mods.waystones.component.BoundScrollComponent;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -31,7 +32,7 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
 
     @Override
     public int getUseDuration(ItemStack itemStack, LivingEntity entity) {
-        return WaystonesConfig.getActive().general.scrollUseTime;
+        return WaystonesRules.scrollUseTime.getOrDefault(entity);
     }
 
     @Override
