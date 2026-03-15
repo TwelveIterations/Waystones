@@ -52,12 +52,6 @@ public class WaystonesConfig {
 
     public static class General {
         @Synced
-        @Comment("List of waystone origins that should prevent others from editing. \"player\" is special in that it allows only edits by the owner of the waystone.")
-        @NestedType(WaystoneOrigin.class)
-        @Deprecated
-        public Set<WaystoneOrigin> restrictedWaystones = Set.of(WaystoneOrigin.PLAYER);
-
-        @Synced
         @Comment("Set to \"global\" to have newly placed or found waystones be global by default.")
         @Deprecated
         public WaystoneVisibility defaultVisibility = WaystoneVisibility.ACTIVATION;

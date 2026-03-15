@@ -1,14 +1,12 @@
 package net.blay09.mods.waystones.config;
 
 import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.JsonOps;
 import net.blay09.mods.balm.platform.event.callback.ConfigCallback;
 import net.blay09.mods.shogi.Shogi;
 import net.blay09.mods.shogi.ShogiValue;
 import net.blay09.mods.shogi.coercion.Coercion;
-import net.blay09.mods.shogi.common.effect.compose.AggregateEffect;
-import net.blay09.mods.shogi.common.parse.ShogiRuleParser;
-import net.blay09.mods.shogi.effect.ShogiEffect;
+import net.blay09.mods.shogi.common.CachedShogiRule;
+import net.blay09.mods.shogi.context.ShogiContext;
 import net.blay09.mods.shogi.scope.ShogiScope;
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
@@ -18,30 +16,27 @@ import net.blay09.mods.waystones.config.rules.*;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
 public class WaystonesRules {
-
-    public static final Logger logger = LoggerFactory.getLogger(WaystonesRules.class);
-
-    private static ShogiEffect<?> cachedWarpRequirements;
 
     public static final ShogiValue<WaystoneTeleportContext, List<?>> warpRequirements = Shogi.maybe(id("warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST);
     public static final ShogiValue<WaystoneTeleportContext, List<?>> inventoryButtonWarpRequirements = Shogi.maybe(id("inventory_button_warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST).networked();
     public static final ShogiValue<Entity, Integer> warpStoneUseTime = Shogi.intValue(id("warp_stone_use_time"), _ -> 32);
     public static final ShogiValue<BlockEntity, Integer> warpPlateUseTime = Shogi.intValue(id("warp_plate_use_time"), _ -> 15);
     public static final ShogiValue<Entity, Integer> scrollUseTime = Shogi.intValue(id("scroll_use_time"), _ -> 32);
+    public static final ShogiValue<ShogiContext, Boolean> mayEdit = Shogi.booleanValue(id("may_edit"), context -> {
+        final var player = context.requirePlayer();
+        final var waystone = WaystoneRuleContext.getEffectiveWaystone(context).orElseThrow();
+        return waystone.hasOwner() && !waystone.isOwner(player);
+    });
 
     public static final ShogiScope scope = Shogi.scope(id("rules"), it -> {
         it.setDefaultNamespaces(List.of("waystones", "shogi"));
@@ -131,32 +126,17 @@ public class WaystonesRules {
         }
     });
 
+    private static final CachedShogiRule cachedWarpRequirements = CachedShogiRule.ofRules(scope, () -> WaystonesConfig.getActive().teleports.rules);
+
     public static void initialize() {
         ConfigCallback.Reloaded.EVENT.register(schema -> {
             if (schema.identifier().equals(id("common"))) {
-                cachedWarpRequirements = null;
+                cachedWarpRequirements.invalidate();
             }
         });
     }
 
-    private static ShogiEffect<?> getOrBuildWarpRequirementsEffect(WaystoneTeleportContext context) {
-        if (cachedWarpRequirements == null) {
-            final var level = context.requireLevel();
-            final var registryOps = RegistryOps.create(JsonOps.INSTANCE, level.registryAccess());
-            final List<ShogiEffect<?>> rules = WaystonesConfig.getActive().teleports.rules.stream()
-                    .map(it -> ShogiRuleParser.parse(scope, registryOps, it))
-                    .filter(shogiEffectDataResult -> {
-                        shogiEffectDataResult.error().ifPresent(error -> logger.error("Invalid warp requirements rule {}", error));
-                        return shogiEffectDataResult.isSuccess();
-                    })
-                    .map(it -> it.result().orElseThrow())
-                    .collect(Collectors.toList());
-            cachedWarpRequirements = AggregateEffect.withAutoApplied(scope, registryOps, rules);
-        }
-        return cachedWarpRequirements;
-    }
-
     private static Either<?, ?> resolveWarpRequirements(WaystoneTeleportContext context) {
-        return getOrBuildWarpRequirementsEffect(context).apply(context);
+        return cachedWarpRequirements.get(context).apply(context);
     }
 }

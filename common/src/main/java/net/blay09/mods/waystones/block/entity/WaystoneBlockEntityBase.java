@@ -292,7 +292,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
                 return new WaystoneEditMenu(i,
                         getWaystone(),
                         getModifierCount(),
-                        error.map(WaystoneEditError::getTranslationKey).map(Component::translatable).orElse(null),
+                        error.orElse(null),
                         visibilityOptions,
                         getContainer());
             }
@@ -304,7 +304,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
                 return new WaystoneEditMenu.Data(worldPosition,
                         getWaystone(),
                         getModifierCount(),
-                        error.map(WaystoneEditError::getTranslationKey).map(Component::translatable),
+                        error,
                         visibilityOptions);
             }
 
