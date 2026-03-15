@@ -4,12 +4,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
-import org.jspecify.annotations.NonNull;
+import net.minecraft.world.level.block.Block;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class SharestoneType implements Comparable<SharestoneType> {
@@ -21,19 +22,19 @@ public class SharestoneType implements Comparable<SharestoneType> {
     }, SharestoneType::identifier);
 
     private final Identifier identifier;
+    private final Identifier kind;
     private final DyeColor color;
+    private final Supplier<Block> blockSupplier;
 
-    private Identifier kind;
-
-    public SharestoneType(Identifier identifier, DyeColor color) {
-        this.identifier = identifier;
-        this.kind = identifier;
-        this.color = color;
+    public SharestoneType(Identifier identifier, DyeColor color, Supplier<Block> blockSupplier) {
+        this(identifier, identifier, color, blockSupplier);
     }
 
-    public SharestoneType withKind(Identifier kind) {
+    public SharestoneType(Identifier identifier, Identifier kind, DyeColor color, Supplier<Block> blockSupplier) {
+        this.identifier = identifier;
         this.kind = kind;
-        return this;
+        this.color = color;
+        this.blockSupplier = blockSupplier;
     }
 
     public static synchronized SharestoneType register(SharestoneType type) {
@@ -58,6 +59,10 @@ public class SharestoneType implements Comparable<SharestoneType> {
         return TYPES_BY_IDENTIFIER.get(identifier);
     }
 
+    public DyeColor color() {
+        return color;
+    }
+
     public int textColor() {
         return color.getTextColor();
     }
@@ -74,8 +79,12 @@ public class SharestoneType implements Comparable<SharestoneType> {
         return kind;
     }
 
+    public Block block() {
+        return blockSupplier.get();
+    }
+
     @Override
-    public int compareTo(@NonNull SharestoneType o) {
+    public int compareTo(SharestoneType o) {
         return COMPARATOR.compare(this, o);
     }
 }

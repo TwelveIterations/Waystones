@@ -145,15 +145,15 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public Optional<Waystone> placeSharestone(ServerLevel level, BlockPos pos, SharestoneType type) {
-        final var sharestone = ModBlocks.sharestones.get(type);
-        if (sharestone == null) {
+        final var block = type.block();
+        if (block == null) {
             return Optional.empty();
         }
 
-        level.setBlock(pos, sharestone.defaultBlockState()
+        level.setBlock(pos, block.defaultBlockState()
                 .setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER)
                 .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.PLAYER), 3);
-        level.setBlock(pos.above(), sharestone.defaultBlockState()
+        level.setBlock(pos.above(), block.defaultBlockState()
                 .setValue(WaystoneBlock.HALF, DoubleBlockHalf.UPPER)
                 .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.PLAYER), 3);
         if (level.getBlockEntity(pos) instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
