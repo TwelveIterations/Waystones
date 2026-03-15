@@ -46,10 +46,6 @@ public interface WaystoneTeleportContext extends ShogiContext {
 
     WaystoneTeleportContext setPlaysEffect(boolean playsEffect);
 
-    boolean appliesModifiers();
-
-    WaystoneTeleportContext setAppliesModifiers(boolean appliesModifiers);
-
     Set<Identifier> getFlags();
 
     WaystoneTeleportContext addFlag(Identifier flag);

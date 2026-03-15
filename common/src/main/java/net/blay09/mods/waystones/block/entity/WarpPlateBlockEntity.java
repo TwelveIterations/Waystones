@@ -7,7 +7,6 @@ import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.component.WaystoneReferenceComponent;
-import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
@@ -23,14 +22,12 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -202,18 +199,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     }
 
     private int getWarpPlateUseTime() {
-        float useTimeMultiplier = 1;
-        for (int i = 0; i < container.getContainerSize(); i++) {
-            ItemStack itemStack = container.getItem(i);
-            if (itemStack.getItem() == Items.AMETHYST_SHARD) {
-                useTimeMultiplier -= 0.016f * itemStack.getCount();
-            } else if (itemStack.getItem() == Items.SLIME_BALL) {
-                useTimeMultiplier += 0.016f * itemStack.getCount();
-            }
-        }
-
-        int configuredUseTime = WaystonesRules.warpPlateUseTime.getOrDefault(this);
-        return Mth.clamp((int) (configuredUseTime * useTimeMultiplier), 1, configuredUseTime * 2);
+        return WaystonesRules.warpPlateUseTime.getOrDefault(this);
     }
 
     private void teleportToTarget(Entity entity, Waystone targetWaystone, ItemStack targetAttunementStack) {
@@ -253,9 +239,9 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
                 if (waystoneAttunedTo != null && !waystoneAttunedTo.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
                     attunedShards.add(itemStack);
                 }
-            } else if (itemStack.getItem() == Items.QUARTZ) {
+            } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_PREFERS_ROUND_ROBIN)) {
                 shouldRoundRobin = true;
-            } else if (itemStack.getItem() == Items.SPIDER_EYE) {
+            } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_PREFERS_SINGLE_USE)) {
                 shouldPrioritizeSingleUseShards = true;
             }
         }

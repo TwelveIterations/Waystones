@@ -45,7 +45,6 @@ public class InternalMethodsImpl implements InternalMethods {
                 }
             }
             context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(entity));
-            context.setAppliesModifiers(config.rules.enableModifiers);
             init.accept(context);
         });
     }

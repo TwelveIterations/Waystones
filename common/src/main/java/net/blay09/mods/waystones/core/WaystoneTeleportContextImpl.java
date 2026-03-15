@@ -42,7 +42,6 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
 
     private boolean playsSound = true;
     private boolean playsEffect = true;
-    private boolean appliesModifiers = true;
 
     private Either<List<Object>, List<Object>> requirements = Either.left(List.of());
     private boolean requirementsDirty = true;
@@ -163,17 +162,6 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public WaystoneTeleportContext setPlaysEffect(boolean playsEffect) {
         this.playsEffect = playsEffect;
-        return this;
-    }
-
-    @Override
-    public boolean appliesModifiers() {
-        return appliesModifiers;
-    }
-
-    @Override
-    public WaystoneTeleportContext setAppliesModifiers(boolean appliesModifiers) {
-        this.appliesModifiers = appliesModifiers;
         return this;
     }
 

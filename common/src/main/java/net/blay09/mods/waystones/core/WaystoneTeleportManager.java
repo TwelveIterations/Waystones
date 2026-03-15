@@ -14,6 +14,7 @@ import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.network.message.ClientboundTeleportEffectPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -85,9 +86,10 @@ public class WaystoneTeleportManager {
             Balm.networking().sendToTracking(targetLevel, targetPos, new ClientboundTeleportEffectPacket(targetPos));
         }
 
-        if (context.appliesModifiers() && targetTileEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-            teleportedEntities.forEach(waystoneBlockEntity::applyModifierEffects);
-        }
+        teleportedEntities.forEach(entity -> {
+            final var nestedContext = context.fork().withEntity(entity).withBlockEntity(targetTileEntity);
+            WaystonesRules.afterWarpEffects.getOrDefault(nestedContext);
+        });
 
         return Either.left(teleportedEntities);
     }

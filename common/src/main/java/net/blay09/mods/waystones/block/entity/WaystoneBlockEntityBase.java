@@ -19,6 +19,7 @@ import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
+import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
@@ -364,91 +365,14 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
         return container;
     }
 
-    public void applyModifierEffects(Entity entity) {
-        int fireSeconds = 0;
-        int poisonSeconds = 0;
-        int blindSeconds = 0;
-        int featherFallSeconds = 0;
-        int fireResistanceSeconds = 0;
-        int witherSeconds = 0;
-        int potency = 1;
-        List<ItemStack> curativeItems = new ArrayList<>();
-        final var baseContainer = getContainer();
-        if (baseContainer != null) {
-            for (int i = 0; i < baseContainer.getContainerSize(); i++) {
-                ItemStack itemStack = baseContainer.getItem(i);
-                if (itemStack.getItem() == Items.BLAZE_POWDER) {
-                    fireSeconds += itemStack.getCount();
-                } else if (itemStack.getItem() == Items.POISONOUS_POTATO) {
-                    poisonSeconds += itemStack.getCount();
-                } else if (itemStack.getItem() == Items.INK_SAC) {
-                    blindSeconds += itemStack.getCount();
-                } else if (itemStack.getItem() == Items.MILK_BUCKET || itemStack.getItem() == Items.HONEY_BLOCK) {
-                    curativeItems.add(itemStack);
-                } else if (itemStack.getItem() == Items.DIAMOND) {
-                    potency = Math.min(4, potency + itemStack.getCount());
-                } else if (itemStack.getItem() == Items.FEATHER) {
-                    featherFallSeconds = Math.min(8, featherFallSeconds + itemStack.getCount());
-                } else if (itemStack.getItem() == Items.MAGMA_CREAM) {
-                    fireResistanceSeconds = Math.min(8, fireResistanceSeconds + itemStack.getCount());
-                } else if (itemStack.getItem() == Items.WITHER_ROSE) {
-                    witherSeconds += itemStack.getCount();
-                }
-            }
-        }
-
-        if (entity instanceof LivingEntity) {
-            if (fireSeconds > 0) {
-                entity.setRemainingFireTicks(fireSeconds * 20);
-            }
-            if (poisonSeconds > 0) {
-                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.POISON, poisonSeconds * 20, potency));
-            }
-            if (blindSeconds > 0) {
-                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.BLINDNESS, blindSeconds * 20, potency));
-            }
-            if (featherFallSeconds > 0) {
-                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, featherFallSeconds * 20, potency));
-            }
-            if (fireResistanceSeconds > 0) {
-                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, fireResistanceSeconds * 20, potency));
-            }
-            if (witherSeconds > 0) {
-                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.WITHER, witherSeconds * 20, potency));
-            }
-            if (!curativeItems.isEmpty()) {
-                ((LivingEntity) entity).removeAllEffects();
-            }
-        }
-    }
-
     private int getModifierCount() {
-        // TODO I'm sorry, Future Blay will create a proper system for these modifiers (I promise)
         var modifiers = 0;
         final var baseContainer = getContainer();
         if (baseContainer != null) {
             for (int i = 0; i < baseContainer.getContainerSize(); i++) {
                 ItemStack itemStack = baseContainer.getItem(i);
-                if (itemStack.getItem() == Items.BLAZE_POWDER) {
-                    modifiers += 1;
-                } else if (itemStack.getItem() == Items.POISONOUS_POTATO) {
-                    modifiers += 1;
-                } else if (itemStack.getItem() == Items.INK_SAC) {
-                    modifiers += 1;
-                } else if (itemStack.getItem() == Items.MILK_BUCKET || itemStack.getItem() == Items.HONEY_BLOCK) {
-                    modifiers += 1;
-                } else if (itemStack.getItem() == Items.DIAMOND) {
-                    modifiers += 1;
-                } else if (itemStack.getItem() == Items.FEATHER) {
-                    modifiers += 1;
-                } else if (itemStack.getItem() == Items.MAGMA_CREAM) {
-                    modifiers += 1;
-                } else if (itemStack.getItem() == Items.WITHER_ROSE) {
-                    modifiers += 1;
-                } else if (itemStack.getItem() == Items.QUARTZ) {
-                    modifiers += 1;
-                } else if (itemStack.getItem() == Items.SPIDER_EYE) {
-                    modifiers += 1;
+                if(itemStack.is(ModItemTags.WARP_MODIFIERS)) {
+                    modifiers++;
                 }
             }
         }
