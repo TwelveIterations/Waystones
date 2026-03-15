@@ -2,8 +2,7 @@ package net.blay09.mods.waystones.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.blay09.mods.waystones.api.WaystoneType;
-import net.blay09.mods.waystones.block.PortstoneBlock;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
@@ -66,8 +65,8 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
         }
 
         renderState.facing = blockState.getValue(WaystoneBlock.FACING);
-        final var type = blockState.getBlock() instanceof WaystoneBlock waystoneBlock ? waystoneBlock.getType() : WaystoneType.ANDESITE;
-        renderState.runeColor = type != null ? type.getRuneColor() : 0xFFFFFFFF;
+        final var type = blockState.getBlock() instanceof WaystoneBlock waystoneBlock ? waystoneBlock.getType() : WaystoneTypes.ANDESITE;
+        renderState.runeColor = type != null ? type.runeColor() : 0xFFFFFFFF;
         final var player = Minecraft.getInstance().player;
         boolean isActivated = player != null && PlayerWaystoneManager.isWaystoneActivated(player, blockEntity.getWaystone());
         renderState.showRunes = isActivated || blockState.getValue(WaystoneBlock.SEEN);

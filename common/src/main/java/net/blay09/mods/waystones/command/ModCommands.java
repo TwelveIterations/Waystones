@@ -6,12 +6,8 @@ import net.blay09.mods.balm.commands.BalmCommands;
 import net.blay09.mods.shogi.common.effect.server.cooldown.ShogiCooldowns;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
-import net.blay09.mods.waystones.block.ModBlocks;
-import net.blay09.mods.waystones.block.WaystoneBlockBase;
-import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.comparator.WaystoneComparators;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WaystoneSyncManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -26,7 +22,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.commands.SharedSuggestionProvider;
 
-import java.util.Arrays;
 import java.util.HashSet;
 
 import static net.minecraft.commands.Commands.argument;
@@ -136,8 +131,8 @@ public class ModCommands {
                                 .then(argument("type", StringArgumentType.word())
                                         .suggests((context, builder) -> {
                                             return SharedSuggestionProvider.suggest(
-                                                    Arrays.stream(WaystoneType.values())
-                                                            .map(it -> it.getIdentifier())
+                                                    WaystoneType.values()
+                                                            .map(WaystoneType::identifier)
                                                             .map(id -> id.getNamespace().equals(Waystones.MOD_ID) ? id.getPath() : id.toString()),
                                                     builder
                                             );
@@ -145,20 +140,20 @@ public class ModCommands {
                                         .then(argument("name", StringArgumentType.greedyString())
                                                 .executes(context -> {
                                                     final var pos = BlockPosArgument.getLoadedBlockPos(context, "pos");
-                                                    final var styleKey = StringArgumentType.getString(context, "style");
+                                                    final var typeArg = StringArgumentType.getString(context, "type");
                                                     final var name = StringArgumentType.getString(context, "name");
                                                     final ServerLevel level = context.getSource().getLevel();
 
                                                     Identifier typeId;
-                                                    if (!styleKey.contains(":")) {
-                                                        typeId = Identifier.fromNamespaceAndPath("waystones", styleKey);
+                                                    if (!typeArg.contains(":")) {
+                                                        typeId = Identifier.fromNamespaceAndPath("waystones", typeArg);
                                                     } else {
-                                                        typeId = Identifier.tryParse(styleKey);
+                                                        typeId = Identifier.tryParse(typeArg);
                                                     }
 
-                                                    final var type = typeId != null ? WaystoneType.getType(typeId) : null;
+                                                    final var type = typeId != null ? WaystoneType.get(typeId) : null;
                                                     if (type == null) {
-                                                        context.getSource().sendFailure(Component.literal("Unknown waystone style: " + styleKey));
+                                                        context.getSource().sendFailure(Component.literal("Unknown waystone style: " + typeArg));
                                                         return 0;
                                                     }
 

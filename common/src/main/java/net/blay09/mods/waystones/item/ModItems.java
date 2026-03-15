@@ -7,7 +7,7 @@ import net.blay09.mods.balm.world.item.DiscriminatedItems;
 import net.blay09.mods.waystones.api.PortstoneTypes;
 import net.blay09.mods.waystones.api.SharestoneTypes;
 import net.blay09.mods.waystones.api.WarpStoneTypes;
-import net.blay09.mods.waystones.api.WaystoneType;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.BuiltinWarpStoneType;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.minecraft.network.chat.Component;
@@ -41,9 +41,9 @@ public class ModItems {
     public static void initialize(BalmCreativeModeTabRegistrar creativeModeTabs) {
         creativeModeTabs.register("waystones", (id, builder) ->
                 builder.title(Component.translatable(id.toLanguageKey("itemGroup")))
-                        .icon(() -> new ItemStack(ModBlocks.waystones.get(WaystoneType.ANDESITE)))
+                        .icon(() -> new ItemStack(ModBlocks.waystones.get(WaystoneTypes.ANDESITE)))
                         .displayItems((_, output) -> {
-                            output.accept(ModBlocks.waystones.get(WaystoneType.ANDESITE));
+                            output.accept(ModBlocks.waystones.get(WaystoneTypes.ANDESITE));
                             output.accept(ModBlocks.portstones.get(PortstoneTypes.UNSCOPED));
                             output.accept(ModBlocks.sharestones.get(SharestoneTypes.COPPER));
                             output.accept(ModBlocks.warpPlate);
@@ -53,7 +53,7 @@ public class ModItems {
                             output.accept(ModItems.warpStones.get(WarpStoneTypes.UNSCOPED));
                             output.accept(ModItems.dormantShard);
                             ModBlocks.waystones.forEach((type, block) -> {
-                                if (type != WaystoneType.ANDESITE) {
+                                if (type != WaystoneTypes.ANDESITE) {
                                     output.accept(block);
                                 }
                             });

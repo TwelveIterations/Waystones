@@ -5,10 +5,7 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.PortstoneType;
 import net.blay09.mods.waystones.api.SharestoneType;
 import net.blay09.mods.waystones.api.WaystoneType;
-import net.blay09.mods.waystones.block.ModBlocks;
-import net.blay09.mods.waystones.block.WarpPlateBlock;
-import net.blay09.mods.waystones.block.WaystoneBlock;
-import net.blay09.mods.waystones.block.WaystoneBlockBase;
+import net.blay09.mods.waystones.block.*;
 import net.blay09.mods.waystones.item.ModItems;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
@@ -78,7 +75,7 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.generateFlatItem(ModItems.blankScroll.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
     }
 
-    private void createDoubleBlockWaystone(BlockModelGenerators blockStateModelGenerator,  WaystoneType type, Block block) {
+    private void createDoubleBlockWaystone(BlockModelGenerators blockStateModelGenerator, BuiltinWaystoneType type, Block block) {
         final var itemModelTemplate = new ModelTemplate(Optional.of(id("waystone").withPrefix("item/")), Optional.empty(), TextureSlot.TEXTURE);
         final var topModelTemplate = new ModelTemplate(Optional.of(id("waystone_top").withPrefix("block/")), Optional.of("_top"), TextureSlot.TEXTURE, TextureSlot.PARTICLE);
         final var bottomModelTemplate = new ModelTemplate(Optional.of(id("waystone_bottom").withPrefix("block/")), Optional.of("_bottom"), TextureSlot.TEXTURE, TextureSlot.PARTICLE);

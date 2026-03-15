@@ -5,7 +5,7 @@ import net.blay09.mods.balm.world.level.block.DeferredBlock;
 import net.blay09.mods.balm.world.level.block.DiscriminatedBlocks;
 import net.blay09.mods.waystones.api.PortstoneTypes;
 import net.blay09.mods.waystones.api.SharestoneTypes;
-import net.blay09.mods.waystones.api.WaystoneType;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.component.DescriptionComponent;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.item.PortstoneBlockItem;
@@ -16,19 +16,18 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.SoundType;
 
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ModBlocks {
 
-    public static DiscriminatedBlocks<WaystoneType> waystones;
+    public static DiscriminatedBlocks<BuiltinWaystoneType> waystones;
     public static DeferredBlock warpPlate;
     public static DiscriminatedBlocks<BuiltinPortstoneType> portstones;
     public static DiscriminatedBlocks<BuiltinSharestoneType> sharestones;
 
     public static void initialize(BalmBlockRegistrar blocks) {
-        final var waystoneTypes = Set.of(WaystoneType.values());
-        waystones = blocks.registerDiscriminated(waystoneTypes, type -> DiscriminatedBlocks.prefix(type, "waystone"), WaystoneBlock::new, (type, properties) -> properties.sound(type.getSoundType()).strength(5f, 2000f))
+        final var waystoneTypes = WaystoneTypes.builtinValues().collect(Collectors.toSet());
+        waystones = blocks.registerDiscriminated(waystoneTypes, type -> DiscriminatedBlocks.prefix(type, "waystone"), WaystoneBlock::new, (type, properties) -> properties.sound(type.soundType()).strength(5f, 2000f))
                 .withItems(WaystoneBlockItem::new)
                 .asDiscriminatedBlocks();
         warpPlate = blocks.register("warp_plate", WarpPlateBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withDefaultItem().asDeferredBlock();

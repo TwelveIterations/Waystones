@@ -8,6 +8,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
+/**
+ * @deprecated Will be replaced by a Data Component in the future.
+ */
+@Deprecated
 public interface IAttunementItem {
     Optional<Waystone> getWaystoneAttunedTo(@Nullable MinecraftServer server, @Nullable Player player, ItemStack itemStack);
 

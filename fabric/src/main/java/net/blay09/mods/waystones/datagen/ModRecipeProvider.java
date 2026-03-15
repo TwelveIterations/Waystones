@@ -32,22 +32,22 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                             .pattern(" S ")
                             .pattern("SWS")
                             .pattern("SSS")
-                            .define('S', type.getIngredient())
+                            .define('S', type.ingredient())
                             .define('W', ModItems.warpStones.get(WarpStoneTypes.UNSCOPED))
                             .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(WarpStoneTypes.UNSCOPED)))
                             .save(exporter);
                 });
 
-                shapeless(RecipeCategory.DECORATIONS, ModBlocks.waystones.get(WaystoneType.MOSSY_ANDESITE))
-                        .requires(ModBlocks.waystones.get(WaystoneType.ANDESITE))
+                shapeless(RecipeCategory.DECORATIONS, ModBlocks.waystones.get(WaystoneTypes.MOSSY_ANDESITE))
+                        .requires(ModBlocks.waystones.get(WaystoneTypes.ANDESITE))
                         .requires(Blocks.VINE, 3)
-                        .unlockedBy("has_waystone", has(ModBlocks.waystones.get(WaystoneType.ANDESITE)))
+                        .unlockedBy("has_waystone", has(ModBlocks.waystones.get(WaystoneTypes.ANDESITE)))
                         .save(exporter, "waystones:mossy_waystone_from_vines");
 
-                shapeless(RecipeCategory.DECORATIONS, ModBlocks.waystones.get(WaystoneType.MOSSY_ANDESITE))
-                        .requires(ModBlocks.waystones.get(WaystoneType.ANDESITE))
+                shapeless(RecipeCategory.DECORATIONS, ModBlocks.waystones.get(WaystoneTypes.MOSSY_ANDESITE))
+                        .requires(ModBlocks.waystones.get(WaystoneTypes.ANDESITE))
                         .requires(Blocks.MOSS_BLOCK, 3)
-                        .unlockedBy("has_waystone", has(ModBlocks.waystones.get(WaystoneType.ANDESITE)))
+                        .unlockedBy("has_waystone", has(ModBlocks.waystones.get(WaystoneTypes.ANDESITE)))
                         .save(exporter, "waystones:mossy_waystone_from_moss_blocks");
 
                 shaped(RecipeCategory.DECORATIONS, ModBlocks.warpPlate)
