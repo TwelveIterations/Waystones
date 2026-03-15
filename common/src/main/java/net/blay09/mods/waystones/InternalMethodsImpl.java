@@ -14,7 +14,6 @@ import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -24,7 +23,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,14 +38,14 @@ public class InternalMethodsImpl implements InternalMethods {
     public Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init) {
         return WaystonesAPI.createCustomTeleportContext(entity, waystone).ifLeft(context -> {
             final var config = WaystonesConfig.getActive();
-            final var shouldTransportPets = config.teleports.transportPets;
+            final var shouldTransportPets = config.rules.transportPets;
             if (shouldTransportPets == WaystonesConfig.TransportMobs.ENABLED || (shouldTransportPets == WaystonesConfig.TransportMobs.SAME_DIMENSION && !context.isDimensionalTeleport())) {
                 if (entity instanceof LivingEntity livingEntity) {
                     context.getAdditionalEntities().addAll(WaystoneTeleportManager.findPets(livingEntity));
                 }
             }
             context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(entity));
-            context.setAppliesModifiers(config.teleports.enableModifiers);
+            context.setAppliesModifiers(config.rules.enableModifiers);
             init.accept(context);
         });
     }

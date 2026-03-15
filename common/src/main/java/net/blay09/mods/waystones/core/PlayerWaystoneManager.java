@@ -50,7 +50,7 @@ public class PlayerWaystoneManager {
 
                 if (!waystone.hasOwner()) {
                     mutableWaystone.setOwnerUid(player.getUUID());
-                    mutableWaystone.setVisibility(WaystonesConfig.getActive().general.defaultVisibility);
+                    mutableWaystone.setVisibility(WaystonesConfig.getActive().rules.defaultVisibility.getVisibility());
                     if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
                         PlayerWaystoneManager.activeWaystoneForEveryone(serverLevel.getServer(), waystone);
                     }

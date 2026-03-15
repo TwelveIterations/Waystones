@@ -233,7 +233,7 @@ public class WaystoneTeleportManager {
         final var entity = context.getEntity();
 
         if (!context.getLeashedEntities().isEmpty()) {
-            if (WaystonesConfig.getActive().teleports.transportLeashed == WaystonesConfig.TransportMobs.DISABLED) {
+            if (WaystonesConfig.getActive().rules.transportLeashed == WaystonesConfig.TransportMobs.DISABLED) {
                 return Either.right(new WaystoneTeleportError.LeashedWarpDenied());
             }
 
@@ -243,7 +243,7 @@ public class WaystoneTeleportManager {
                 }
             }
 
-            if (context.isDimensionalTeleport() && WaystonesConfig.getActive().teleports.transportLeashed == WaystonesConfig.TransportMobs.SAME_DIMENSION) {
+            if (context.isDimensionalTeleport() && WaystonesConfig.getActive().rules.transportLeashed == WaystonesConfig.TransportMobs.SAME_DIMENSION) {
                 return Either.right(new WaystoneTeleportError.LeashedDimensionalWarpDenied());
             }
         }

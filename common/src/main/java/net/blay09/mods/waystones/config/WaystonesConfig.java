@@ -6,7 +6,6 @@ import net.blay09.mods.balm.platform.config.reflection.Config;
 import net.blay09.mods.balm.platform.config.reflection.NestedType;
 import net.blay09.mods.balm.platform.config.reflection.Synced;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.minecraft.resources.Identifier;
@@ -41,8 +40,27 @@ public class WaystonesConfig {
         }
     }
 
-    public General general = new General();
-    public Teleports teleports = new Teleports();
+    public enum DefaultWaystoneVisibility implements StringRepresentable {
+        ACTIVATION(WaystoneVisibility.ACTIVATION),
+        GLOBAL(WaystoneVisibility.GLOBAL);
+
+        private final WaystoneVisibility visibility;
+
+        DefaultWaystoneVisibility(WaystoneVisibility visibility) {
+            this.visibility = visibility;
+        }
+
+        public WaystoneVisibility getVisibility() {
+            return visibility;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return name().toLowerCase(Locale.ROOT);
+        }
+    }
+
+    public Rules rules = new Rules();
     public InventoryButton inventoryButton = new InventoryButton();
     public WorldGen worldGen = new WorldGen();
     public Client client = new Client();
@@ -50,24 +68,19 @@ public class WaystonesConfig {
     public BlueMap blueMap = new BlueMap();
     public Dynmap dynmap = new Dynmap();
 
-    public static class General {
+    public static class Rules {
+
         @Synced
         @Comment("Set to \"global\" to have newly placed or found waystones be global by default.")
-        @Deprecated
-        public WaystoneVisibility defaultVisibility = WaystoneVisibility.ACTIVATION;
+        public DefaultWaystoneVisibility defaultVisibility = DefaultWaystoneVisibility.ACTIVATION;
 
         @Synced
-        @Comment("Add \"global\" to allow every player to create global waystones.")
-        @NestedType(WaystoneVisibility.class)
-        @Deprecated
-        public Set<WaystoneVisibility> allowedVisibilities = Set.of();
-    }
-
-    public static class Teleports {
+        @Comment("Set to true to allow everyone to manage global waystones. Always true if `defaultVisibility` is `global`. Can be overridden by Shogi Rule `may_manage_global_waystones`.")
+        public boolean allowEveryoneToManageGlobalWaystones = false;
 
         @Synced
         @Comment("Set to false to simply disable all xp costs. See rules for more fine-grained control.")
-        public boolean enableCosts = true;
+        public boolean enableXpCosts = true;
 
         @Synced
         @Comment("Set to false to simply disable all durability costs. See rules for more fine-grained control.")
@@ -80,7 +93,7 @@ public class WaystonesConfig {
         @Synced
         @NestedType(String.class)
         @Comment("List of warp requirements in Shogi format.")
-        public List<String> rules = List.of(
+        public List<String> warpRequirements = List.of(
                 "$xp_points_cost = if(condition = is_interdimensional, then = 27, else = $distance * 0.01)",
                 "source(is_warp_plate()), target(is_global()) -> $xp_points_cost = 0",
                 "$xp_points_cost = clamp($xp_points_cost, 0, 27)",

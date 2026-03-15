@@ -51,11 +51,6 @@ public record ServerboundEditWaystonePacket(UUID waystoneUid, String name, Wayst
             visibility = visibilityOptions.getFirst();
         }
 
-        if (!WaystonePermissionManager.isAllowedVisibility(visibility) && !WaystonePermissionManager.skipsPermissions(player)) {
-            Waystones.logger.warn("{} tried to edit a restricted waystone without permission", player.getName().getString());
-            return;
-        }
-
         final var pos = waystone.getPos();
         if (player.distanceToSqr(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) > 64) {
             return;
@@ -65,11 +60,8 @@ public record ServerboundEditWaystonePacket(UUID waystoneUid, String name, Wayst
         final var legalName = makeNameLegal(server, message.name);
         backingWaystone.setName(legalName);
 
-        if (visibility == WaystoneVisibility.GLOBAL && (WaystonePermissionManager.isAllowedVisibility(visibility) || WaystonePermissionManager.skipsPermissions(
-                player))) {
-            if (backingWaystone.getVisibility() != WaystoneVisibility.GLOBAL) {
-                PlayerWaystoneManager.activeWaystoneForEveryone(server, backingWaystone);
-            }
+        if (visibility == WaystoneVisibility.GLOBAL && backingWaystone.getVisibility() != WaystoneVisibility.GLOBAL) {
+            PlayerWaystoneManager.activeWaystoneForEveryone(server, backingWaystone);
         }
         backingWaystone.setVisibility(visibility);
 

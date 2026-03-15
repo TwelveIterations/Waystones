@@ -9,12 +9,13 @@ import net.blay09.mods.shogi.common.CachedShogiRule;
 import net.blay09.mods.shogi.context.ShogiContext;
 import net.blay09.mods.shogi.scope.ShogiScope;
 import net.blay09.mods.waystones.api.TeleportFlags;
-import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.WaystoneKinds;
+import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.rules.*;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.tag.ModItemTags;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -32,11 +33,36 @@ public class WaystonesRules {
     public static final ShogiValue<Entity, Integer> warpStoneUseTime = Shogi.intValue(id("warp_stone_use_time"), _ -> 32);
     public static final ShogiValue<BlockEntity, Integer> warpPlateUseTime = Shogi.intValue(id("warp_plate_use_time"), _ -> 15);
     public static final ShogiValue<Entity, Integer> scrollUseTime = Shogi.intValue(id("scroll_use_time"), _ -> 32);
-    public static final ShogiValue<ShogiContext, Boolean> mayEdit = Shogi.booleanValue(id("may_edit"), context -> {
+
+    public static final ShogiValue<ShogiContext, Boolean> mayManageGlobalWaystones = Shogi.maybe(id("may_manage_global_waystones"), (ShogiContext context) -> {
+        final var player = context.requirePlayer();
+        final var config = WaystonesConfig.getActive();
+        if (config.rules.allowEveryoneToManageGlobalWaystones) {
+            return Either.left(true);
+        }
+        if (config.rules.defaultVisibility == WaystonesConfig.DefaultWaystoneVisibility.GLOBAL) {
+            return Either.left(true);
+        }
+        if (!player.isCreative()) {
+            return Either.right(Component.translatable("chat.waystones.only_creative_can_edit"));
+        }
+        return Either.left(true);
+    }).coerce(Coercion.BOOLEAN);
+
+    public static final ShogiValue<ShogiContext, Boolean> mayEdit = Shogi.maybe(id("may_edit"), (ShogiContext context) -> {
         final var player = context.requirePlayer();
         final var waystone = WaystoneRuleContext.getEffectiveWaystone(context).orElseThrow();
-        return waystone.hasOwner() && !waystone.isOwner(player);
-    });
+        if (waystone.hasOwner() && !waystone.isOwner(player)) {
+            return Either.right(Component.translatable("chat.waystones.only_owner_can_edit"));
+        }
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
+            final var manageGlobalResult = mayManageGlobalWaystones.get(context);
+            if (manageGlobalResult.right().isPresent()) {
+                return manageGlobalResult;
+            }
+        }
+        return Either.left(true);
+    }).coerce(Coercion.BOOLEAN);
 
     public static final ShogiScope scope = Shogi.scope(id("rules"), it -> {
         it.setDefaultNamespaces(List.of("waystones", "shogi"));
@@ -126,7 +152,7 @@ public class WaystonesRules {
         }
     });
 
-    private static final CachedShogiRule cachedWarpRequirements = CachedShogiRule.ofRules(scope, () -> WaystonesConfig.getActive().teleports.rules);
+    private static final CachedShogiRule cachedWarpRequirements = CachedShogiRule.ofRules(scope, () -> WaystonesConfig.getActive().rules.warpRequirements);
 
     public static void initialize() {
         ConfigCallback.Reloaded.EVENT.register(schema -> {

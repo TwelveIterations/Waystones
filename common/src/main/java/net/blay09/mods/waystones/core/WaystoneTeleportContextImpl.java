@@ -5,7 +5,6 @@ import net.blay09.mods.shogi.coercion.Coercion;
 import net.blay09.mods.shogi.common.effect.cost.DamageItem;
 import net.blay09.mods.shogi.common.effect.cost.ExperienceLevelCost;
 import net.blay09.mods.shogi.common.effect.cost.ExperiencePointsCost;
-import net.blay09.mods.shogi.common.effect.server.cooldown.AddCooldown;
 import net.blay09.mods.shogi.common.effect.server.cooldown.CooldownCost;
 import net.blay09.mods.shogi.context.executor.EffectExecutor;
 import net.blay09.mods.waystones.api.Waystone;
@@ -53,25 +52,25 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
         this.targetWaystone = targetWaystone;
 
         executor.overrideConsume(DamageItem.IDENTIFIER, (operation, value) -> {
-            if (WaystonesConfig.getActive().teleports.enableDurability) {
+            if (WaystonesConfig.getActive().rules.enableDurability) {
                 operation.accept(value);
             }
         });
 
         executor.overrideConsume(ExperienceLevelCost.IDENTIFIER, (operation, value) -> {
-            if (WaystonesConfig.getActive().teleports.enableCosts) {
+            if (WaystonesConfig.getActive().rules.enableXpCosts) {
                 operation.accept(value);
             }
         });
 
         executor.overrideConsume(ExperiencePointsCost.IDENTIFIER, (operation, value) -> {
-            if (WaystonesConfig.getActive().teleports.enableCosts) {
+            if (WaystonesConfig.getActive().rules.enableXpCosts) {
                 operation.accept(value);
             }
         });
 
         executor.overrideConsume(CooldownCost.IDENTIFIER, (operation, value) -> {
-            if (WaystonesConfig.getActive().teleports.enableCooldowns) {
+            if (WaystonesConfig.getActive().rules.enableCooldowns) {
                 operation.accept(value);
             }
         });
