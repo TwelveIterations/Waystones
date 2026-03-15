@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
 import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.api.WarpStoneTypes;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -77,7 +78,7 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
         renderState.runeColor = ((SharestoneBlock) blockEntity.getBlockState().getBlock()).getType().textureDiffuseColor();
 
         if (warpStoneItem == null) {
-            warpStoneItem = ModItems.warpStones.get(null).createStack();
+            warpStoneItem = ModItems.warpStones.get(WarpStoneTypes.UNSCOPED).createStack();
             level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).get(Enchantments.UNBREAKING).ifPresent(it -> warpStoneItem.enchant(it, 1));
         }
 

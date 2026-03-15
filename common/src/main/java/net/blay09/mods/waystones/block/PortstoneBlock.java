@@ -4,9 +4,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.world.BalmMenuProvider;
-import net.blay09.mods.waystones.api.SharestoneType;
+import net.blay09.mods.waystones.api.PortstoneType;
 import net.blay09.mods.waystones.api.TeleportFlags;
-import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
@@ -39,12 +38,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.Set;
 
 public class PortstoneBlock extends WaystoneBlockBase {
 
-    public static final MapCodec<PortstoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(SharestoneType.CODEC.optionalFieldOf("type")
+    public static final MapCodec<PortstoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(PortstoneType.CODEC.fieldOf("type")
                     .forGetter(PortstoneBlock::getType), propertiesCodec())
             .apply(instance, PortstoneBlock::new));
 
@@ -110,22 +108,16 @@ public class PortstoneBlock extends WaystoneBlockBase {
             ).optimize()
     };
 
-    @Nullable
-    private final SharestoneType type;
+    private final PortstoneType type;
 
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public PortstoneBlock(Optional<SharestoneType> type, Properties properties) {
-        this(type.orElse(null), properties);
-    }
-
-    public PortstoneBlock(@Nullable SharestoneType type, Properties properties) {
+    public PortstoneBlock(PortstoneType type, Properties properties) {
         super(properties);
         this.type = type;
         registerDefaultState(this.stateDefinition.any().setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, false));
     }
 
-    public Optional<SharestoneType> getType() {
-        return Optional.ofNullable(type);
+    public PortstoneType getType() {
+        return type;
     }
 
     @Override
@@ -143,7 +135,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult blockHitResult) {
         if (!world.isClientSide()) {
-            final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForScope(player, type));
+            final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForKind(player, type.kind()));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
             Balm.networking().openMenu(player, new BalmMenuProvider<ModMenus.WaystoneListMenuData>() {
                 @Override

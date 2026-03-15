@@ -2,9 +2,9 @@ package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.world.BalmMenuProvider;
-import net.blay09.mods.waystones.api.SharestoneType;
+import net.blay09.mods.waystones.api.WarpStoneType;
 import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
-import net.blay09.mods.waystones.api.trait.SharestoneScoped;
+import net.blay09.mods.waystones.api.trait.WaystoneKindScoped;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -14,6 +14,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -30,28 +31,26 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
-public class WarpStoneItem extends Item implements IResetUseOnDamage, SharestoneScoped {
+public class WarpStoneItem extends Item implements IResetUseOnDamage, WaystoneKindScoped {
 
     private final Random random = new Random();
-    @Nullable
-    private final SharestoneType type;
+    private final WarpStoneType type;
 
-    public WarpStoneItem(@Nullable SharestoneType type, Properties properties) {
+    public WarpStoneItem(WarpStoneType type, Properties properties) {
         super(properties.durability(10000));
         this.type = type;
     }
 
-    public @Nullable SharestoneType getType() {
+    public WarpStoneType getType() {
         return type;
     }
 
     @Override
-    public @Nullable SharestoneType getSharestoneType() {
-        return type;
+    public Identifier getWaystoneKind() {
+        return type.kind();
     }
 
     @Override

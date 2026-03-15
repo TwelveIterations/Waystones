@@ -2,10 +2,12 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.balm.platform.BalmEnvironment;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.MutableWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneKinds;
+import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
-import net.blay09.mods.waystones.api.trait.SharestoneScoped;
+import net.blay09.mods.waystones.api.trait.WaystoneKindScoped;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -154,8 +156,8 @@ public class PlayerWaystoneManager {
     }
 
     public static Collection<Waystone> getTargetsForItem(Player player, ItemStack itemStack) {
-        if (itemStack.getItem() instanceof SharestoneScoped sharestoneScoped) {
-            return getTargetsForScope(player, sharestoneScoped.getSharestoneType());
+        if (itemStack.getItem() instanceof WaystoneKindScoped kindScoped) {
+            return getTargetsForKind(player, kindScoped.getWaystoneKind());
         }
         return PlayerWaystoneManager.getActivatedWaystones(player);
     }
@@ -171,9 +173,13 @@ public class PlayerWaystoneManager {
         return result;
     }
 
-    public static Collection<Waystone> getTargetsForScope(Player player, @Nullable SharestoneType sharestoneType) {
-        final var kind = Optional.ofNullable(WaystoneKinds.getKind(sharestoneType)).orElse(WaystoneKinds.WAYSTONE);
-        return new ArrayList<>(SavedDataWaystonesStore.get(player.level().getServer()).getWaystonesByKind(kind));
+    public static Collection<Waystone> getTargetsForKind(Player player, Identifier kind) {
+        if (WaystoneKinds.WAYSTONE.equals(kind)) {
+            return getTargetsForPlayer(player);
+        } else if (WaystoneKinds.isSharestone(kind)) {
+            return new ArrayList<>(SavedDataWaystonesStore.get(player.level().getServer()).getWaystonesByKind(kind));
+        }
+        return Collections.emptyList();
     }
 
     @Deprecated

@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.datagen;
 
 import net.blay09.mods.balm.world.level.block.DeferredBlock;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.PortstoneType;
 import net.blay09.mods.waystones.api.SharestoneType;
 import net.blay09.mods.waystones.api.WaystoneType;
 import net.blay09.mods.waystones.block.ModBlocks;
@@ -110,7 +111,7 @@ public class ModModelProvider extends FabricModelProvider {
         blockStateModelGenerator.registerSimpleTintedItemModel(block.asBlock(), itemModelLocation, new Constant(type.textColor()));
     }
 
-    private void createPortstone(BlockModelGenerators blockStateModelGenerator, SharestoneType type, DeferredBlock block) {
+    private void createPortstone(BlockModelGenerators blockStateModelGenerator, PortstoneType type, DeferredBlock block) {
         final var topModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_top");
         final var bottomModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_bottom");
         final var generator = MultiVariantGenerator.dispatch(block.asBlock())
@@ -120,7 +121,7 @@ public class ModModelProvider extends FabricModelProvider {
                 .with(ROTATION_HORIZONTAL_FACING);
         blockStateModelGenerator.blockStateOutput.accept(generator);
         final var itemModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "item/portstone");
-        blockStateModelGenerator.registerSimpleTintedItemModel(block.asBlock(), itemModelLocation, type != null ? new Constant(type.textColor()) : new Constant(0xFFFFFFFF));
+        blockStateModelGenerator.registerSimpleTintedItemModel(block.asBlock(), itemModelLocation, new Constant(type.textColor()));
     }
 
 }

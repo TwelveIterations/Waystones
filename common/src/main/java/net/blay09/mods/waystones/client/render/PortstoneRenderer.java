@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.blay09.mods.waystones.api.SharestoneType;
+import net.blay09.mods.waystones.api.WarpStoneTypes;
 import net.blay09.mods.waystones.block.PortstoneBlock;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
@@ -73,11 +73,11 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
 
         renderState.facing = blockState.getValue(PortstoneBlock.FACING);
         renderState.glow = !WaystonesConfig.getActive().client.disableTextGlow;
-        renderState.runeColor = ((PortstoneBlock) blockEntity.getBlockState().getBlock()).getType().map(SharestoneType::textureDiffuseColor).orElse(0xFFFFFFFF);
+        renderState.runeColor = ((PortstoneBlock) blockEntity.getBlockState().getBlock()).getType().textureDiffuseColor();
 
         final var level = blockEntity.getLevel();
         if (warpStoneItem == null) {
-            warpStoneItem = ModItems.warpStones.get(null).createStack();
+            warpStoneItem = ModItems.warpStones.get(WarpStoneTypes.UNSCOPED).createStack();
             level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).get(Enchantments.UNBREAKING).ifPresent(it -> warpStoneItem.enchant(it, 1));
         }
 

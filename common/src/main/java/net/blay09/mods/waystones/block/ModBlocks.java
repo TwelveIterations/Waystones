@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.block;
 import net.blay09.mods.balm.world.level.block.BalmBlockRegistrar;
 import net.blay09.mods.balm.world.level.block.DeferredBlock;
 import net.blay09.mods.balm.world.level.block.DiscriminatedBlocks;
+import net.blay09.mods.waystones.api.PortstoneTypes;
 import net.blay09.mods.waystones.api.SharestoneTypes;
 import net.blay09.mods.waystones.api.WaystoneType;
 import net.blay09.mods.waystones.component.DescriptionComponent;
@@ -14,9 +15,7 @@ import net.blay09.mods.waystones.migration.MigrationUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.SoundType;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,7 +23,7 @@ public class ModBlocks {
 
     public static DiscriminatedBlocks<WaystoneType> waystones;
     public static DeferredBlock warpPlate;
-    public static DiscriminatedBlocks<BuiltinSharestoneType> portstones;
+    public static DiscriminatedBlocks<BuiltinPortstoneType> portstones;
     public static DiscriminatedBlocks<BuiltinSharestoneType> sharestones;
 
     public static void initialize(BalmBlockRegistrar blocks) {
@@ -35,10 +34,8 @@ public class ModBlocks {
         warpPlate = blocks.register("warp_plate", WarpPlateBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withDefaultItem().asDeferredBlock();
 
         final var sharestoneTypes = SharestoneTypes.builtinValues().collect(Collectors.toSet());
-        final var portstoneTypes = new HashSet<@Nullable BuiltinSharestoneType>(sharestoneTypes);
-        portstoneTypes.remove(SharestoneTypes.RUINED);
-        portstoneTypes.add(null);
-        portstones = blocks.registerDiscriminated(portstoneTypes, type -> DiscriminatedBlocks.prefix(type, "portstone"), PortstoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f))
+        final var portstoneTypes = PortstoneTypes.builtinValues().collect(Collectors.toSet());
+        portstones = blocks.registerDiscriminated(portstoneTypes, type -> DiscriminatedBlocks.prefix(type != PortstoneTypes.UNSCOPED ? type : null, "portstone"), PortstoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f))
                 .withItems(PortstoneBlockItem::new, it -> it.component(ModComponents.description.value(), new DescriptionComponent(Component.translatable("tooltip.waystones.portstone").withStyle(ChatFormatting.GRAY))))
                 .asDiscriminatedBlocks();
 

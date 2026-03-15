@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.datagen;
 
 import net.blay09.mods.balm.tags.BalmItemTags;
-import net.blay09.mods.waystones.api.SharestoneTypes;
-import net.blay09.mods.waystones.api.WaystoneType;
+import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.block.BuiltinPortstoneType;
 import net.blay09.mods.waystones.block.BuiltinSharestoneType;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.item.ModItems;
@@ -33,8 +33,8 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                             .pattern("SWS")
                             .pattern("SSS")
                             .define('S', type.getIngredient())
-                            .define('W', ModItems.warpStones.get(null))
-                            .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(null)))
+                            .define('W', ModItems.warpStones.get(WarpStoneTypes.UNSCOPED))
+                            .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(WarpStoneTypes.UNSCOPED)))
                             .save(exporter);
                 });
 
@@ -69,23 +69,20 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
                         .save(exporter);
 
-                shaped(RecipeCategory.DECORATIONS, ModBlocks.portstones.get(null))
+                shaped(RecipeCategory.DECORATIONS, ModBlocks.portstones.get(PortstoneTypes.UNSCOPED))
                         .pattern(" S ")
                         .pattern("SWS")
                         .pattern("BBB")
                         .define('B', Blocks.STONE_BRICKS)
-                        .define('W', ModItems.warpStones.get(null))
+                        .define('W', ModItems.warpStones.get(WarpStoneTypes.UNSCOPED))
                         .define('S', Blocks.STONE_BRICK_SLAB)
-                        .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(null)))
+                        .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(WarpStoneTypes.UNSCOPED)))
                         .save(exporter);
 
-                SharestoneTypes.builtinValues()
-                        .forEach(type -> {
-                            createPortstoneRecipe(exporter, type);
-                            createSharestoneRecipe(exporter, type);
-                        });
+                PortstoneTypes.builtinValues().filter(it -> it != PortstoneTypes.UNSCOPED).forEach(type -> createPortstoneRecipe(exporter, type));
+                SharestoneTypes.builtinValues().forEach(type -> createSharestoneRecipe(exporter, type));
 
-                shaped(RecipeCategory.DECORATIONS, ModItems.warpStones.get(null))
+                shaped(RecipeCategory.DECORATIONS, ModItems.warpStones.get(WarpStoneTypes.UNSCOPED))
                         .pattern("AEA")
                         .pattern("EGE")
                         .pattern("AEA")
@@ -136,13 +133,13 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("DWD")
                         .pattern("SSS")
                         .define('S', Blocks.STONE_BRICKS)
-                        .define('W', ModItems.warpStones.get(null))
+                        .define('W', ModItems.warpStones.get(WarpStoneTypes.UNSCOPED))
                         .define('D', type.ingredient())
-                        .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(null)))
+                        .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(WarpStoneTypes.UNSCOPED)))
                         .save(exporter);
             }
 
-            private void createPortstoneRecipe(RecipeOutput exporter, BuiltinSharestoneType type) {
+            private void createPortstoneRecipe(RecipeOutput exporter, BuiltinPortstoneType type) {
                 final var portstone = ModBlocks.portstones.get(type);
                 if (portstone == null) {
                     return;
@@ -153,10 +150,10 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("SWS")
                         .pattern("BBB")
                         .define('B', Blocks.STONE_BRICKS)
-                        .define('W', ModItems.warpStones.get(null))
+                        .define('W', ModItems.warpStones.get(WarpStoneTypes.UNSCOPED))
                         .define('S', Blocks.STONE_BRICK_SLAB)
                         .define('D', type.ingredient())
-                        .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(null)))
+                        .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(WarpStoneTypes.UNSCOPED)))
                         .save(exporter);
             }
 

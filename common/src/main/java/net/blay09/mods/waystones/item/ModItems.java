@@ -4,9 +4,11 @@ import net.blay09.mods.balm.world.item.BalmCreativeModeTabRegistrar;
 import net.blay09.mods.balm.world.item.BalmItemRegistrar;
 import net.blay09.mods.balm.world.item.DeferredItem;
 import net.blay09.mods.balm.world.item.DiscriminatedItems;
+import net.blay09.mods.waystones.api.PortstoneTypes;
 import net.blay09.mods.waystones.api.SharestoneTypes;
+import net.blay09.mods.waystones.api.WarpStoneTypes;
 import net.blay09.mods.waystones.api.WaystoneType;
-import net.blay09.mods.waystones.block.BuiltinSharestoneType;
+import net.blay09.mods.waystones.block.BuiltinWarpStoneType;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +21,7 @@ public class ModItems {
     public static DeferredItem blankScroll;
     public static DeferredItem boundScroll;
     public static DeferredItem warpScroll;
-    public static DiscriminatedItems<BuiltinSharestoneType> warpStones;
+    public static DiscriminatedItems<BuiltinWarpStoneType> warpStones;
     public static DeferredItem dormantShard;
     public static DeferredItem attunedShard;
     public static DeferredItem crumblingAttunedShard;
@@ -29,10 +31,8 @@ public class ModItems {
         blankScroll = items.register("blank_scroll", BlankScrollItem::new).asDeferredItem();
         boundScroll = items.register("bound_scroll", BoundScrollItem::new).asDeferredItem();
         warpScroll = items.register("warp_scroll", WarpScrollItem::new).asDeferredItem();
-        final var sharestoneTypesWithNull = SharestoneTypes.builtinValues().collect(Collectors.toCollection(HashSet::new));
-        sharestoneTypesWithNull.remove(SharestoneTypes.RUINED);
-        sharestoneTypesWithNull.add(null);
-        warpStones = items.registerDiscriminated(sharestoneTypesWithNull, type -> DiscriminatedItems.prefix(type, "warp_stone"), WarpStoneItem::new, it -> it).asDiscriminatedItems();
+        final var warpStoneTypes = WarpStoneTypes.builtinValues().collect(Collectors.toCollection(HashSet::new));
+        warpStones = items.registerDiscriminated(warpStoneTypes, type -> DiscriminatedItems.prefix(type != WarpStoneTypes.UNSCOPED ? type : null, "warp_stone"), WarpStoneItem::new, it -> it).asDiscriminatedItems();
         dormantShard = items.register("dormant_shard", ShardItem::new).asDeferredItem();
         attunedShard = items.register("attuned_shard", AttunedShardItem::new).asDeferredItem();
         crumblingAttunedShard = items.register("crumbling_attuned_shard", CrumblingAttunedShardItem::new).asDeferredItem();
@@ -44,13 +44,13 @@ public class ModItems {
                         .icon(() -> new ItemStack(ModBlocks.waystones.get(WaystoneType.ANDESITE)))
                         .displayItems((_, output) -> {
                             output.accept(ModBlocks.waystones.get(WaystoneType.ANDESITE));
-                            output.accept(ModBlocks.portstones.get(null));
+                            output.accept(ModBlocks.portstones.get(PortstoneTypes.UNSCOPED));
                             output.accept(ModBlocks.sharestones.get(SharestoneTypes.COPPER));
                             output.accept(ModBlocks.warpPlate);
                             output.accept(ModItems.blankScroll);
                             output.accept(ModItems.returnScroll);
                             output.accept(ModItems.warpScroll);
-                            output.accept(ModItems.warpStones.get(null));
+                            output.accept(ModItems.warpStones.get(WarpStoneTypes.UNSCOPED));
                             output.accept(ModItems.dormantShard);
                             ModBlocks.waystones.forEach((type, block) -> {
                                 if (type != WaystoneType.ANDESITE) {
@@ -63,12 +63,12 @@ public class ModItems {
                                 }
                             });
                             ModBlocks.portstones.forEach((type, block) -> {
-                                if (type != null) {
+                                if (type != PortstoneTypes.UNSCOPED) {
                                     output.accept(block);
                                 }
                             });
                             ModItems.warpStones.forEach((type, item) -> {
-                                if (type != null) {
+                                if (type != WarpStoneTypes.UNSCOPED) {
                                     output.accept(item);
                                 }
                             });

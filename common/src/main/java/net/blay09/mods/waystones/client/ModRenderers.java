@@ -41,7 +41,7 @@ public class ModRenderers {
     public static void initialize(BalmBlockColorRegistrar blockColors) {
         blockColors.register(List.of(BlockTintSources.constant(0xffc456bd)), ModBlocks.warpPlate);
         blockColors.register(List.of(state -> ((SharestoneBlock) state.getBlock()).getType().textColor() | 0xFF000000), ModBlocks.sharestones.values());
-        blockColors.register(List.of(state -> ((PortstoneBlock) state.getBlock()).getType().map(it -> it.textColor() | 0xFF000000).orElse(0xFFFFFFFF)), ModBlocks.portstones.values());
+        blockColors.register(List.of(state -> ((PortstoneBlock) state.getBlock()).getType().textColor() | 0xFF000000), ModBlocks.portstones.values());
     }
 
     public static void initialize(BalmBlockRenderTypeRegistrar blockRenderTypes) {
