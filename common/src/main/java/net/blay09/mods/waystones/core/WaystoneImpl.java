@@ -78,7 +78,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         this.pos = pos;
         this.origin = origin;
         this.ownerUid = ownerUid;
-        this.visibility = WaystoneVisibility.fromWaystoneType(waystoneKind);
+        this.visibility = WaystoneVisibility.getDefaultForWaystoneKind(waystoneKind);
     }
 
     public WaystoneImpl(Identifier waystoneKind, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, Component name, WaystoneVisibility visibility) {
