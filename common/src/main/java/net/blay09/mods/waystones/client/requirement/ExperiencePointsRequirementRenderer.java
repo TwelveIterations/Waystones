@@ -41,8 +41,12 @@ public class ExperiencePointsRequirementRenderer implements RequirementRenderer<
 
     @Override
     public void appendHoverText(Player player, ExperiencePointsCostInformation requirement, List<Component> tooltip) {
-        if (requirement.required() > 0) {
-            tooltip.add(Component.translatable("gui.waystones.waystone_selection.xp_requirement", requirement.required()).withStyle(ChatFormatting.GREEN));
+        final var points = requirement.required();
+        final var levels = points > 0 ? ExperienceUtils.calculateLevelCostFromExperiencePoints(player.experienceLevel, points) : 0;
+        if (levels > 0) {
+            tooltip.add(Component.translatable("gui.waystones.waystone_selection.level_requirement", levels).withStyle(ChatFormatting.GREEN));
+        } else if (points > 0) {
+            tooltip.add(Component.translatable("gui.waystones.waystone_selection.xp_requirement", points).withStyle(ChatFormatting.GREEN));
         }
     }
 }
