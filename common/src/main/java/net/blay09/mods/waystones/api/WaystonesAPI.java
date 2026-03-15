@@ -98,8 +98,8 @@ public class WaystonesAPI {
         return __internalMethods.getNearestWaystone(player);
     }
 
-    public static Optional<Waystone> placeWaystone(ServerLevel level, BlockPos pos, WaystoneType style) {
-        return __internalMethods.placeWaystone(level, pos, style);
+    public static Optional<Waystone> placeWaystone(ServerLevel level, BlockPos pos, WaystoneType type) {
+        return __internalMethods.placeWaystone(level, pos, type);
     }
 
     public static Optional<Waystone> placeSharestone(ServerLevel level, BlockPos pos, SharestoneType type) {

@@ -16,8 +16,8 @@ public class BuiltinWaystoneType extends WaystoneType {
     private final Block particleBlock;
     private final Supplier<Ingredient> ingredientSupplier;
 
-    public BuiltinWaystoneType(String name, int runeColor, SoundType soundType, Block particleBlock, Supplier<Ingredient> ingredientSupplier) {
-        super(id(name + "_waystone"), runeColor);
+    public BuiltinWaystoneType(String name, int runeColor, SoundType soundType, Block particleBlock, Supplier<Ingredient> ingredientSupplier, Supplier<Block> blockSupplier) {
+        super(id(name + "_waystone"), runeColor, blockSupplier);
         this.name = name;
         this.soundType = soundType;
         this.particleBlock = particleBlock;

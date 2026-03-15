@@ -3,12 +3,14 @@ package net.blay09.mods.waystones.api;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.Block;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class WaystoneType implements Comparable<WaystoneType> {
@@ -21,10 +23,12 @@ public class WaystoneType implements Comparable<WaystoneType> {
 
     private final Identifier identifier;
     private final int runeColor;
+    private final Supplier<Block> blockSupplier;
 
-    public WaystoneType(Identifier identifier, int runeColor) {
+    public WaystoneType(Identifier identifier, int runeColor, Supplier<Block> blockSupplier) {
         this.identifier = identifier;
         this.runeColor = runeColor;
+        this.blockSupplier = blockSupplier;
     }
 
     public static synchronized WaystoneType register(WaystoneType type) {
@@ -55,6 +59,10 @@ public class WaystoneType implements Comparable<WaystoneType> {
 
     public int runeColor() {
         return runeColor;
+    }
+
+    public Block block() {
+        return blockSupplier.get();
     }
 
     @Override

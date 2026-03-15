@@ -126,7 +126,7 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public Optional<Waystone> placeWaystone(ServerLevel level, BlockPos pos, WaystoneType type) {
-        Block block = BuiltInRegistries.BLOCK.getValue(type.identifier());
+        final var block = type.block();
         level.setBlock(pos, block.defaultBlockState()
                 .setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER)
                 .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.PLAYER), 3);
