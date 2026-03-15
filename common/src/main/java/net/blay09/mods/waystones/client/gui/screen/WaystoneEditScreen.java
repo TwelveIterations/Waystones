@@ -133,7 +133,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         guiGraphics.drawCenteredString(font, title, 176 / 2, titleLabelY, 0xFFFFFFFF);
         final var error = menu.getError();
         if (error != null) {
-            guiGraphics.drawCenteredString(font, error, 176 / 2, titleLabelY + 12, ChatFormatting.RED.getColor());
+            guiGraphics.drawCenteredString(font, error, 176 / 2, titleLabelY + 12, 0xFFFF5555);
         }
         guiGraphics.drawString(font,
                 Component.translatable("gui.waystones.waystone_settings.visibility." + visibilityButton.getVisibility().name().toLowerCase(Locale.ROOT)),
