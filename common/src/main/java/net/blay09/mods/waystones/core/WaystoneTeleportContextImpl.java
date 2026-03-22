@@ -21,6 +21,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
@@ -235,6 +236,11 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public BlockState blockState() {
         return level().getBlockState(blockPos());
+    }
+
+    @Override
+    public BlockEntity blockEntity() {
+        return level().getBlockEntity(blockPos());
     }
 
     @Override

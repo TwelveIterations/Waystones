@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.client;
 import net.blay09.mods.balm.client.color.block.BalmBlockColorRegistrar;
 import net.blay09.mods.balm.client.model.geom.BalmModelLayerRegistrar;
 import net.blay09.mods.balm.client.renderer.blockentity.BalmBlockEntityRendererRegistrar;
-import net.blay09.mods.balm.client.renderer.chunk.BalmBlockRenderTypeRegistrar;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.PortstoneBlock;
 import net.blay09.mods.waystones.block.SharestoneBlock;
@@ -42,10 +41,6 @@ public class ModRenderers {
         blockColors.register(List.of(BlockTintSources.constant(0xffc456bd)), ModBlocks.warpPlate);
         blockColors.register(List.of(state -> ((SharestoneBlock) state.getBlock()).getType().textColor() | 0xFF000000), ModBlocks.sharestones.values());
         blockColors.register(List.of(state -> ((PortstoneBlock) state.getBlock()).getType().textColor() | 0xFF000000), ModBlocks.portstones.values());
-    }
-
-    public static void initialize(BalmBlockRenderTypeRegistrar blockRenderTypes) {
-        blockRenderTypes.setRenderLayer(ModBlocks.warpPlate, ChunkSectionLayer.CUTOUT);
     }
 
 }

@@ -6,7 +6,6 @@ import net.blay09.mods.balm.client.model.geom.BalmModelLayerRegistrar;
 import net.blay09.mods.balm.client.platform.module.BalmClientModule;
 import net.blay09.mods.balm.client.renderer.block.model.BalmBlockStateModelRegistrar;
 import net.blay09.mods.balm.client.renderer.blockentity.BalmBlockEntityRendererRegistrar;
-import net.blay09.mods.balm.client.renderer.chunk.BalmBlockRenderTypeRegistrar;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
 import net.blay09.mods.waystones.compat.Compat;
@@ -25,11 +24,6 @@ public class WaystonesClient implements BalmClientModule {
     @Override
     public Identifier getId() {
         return Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "client");
-    }
-
-    @Override
-    public void registerBlockRenderTypes(BalmBlockRenderTypeRegistrar blockRenderTypes) {
-        ModRenderers.initialize(blockRenderTypes);
     }
 
     @Override
