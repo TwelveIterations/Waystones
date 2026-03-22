@@ -13,9 +13,6 @@ public class ModComponents {
     public static Holder<DataComponentType<UUID>> waystone;
 
     @Deprecated
-    public static Holder<DataComponentType<WaystoneNameComponent>> waystoneName;
-
-    @Deprecated
     public static Holder<DataComponentType<UUID>> attunement;
 
     public static Holder<DataComponentType<DescriptionComponent>> description;
@@ -28,7 +25,6 @@ public class ModComponents {
     public static void initialize(BalmDataComponentTypeRegistrar components) {
         description = components.register("description", DescriptionComponent.CODEC).asHolder();
         waystone = components.register("waystone", UUIDUtil.CODEC).asHolder();
-        waystoneName = components.register("waystone_name", WaystoneNameComponent.CODEC).asHolder();
         attunement = components.register("attunement", UUIDUtil.CODEC).asHolder();
 
         blankScroll = components.register("blank_scroll", BlankScrollComponent.CODEC).asHolder();

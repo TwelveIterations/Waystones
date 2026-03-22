@@ -9,17 +9,7 @@ import java.util.List;
 public interface RequirementRenderer<T> {
     void renderWidget(Player player, T requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y);
 
-    /**
-     * @deprecated Use {@link #getWidth(Player, T)} instead.
-     */
-    @Deprecated
-    default int getWidth(T requirement) {
-        return 16;
-    }
-
-    default int getWidth(Player player, T requirement) {
-        return getWidth(requirement);
-    }
+    int getWidth(Player player, T requirement);
 
     default int getOrder() {
         return 100;
