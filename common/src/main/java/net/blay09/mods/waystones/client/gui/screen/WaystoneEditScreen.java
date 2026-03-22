@@ -113,10 +113,8 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
-
-        extractTooltip(guiGraphics, mouseX, mouseY);
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractContents(guiGraphics, mouseX, mouseY, partialTicks);
 
         if (textField != null && textField.getValue().isEmpty()) {
             guiGraphics.text(Minecraft.getInstance().font,

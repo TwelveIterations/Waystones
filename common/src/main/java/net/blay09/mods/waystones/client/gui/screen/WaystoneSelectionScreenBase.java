@@ -243,12 +243,11 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
-        extractTooltip(guiGraphics, mouseX, mouseY);
+    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractContents(graphics, mouseX, mouseY, a);
         for (ITooltipProvider tooltipProvider : tooltipProviders) {
             if (tooltipProvider.shouldShowTooltip()) {
-                guiGraphics.setTooltipForNextFrame(font, tooltipProvider.getTooltipComponents(), Optional.empty(), mouseX, mouseY);
+                graphics.setTooltipForNextFrame(font, tooltipProvider.getTooltipComponents(), Optional.empty(), mouseX, mouseY);
             }
         }
     }
