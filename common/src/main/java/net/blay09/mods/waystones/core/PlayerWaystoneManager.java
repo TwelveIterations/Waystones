@@ -163,7 +163,7 @@ public class PlayerWaystoneManager {
     }
 
     public static Collection<Waystone> getTargetsForWaystone(Player player, Waystone waystone) {
-        final var result = getTargetsForWaystoneType(player, waystone.getWaystoneKind());
+        final var result = getTargetsForKind(player, waystone.getWaystoneKind());
 
         final var blockEntity = player.level().getBlockEntity(waystone.getPos());
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
@@ -180,18 +180,6 @@ public class PlayerWaystoneManager {
             return new ArrayList<>(SavedDataWaystonesStore.get(player.level().getServer()).getWaystonesByKind(kind));
         }
         return Collections.emptyList();
-    }
-
-    @Deprecated
-    public static Collection<Waystone> getTargetsForWaystoneType(Player player, Identifier waystoneType) {
-        final var result = new ArrayList<Waystone>();
-        if (WaystoneKinds.isSharestone(waystoneType)) {
-            result.addAll(SavedDataWaystonesStore.get(player.level().getServer()).getWaystonesByKind(waystoneType));
-        } else {
-            result.addAll(PlayerWaystoneManager.getActivatedWaystones(player));
-        }
-
-        return result;
     }
 
     public static Collection<Waystone> getTargetsForInventoryButton(ServerPlayer player) {
