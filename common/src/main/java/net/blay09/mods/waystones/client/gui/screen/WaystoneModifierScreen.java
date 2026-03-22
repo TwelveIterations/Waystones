@@ -21,6 +21,7 @@ public class WaystoneModifierScreen extends AbstractContainerScreen<WaystoneModi
 
     @Override
     public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(graphics, mouseX, mouseY, a);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WARP_PLATE_GUI_TEXTURES, leftPos, topPos, 0f, 0f, imageWidth, imageHeight, 256, 256);
     }
 

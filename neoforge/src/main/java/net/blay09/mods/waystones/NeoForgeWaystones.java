@@ -4,6 +4,7 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.neoforge.platform.runtime.NeoForgeLoadContext;
 import net.blay09.mods.waystones.compat.Compat;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +16,8 @@ public class NeoForgeWaystones {
 
     private static final Logger logger = LoggerFactory.getLogger(NeoForgeWaystones.class);
 
-    public NeoForgeWaystones(IEventBus modEventBus) {
-        final var context = new NeoForgeLoadContext(modEventBus);
+    public NeoForgeWaystones(ModContainer modContainer, IEventBus modEventBus) {
+        final var context = new NeoForgeLoadContext(modContainer, modEventBus);
         Balm.initializeMod(Waystones.MOD_ID, context, new Waystones());
 
         // TODO would be nice if we could use Balm.initializeIfLoaded here, but it might run too late at the moment)
