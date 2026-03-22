@@ -75,7 +75,7 @@ processResources {
     def expandProps = [
             "version": version,
             "group": project.group, //Else we target the task's group.
-            "minecraft_version": libs.minecraft.get().version.replace('-pre', '-beta.').replace('-snapshot-', '-alpha.'),
+            "minecraft_version": libs.minecraft.get().version.replace('-pre', '-beta.').replace('-rc-', '-rc.').replace('-snapshot-', '-alpha.'),
             "forge_version": libs.forge.get().version,
             "fabric_api_version": libs.fabricApi.get().version,
             "fabric_loader_version": libs.fabricLoader.get().version,
