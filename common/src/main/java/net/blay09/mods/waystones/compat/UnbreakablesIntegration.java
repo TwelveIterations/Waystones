@@ -1,30 +1,25 @@
 package net.blay09.mods.waystones.compat;
 
 import net.blay09.mods.unbreakables.api.UnbreakablesAPI;
-import net.blay09.mods.unbreakables.api.parameter.NoParameter;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
-import net.blay09.mods.waystones.api.WaystonesAPI;
+import net.blay09.mods.waystones.config.rules.WaystoneRuleContext;
+import net.minecraft.world.entity.player.Player;
+
+import static net.blay09.mods.waystones.Waystones.id;
 
 public class UnbreakablesIntegration {
     public UnbreakablesIntegration() {
-        UnbreakablesAPI.registerCondition("is_waystone_owner", NoParameter.class, (context, params) -> {
-            final var server = context.getPlayer().level().getServer();
-            if (server != null) {
-                final var waystone = WaystonesAPI.getWaystoneAt(server, context.getBlockGetter(), context.getPos());
-                return waystone.map(it -> it.isOwner(context.getPlayer()))
-                        .orElse(true); // waystone not found -> allow breaking by default
-            }
-            return true; // We default to true since this can only be verified on the server.
-        });
+        final var scope = UnbreakablesAPI.shogiScope();
+        scope.registerSimpleEffect(id("is_owner"), context
+                -> context.entity() instanceof Player player
+                && WaystoneRuleContext.getEffectiveWaystone(context)
+                .flatMap(waystone -> waystone.getOwnerUid()
+                        .filter(ownerUid -> ownerUid.equals(player.getGameProfile().id())))
+                .isPresent());
 
-        UnbreakablesAPI.registerCondition("is_waystone_global", NoParameter.class, (context, params) -> {
-            final var server = context.getPlayer().level().getServer();
-            if (server != null) {
-                final var waystone = WaystonesAPI.getWaystoneAt(server, context.getBlockGetter(), context.getPos());
-                return waystone.map(it -> it.getVisibility() == WaystoneVisibility.GLOBAL)
-                        .orElse(true); // waystone not found -> allow breaking by default
-            }
-            return true; // We default to true since this can only be verified on the server.
-        });
+        scope.registerSimpleEffect(id("is_global"), context
+                -> WaystoneRuleContext.getEffectiveWaystone(context)
+                .filter(waystone -> waystone.getVisibility() == WaystoneVisibility.GLOBAL)
+                .isPresent());
     }
 }

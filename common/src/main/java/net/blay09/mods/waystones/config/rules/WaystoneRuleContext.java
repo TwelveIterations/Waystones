@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.config.rules;
 import net.blay09.mods.shogi.context.MutableShogiContext;
 import net.blay09.mods.shogi.context.ShogiContext;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
@@ -29,7 +30,19 @@ public final class WaystoneRuleContext {
                 return (Optional<Waystone>) optional;
             }
         }
-        return getTargetWaystone(context);
+        final var targetWaystone = getTargetWaystone(context);
+        if (targetWaystone.isPresent()) {
+            return targetWaystone;
+        }
+
+        if (context.blockEntity() instanceof WaystoneBlockEntityBase waystoneBlockEntityBase) {
+            final var waystone = waystoneBlockEntityBase.getWaystone();
+            if (waystone.isValid()) {
+                return Optional.of(waystoneBlockEntityBase.getWaystone());
+            }
+        }
+
+        return Optional.empty();
     }
 
     @SuppressWarnings("unchecked")
