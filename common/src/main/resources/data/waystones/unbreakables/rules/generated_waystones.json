@@ -1,0 +1,26 @@
+{
+  "type": "shogi:if",
+  "condition": {
+    "type": "shogi:and",
+    "conditions": [
+      {
+        "type": "shogi:is_block",
+        "block": "#waystones:waystones"
+      },
+      {
+        "type": "shogi:not",
+        "condition": {
+          "type": "shogi:is_block_state_property",
+          "property": "origin",
+          "value": "player"
+        }
+      }
+    ]
+  },
+  "then": {
+    "type": "shogi:refuse",
+    "message": {
+      "translate": "chat.waystones.cannot_break_waystone"
+    }
+  }
+}
