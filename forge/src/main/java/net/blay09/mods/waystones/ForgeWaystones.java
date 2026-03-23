@@ -7,16 +7,9 @@ import net.blay09.mods.waystones.client.ForgeWaystonesClient;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.InvocationTargetException;
 
 @Mod(Waystones.MOD_ID)
 public class ForgeWaystones {
-
-    private static final Logger logger = LoggerFactory.getLogger(ForgeWaystones.class);
-
     public ForgeWaystones(FMLJavaModLoadingContext context) {
         final var loadContext = new ForgeLoadContext(context.getModBusGroup());
         Balm.initializeMod(Waystones.MOD_ID, loadContext, new Waystones());
@@ -24,13 +17,6 @@ public class ForgeWaystones {
             BalmClient.initializeMod(Waystones.MOD_ID, loadContext, ForgeWaystonesClient::initialize);
         }
 
-        // TODO would be nice if we could use Balm.initializeIfLoaded here, but it might run too late at the moment)
-        if (Balm.platform().isModLoaded("repurposed_structures")) {
-            try {
-                Class.forName("net.blay09.mods.waystones.compat.RepurposedStructuresIntegration").getConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | ClassNotFoundException | InvocationTargetException e) {
-                logger.error("Failed to load Repurposed Structures integration", e);
-            }
-        }
+        Balm.initializeIfLoaded("repurposed_structures", "net.blay09.mods.waystones.compat.RepurposedStructuresIntegration");
     }
 }

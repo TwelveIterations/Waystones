@@ -4,26 +4,12 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.fabric.platform.runtime.FabricLoadContext;
 import net.blay09.mods.waystones.Waystones;
 import net.fabricmc.api.ModInitializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class FabricWaystones implements ModInitializer {
-
-    private static final Logger logger = LoggerFactory.getLogger(FabricWaystones.class);
-
     @Override
     public void onInitialize() {
         Balm.initializeMod(Waystones.MOD_ID, FabricLoadContext.INSTANCE, new Waystones());
 
-        // TODO would be nice if we could use Balm.initializeIfLoaded here, but it might run too late at the moment)
-        if (Balm.platform().isModLoaded("repurposed_structures")) {
-            try {
-                Class.forName("net.blay09.mods.waystones.compat.RepurposedStructuresIntegration").getConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | ClassNotFoundException | InvocationTargetException e) {
-                logger.error("Failed to load Repurposed Structures integration", e);
-            }
-        }
+        Balm.initializeIfLoaded("repurposed_structures", "net.blay09.mods.waystones.compat.RepurposedStructuresIntegration");
     }
 }
