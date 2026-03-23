@@ -10,13 +10,13 @@ import net.blay09.mods.waystones.component.WaystoneReferenceComponent;
 import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
-import net.blay09.mods.waystones.network.message.ClientboundWarpPlateEjectEffectPacket;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -299,7 +299,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
                     level.addFreshEntity(shardEntity);
                     setShardItem(ItemStack.EMPTY);
                     if (level instanceof ServerLevel serverLevel) {
-                        Balm.networking().sendToTracking(serverLevel, worldPosition, new ClientboundWarpPlateEjectEffectPacket(worldPosition));
+                        serverLevel.sendParticles(ParticleTypes.SMALL_GUST, worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, 10, 0.5, 0.5, 0.5, 0.5);
                         level.playSound(null, worldPosition, SoundEvents.CHICKEN_EGG, SoundSource.PLAYERS, 1f, 1f);
                     }
                 }
