@@ -22,11 +22,12 @@ public class SavedDataWaystonesStore extends SavedData implements WaystonesStore
             WaystoneImpl.CODEC.codec().listOf().fieldOf("Waystones").forGetter(WaystonesStore::getWaystones)
     ).apply(instance, SavedDataWaystonesStore::new));
 
+    @SuppressWarnings("DataFlowIssue")
     public static final SavedDataType<SavedDataWaystonesStore> TYPE = new SavedDataType<>(
             id("waystones"),
             () -> new SavedDataWaystonesStore(List.of()),
             CODEC,
-            null // TODO this can't be null but mod loaders will save us soon I'm sure
+            null
     );
 
     private final WaystonesStore store;

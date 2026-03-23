@@ -28,11 +28,12 @@ public class NameGeneratorManager extends SavedData {
             Codec.STRING.listOf().fieldOf("UsedNames").forGetter(NameGeneratorManager::getUsedNames)
     ).apply(instance, NameGeneratorManager::new));
 
+    @SuppressWarnings("DataFlowIssue")
     public static final SavedDataType<NameGeneratorManager> TYPE = new SavedDataType<>(
             Waystones.id(DATA_NAME),
             () -> new NameGeneratorManager(List.of()),
             CODEC,
-            null // TODO this can't be null but mod loaders will save us soon I'm sure
+            null
     );
 
     private final Set<String> usedNames = Sets.newHashSet();
