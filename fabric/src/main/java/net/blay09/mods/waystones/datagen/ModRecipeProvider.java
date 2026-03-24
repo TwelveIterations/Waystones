@@ -9,9 +9,11 @@ import net.blay09.mods.waystones.item.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
@@ -137,6 +139,12 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .define('D', type.ingredient())
                         .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(WarpStoneTypes.UNSCOPED)))
                         .save(exporter);
+
+                shapeless(RecipeCategory.DECORATIONS, sharestone)
+                        .requires(ModBlocks.sharestones.get(SharestoneTypes.RUINED))
+                        .requires(type.ingredient(), 2)
+                        .unlockedBy("has_ruined_sharestone", has(ModBlocks.sharestones.get(SharestoneTypes.RUINED)))
+                        .save(exporter, RecipeBuilder.getDefaultRecipeId(new ItemStackTemplate(sharestone.asItem())).identifier().getPath() + "_from_ruined");
             }
 
             private void createPortstoneRecipe(RecipeOutput exporter, BuiltinPortstoneType type) {
