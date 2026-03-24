@@ -13,6 +13,7 @@ public class WaystoneKinds {
     public static final Set<Identifier> SHARESTONES = Collections.synchronizedSet(new HashSet<>());
 
     static {
+        SHARESTONES.add(Identifier.fromNamespaceAndPath("waystones", "ruined_sharestone"));
         SHARESTONES.add(Identifier.fromNamespaceAndPath("waystones", "copper_sharestone"));
         SHARESTONES.add(Identifier.fromNamespaceAndPath("waystones", "prismarine_sharestone"));
         SHARESTONES.add(Identifier.fromNamespaceAndPath("waystones", "gold_sharestone"));
