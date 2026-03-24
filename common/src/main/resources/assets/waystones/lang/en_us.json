@@ -108,6 +108,7 @@
   "tooltip.waystones.bound_to": "Bound to: %s",
   "tooltip.waystones.bound_to_none": "None",
   "tooltip.waystones.portstone": "Can not be teleported to.",
+  "tooltip.waystones.ruined_sharestone": "(( This sharestone has been removed from the mod. ))",
   "tooltip.waystones.copper_sharestone": "Teleport to any other Copper Sharestone",
   "tooltip.waystones.prismarine_sharestone": "Teleport to any other Prismarine Sharestone",
   "tooltip.waystones.gold_sharestone": "Teleport to any other Gold Sharestone",
