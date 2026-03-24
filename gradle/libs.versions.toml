@@ -1,5 +1,5 @@
 [versions]
-balm = "26.1.0.1-SNAPSHOT"
+balm = "26.1.0.1"
 minecraft = "26.1"
 neoForm = "26.1-1"
 neoForge = "26.1.0.1-beta"
