@@ -51,7 +51,7 @@
   "container.waystones.waystone_selection": "Select your destination:",
   "container.waystones.waystone_admin_selection": "Select which waystone of <%s> you would like to visit:",
   "container.waystones.waystone": "Waystone",
-  "container.waystones.portstone": "Portstone",
+  "container.waystones.unscoped_portstone": "Portstone",
   "container.waystones.copper_portstone": "Copper Portstone",
   "container.waystones.prismarine_portstone": "Prismarine Portstone",
   "container.waystones.gold_portstone": "Gold Portstone",

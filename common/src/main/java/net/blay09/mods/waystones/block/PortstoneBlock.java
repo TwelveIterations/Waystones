@@ -140,7 +140,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
             Balm.networking().openMenu(player, new BalmMenuProvider<ModMenus.WaystoneListMenuData>() {
                 @Override
                 public Component getDisplayName() {
-                    return Component.translatable(type.identifier().toLanguageKey("container"));
+                    return Component.translatable(type.identifier().toLanguageKey("container") + "_portstone");
                 }
 
                 @Override
