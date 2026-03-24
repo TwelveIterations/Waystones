@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ruined_sharestone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "waystones:ruined_sharestone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "waystones:lapis_sharestone_from_ruined"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ruined_sharestone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "waystones:lapis_sharestone_from_ruined"
+    ]
+  }
+}
