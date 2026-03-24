@@ -52,7 +52,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
             WaystoneOrigin.CODEC.fieldOf("Origin").forGetter(Waystone::getOrigin),
             UUIDUtil.CODEC.optionalFieldOf("OwnerUid").forGetter(Waystone::getOwnerUid),
             ComponentSerialization.CODEC.fieldOf("NameV2").forGetter(Waystone::getName),
-            WaystoneVisibility.CODEC.fieldOf("Visibility").forGetter(Waystone::getVisibility),
+            MigrationUtils.MIGRATE_WAYSTONE_VISIBILITY.fieldOf("Visibility").forGetter(Waystone::getVisibility),
             Codec.BOOL.fieldOf("Seen").orElse(false).forGetter(Waystone::wasSeen)
     ).apply(instance, WaystoneImpl::new));
 
