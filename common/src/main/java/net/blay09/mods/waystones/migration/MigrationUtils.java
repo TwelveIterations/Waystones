@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.migration;
 
 import com.mojang.serialization.DataResult;
+import net.blay09.mods.balm.world.item.BalmItemRegistrar;
 import net.blay09.mods.balm.world.level.block.BalmBlockRegistrar;
 import net.minecraft.resources.Identifier;
 
@@ -73,4 +74,41 @@ public class MigrationUtils {
         blocks.addAlias("black_portstone", "portstone");
     }
 
+    public static void migrateItems(BalmItemRegistrar items) {
+        items.addAlias("waystone", "andesite_waystone");
+        items.addAlias("sandy_waystone", "sandstone_waystone");
+        items.addAlias("mossy_waystone", "mossy_andesite_waystone");
+
+        items.addAlias("orange_sharestone", "copper_sharestone");
+        items.addAlias("magenta_sharestone", "ruined_sharestone");
+        items.addAlias("light_blue_sharestone", "prismarine_sharestone");
+        items.addAlias("yellow_sharestone", "gold_sharestone");
+        items.addAlias("lime_sharestone", "ruined_sharestone");
+        items.addAlias("pink_sharestone", "ruined_sharestone");
+        items.addAlias("gray_sharestone", "ruined_sharestone");
+        items.addAlias("light_gray_sharestone", "ruined_sharestone");
+        items.addAlias("cyan_sharestone", "diamond_sharestone");
+        items.addAlias("purple_sharestone", "ruined_sharestone");
+        items.addAlias("blue_sharestone", "lapis_sharestone");
+        items.addAlias("brown_sharestone", "ruined_sharestone");
+        items.addAlias("green_sharestone", "emerald_sharestone");
+        items.addAlias("red_sharestone", "redstone_sharestone");
+        items.addAlias("black_sharestone", "ruined_sharestone");
+
+        items.addAlias("orange_portstone", "copper_portstone");
+        items.addAlias("magenta_portstone", "portstone");
+        items.addAlias("light_blue_portstone", "prismarine_portstone");
+        items.addAlias("yellow_portstone", "gold_portstone");
+        items.addAlias("lime_portstone", "portstone");
+        items.addAlias("pink_portstone", "portstone");
+        items.addAlias("gray_portstone", "portstone");
+        items.addAlias("light_gray_portstone", "portstone");
+        items.addAlias("cyan_portstone", "diamond_portstone");
+        items.addAlias("purple_portstone", "portstone");
+        items.addAlias("blue_portstone", "lapis_portstone");
+        items.addAlias("brown_portstone", "portstone");
+        items.addAlias("green_portstone", "emerald_portstone");
+        items.addAlias("red_portstone", "redstone_portstone");
+        items.addAlias("black_portstone", "portstone");
+    }
 }

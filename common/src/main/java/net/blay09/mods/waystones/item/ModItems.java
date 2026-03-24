@@ -10,6 +10,7 @@ import net.blay09.mods.waystones.api.WarpStoneTypes;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.BuiltinWarpStoneType;
 import net.blay09.mods.waystones.block.ModBlocks;
+import net.blay09.mods.waystones.migration.MigrationUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -36,6 +37,8 @@ public class ModItems {
         dormantShard = items.register("dormant_shard", ShardItem::new).asDeferredItem();
         attunedShard = items.register("attuned_shard", AttunedShardItem::new).asDeferredItem();
         crumblingAttunedShard = items.register("crumbling_attuned_shard", CrumblingAttunedShardItem::new).asDeferredItem();
+
+        MigrationUtils.migrateItems(items);
     }
 
     public static void initialize(BalmCreativeModeTabRegistrar creativeModeTabs) {
