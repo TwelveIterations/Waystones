@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 
@@ -85,7 +84,6 @@ public class SavedDataWaystonesStore extends SavedData implements WaystonesStore
     }
 
     public static SavedDataWaystonesStore get(MinecraftServer server) {
-        final var overworld = server.getLevel(Level.OVERWORLD);
-        return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(TYPE);
+        return server.getDataStorage().computeIfAbsent(TYPE);
     }
 }

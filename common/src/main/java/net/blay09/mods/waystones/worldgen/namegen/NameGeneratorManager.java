@@ -3,23 +3,21 @@ package net.blay09.mods.waystones.worldgen.namegen;
 import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.blay09.mods.balm.Balm;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.event.GenerateWaystoneNameEvent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
+
+import static net.blay09.mods.waystones.Waystones.id;
 
 public class NameGeneratorManager extends SavedData {
 
@@ -30,7 +28,7 @@ public class NameGeneratorManager extends SavedData {
 
     @SuppressWarnings("DataFlowIssue")
     public static final SavedDataType<NameGeneratorManager> TYPE = new SavedDataType<>(
-            Waystones.id(DATA_NAME),
+            id(DATA_NAME),
             () -> new NameGeneratorManager(List.of()),
             CODEC,
             null
@@ -43,8 +41,7 @@ public class NameGeneratorManager extends SavedData {
     }
 
     public static NameGeneratorManager get(MinecraftServer server) {
-        final var overworld = server.getLevel(Level.OVERWORLD);
-        return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(TYPE);
+        return server.getDataStorage().computeIfAbsent(TYPE);
     }
 
     public List<String> getUsedNames() {
