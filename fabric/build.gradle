@@ -9,7 +9,6 @@ plugins {
 
 dependencies {
     minecraft libs.minecraft
-
     implementation libs.fabricLoader
     implementation libs.fabricApi
 }
@@ -85,7 +84,6 @@ modrinth {
     uploadFile = jar
     changelog = rootProject.file("CHANGELOG.md").text
     gameVersions = [libs.minecraft.get().version]
-    syncBodyFrom = rootProject.file("modpage.md").text
     loaders = ['fabric']
     dependencies {
         required.project "fabric-api"

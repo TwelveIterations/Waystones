@@ -4,20 +4,18 @@ policy:
       - id: [minecraftVersion]
         block-list: [other]
         label:
+          - name: Minecraft 26.1
+            keys: ['26.1 (LTS)']
           - name: Minecraft 1.21.11
             keys: ['1.21.11']
           - name: Minecraft 1.21.10
             keys: ['1.21.10']
           - name: Minecraft 1.21.8
             keys: ['1.21.8']
-          - name: Minecraft 1.21.5
-            keys: ['1.21.5']
-          - name: Minecraft 1.21.4
-            keys: ['1.21.4']
           - name: Minecraft 1.21.1
-            keys: ['1.21.1 (LTS)']
+            keys: ['1.21.1']
           - name: Minecraft 1.20.1
-            keys: ['1.20.1 (LTS)']
+            keys: ['1.20.1']
           - name: EOL
             keys: ['Other (specify below)']
       - id: [modLoader]

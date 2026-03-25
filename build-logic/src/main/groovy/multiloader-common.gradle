@@ -3,6 +3,56 @@ plugins {
     id 'maven-publish'
 }
 
+tasks.register('generateNullMarkedPackageInfos') {
+    group = 'build'
+    description = 'Generates missing package-info.java files with jspecify @NullMarked for each Java package containing sources.'
+
+    def javaSourceDirsProvider = providers.provider {
+        sourceSets.main.java.srcDirs.findAll { it.exists() }
+    }
+
+    inputs.files(javaSourceDirsProvider)
+
+    doLast {
+        def created = []
+
+        javaSourceDirsProvider.get().each { File srcDir ->
+            def packageDirs = new LinkedHashSet<File>()
+            fileTree(srcDir) {
+                include '**/*.java'
+                exclude '**/package-info.java'
+            }.files.each { File javaFile ->
+                packageDirs.add(javaFile.parentFile)
+            }
+
+            packageDirs.each { File pkgDir ->
+                def relPath = srcDir.toPath().relativize(pkgDir.toPath()).toString()
+                if (relPath.isBlank()) {
+                    return
+                }
+
+                def packageName = relPath.replace(File.separatorChar, '.' as char)
+                def pkgInfo = new File(pkgDir, 'package-info.java')
+                if (pkgInfo.exists()) {
+                    return
+                }
+
+                pkgInfo.parentFile.mkdirs()
+                pkgInfo.setText("""@NullMarked
+package ${packageName};
+
+import org.jspecify.annotations.NullMarked;
+""", 'UTF-8')
+                created.add(pkgInfo)
+            }
+        }
+
+        if (!created.isEmpty()) {
+            logger.lifecycle("Generated ${created.size()} package-info.java file(s) with @NullMarked")
+        }
+    }
+}
+
 base {
     archivesName = "${mod_id}-${project.name}-${libs.minecraft.get().version}"
 }
@@ -11,6 +61,11 @@ java {
     toolchain.languageVersion = JavaLanguageVersion.of(java_version)
     withSourcesJar()
     withJavadocJar()
+}
+
+tasks.withType(Javadoc).configureEach {
+    failOnError false
+    options.addStringOption('Xdoclint:-missing', '-quiet')
 }
 
 repositories {

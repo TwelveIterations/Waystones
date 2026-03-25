@@ -7,7 +7,7 @@ plugins {
     alias libs.plugins.modrinthMinotaur
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(java_version)
 
 
 minecraft {
@@ -24,6 +24,7 @@ minecraft {
     }
 }
 
+apply from: rootProject.file('repositories.gradle')
 repositories {
     maven minecraft.mavenizer
     maven fg.forgeMaven
@@ -37,6 +38,7 @@ dependencies {
     implementation minecraft.dependency("net.minecraftforge:forge:$mcVersion-$forgeVersion")
     annotationProcessor 'net.minecraftforge:eventbus-validator:7.0.0'
 }
+apply from: 'dependencies.gradle'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
@@ -48,16 +50,8 @@ tasks.named('jar', Jar) {
     }
 }
 
-fgtools {
-    configure('mavenizer') {
-        classpath = configurations.detachedConfiguration(dependencies.create('net.minecraftforge:minecraft-mavenizer:0.4.19'))
-    }
-}
-
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
-apply from: rootProject.file('repositories.gradle')
-apply from: 'dependencies.gradle'
 
 tasks.register('curseforge', TaskPublishCurseForge) {
     dependsOn('build')
@@ -89,7 +83,6 @@ modrinth {
     uploadFile = jar
     changelog = rootProject.file("CHANGELOG.md").text
     gameVersions = [libs.minecraft.get().version]
-    syncBodyFrom = rootProject.file("modpage.md").text
     loaders = ['forge']
     dependencies {
         required.project "balm"
@@ -102,4 +95,3 @@ sourceSets.each {
     it.output.resourcesDir = dir
     it.java.destinationDirectory = dir
 }
-

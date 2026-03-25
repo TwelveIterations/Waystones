@@ -75,7 +75,6 @@ modrinth {
     uploadFile = jar
     changelog = rootProject.file("CHANGELOG.md").text
     gameVersions = [libs.minecraft.get().version]
-    syncBodyFrom = rootProject.file("modpage.md").text
     loaders = ['neoforge']
     dependencies {
         required.project "balm"
@@ -96,4 +95,3 @@ if (neoForgeSnapshotUrl != null && !neoForgeSnapshotUrl.isBlank()) {
         }
     }
 }
-
