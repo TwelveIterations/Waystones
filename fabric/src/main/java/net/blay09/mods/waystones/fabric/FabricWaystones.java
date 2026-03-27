@@ -10,6 +10,6 @@ public class FabricWaystones implements ModInitializer {
     public void onInitialize() {
         Balm.initializeMod(Waystones.MOD_ID, FabricLoadContext.INSTANCE, new Waystones());
 
-        Balm.initializeIfLoaded("repurposed_structures", "net.blay09.mods.waystones.compat.RepurposedStructuresIntegration");
+        Balm.initializeIfLoaded("repurposed_structures", "net.blay09.mods.waystones.fabric.compat.RepurposedStructuresIntegration");
     }
 }

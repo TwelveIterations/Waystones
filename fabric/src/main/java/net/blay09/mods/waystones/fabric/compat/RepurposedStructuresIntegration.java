@@ -1,4 +1,4 @@
-package net.blay09.mods.waystones.compat;
+package net.blay09.mods.waystones.fabric.compat;
 
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.core.Registry;
