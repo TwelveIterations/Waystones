@@ -7,7 +7,6 @@ import net.blay09.mods.balm.core.component.BalmDataComponentTypeRegistrar;
 import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.balm.platform.config.BalmConfig;
 import net.blay09.mods.balm.platform.module.BalmModule;
-import net.blay09.mods.balm.platform.permissions.BalmPermissions;
 import net.blay09.mods.balm.server.packs.resources.BalmResourceConditionRegistrar;
 import net.blay09.mods.balm.stats.BalmCustomStatRegistrar;
 import net.blay09.mods.balm.world.entity.ai.village.poi.BalmPoiTypeRegistrar;
@@ -31,7 +30,6 @@ import net.blay09.mods.waystones.handler.ModEventHandlers;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.network.ModNetworking;
-import net.blay09.mods.waystones.permission.ModPermissions;
 import net.blay09.mods.waystones.resources.ForceSpawnInVillagesCondition;
 import net.blay09.mods.waystones.stats.ModStats;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
@@ -137,11 +135,6 @@ public class Waystones implements BalmModule {
     @Override
     public void registerResourceConditions(BalmResourceConditionRegistrar resources) {
         resources.register("force_spawn_in_villages", ForceSpawnInVillagesCondition.CODEC);
-    }
-
-    @Override
-    public void registerPermissions(BalmPermissions permissions) {
-        ModPermissions.initialize(permissions);
     }
 
     @Override

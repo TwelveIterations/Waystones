@@ -24,7 +24,7 @@ public record IsDimension(Identifier dimension) implements ShogiEffect<Boolean> 
     public Either<? extends Boolean, ?> apply(ShogiContext context) {
         final var currentDimension = WaystoneRuleContext.getEffectiveWaystone(context)
                 .map(waystone -> waystone.getDimension().identifier())
-                .orElseGet(() -> context.level().dimension().identifier());
+                .orElseGet(() -> context.requireLevel().dimension().identifier());
         return Either.left(currentDimension.equals(dimension));
     }
 }

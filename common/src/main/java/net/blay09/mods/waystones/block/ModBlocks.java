@@ -15,6 +15,7 @@ import net.blay09.mods.waystones.migration.MigrationUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.SoundType;
+import org.jspecify.annotations.NonNull;
 
 import java.util.stream.Collectors;
 

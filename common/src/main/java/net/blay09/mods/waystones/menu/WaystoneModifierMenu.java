@@ -1,9 +1,6 @@
 package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
-import net.blay09.mods.waystones.item.ModItems;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;

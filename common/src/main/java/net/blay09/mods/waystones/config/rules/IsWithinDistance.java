@@ -24,7 +24,7 @@ public record IsWithinDistance(float distance) implements ShogiEffect<Boolean> {
     @Override
     public Either<? extends Boolean, ?> apply(ShogiContext context) {
         final var actualDistance = WaystoneRuleContext.getTargetWaystone(context)
-                .map(waystone -> (float) Math.sqrt(context.entity().distanceToSqr(waystone.getPos().getCenter())));
+                .map(waystone -> (float) Math.sqrt(context.requireEntity().distanceToSqr(waystone.getPos().getCenter())));
         return Either.left(actualDistance.map(it -> it <= distance).orElse(false));
     }
 }

@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.event.WaystoneRemoveReceivedEvent;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;

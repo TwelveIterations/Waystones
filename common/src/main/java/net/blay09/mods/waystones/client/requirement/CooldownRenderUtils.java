@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.client.requirement;
 
 import net.blay09.mods.shogi.common.effect.server.cooldown.CooldownInformation;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public final class CooldownRenderUtils {
     private static final long NANOSECONDS_PER_MILLISECOND = 1_000_000L;

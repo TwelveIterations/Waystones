@@ -20,7 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -32,7 +32,7 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
 
     @Override
     protected Identifier getWaystoneKind() {
-        return Optional.ofNullable(WaystoneKinds.getKind(((SharestoneBlock) getBlockState().getBlock()).getType()))
+        return Optional.of(WaystoneKinds.getKind(((SharestoneBlock) getBlockState().getBlock()).getType()))
                 .orElse(WaystoneKinds.WAYSTONE); // fallback to regular waystone if invalid
     }
 

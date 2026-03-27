@@ -39,10 +39,6 @@ public class ServerboundInventoryButtonPacket implements CustomPacketPayload {
             return;
         }
 
-        if (player == null) {
-            return;
-        }
-
         final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
         if (waystone.isPresent()) {
             WaystonesAPI.createDefaultTeleportContext(player, waystone.get(), it -> it.addFlag(TeleportFlags.INVENTORY_BUTTON))

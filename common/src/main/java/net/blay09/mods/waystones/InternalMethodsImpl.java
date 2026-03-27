@@ -24,7 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -143,10 +143,6 @@ public class InternalMethodsImpl implements InternalMethods {
     @Override
     public Optional<Waystone> placeSharestone(ServerLevel level, BlockPos pos, SharestoneType type) {
         final var block = type.block();
-        if (block == null) {
-            return Optional.empty();
-        }
-
         level.setBlock(pos, block.defaultBlockState()
                 .setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER)
                 .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.PLAYER), 3);

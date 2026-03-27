@@ -10,6 +10,8 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.network.chat.Component;
 
+import java.util.Optional;
+
 public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
 
     private final Component waystoneName;
@@ -34,9 +36,9 @@ public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
             return Component.translatable("gui.waystones.inventory.confirm_return_bound_to", targetWaystone).withStyle(ChatFormatting.GRAY);
         }
 
-        final var player = Minecraft.getInstance().player;
-        final var nearestWaystone = PlayerWaystoneManager.getNearestWaystone(player);
-        return nearestWaystone.map(Waystone::getName)
+        return Optional.ofNullable(Minecraft.getInstance().player)
+                .flatMap(PlayerWaystoneManager::getNearestWaystone)
+                .map(Waystone::getName)
                 .map(it -> Component.translatable("gui.waystones.inventory.confirm_return_bound_to", it).withStyle(ChatFormatting.GRAY))
                 .orElse(Component.translatable("gui.waystones.inventory.no_waystones_activated").withStyle(ChatFormatting.GRAY));
     }

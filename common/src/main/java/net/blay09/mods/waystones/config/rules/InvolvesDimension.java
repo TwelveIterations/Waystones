@@ -26,7 +26,7 @@ public record InvolvesDimension(Identifier dimension) implements ShogiEffect<Boo
                 .map(waystone -> waystone.getDimension().identifier());
         final var sourceDimension = WaystoneRuleContext.getSourceWaystone(context)
                 .map(waystone -> waystone.getDimension().identifier())
-                .orElseGet(() -> context.level().dimension().identifier());
+                .orElseGet(() -> context.requireLevel().dimension().identifier());
         return Either.left(targetDimension.map(it -> it.equals(dimension)).orElse(false) || sourceDimension.equals(dimension));
     }
 }

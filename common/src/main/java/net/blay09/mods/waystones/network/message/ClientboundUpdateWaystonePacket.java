@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.event.WaystoneUpdateReceivedEvent;
 import net.blay09.mods.waystones.client.WaystonesClient;

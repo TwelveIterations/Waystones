@@ -52,17 +52,12 @@ public class NameGeneratorManager extends SavedData {
         final var randomGenerator = new TemplateNameGenerator(WaystonesConfig.getActive().worldGen.nameGenerationTemplate)
                 .with("MrPork", new MrPorkNameGenerator())
                 .with("Biome", new BiomeNameGenerator());
-        switch (nameGenerationMode) {
-            case MIXED:
-                return new MixedNameGenerator(randomGenerator, new CustomNameGenerator(false, usedNames));
-            case RANDOM_ONLY:
-                return randomGenerator;
-            case PRESET_ONLY:
-                return new CustomNameGenerator(true, usedNames);
-            case PRESET_FIRST:
-            default:
-                return new SequencedNameGenerator(new CustomNameGenerator(false, usedNames), randomGenerator);
-        }
+        return switch (nameGenerationMode) {
+            case MIXED -> new MixedNameGenerator(randomGenerator, new CustomNameGenerator(false, usedNames));
+            case RANDOM_ONLY -> randomGenerator;
+            case PRESET_ONLY -> new CustomNameGenerator(true, usedNames);
+            default -> new SequencedNameGenerator(new CustomNameGenerator(false, usedNames), randomGenerator);
+        };
     }
 
     public synchronized Component getName(LevelAccessor level, Waystone waystone, RandomSource rand, NameGenerationMode nameGenerationMode) {

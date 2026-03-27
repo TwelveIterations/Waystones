@@ -13,6 +13,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 public class BlueMapIntegration {
 
     private final Map<ResourceKey<Level>, LevelMarkers> levelMarkersByDimension = new HashMap<>();
-    private BlueMapAPI api;
+    private @Nullable BlueMapAPI api;
 
     public BlueMapIntegration() {
         BlueMapAPI.onEnable(api -> {
@@ -33,7 +34,7 @@ public class BlueMapIntegration {
                 }
             }
         });
-        BlueMapAPI.onDisable(api -> this.api = null);
+        BlueMapAPI.onDisable(_ -> this.api = null);
 
         WaystonesLoadedEvent.EVENT.register(this::onWaystonesLoaded);
         WaystoneInitializedEvent.EVENT.register(this::onWaystoneInitialized);

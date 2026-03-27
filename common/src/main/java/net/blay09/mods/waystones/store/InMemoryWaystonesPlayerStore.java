@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.store;
 
 import net.blay09.mods.waystones.api.Waystone;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
@@ -35,7 +34,7 @@ public class InMemoryWaystonesPlayerStore implements WaystonesPlayerStore {
     @Override
     public void sortWaystoneAsFirst(Player player, UUID waystoneUid) {
         sortingIndex.remove(waystoneUid);
-        sortingIndex.add(0, waystoneUid);
+        sortingIndex.addFirst(waystoneUid);
     }
 
     @Override

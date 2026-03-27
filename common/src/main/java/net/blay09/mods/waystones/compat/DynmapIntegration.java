@@ -13,15 +13,17 @@ import org.dynmap.DynmapCommonAPI;
 import org.dynmap.DynmapCommonAPIListener;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerSet;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DynmapIntegration extends DynmapCommonAPIListener {
 
     private final List<Runnable> scheduledJobsWhenReady = new ArrayList<>();
 
-    private DynmapCommonAPI api;
+    private @Nullable DynmapCommonAPI api;
     private MarkerSet waystoneMarkers;
     private MarkerSet sharestoneMarkers;
 
@@ -52,7 +54,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
 
     private static String getDynmapWorldName(Identifier id) {
         return switch (id.toString()) {
-            case "minecraft:overworld" -> Balm.platform().server().getWorldData().getLevelName();
+            case "minecraft:overworld" -> Objects.requireNonNull(Balm.platform().server()).getWorldData().getLevelName();
             case "minecraft:the_nether" -> "DIM-1";
             case "minecraft:the_end" -> "DIM1";
             default -> id.getNamespace() + "_" + id.getPath();

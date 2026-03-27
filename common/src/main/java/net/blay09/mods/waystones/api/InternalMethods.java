@@ -11,7 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -45,7 +45,7 @@ public interface InternalMethods {
 
     Optional<Waystone> placeWarpPlate(ServerLevel level, BlockPos pos);
 
-    Optional<Waystone> getBoundWaystone(Player player, ItemStack itemStack);
+    Optional<Waystone> getBoundWaystone(@Nullable Player player, ItemStack itemStack);
 
     void setBoundWaystone(ItemStack itemStack, @Nullable Waystone waystone);
 

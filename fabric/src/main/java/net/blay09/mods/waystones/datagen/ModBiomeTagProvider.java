@@ -25,7 +25,7 @@ public class ModBiomeTagProvider extends BiomeTagsProvider {
                 .addAll(List.of(Biomes.THE_END, Biomes.END_HIGHLANDS, Biomes.END_MIDLANDS, Biomes.SMALL_END_ISLANDS, Biomes.END_BARRENS));
 
         final var hasWaystones = tag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE);
-        hasWaystones.add(
+        hasWaystones.addAll(List.of(
                 Biomes.PLAINS,
                 Biomes.SUNFLOWER_PLAINS,
                 Biomes.SNOWY_PLAINS,
@@ -72,7 +72,7 @@ public class ModBiomeTagProvider extends BiomeTagsProvider {
                 Biomes.DRIPSTONE_CAVES,
                 Biomes.LUSH_CAVES,
                 Biomes.DEEP_DARK
-        );
+        ));
     }
 
 }

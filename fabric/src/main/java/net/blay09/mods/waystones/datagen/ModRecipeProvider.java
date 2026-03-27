@@ -29,16 +29,14 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         return new RecipeProvider(registryLookup, exporter) {
             @Override
             public void buildRecipes() {
-                ModBlocks.waystones.forEach((type, block) -> {
-                    shaped(RecipeCategory.DECORATIONS, block)
-                            .pattern(" S ")
-                            .pattern("SWS")
-                            .pattern("SSS")
-                            .define('S', type.ingredient())
-                            .define('W', ModItems.warpStones.get(WarpStoneTypes.UNSCOPED))
-                            .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(WarpStoneTypes.UNSCOPED)))
-                            .save(exporter);
-                });
+                ModBlocks.waystones.forEach((type, block) -> shaped(RecipeCategory.DECORATIONS, block)
+                        .pattern(" S ")
+                        .pattern("SWS")
+                        .pattern("SSS")
+                        .define('S', type.ingredient())
+                        .define('W', ModItems.warpStones.get(WarpStoneTypes.UNSCOPED))
+                        .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(WarpStoneTypes.UNSCOPED)))
+                        .save(exporter));
 
                 shapeless(RecipeCategory.DECORATIONS, ModBlocks.waystones.get(WaystoneTypes.MOSSY_ANDESITE))
                         .requires(ModBlocks.waystones.get(WaystoneTypes.ANDESITE))

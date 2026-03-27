@@ -37,15 +37,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -54,7 +50,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -94,7 +90,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
     }
 
     private Waystone waystone = InvalidWaystone.INSTANCE;
-    private UUID waystoneUid;
+    private @Nullable UUID waystoneUid;
     private boolean shouldNotInitialize;
     private boolean silkTouched;
 
@@ -115,9 +111,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
         input.read("UUID", UUIDUtil.CODEC).ifPresent(uuid -> waystoneUid = uuid);
 
-        input.read("Waystone", WaystoneImpl.CODEC.codec()).ifPresent(loadedWaystone -> {
-            waystone = loadedWaystone;
-        });
+        input.read("Waystone", WaystoneImpl.CODEC.codec()).ifPresent(loadedWaystone -> waystone = loadedWaystone);
     }
 
     @Override
@@ -142,9 +136,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return BalmBlockEntityUtils.createUpdateTag(registries, output -> {
-            output.store("Waystone", WaystoneImpl.CODEC.codec(), getWaystone());
-        });
+        return BalmBlockEntityUtils.createUpdateTag(registries, output -> output.store("Waystone", WaystoneImpl.CODEC.codec(), getWaystone()));
     }
 
     @Override
@@ -167,9 +159,9 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
     }
 
     private Waystone loadBackingWaystone() {
-        if (!waystone.isValid() && level != null && !level.isClientSide() && !shouldNotInitialize) {
+        if (!waystone.isValid() && level instanceof ServerLevel serverLevel && !shouldNotInitialize) {
             if (waystoneUid != null) {
-                waystone = new WaystoneProxy(level.getServer(), waystoneUid);
+                waystone = new WaystoneProxy(serverLevel.getServer(), waystoneUid);
             }
 
             if (!waystone.isValid()) {

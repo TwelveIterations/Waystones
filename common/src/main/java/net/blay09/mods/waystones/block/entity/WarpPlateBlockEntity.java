@@ -1,8 +1,6 @@
 package net.blay09.mods.waystones.block.entity;
 
-import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.*;
-import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.component.ModComponents;
@@ -33,7 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -167,7 +165,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
             while (iterator.hasNext()) {
                 Map.Entry<Entity, Integer> entry = iterator.next();
                 Entity entity = entry.getKey();
-                Integer ticksPassed = entry.getValue();
+                int ticksPassed = entry.getValue();
                 if (!entity.isAlive() || !isEntityOnWarpPlate(entity)) {
                     iterator.remove();
                 } else if (ticksPassed > useTime) {
@@ -209,7 +207,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
                 })
                 .flatMap(WaystonesAPI::tryTeleport)
                 .ifRight(informRejectedTeleport(entity))
-                .ifLeft(entities -> {
+                .ifLeft(_ -> {
                     if (targetAttunementStack.is(ModItemTags.SINGLE_USE_WARP_SHARDS)) {
                         if (!(entity instanceof Player player) || !player.getAbilities().instabuild) {
                             targetAttunementStack.shrink(1);
@@ -221,7 +219,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
 
     private Consumer<WaystoneTeleportError> informRejectedTeleport(final Entity entityToInform) {
         return error -> {
-            if (error.getComponent() != null && entityToInform instanceof Player player) {
+            if (entityToInform instanceof Player player) {
                 var chatComponent = error.getComponent().copy().withStyle(ChatFormatting.DARK_RED);
                 player.sendOverlayMessage(chatComponent);
             }

@@ -5,7 +5,6 @@ import net.blay09.mods.shogi.common.effect.cost.ExperiencePointsCostInformation;
 import net.blay09.mods.shogi.common.effect.cost.ItemCostInformation;
 import net.blay09.mods.shogi.common.effect.failure.RefusalInformation;
 import net.blay09.mods.shogi.common.effect.server.cooldown.CooldownInformation;
-import net.blay09.mods.waystones.requirement.*;
 
 import java.util.*;
 

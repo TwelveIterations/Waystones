@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.item;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
-import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
@@ -39,7 +38,7 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
         if (!world.isClientSide() && entity instanceof ServerPlayer player) {
             final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForItem(player, itemStack));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            Balm.networking().openMenu(((ServerPlayer) entity), new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
+            Balm.networking().openMenu(player, new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("container.waystones.waystone_selection");

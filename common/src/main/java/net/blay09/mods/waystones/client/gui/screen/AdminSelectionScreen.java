@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Comparator;
 
@@ -24,7 +25,7 @@ public class AdminSelectionScreen extends WaystoneSelectionScreenBase {
     }
 
     @Override
-    public Comparator<Waystone> getSorting() {
+    public @Nullable Comparator<Waystone> getSorting() {
         return null;
     }
 }

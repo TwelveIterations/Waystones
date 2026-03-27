@@ -5,11 +5,12 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.util.Unit;
 
-public class WaystoneModel extends Model {
+public class WaystoneModel extends Model<Unit> {
 
     public WaystoneModel(ModelPart modelPart) {
-        super(modelPart, it -> RenderTypes.cutoutMovingBlock());
+        super(modelPart, _ -> RenderTypes.cutoutMovingBlock());
     }
 
     public static LayerDefinition createLayer(CubeDeformation cubeDeformation) {

@@ -4,7 +4,6 @@ import net.blay09.mods.balm.world.level.block.DeferredBlock;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.PortstoneType;
 import net.blay09.mods.waystones.api.SharestoneType;
-import net.blay09.mods.waystones.api.WaystoneType;
 import net.blay09.mods.waystones.block.*;
 import net.blay09.mods.waystones.item.ModItems;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
@@ -21,7 +20,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 

@@ -4,7 +4,6 @@ import net.blay09.mods.balm.client.color.block.BalmBlockColorRegistrar;
 import net.blay09.mods.balm.client.gui.screens.inventory.BalmMenuScreenRegistrar;
 import net.blay09.mods.balm.client.model.geom.BalmModelLayerRegistrar;
 import net.blay09.mods.balm.client.platform.module.BalmClientModule;
-import net.blay09.mods.balm.client.renderer.block.model.BalmBlockStateModelRegistrar;
 import net.blay09.mods.balm.client.renderer.blockentity.BalmBlockEntityRendererRegistrar;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
@@ -44,11 +43,6 @@ public class WaystonesClient implements BalmClientModule {
     @Override
     public void registerMenuScreens(BalmMenuScreenRegistrar screens) {
         ModScreens.initialize(screens);
-    }
-
-    @Override
-    public void registerBlockStateModels(BalmBlockStateModelRegistrar models) {
-        ModModels.initialize(models);
     }
 
     @Override

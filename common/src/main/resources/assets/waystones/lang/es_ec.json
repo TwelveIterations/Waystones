@@ -22,7 +22,7 @@
   "container.waystones.waystone_selection": "Seleccione su destino:",
   "container.waystones.waystone_admin_selection": "Seleccione que piedra guía de <%s> desea visitar:",
   "container.waystones.waystone": "Piedra Guía",
-  "container.waystones.portstone": "Piedraportal",
+  "container.waystones.unscoped_portstone": "Piedraportal",
   "container.waystones.sharestone": "Piedra Compartida",
   "container.waystones.warp_plate": "Placa de Teletransporte",
   "gui.waystones.waystone_selection.next_page": "Siguiente",

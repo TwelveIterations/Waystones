@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.worldgen;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.waystones.config.WaystonesConfig;

@@ -22,7 +22,7 @@ public enum WaystoneVisibility implements StringRepresentable {
     private static final IntFunction<WaystoneVisibility> BY_ID = ByIdMap.continuous(WaystoneVisibility::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final StreamCodec<ByteBuf, WaystoneVisibility> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, WaystoneVisibility::ordinal);
     public static final StreamCodec<ByteBuf, List<WaystoneVisibility>> LIST_STREAM_CODEC = STREAM_CODEC.apply(ByteBufCodecs.list());
-    public static Codec<WaystoneVisibility> CODEC = StringRepresentable.fromEnum(WaystoneVisibility::values);
+    public static final Codec<WaystoneVisibility> CODEC = StringRepresentable.fromEnum(WaystoneVisibility::values);
 
     public static WaystoneVisibility getDefaultForWaystoneKind(Identifier kind) {
         if (WaystoneKinds.isSharestone(kind)) {

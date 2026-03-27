@@ -20,7 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Collection;
@@ -53,11 +53,11 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
             Data::warpRequirements,
             Data::new);
 
-    private final Waystone fromWaystone;
+    private final @Nullable Waystone fromWaystone;
     private final List<Waystone> waystones;
     private final Map<UUID, Either<List<Object>, List<Object>>> warpRequirements;
     private final Set<Identifier> flags;
-    private Consumer<WaystoneTeleportContext> postTeleportHandler = it -> {};
+    private Consumer<WaystoneTeleportContext> postTeleportHandler = _ -> {};
     private ItemStack warpItem = ItemStack.EMPTY;
     private InteractionHand warpHand = InteractionHand.MAIN_HAND;
 

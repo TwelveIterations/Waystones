@@ -2,11 +2,8 @@ package net.blay09.mods.waystones.block;
 
 import com.mojang.serialization.MapCodec;
 import net.blay09.mods.balm.Balm;
-import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
-import net.blay09.mods.waystones.component.ModComponents;
-import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -39,12 +36,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public class WarpPlateBlock extends WaystoneBlockBase {
 

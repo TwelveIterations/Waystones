@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.api;
 
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -28,8 +28,7 @@ public class WaystoneKinds {
         return SHARESTONES.contains(kind);
     }
 
-    @Nullable
-    public static Identifier getKind(@Nullable SharestoneType type) {
+    public static @Nullable Identifier getKind(@Nullable SharestoneType type) {
         return type != null ? type.kind() : null;
     }
 }

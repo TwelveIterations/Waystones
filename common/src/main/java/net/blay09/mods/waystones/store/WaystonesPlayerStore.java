@@ -1,12 +1,10 @@
 package net.blay09.mods.waystones.store;
 
 import net.blay09.mods.waystones.api.Waystone;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public interface WaystonesPlayerStore {

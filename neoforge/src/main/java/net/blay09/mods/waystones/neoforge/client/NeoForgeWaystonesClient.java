@@ -1,8 +1,9 @@
-package net.blay09.mods.waystones.client;
+package net.blay09.mods.waystones.neoforge.client;
 
 import net.blay09.mods.balm.client.BalmClient;
 import net.blay09.mods.balm.neoforge.platform.runtime.NeoForgeLoadContext;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.client.WaystonesClient;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;

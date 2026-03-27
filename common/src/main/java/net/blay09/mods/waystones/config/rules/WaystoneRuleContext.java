@@ -72,13 +72,13 @@ public final class WaystoneRuleContext {
     }
 
     public static boolean isDimensionalTeleport(ShogiContext context) {
-        final var targetDimension = getTargetWaystone(context).map(it -> it.getDimension());
+        final var targetDimension = getTargetWaystone(context).map(Waystone::getDimension);
         if (targetDimension.isEmpty()) {
             return false;
         }
         final var sourceDimension = getSourceWaystone(context)
-                .map(it -> it.getDimension())
-                .orElse(context.level().dimension());
+                .map(Waystone::getDimension)
+                .orElse(context.requireLevel().dimension());
         return targetDimension.get() != sourceDimension;
     }
 

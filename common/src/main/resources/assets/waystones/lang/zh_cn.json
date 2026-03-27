@@ -21,7 +21,7 @@
   "container.waystones.waystone_selection": "选择目的地：",
   "container.waystones.waystone_admin_selection": "选择要传送的 <%s> 石碑:",
   "container.waystones.waystone": "传送石",
-  "container.waystones.portstone": "传送石座",
+  "container.waystones.unscoped_portstone": "传送石座",
   "container.waystones.sharestone": "共享石",
   "container.waystones.warp_plate": "传送石盘",
   "gui.waystones.waystone_selection.next_page": "下一页",

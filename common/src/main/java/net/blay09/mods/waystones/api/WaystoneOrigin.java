@@ -23,7 +23,7 @@ public enum WaystoneOrigin implements StringRepresentable {
     }
 
     private static final IntFunction<WaystoneOrigin> BY_ID = ByIdMap.continuous(WaystoneOrigin::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
-    public static Codec<WaystoneOrigin> CODEC = Codec.withAlternative(StringRepresentable.fromEnum(WaystoneOrigin::values), Codec.STRING,
+    public static final Codec<WaystoneOrigin> CODEC = Codec.withAlternative(StringRepresentable.fromEnum(WaystoneOrigin::values), Codec.STRING,
             WaystoneOrigin::valueOf);
     public static final StreamCodec<ByteBuf, WaystoneOrigin> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, WaystoneOrigin::ordinal);
 }

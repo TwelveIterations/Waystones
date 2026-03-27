@@ -11,7 +11,6 @@ import net.blay09.mods.waystones.client.render.*;
 import net.minecraft.client.color.block.BlockTintSources;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 
 import java.util.List;
 

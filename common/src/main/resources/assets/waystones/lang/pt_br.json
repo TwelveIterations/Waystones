@@ -22,7 +22,7 @@
   "container.waystones.waystone_selection": "Selecione seu destino:",
   "container.waystones.waystone_admin_selection": "Selecione qual obelisco de <%s> você deseja visitar:",
   "container.waystones.waystone": "Obelisco",
-  "container.waystones.portstone": "Pedra de Portal Branca",
+  "container.waystones.unscoped_portstone": "Pedra de Portal Branca",
   "container.waystones.sharestone": "Pedra de Compartilhamento",
   "container.waystones.warp_plate": "Placa de Teleporte",
   "gui.waystones.waystone_selection.next_page": "Próximo",

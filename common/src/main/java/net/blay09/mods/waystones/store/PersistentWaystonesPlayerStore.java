@@ -5,7 +5,6 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.nbt.*;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
@@ -143,7 +142,7 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
 
     @Override
     public void deactivateWaystone(Player player, Waystone waystone) {
-        CompoundTag data = getWaystonesData(player);
+        final var data = getWaystonesData(player);
         ListTag activatedWaystones = getActivatedWaystonesData(data);
         String waystoneUid = waystone.getWaystoneUid().toString();
         for (int i = activatedWaystones.size() - 1; i >= 0; i--) {

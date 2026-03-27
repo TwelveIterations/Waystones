@@ -31,7 +31,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -79,10 +79,6 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
 
     private boolean isDoubleBlock(BlockState state) {
         return state.hasProperty(HALF);
-    }
-
-    protected boolean canSilkToucha() {
-        return false;
     }
 
     @Override
@@ -240,7 +236,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                             .setValue(ORIGIN, WaystoneOrigin.PLAYER));
         }
 
-        if (blockEntity instanceof WaystoneBlockEntityBase) {
+        if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
             if (!level.isClientSide()) {
                 final var waystoneUid = Optional.ofNullable(stack.get(ModComponents.waystoneIdentity.value()))
                         .map(WaystoneReferenceComponent::waystoneId)
@@ -251,21 +247,21 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                 }
 
                 if (existingWaystone != null && existingWaystone.isValid() && existingWaystone.getBackingWaystone() instanceof WaystoneImpl backingWaystone) {
-                    ((WaystoneBlockEntityBase) blockEntity).initializeFromExisting((ServerLevelAccessor) level, backingWaystone, stack);
+                    waystoneBlockEntity.initializeFromExisting((ServerLevelAccessor) level, backingWaystone, stack);
                 } else {
-                    ((WaystoneBlockEntityBase) blockEntity).initializeWaystone((ServerLevelAccessor) level, placer, WaystoneOrigin.PLAYER);
+                    waystoneBlockEntity.initializeWaystone((ServerLevelAccessor) level, placer, WaystoneOrigin.PLAYER);
                 }
 
                 if (isDoubleBlock) {
                     BlockEntity waystoneEntityAbove = level.getBlockEntity(posAbove);
                     if (waystoneEntityAbove instanceof WaystoneBlockEntityBase) {
-                        ((WaystoneBlockEntityBase) waystoneEntityAbove).initializeFromBase(((WaystoneBlockEntityBase) blockEntity));
+                        ((WaystoneBlockEntityBase) waystoneEntityAbove).initializeFromBase(waystoneBlockEntity);
                     }
                 }
             }
 
             if (placer instanceof Player) {
-                Waystone waystone = ((WaystoneBlockEntityBase) blockEntity).getWaystone();
+                Waystone waystone = waystoneBlockEntity.getWaystone();
                 PlayerWaystoneManager.activateWaystone(((Player) placer), waystone);
 
                 if (!level.isClientSide()) {
@@ -274,11 +270,9 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             }
 
             // Open settings screen on placement since people don't realize you can shift-click waystones to edit them
-            if (!level.isClientSide() && placer instanceof ServerPlayer) {
-                final ServerPlayer player = (ServerPlayer) placer;
-                final WaystoneBlockEntityBase waystoneTileEntity = (WaystoneBlockEntityBase) blockEntity;
+            if (!level.isClientSide() && placer instanceof ServerPlayer player) {
                 if (shouldOpenMenuWhenPlaced()) {
-                    waystoneTileEntity.getSettingsMenuProvider().ifPresent(it -> Balm.networking().openMenu(player, it));
+                    waystoneBlockEntity.getSettingsMenuProvider().ifPresent(it -> Balm.networking().openMenu(player, it));
                 }
             }
         }

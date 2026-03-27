@@ -17,7 +17,6 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -129,20 +128,18 @@ public class ModCommands {
                         .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_PLACE))
                         .then(argument("pos", BlockPosArgument.blockPos())
                                 .then(argument("type", StringArgumentType.word())
-                                        .suggests((context, builder) -> {
-                                            return SharedSuggestionProvider.suggest(
-                                                    WaystoneType.values()
-                                                            .map(WaystoneType::identifier)
-                                                            .map(id -> id.getNamespace().equals(Waystones.MOD_ID) ? id.getPath() : id.toString()),
-                                                    builder
-                                            );
-                                        })
+                                        .suggests((_, builder) -> SharedSuggestionProvider.suggest(
+                                                WaystoneType.values()
+                                                        .map(WaystoneType::identifier)
+                                                        .map(id -> id.getNamespace().equals(Waystones.MOD_ID) ? id.getPath() : id.toString()),
+                                                builder
+                                        ))
                                         .then(argument("name", StringArgumentType.greedyString())
                                                 .executes(context -> {
                                                     final var pos = BlockPosArgument.getLoadedBlockPos(context, "pos");
                                                     final var typeArg = StringArgumentType.getString(context, "type");
                                                     final var name = StringArgumentType.getString(context, "name");
-                                                    final ServerLevel level = context.getSource().getLevel();
+                                                    final var level = context.getSource().getLevel();
 
                                                     Identifier typeId;
                                                     if (!typeArg.contains(":")) {
@@ -157,9 +154,7 @@ public class ModCommands {
                                                         return 0;
                                                     }
 
-                                                    WaystonesAPI.placeWaystone(level, pos, type).ifPresent(waystone -> {
-                                                        ((MutableWaystone) waystone).setName(Component.literal(name));
-                                                    });
+                                                    WaystonesAPI.placeWaystone(level, pos, type).ifPresent(waystone -> ((MutableWaystone) waystone).setName(Component.literal(name)));
                                                     return 1;
                                                 })))))
                 .then(Commands.literal("count")

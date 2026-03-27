@@ -23,7 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -36,7 +36,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     private final Set<Identifier> flags = new HashSet<>();
     private EffectExecutor executor = EffectExecutor.deferred();
 
-    private Waystone fromWaystone;
+    private @Nullable Waystone fromWaystone;
 
     private ItemStack warpItem = ItemStack.EMPTY;
     private InteractionHand warpHand = InteractionHand.MAIN_HAND;
@@ -103,7 +103,6 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     }
 
     @Override
-    @Nullable
     public Optional<Waystone> getFromWaystone() {
         return Optional.ofNullable(fromWaystone);
     }
@@ -239,7 +238,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     }
 
     @Override
-    public BlockEntity blockEntity() {
+    public @Nullable BlockEntity blockEntity() {
         return level().getBlockEntity(blockPos());
     }
 

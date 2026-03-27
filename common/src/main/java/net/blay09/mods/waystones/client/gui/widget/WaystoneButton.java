@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class WaystoneButton extends Button.Plain {
@@ -43,7 +44,7 @@ public class WaystoneButton extends Button.Plain {
         super.extractContents(guiGraphics, mouseX, mouseY, partialTicks);
 
         final var font = Minecraft.getInstance().font;
-        final var player = Minecraft.getInstance().player;
+        final var player = Objects.requireNonNull(Minecraft.getInstance().player);
 
         // render distance
         if (waystone.getDimension() == player.level().dimension() && isActive()) {

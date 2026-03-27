@@ -6,8 +6,6 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.core.BalmRegistrar;
 import net.blay09.mods.balm.platform.event.callback.ServerLifecycleCallback;
 import net.blay09.mods.balm.world.entity.ai.village.poi.BalmPoiTypeRegistrar;
-import net.blay09.mods.balm.world.level.biome.BiomeModificationBuilder;
-import net.blay09.mods.balm.world.level.biome.BiomeModifier;
 import net.blay09.mods.balm.world.level.biome.BiomePredicate;
 import net.blay09.mods.balm.world.level.levelgen.BalmWorldGen;
 import net.blay09.mods.waystones.Waystones;

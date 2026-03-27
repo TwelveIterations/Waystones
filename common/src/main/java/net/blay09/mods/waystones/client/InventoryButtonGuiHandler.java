@@ -4,14 +4,15 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.client.gui.screens.BalmScreenUtils;
 import net.blay09.mods.balm.client.platform.event.callback.ScreenCallback;
 import net.blay09.mods.shogi.coercion.Coercion;
-import net.blay09.mods.waystones.api.*;
-import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
-import net.blay09.mods.waystones.config.WaystonesRules;
-import net.blay09.mods.waystones.core.InvalidWaystone;
+import net.blay09.mods.waystones.api.TeleportFlags;
+import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
+import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.config.WaystonesRules;
+import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.message.ServerboundInventoryButtonPacket;
 import net.blay09.mods.waystones.network.message.ServerboundRequestInventoryButtonPacket;
@@ -26,6 +27,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,7 @@ import java.util.function.Supplier;
 
 public class InventoryButtonGuiHandler {
 
-    private static WaystoneInventoryButton warpButton;
+    private static @Nullable WaystoneInventoryButton warpButton;
 
     public static void initialize() {
         ScreenCallback.Init.After.EVENT.register(screen -> {
@@ -55,8 +57,11 @@ public class InventoryButtonGuiHandler {
 
             Supplier<Integer> xPosition = screen instanceof CreativeModeInventoryScreen ? () -> WaystonesConfig.getActive().inventoryButton.creativeInventoryButtonX : () -> WaystonesConfig.getActive().inventoryButton.inventoryButtonX;
             Supplier<Integer> yPosition = screen instanceof CreativeModeInventoryScreen ? () -> WaystonesConfig.getActive().inventoryButton.creativeInventoryButtonY : () -> WaystonesConfig.getActive().inventoryButton.inventoryButtonY;
-            warpButton = new WaystoneInventoryButton((AbstractContainerScreen<?>) screen, button -> {
+            warpButton = new WaystoneInventoryButton((AbstractContainerScreen<?>) screen, _ -> {
                 Player player = mc.player;
+                if (player == null) {
+                    return;
+                }
 
                 final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
                 final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).addFlag(TeleportFlags.INVENTORY_BUTTON);
@@ -114,9 +119,7 @@ public class InventoryButtonGuiHandler {
                     }
                 }
 
-                requirements.mapRight(Coercion.LIST).ifRight(failures -> {
-                    RequirementClientRegistry.getListRenderer().appendHoverText(player, (List<Object>) failures, tooltip);
-                });
+                requirements.mapRight(Coercion.LIST).ifRight(failures -> RequirementClientRegistry.getListRenderer().appendHoverText(player, (List<Object>) failures, tooltip));
 
                 final var font = Minecraft.getInstance().font;
                 final var visualTooltip = tooltip.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();

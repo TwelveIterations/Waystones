@@ -23,7 +23,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -49,13 +49,13 @@ public class JourneyMapIntegration implements IClientPlugin {
         }
     }
 
-    private IClientAPI api;
+    private @Nullable IClientAPI api;
     private boolean journeyMapReady;
     private final Map<UUID, String> waystoneToWaypoint = new HashMap<>();
 
     private final List<Runnable> scheduledJobsWhenReady = new ArrayList<>();
 
-    private static JourneyMapIntegration instance;
+    private static @Nullable JourneyMapIntegration instance;
 
     public JourneyMapIntegration() {
         instance = this;
@@ -75,8 +75,7 @@ public class JourneyMapIntegration implements IClientPlugin {
     /**
      * This will be null if Journeymap is not loaded.
      */
-    @Nullable
-    public static JourneyMapIntegration getInstance() {
+    public static @Nullable JourneyMapIntegration getInstance() {
         return instance;
     }
 
@@ -87,7 +86,7 @@ public class JourneyMapIntegration implements IClientPlugin {
 
     public void onMappingEvent(MappingEvent event) {
         if (event.getStage() == MappingEvent.Stage.MAPPING_STARTED) {
-            final var waypoints = api.getWaypoints(Waystones.MOD_ID);
+            final var waypoints = Objects.requireNonNull(api).getWaypoints(Waystones.MOD_ID);
             for (final var waypoint : waypoints) {
                 WaystonesWaypointData.decode(waypoint.getCustomData())
                         .ifPresent(customData -> waystoneToWaypoint.put(customData.waystoneId(), waypoint.getGuid()));

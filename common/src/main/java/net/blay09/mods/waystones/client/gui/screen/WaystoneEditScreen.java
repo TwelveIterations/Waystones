@@ -5,25 +5,27 @@ import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.network.message.ServerboundEditWaystonePacket;
 import net.blay09.mods.waystones.network.message.ServerboundRequestManageWaystoneModifiersPacket;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Locale;
 
 public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu> {
 
-    private EditBox textField;
-    private WaystoneVisbilityButton visibilityButton;
-    private ImageButton modifierButton;
-    private Button saveButton;
+    private @Nullable EditBox textField;
+    private @Nullable WaystoneVisbilityButton visibilityButton;
+    private @Nullable ImageButton modifierButton;
 
     public WaystoneEditScreen(WaystoneEditMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title, 176, 210);
@@ -81,8 +83,8 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         addRenderableWidget(modifierButton);
         y += 25;
 
-        saveButton = Button.builder(menu.canEdit() ? Component.translatable("gui.waystones.waystone_settings.save") : Component.translatable(
-                        "gui.waystones.waystone_settings.close"), it -> onClose())
+        final var saveButton = Button.builder(menu.canEdit() ? Component.translatable("gui.waystones.waystone_settings.save") : Component.translatable(
+                        "gui.waystones.waystone_settings.close"), _ -> onClose())
                 .pos(leftPos + 176 / 2 - 50, y)
                 .size(100, 20)
                 .build();
@@ -91,7 +93,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (menu.canEdit() && textField.isMouseOver(event.x(), event.y()) && event.button() == 1) {
+        if (menu.canEdit() && textField != null && textField.isMouseOver(event.x(), event.y()) && event.button() == 1) {
             textField.setValue("");
             return true;
         }
@@ -101,7 +103,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (textField.keyPressed(event) || textField.isFocused()) {
+        if (textField != null && (textField.keyPressed(event) || textField.isFocused())) {
             if (event.isEscape() || event.isConfirmation()) {
                 this.onClose();
             }
@@ -132,22 +134,26 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         if (error != null) {
             guiGraphics.centeredText(font, error, 176 / 2, titleLabelY + 12, 0xFFFF5555);
         }
-        guiGraphics.text(font,
-                Component.translatable("gui.waystones.waystone_settings.visibility." + visibilityButton.getVisibility().name().toLowerCase(Locale.ROOT)),
-                25,
-                visibilityButton.getY() - topPos + 6,
-                0xFFFFFFFF,
-                true);
-        final var modifiersComponent = menu.getModifierCount() > 0
-                ? Component.translatable("gui.waystones.waystone_settings.modifiers_active", menu.getModifierCount())
-                : Component.translatable(
-                "gui.waystones.waystone_settings.no_modifiers_active");
-        guiGraphics.text(font,
-                modifiersComponent,
-                25,
-                modifierButton.getY() - topPos + 6,
-                menu.getModifierCount() > 0 ? 0xFF55FF55 : 0xFFAAAAAA,
-                true);
+        if (visibilityButton != null) {
+            guiGraphics.text(font,
+                    Component.translatable("gui.waystones.waystone_settings.visibility." + visibilityButton.getVisibility().name().toLowerCase(Locale.ROOT)),
+                    25,
+                    visibilityButton.getY() - topPos + 6,
+                    0xFFFFFFFF,
+                    true);
+        }
+        if (modifierButton != null) {
+            final var modifiersComponent = menu.getModifierCount() > 0
+                    ? Component.translatable("gui.waystones.waystone_settings.modifiers_active", menu.getModifierCount())
+                    : Component.translatable(
+                    "gui.waystones.waystone_settings.no_modifiers_active");
+            guiGraphics.text(font,
+                    modifiersComponent,
+                    25,
+                    modifierButton.getY() - topPos + 6,
+                    menu.getModifierCount() > 0 ? 0xFF55FF55 : 0xFFAAAAAA,
+                    true);
+        }
     }
 
     @Override

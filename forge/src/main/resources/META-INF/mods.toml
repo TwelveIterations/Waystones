@@ -3,37 +3,37 @@ loaderVersion="*"
 license="${license}"
 issueTrackerURL="${issues}"
 [[mods]]
-modId="${mod_id}"
+modId="waystones"
 version="${version}"
 displayName="${mod_name}"
 displayURL="${homepage}"
-logoFile="${mod_id}.png"
+logoFile="waystones.png"
 credits="${credits}"
 authors="${mod_author}"
 description='''${description}'''
 [[mixins]]
-config = "${mod_id}.mixins.json"
+config = "waystones.mixins.json"
 [[mixins]]
-config = "${mod_id}.forge.mixins.json"
-[[dependencies.${mod_id}]]
+config = "waystones.forge.mixins.json"
+[[dependencies.waystones]]
 modId="forge"
 mandatory=true
 versionRange="[${forge_version},)"
 ordering="NONE"
 side="BOTH"
-[[dependencies.${mod_id}]]
+[[dependencies.waystones]]
 modId="minecraft"
 mandatory=true
 versionRange="[${minecraft_version},)"
 ordering="NONE"
 side="BOTH"
-[[dependencies.${mod_id}]]
+[[dependencies.waystones]]
 modId="balm"
 mandatory=true
 versionRange="[${balm_version},)"
 ordering="NONE"
 side="BOTH"
-[[dependencies.${mod_id}]]
+[[dependencies.waystones]]
 modId="shogi"
 mandatory=true
 versionRange="[${shogi_version},)"

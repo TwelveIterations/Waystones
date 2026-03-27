@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.compat.Compat;
-import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;

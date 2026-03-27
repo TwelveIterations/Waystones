@@ -34,6 +34,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -73,7 +74,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     public void init() {
         final int maxContentHeight = (int) (height * 0.6f);
         final int maxButtonsPerPage = (maxContentHeight - headerHeight - footerHeight) / entryHeight;
-        buttonsPerPage = Math.max(4, Math.min(maxButtonsPerPage, waystones.size()));
+        buttonsPerPage = Math.clamp(waystones.size(), 4, maxButtonsPerPage);
 
         super.init();
 
@@ -327,7 +328,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         return this.searchBox.keyPressed(event);
     }
 
-    public Comparator<Waystone> getSorting() {
+    public @Nullable Comparator<Waystone> getSorting() {
         final var player = Minecraft.getInstance().player;
         final var sortingIndex = PlayerWaystoneManager.getSortingIndex(player);
         return new UserSortingComparator(sortingIndex);

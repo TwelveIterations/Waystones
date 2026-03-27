@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class WaystoneInventoryButton extends Button {
@@ -47,7 +48,7 @@ public class WaystoneInventoryButton extends Button {
             setY(((AbstractContainerScreenAccessor) parentScreen).getTopPos() + yPosition.get());
             isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + width && mouseY < getY() + height;
 
-            final var player = Minecraft.getInstance().player;
+            final var player = Objects.requireNonNull(Minecraft.getInstance().player);
             final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
             final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).addFlag(TeleportFlags.INVENTORY_BUTTON);
             final var requirements = WaystonesRules.inventoryButtonWarpRequirements.get(context);

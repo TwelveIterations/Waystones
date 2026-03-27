@@ -19,7 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -67,7 +67,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     private Component name = Component.empty();
     private WaystoneVisibility visibility;
 
-    private UUID ownerUid;
+    private @Nullable UUID ownerUid;
 
     private boolean wasSeen;
 

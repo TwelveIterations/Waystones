@@ -13,6 +13,7 @@ import net.minecraft.util.StringRepresentable;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 @Config(Waystones.MOD_ID)
@@ -204,6 +205,6 @@ public class WaystonesConfig {
     }
 
     public static WaystonesConfig getActive() {
-        return Balm.config().getActiveConfig(WaystonesConfig.class);
+        return Objects.requireNonNull(Balm.config().getActiveConfig(WaystonesConfig.class));
     }
 }
