@@ -45,7 +45,7 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
     }
 
     private static final SpriteId MATERIAL = new SpriteId(TextureAtlas.LOCATION_BLOCKS, Identifier.withDefaultNamespace("waystone_overlays/portstone"));
-    private static ItemStack warpStoneItem;
+    private static @Nullable ItemStack warpStoneItem;
 
     private final SpriteGetter materials;
     private final ItemModelResolver itemModelResolver;
@@ -63,7 +63,7 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
     }
 
     @Override
-    public void extractRenderState(PortstoneBlockEntity blockEntity, PortstoneRenderState renderState, float delta, Vec3 vec, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+    public void extractRenderState(PortstoneBlockEntity blockEntity, PortstoneRenderState renderState, float delta, Vec3 vec, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, delta, vec, crumblingOverlay);
         final var blockState = blockEntity.getBlockState();
         if (blockState.getValue(SharestoneBlock.HALF) != DoubleBlockHalf.LOWER) {

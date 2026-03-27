@@ -45,7 +45,7 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
 
     private static final SpriteId MATERIAL = new SpriteId(TextureAtlas.LOCATION_BLOCKS, Identifier.withDefaultNamespace("waystone_overlays/sharestone_color"));
 
-    private static ItemStack warpStoneItem;
+    private static @Nullable ItemStack warpStoneItem;
 
     private final SpriteGetter materials;
     private final ItemModelResolver itemModelResolver;
@@ -63,7 +63,7 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
     }
 
     @Override
-    public void extractRenderState(SharestoneBlockEntity blockEntity, SharestoneRenderState renderState, float delta, Vec3 vec, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+    public void extractRenderState(SharestoneBlockEntity blockEntity, SharestoneRenderState renderState, float delta, Vec3 vec, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, delta, vec, crumblingOverlay);
         final var blockState = blockEntity.getBlockState();
         if (blockState.getValue(SharestoneBlock.HALF) != DoubleBlockHalf.LOWER) {

@@ -56,7 +56,7 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
     }
 
     @Override
-    public void extractRenderState(WaystoneBlockEntity blockEntity, WaystoneRenderState renderState, float delta, Vec3 vec, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+    public void extractRenderState(WaystoneBlockEntity blockEntity, WaystoneRenderState renderState, float delta, Vec3 vec, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, delta, vec, crumblingOverlay);
         final var blockState = blockEntity.getBlockState();
         if (blockState.getValue(SharestoneBlock.HALF) != DoubleBlockHalf.LOWER) {
@@ -66,7 +66,7 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
 
         renderState.facing = blockState.getValue(WaystoneBlock.FACING);
         final var type = blockState.getBlock() instanceof WaystoneBlock waystoneBlock ? waystoneBlock.getType() : WaystoneTypes.ANDESITE;
-        renderState.runeColor = type != null ? type.runeColor() : 0xFFFFFFFF;
+        renderState.runeColor = type.runeColor();
         final var player = Minecraft.getInstance().player;
         boolean isActivated = player != null && PlayerWaystoneManager.isWaystoneActivated(player, blockEntity.getWaystone());
         renderState.showRunes = isActivated || blockState.getValue(WaystoneBlock.SEEN);
