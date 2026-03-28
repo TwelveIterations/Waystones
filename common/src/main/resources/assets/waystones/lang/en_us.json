@@ -92,6 +92,7 @@
   "chat.waystones.scroll_bound": "Scroll bound: %s",
   "chat.waystones.scroll_not_yet_bound": "This scroll is not bound to a waystone.",
   "chat.waystones.cannot_dimension_warp": "You cannot warp between these worlds.",
+  "chat.waystones.cannot_break_waystone": "You are not allowed to break this waystone.",
   "chat.waystones.waystone_missing": "The waystone you tried to teleport to is currently being moved or has gone missing.",
   "chat.waystones.cannot_transport_leashed": "You cannot take leashed mobs with you",
   "chat.waystones.cannot_transport_leashed_dimensional": "You cannot take leashed mobs with you between worlds",
