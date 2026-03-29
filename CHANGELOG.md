@@ -1,21 +1,2 @@
-- Updated Sharestones to be based on a material instead of color:
-  - Orange → Copper, Light Blue → Prismarine, Yellow → Gold, Cyan → Diamond, Blue → Lapis, Green → Emerald, Red → Redstone
-  - Magenta, Lime, Pink, Gray, Light Gray, Purple, Brown and Black Sharestones have been removed
-  - Removed Sharestones will remain in world as "Ruined Sharestones"
-  - Ruined Sharestones connect to any other Ruined Sharestone, but are not obtainable and only intended for migration purposes
-  - Ruined Sharestones can be crafted into any of the other type using its materials
-  - Portstone colors that have been removed will become regular unscoped Portstones
-- Added Warp Stones scoped to specific Sharestones
-- Added Red Nether Bricks, Purpur, Prismarine and Mud Bricks Waystones
-- Added `seen` state to Waystones that is enabled once a first player has activated it
-  - Runes will display dimly lit if another player has already activated a waystone
-- Added `waystones:after_warp_effects` Shogi rule to allow overriding default modifier behavior
-- Added `waystones:may_edit` and `waystones:may_manage_global_waystones` Shogi rules to allow overriding default behavior
-- Added `waystones:warp_stone_use_time`, `waystones:warp_plate_use_time`, `waystonse:scroll_use_time` Shogi rules to replace old config options
-- Added `waystones:warp_modifiers_*` item tags to control which items result in what waystone modifier behavior
-- Changed XP points cost to display as levels when possible
-- Changed the waystone visibility buttons to look better and be more fitting
-- Fixed XP cost displaying a lower level than actually required when the player does not have enough xp
-- Fixed TrashSlot showing up and toggling in Waystone Screens
-- Fixed error message in Waystones Edit Screen not showing
-- Fixed some missing translation keys
+- Updated to latest JourneyMap API
+- Fixed missing message in Unbreakables integration
