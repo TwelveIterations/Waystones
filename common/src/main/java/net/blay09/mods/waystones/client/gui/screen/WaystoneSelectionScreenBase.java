@@ -74,8 +74,8 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     @Override
     public void init() {
         final int maxContentHeight = (int) (height * 0.6f);
-        final int maxButtonsPerPage = (maxContentHeight - headerHeight - footerHeight) / entryHeight;
-        buttonsPerPage = Math.max(4, Math.min(maxButtonsPerPage, waystones.size()));
+        final int preferredButtonsPerPage = (maxContentHeight - headerHeight - footerHeight) / entryHeight;
+        buttonsPerPage = Math.max(4, Math.min(preferredButtonsPerPage, waystones.size()));
 
         super.init();
 
