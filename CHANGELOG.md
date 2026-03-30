@@ -1,2 +1,3 @@
-- Updated to latest JourneyMap API
-- Fixed missing message in Unbreakables integration
+- Fix crash due to bad clamp call, use good clamp call instead
+  - What is the point of Math.clamp if I still have to max out my max, Java?
+  - And why are we suggesting Math.clamp as a modernization when it does not behave the same, Jetbrains?
