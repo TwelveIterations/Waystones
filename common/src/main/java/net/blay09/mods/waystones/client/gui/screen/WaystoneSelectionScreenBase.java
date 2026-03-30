@@ -30,6 +30,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -74,7 +75,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     public void init() {
         final int maxContentHeight = (int) (height * 0.6f);
         final int maxButtonsPerPage = (maxContentHeight - headerHeight - footerHeight) / entryHeight;
-        buttonsPerPage = Math.clamp(waystones.size(), 4, maxButtonsPerPage);
+        buttonsPerPage = Mth.clamp(waystones.size(), 4, maxButtonsPerPage);
 
         super.init();
 
