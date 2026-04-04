@@ -27,6 +27,8 @@ public class ModBlocks {
     public static DiscriminatedBlocks<BuiltinSharestoneType> sharestones;
 
     public static void initialize(BalmBlockRegistrar blocks) {
+        blocks.enableBlockDescriptionPrefixForItems();
+
         final var waystoneTypes = WaystoneTypes.builtinValues().collect(Collectors.toSet());
         waystones = blocks.registerDiscriminated(waystoneTypes, type -> DiscriminatedBlocks.prefix(type, "waystone"), WaystoneBlock::new, (type, properties) -> properties.sound(type.soundType()).strength(5f, 2000f))
                 .withItems(WaystoneBlockItem::new)
