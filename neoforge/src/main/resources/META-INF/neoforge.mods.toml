@@ -24,7 +24,7 @@ side="BOTH"
 [[dependencies.waystones]]
 modId="minecraft"
 type="required"
-versionRange="[${minecraft_version},)"
+versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
 [[dependencies.waystones]]

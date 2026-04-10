@@ -24,6 +24,14 @@ repositories {
     }
 
     maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+
+    maven {
         name = 'Shedaniel'
         url = 'https://maven.shedaniel.me/'
         content {
@@ -40,6 +48,7 @@ repositories {
             includeGroup "mezz.jei"
             includeGroup "info.journeymap"
             includeGroup "mysticdrew"
+            includeGroupAndSubgroups "com.blamejared"
         }
     }
 

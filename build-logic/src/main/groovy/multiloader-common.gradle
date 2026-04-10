@@ -127,10 +127,18 @@ jar {
 }
 
 processResources {
+    def minecraftVersion = libs.minecraft.get().version
+    def minecraftVersionMatch = minecraftVersion =~ /^(\d+)\.(\d+)/
+    assert minecraftVersionMatch.find(): "Unsupported Minecraft version format: ${minecraftVersion}"
+
+    def minecraftMajorMinor = "${minecraftVersionMatch.group(1)}.${minecraftVersionMatch.group(2)}"
+    def nextMinecraftMinor = "${minecraftVersionMatch.group(1)}.${minecraftVersionMatch.group(2).toInteger() + 1}"
+
     def expandProps = [
             "version": version,
             "group": project.group, //Else we target the task's group.
-            "minecraft_version": libs.minecraft.get().version.replace('-pre', '-beta.').replace('-rc-', '-rc.').replace('-snapshot-', '-alpha.'),
+            "minecraft_version_range": "[${minecraftMajorMinor}-,${nextMinecraftMinor})",
+            "fabric_minecraft_version_range": "~${minecraftMajorMinor}-",
             "forge_version": libs.forge.get().version,
             "fabric_api_version": libs.fabricApi.get().version,
             "fabric_loader_version": libs.fabricLoader.get().version,
@@ -148,7 +156,6 @@ processResources {
             "issues": issues,
             "sources": sources,
             "balm_version": libs.versions.balm.get().split('\\+')[0],
-            "shogi_version": libs.versions.shogi.get().split('\\+')[0],
     ]
 
     def jsonExpandProps = expandProps.collectEntries {
