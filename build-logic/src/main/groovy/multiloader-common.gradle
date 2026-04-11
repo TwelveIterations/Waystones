@@ -156,6 +156,7 @@ processResources {
             "issues": issues,
             "sources": sources,
             "balm_version": libs.versions.balm.get().split('\\+')[0],
+            "shogi_version": libs.versions.shogi.get().split('\\+')[0],
     ]
 
     def jsonExpandProps = expandProps.collectEntries {
