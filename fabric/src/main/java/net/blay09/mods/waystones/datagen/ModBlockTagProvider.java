@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.datagen;
 
+import net.blay09.mods.balm.world.level.block.DeferredBlock;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.tag.ModBlockTags;
 import net.minecraft.core.HolderLookup;
@@ -7,6 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
@@ -19,8 +21,12 @@ public class ModBlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        final var mineablePickaxeTag = TagKey.create(Registries.BLOCK, Identifier.withDefaultNamespace("mineable/pickaxe"));
-        final var mineableBuilder = tag(mineablePickaxeTag);
+        final var relocationNotSupported = tag(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "relocation_not_supported")));
+        ModBlocks.waystones.sortedValues().map(DeferredBlock::asBlock).forEach(relocationNotSupported::add);
+        ModBlocks.portstones.sortedValues().map(DeferredBlock::asBlock).forEach(relocationNotSupported::add);
+        ModBlocks.sharestones.sortedValues().map(DeferredBlock::asBlock).forEach(relocationNotSupported::add);
+
+        final var mineableBuilder = tag(BlockTags.MINEABLE_WITH_PICKAXE);
         mineableBuilder.add(ModBlocks.warpPlate.asBlock());
         ModBlocks.waystones.sortedValues().forEach(it -> mineableBuilder.add(it.asBlock()));
         ModBlocks.portstones.sortedValues().forEach(it -> mineableBuilder.add(it.asBlock()));
