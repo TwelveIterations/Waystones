@@ -1,1 +1,2 @@
-- Fixed only two waystones showing per page
+- Added `c:relocation_not_supported` tag to double blocks
+- Fixed incorrect translation keys for item blocks
