@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.compat.hudinfo;
 import net.blay09.mods.balm.platform.compatibility.hudinfo.BlockInfoContext;
 import net.blay09.mods.balm.platform.compatibility.hudinfo.BlockInfoProvider;
 import net.blay09.mods.balm.platform.compatibility.hudinfo.HudInfoOutput;
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -13,7 +14,10 @@ public class WaystoneBlockInfoProvider implements BlockInfoProvider {
     public void apply(BlockInfoContext context, HudInfoOutput output) {
         final var blockEntity = context.blockEntity();
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-            final var waystone = waystoneBlockEntity.getWaystone();
+            final var blockEntityWaystone = waystoneBlockEntity.getWaystone();
+            final var waystone = Waystones.getWaystoneStore(context.player())
+                    .getWaystoneById(blockEntityWaystone.getWaystoneUid())
+                    .orElse(blockEntityWaystone);
             final var isActivated = !waystone.getWaystoneKind().equals(WaystoneKinds.WAYSTONE)
                     || PlayerWaystoneManager.isWaystoneActivated(context.player(), waystone);
             if (isActivated && waystone.hasName() && waystone.isValid()) {
