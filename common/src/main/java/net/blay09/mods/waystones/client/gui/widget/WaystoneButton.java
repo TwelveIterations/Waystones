@@ -40,13 +40,22 @@ public class WaystoneButton extends Button.Plain {
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.extractContents(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        extractDefaultSprite(graphics);
 
+        final int leftPadding = renderRequirements(graphics, mouseX, mouseY, partialTicks);
+        final int rightPadding = renderDistance(graphics);
+        final int labelLeft = getX() + leftPadding + TEXT_MARGIN;
+        final int labelRight = getX() + getWidth() - TEXT_MARGIN - rightPadding;
+        final int labelTop = getY();
+        final int labelBottom = getY() + getHeight();
+        final var buttonTextOutput = graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE);
+        buttonTextOutput.acceptScrollingWithDefaultCenter(message, labelLeft, labelRight, labelTop, labelBottom);
+    }
+
+    private int renderDistance(GuiGraphicsExtractor graphics) {
         final var font = Minecraft.getInstance().font;
         final var player = Objects.requireNonNull(Minecraft.getInstance().player);
-
-        // render distance
         if (waystone.getDimension() == player.level().dimension() && isActive()) {
             int distance = (int) player.position().distanceTo(waystone.getPos().getCenter());
             String distanceStr;
@@ -56,27 +65,27 @@ public class WaystoneButton extends Button.Plain {
                 // sorry for ugly code, chatgpt was down and this was the only thing my dumbed down brain could come up with
                 distanceStr = String.format("%.1f", distance / 1000f).replace(",0", "").replace(".0", "") + "km";
             }
-            int xOffset = getWidth() - font.width(distanceStr);
-            guiGraphics.text(font, distanceStr, getX() + xOffset - 4, getY() + 6, 0xFFFFFFFF);
+            int distanceWidth = font.width(distanceStr);
+            graphics.text(font, distanceStr, getX() + getWidth() - distanceWidth - 4, getY() + 6, 0xFFFFFFFF);
+            return distanceWidth;
         }
-
-        renderRequirements(guiGraphics, mouseX, mouseY, partialTicks);
+        return 0;
     }
 
-    private void renderRequirements(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    private int renderRequirements(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         final var font = Minecraft.getInstance().font;
-        final var player = Minecraft.getInstance().player;
+        final var player = Objects.requireNonNull(Minecraft.getInstance().player);
         final var requirement = Either.unwrap(warpRequirements);
         final var renderer = RequirementClientRegistry.getListRenderer();
-        if (renderer != null) {
-            renderer.renderWidget(player, requirement, guiGraphics, mouseX, mouseY, partialTicks, getX() + 2, getY() + 2);
+        renderer.renderWidget(player, requirement, guiGraphics, mouseX, mouseY, partialTicks, getX() + 2, getY() + 2);
 
-            if (isHovered && mouseX < getX() + 2 + renderer.getWidth(player, requirement)) {
-                final List<Component> tooltip = new ArrayList<>();
-                renderer.appendHoverText(player, requirement, tooltip);
-                guiGraphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), mouseX, mouseY + font.lineHeight);
-            }
+        if (isHovered && mouseX < getX() + 2 + renderer.getWidth(player, requirement)) {
+            final List<Component> tooltip = new ArrayList<>();
+            renderer.appendHoverText(player, requirement, tooltip);
+            guiGraphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), mouseX, mouseY + font.lineHeight);
         }
+
+        return renderer.getWidth(player, requirement);
     }
 
 }
