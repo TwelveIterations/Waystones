@@ -67,7 +67,7 @@ public class WaystoneButton extends Button.Plain {
             }
             int distanceWidth = font.width(distanceStr);
             graphics.text(font, distanceStr, getX() + getWidth() - distanceWidth - 4, getY() + 6, 0xFFFFFFFF);
-            return distanceWidth;
+            return distanceWidth + 5;
         }
         return 0;
     }
@@ -85,7 +85,7 @@ public class WaystoneButton extends Button.Plain {
             guiGraphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), mouseX, mouseY + font.lineHeight);
         }
 
-        return renderer.getWidth(player, requirement);
+        return renderer.getWidth(player, requirement) + 5;
     }
 
 }
