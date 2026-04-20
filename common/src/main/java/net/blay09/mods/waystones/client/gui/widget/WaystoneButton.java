@@ -50,7 +50,7 @@ public class WaystoneButton extends Button.Plain {
         final int labelTop = getY();
         final int labelBottom = getY() + getHeight();
         final var buttonTextOutput = graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE);
-        buttonTextOutput.acceptScrollingWithDefaultCenter(message, labelLeft, labelRight, labelTop, labelBottom);
+        buttonTextOutput.acceptScrolling(message, getX() + getWidth() / 2, labelLeft, labelRight, labelTop, labelBottom);
     }
 
     private int renderDistance(GuiGraphicsExtractor graphics) {
