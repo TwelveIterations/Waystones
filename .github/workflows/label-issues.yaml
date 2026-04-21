@@ -18,7 +18,7 @@ jobs:
         uses: TwelveIterations/github-issue-parser@main
         id: issue-parser
         with:
-          template-path: https://raw.githubusercontent.com/TwelveIterationMods/.github/refs/heads/main/.github/ISSUE_TEMPLATE/${{ matrix.template }}
+          template-path: https://raw.githubusercontent.com/TwelveIterations/.github/refs/heads/main/.github/ISSUE_TEMPLATE/${{ matrix.template }}
 
       - name: Set labels based on component field
         uses: redhat-plumbers-in-action/advanced-issue-labeler@d498805e5c7c0658e336948b3363480bcfd68da6
