@@ -19,6 +19,21 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
+        final var relocationNotSupported = getOrCreateTagBuilder(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "relocation_not_supported")));
+        relocationNotSupported.add(ModBlocks.waystone,
+                ModBlocks.sandyWaystone,
+                ModBlocks.mossyWaystone,
+                ModBlocks.deepslateWaystone,
+                ModBlocks.blackstoneWaystone,
+                ModBlocks.endStoneWaystone,
+                ModBlocks.warpPlate);
+        for (final var portstone : ModBlocks.portstones) {
+            relocationNotSupported.add(portstone);
+        }
+        for (final var sharestone : ModBlocks.sharestones) {
+            relocationNotSupported.add(sharestone);
+        }
+
         final var mineablePickaxeTag = TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("mineable/pickaxe"));
         final var mineableBuilder = getOrCreateTagBuilder(mineablePickaxeTag);
         mineableBuilder.add(ModBlocks.waystone,
