@@ -1,4 +1,3 @@
-- Fixed waypoints not being added to JourneyMap Waystones group
-- Fixed transient (silk-touched) waystones still showing up on JourneyMap
-- Fixed transient (silk-touched) waystones still showing up on Dynmap
-- Fixed transient (silk-touched) waystones still showing up on BlueMap
+- Fixed waystones being relocatable by other mods which would leave a broken half behind
+- Fixed error message in waystone edit screen not showing
+- Fixed config translation keys
