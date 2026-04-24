@@ -31,14 +31,14 @@ public class RequestManageWaystoneModifiersMessage implements CustomPacketPayloa
     }
 
     public static void handle(ServerPlayer player, RequestManageWaystoneModifiersMessage message) {
-        final var pos = message.pos;
-        if (player.distanceToSqr(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) > 64) {
-            return;
-        }
-
-        final var blockEntity = player.level().getBlockEntity(pos);
+        final var level = player.level();
+        final var blockEntity = level.isLoaded(message.pos) ? level.getBlockEntity(message.pos) : null;
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-            waystoneBlockEntity.getModifierMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
+            if (player.distanceToSqr(waystoneBlockEntity.getWaystone().getPos().getCenter()) > 64) {
+                return;
+            }
+            waystoneBlockEntity.getModifierMenuProvider()
+                    .ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
         }
     }
 

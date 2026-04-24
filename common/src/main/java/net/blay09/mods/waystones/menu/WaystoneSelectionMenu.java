@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.menu;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.core.WaystoneImpl;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -16,9 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
@@ -58,8 +54,7 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player player) {
         if (fromWaystone != null) {
-            BlockPos pos = fromWaystone.getPos();
-            return player.distanceToSqr((double) pos.getX() + 0.5, (double) pos.getY() + 0.5, (double) pos.getZ() + 0.5) <= 64;
+            return player.distanceToSqr(fromWaystone.getPos().getCenter()) <= 64;
         }
 
         return true;

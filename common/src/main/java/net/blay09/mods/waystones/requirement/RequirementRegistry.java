@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.requirement;
 
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.TeleportFlags;
+import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.requirement.*;
@@ -19,7 +19,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -368,8 +369,7 @@ public class RequirementRegistry {
                         .equals(parameters.value));
         registerBoundConditionResolver("is_within_distance",
                 FloatParameter.class,
-                (context, parameters) -> (float) Math.sqrt(context.getEntity()
-                        .distanceToSqr(context.getTargetWaystone().getPos().getCenter())) <= parameters.value);
+                (context, parameters) -> (float) Math.sqrt(context.getEntity().distanceToSqr(context.getTargetWaystone().getPos().getCenter())) <= parameters.value);
         registerConditionResolver("has_cooldown",
                 WaystonesIdParameter.class,
                 (context, parameters) -> {

@@ -65,8 +65,7 @@ public class EditWaystoneMessage implements CustomPacketPayload {
             return;
         }
 
-        final var pos = waystone.getPos();
-        if (player.distanceToSqr(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) > 64) {
+        if (player.distanceToSqr(waystone.getPos().getCenter()) > 64) {
             return;
         }
 

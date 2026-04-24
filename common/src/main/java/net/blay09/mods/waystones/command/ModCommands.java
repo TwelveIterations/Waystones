@@ -8,9 +8,6 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneStyle;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.api.*;
-import net.blay09.mods.waystones.block.ModBlocks;
-import net.blay09.mods.waystones.block.WaystoneBlockBase;
-import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.comparator.WaystoneComparators;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
@@ -272,7 +269,7 @@ public class ModCommands {
         if (waystone.getDimension() != caller.level().dimension()) {
             location = Component.translatable("commands.waystones.list.in_dimension", waystoneDimensionId.toString());
         } else {
-            final var distance = (int) caller.position().distanceTo(waystonePos.getCenter());
+            final var distance = (int) caller.distanceToSqr(waystone.getPos().getCenter());
             location = Component.translatable("commands.waystones.list.at_distance", distance);
         }
 

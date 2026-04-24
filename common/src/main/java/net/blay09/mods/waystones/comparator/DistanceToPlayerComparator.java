@@ -15,8 +15,8 @@ public class DistanceToPlayerComparator implements Comparator<Waystone> {
 
     @Override
     public int compare(Waystone o1, Waystone o2) {
-        double distance1 = o1.getPos().distSqr(player.blockPosition());
-        double distance2 = o2.getPos().distSqr(player.blockPosition());
+        double distance1 = player.distanceToSqr(o1.getPos().getCenter());
+        double distance2 = player.distanceToSqr(o2.getPos().getCenter());
         return Double.compare(distance1, distance2);
     }
 }
