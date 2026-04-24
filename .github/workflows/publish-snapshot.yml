@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v5
+        uses: gradle/actions/wrapper-validation@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e
       - name: Setup JDK
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654
         with:
           java-version: 25
           distribution: temurin
@@ -30,7 +30,7 @@ jobs:
             exit 1
           fi
       - name: Validate en_us.json file
-        uses: TwelveIterations/validate-minecraft-lang@v1
+        uses: TwelveIterations/validate-minecraft-lang@0fc8683f070a73c13015b3e17a2130baa9e89d82
   prepare-matrix:
     runs-on: ubuntu-latest
     needs: verify-resources
@@ -38,10 +38,10 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.result }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Preparing matrix
         id: set-matrix
-        uses: actions/github-script@v8
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         with:
           script: |
             const fs = require('fs');
@@ -62,11 +62,11 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v5
+        uses: gradle/actions/wrapper-validation@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e
       - name: Setup JDK
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654
         with:
           java-version: 25
           distribution: temurin
@@ -77,7 +77,7 @@ jobs:
         run: echo "version=$(cat gradle.properties | grep -w "\bversion\s*=" | cut -d= -f2)" >> $GITHUB_OUTPUT
         id: extract-version
       - name: Bumping version
-        uses: TwelveIterations/bump-version@v1
+        uses: TwelveIterations/bump-version@86901cde5897b550e2e98fbe8962afc401c23c8f
         with:
           version: ${{ steps.extract-version.outputs.version }}
           bump: revision

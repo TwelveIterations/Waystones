@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
 
       - name: Parse issue form
-        uses: TwelveIterations/github-issue-parser@main
+        uses: TwelveIterations/github-issue-parser@31002363586b06c42d69c874b03f6a839e9c53ba
         id: issue-parser
         with:
           template-path: https://raw.githubusercontent.com/TwelveIterations/.github/refs/heads/main/.github/ISSUE_TEMPLATE/${{ matrix.template }}
