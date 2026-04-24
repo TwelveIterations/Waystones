@@ -1,2 +1,2 @@
-- Added `c:relocation_not_supported` tag to double blocks
-- Fixed incorrect translation keys for item blocks
+- Fixed waystone button text overlapping with requirements and distance display
+- Fixed Jade integration showing outdated waystones data
