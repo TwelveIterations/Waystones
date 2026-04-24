@@ -3,7 +3,10 @@ package net.blay09.mods.waystones.core;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.TeleportDestination;
+import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneTeleportContext;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
 import net.blay09.mods.waystones.block.WaystoneBlock;
@@ -25,6 +28,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -182,6 +186,36 @@ public class WaystoneTeleportManager {
         return entity;
     }
 
+    private static boolean shouldTeleportOffsetByFacing(Waystone waystone) {
+        return !(waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE));
+    }
+
+    private static boolean hasSpaceToTeleport(Level level, BlockPos pos) {
+        final var posAbove = pos.above();
+        return !level.getBlockState(pos).isSuffocating(level, pos) && !level.getBlockState(posAbove).isSuffocating(level, posAbove);
+    }
+
+    private static boolean isValidTeleportOffset(Level level, BlockPos pos, Direction direction, BlockPos neighborPos) {
+        return true;
+    }
+
+    private static Optional<Direction> findTeleportOffsetDirection(Level level, BlockPos pos, Waystone waystone, Direction preferred) {
+        if (!shouldTeleportOffsetByFacing(waystone)) {
+            return Optional.empty();
+        }
+
+        // Use a list to keep order intact - it might check one direction twice, but no one cares
+        final var directionCandidates = Lists.newArrayList(preferred, Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH);
+        for (final var candidate : directionCandidates) {
+            final var offsetPos = pos.relative(candidate);
+            if (hasSpaceToTeleport(level, pos) && isValidTeleportOffset(level, pos, candidate, offsetPos)) {
+                return Optional.of(candidate);
+            }
+        }
+
+        return Optional.empty();
+    }
+
     private static Either<TeleportDestination, WaystoneTeleportError> resolveDestination(MinecraftServer server, Waystone waystone) {
         final var level = server.getLevel(waystone.getDimension());
         if (level == null) {
@@ -190,26 +224,10 @@ public class WaystoneTeleportManager {
 
         final var pos = waystone.getPos();
         final var state = level.getBlockState(pos);
-        var direction = state.hasProperty(WaystoneBlock.FACING) ? state.getValue(WaystoneBlock.FACING) : Direction.NORTH;
-
-        // Use a list to keep order intact - it might check one direction twice, but no one cares
-        final var directionCandidates = Lists.newArrayList(direction, Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH);
-        for (Direction candidate : directionCandidates) {
-            BlockPos offsetPos = pos.relative(candidate);
-            BlockPos offsetPosUp = offsetPos.above();
-            if (level.getBlockState(offsetPos).isSuffocating(level, offsetPos) || level.getBlockState(offsetPosUp).isSuffocating(level, offsetPosUp)) {
-                continue;
-            }
-
-            direction = candidate;
-            break;
-        }
-
-        final var waystoneType = waystone.getWaystoneType();
-        final var shouldOffsetFacing = !(waystoneType.equals(WaystoneTypes.WARP_PLATE));
-        final var targetPos = shouldOffsetFacing ? pos.relative(direction) : pos;
-        final var location = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
-        return Either.left(new TeleportDestination(level, location, direction));
+        final var facingDirection = state.hasProperty(WaystoneBlock.FACING) ? state.getValue(WaystoneBlock.FACING) : Direction.NORTH;
+        final var offsetDirection = findTeleportOffsetDirection(level, pos, waystone, facingDirection);
+        final var location = offsetDirection.map(pos::relative).orElse(pos).getCenter();
+        return Either.left(new TeleportDestination(level, location, facingDirection));
     }
 
     private static void sendHackySyncPacketsAfterTeleport(Entity entity) {
