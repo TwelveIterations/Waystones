@@ -104,7 +104,7 @@
   "chat.waystones.warp_plate_has_no_target": "This warp plate is not bound to another warp plate yet.",
   "chat.waystones.warp_plate_has_invalid_target": "The shard inside this warp plate has lost its attunement.",
   "chat.waystones.not_enough_xp": "You do not have enough experience to teleport.",
-  "chat.waystones.requirements_not_met": "You do meet the requirements to teleport.",
+  "chat.waystones.requirements_not_met": "You do not meet the requirements to teleport.",
   "tooltip.waystones.cooldown_left": "Cooldown: %d seconds",
   "tooltip.waystones.bound_to": "Bound to: %s",
   "tooltip.waystones.bound_to_none": "None",
