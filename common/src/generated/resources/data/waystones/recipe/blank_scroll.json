@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "F": "minecraft:feather",
     "G": "#c:nuggets/gold",

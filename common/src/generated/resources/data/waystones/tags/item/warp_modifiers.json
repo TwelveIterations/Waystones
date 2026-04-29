@@ -4,12 +4,12 @@
     "minecraft:poisonous_potato",
     "minecraft:ink_sac",
     "minecraft:milk_bucket",
-    "minecraft:honey_block",
     "minecraft:diamond",
     "minecraft:feather",
     "minecraft:magma_cream",
-    "minecraft:wither_rose",
     "minecraft:quartz",
-    "minecraft:spider_eye"
+    "minecraft:spider_eye",
+    "minecraft:honey_block",
+    "minecraft:wither_rose"
   ]
 }
