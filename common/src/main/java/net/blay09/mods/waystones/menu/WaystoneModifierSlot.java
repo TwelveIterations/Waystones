@@ -12,7 +12,7 @@ public class WaystoneModifierSlot extends Slot {
 
     @Override
     public int getMaxStackSize(ItemStack itemStack) {
-        if (itemStack.is(ModItems.dormantShard)) {
+        if (itemStack.is(ModItems.dormantShard.asItem())) {
             return 1;
         }
 
@@ -21,7 +21,7 @@ public class WaystoneModifierSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack itemStack) {
-        if (itemStack.is(ModItems.dormantShard)) {
+        if (itemStack.is(ModItems.dormantShard.asItem())) {
             return getContainerSlot() == 0;
         }
 

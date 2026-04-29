@@ -135,7 +135,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
         final var shardItem = getShardItem();
         if (shardItem.isEmpty()) {
             return getBlockState().setValue(WarpPlateBlock.STATUS, WarpPlateBlock.WarpPlateStatus.EMPTY);
-        } else if (shardItem.is(ModItems.dormantShard)) {
+        } else if (shardItem.is(ModItems.dormantShard.asItem())) {
             return getBlockState().setValue(WarpPlateBlock.STATUS, WarpPlateBlock.WarpPlateStatus.ATTUNING);
         }
         return getBlockState().setValue(WarpPlateBlock.STATUS, WarpPlateBlock.WarpPlateStatus.IDLE);
@@ -277,7 +277,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
 
     public void attuneShard() {
         final var shardItem = getShardItem();
-        if (shardItem.is(ModItems.dormantShard)) {
+        if (shardItem.is(ModItems.dormantShard.asItem())) {
             attunementTicks++;
 
             if (attunementTicks >= getMaxAttunementTicks()) {
@@ -286,7 +286,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
                 WaystonesAPI.setBoundWaystone(attunedShard, getWaystone());
                 setShardItem(attunedShard);
             }
-        } else if (level != null && shardItem.is(ModItems.attunedShard)) {
+        } else if (level != null && shardItem.is(ModItems.attunedShard.asItem())) {
             WaystonesAPI.getBoundWaystone(null, shardItem).ifPresent(it -> {
                 if (it.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
                     final var shardEntity = new ItemEntity(level,

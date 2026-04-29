@@ -6,7 +6,6 @@ import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -44,16 +43,6 @@ import java.util.UUID;
 public class WarpPlateBlock extends WaystoneBlockBase {
 
     public static final MapCodec<WarpPlateBlock> CODEC = simpleCodec(WarpPlateBlock::new);
-
-    public static int getColorForBlock(@Nullable BlockAndTintGetter view, BlockPos pos) {
-        if (view == null || !(view.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate)) {
-            return 0xFFFFFFFF;
-        }
-
-        final var name = getGalacticIdentifier(warpPlate.getWaystone().getWaystoneUid());
-        final var color = getColorForName(name).getColor();
-        return color != null ? color : 0xFFFFFFFF;
-    }
 
     public enum WarpPlateStatus implements StringRepresentable {
         EMPTY,
@@ -188,8 +177,9 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     public static ChatFormatting getColorForName(String name) {
-        int colorIndex = Math.abs(name.hashCode()) % 15;
-        ChatFormatting textFormatting = ChatFormatting.getById(colorIndex);
+        final var colors = ChatFormatting.values();
+        final int colorIndex = Math.abs(name.hashCode()) % colors.length;
+        ChatFormatting textFormatting = colors[colorIndex];
         if (textFormatting == ChatFormatting.GRAY) {
             return ChatFormatting.LIGHT_PURPLE;
         } else if (textFormatting == ChatFormatting.DARK_GRAY) {
@@ -224,9 +214,6 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
         final var tickingBlockEntityType = ModBlockEntities.warpPlate.value();
-        if (tickingBlockEntityType == null) {
-            return null;
-        }
         return world.isClientSide() ? null : createTickerHelper(type,
                 tickingBlockEntityType,
                 (level, pos, state2, blockEntity) -> blockEntity.serverTick());

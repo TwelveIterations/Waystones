@@ -195,7 +195,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
 
     @Override
     protected InteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
-        if (itemStack.is(ModItems.blankScroll)) {
+        if (itemStack.is(ModItems.blankScroll.asItem())) {
             return InteractionResult.PASS;
         }
         return super.useItemOn(itemStack, state, level, pos, player, hand, blockHitResult);

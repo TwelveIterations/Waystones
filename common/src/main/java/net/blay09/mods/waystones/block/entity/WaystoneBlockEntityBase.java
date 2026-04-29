@@ -59,7 +59,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
     protected final DefaultContainer container = new DefaultContainer(5) {
         @Override
         public int getMaxStackSize(ItemStack itemStack) {
-            if (itemStack.is(ModItems.dormantShard)) {
+            if (itemStack.is(ModItems.dormantShard.asItem())) {
                 return 1;
             }
 
@@ -68,7 +68,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
         @Override
         public boolean canPlaceItem(int slot, ItemStack itemStack) {
-            if (itemStack.is(ModItems.dormantShard)) {
+            if (itemStack.is(ModItems.dormantShard.asItem())) {
                 return slot == 0;
             }
 

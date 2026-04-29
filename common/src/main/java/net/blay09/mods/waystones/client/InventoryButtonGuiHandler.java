@@ -44,7 +44,7 @@ public class InventoryButtonGuiHandler {
             }
 
             Minecraft mc = Minecraft.getInstance();
-            if (screen != mc.screen) {
+            if (screen != mc.gui.screen()) {
                 return;
             }
 
@@ -68,10 +68,10 @@ public class InventoryButtonGuiHandler {
                 final var requirements = WaystonesRules.inventoryButtonWarpRequirements.get(context);
                 if (requirements.left().isPresent()) {
                     if (inventoryButtonMode.hasNamedTarget()) {
-                        mc.setScreen(new InventoryButtonReturnConfirmScreen(inventoryButtonMode.getNamedTarget()));
+                        mc.gui.setScreen(new InventoryButtonReturnConfirmScreen(inventoryButtonMode.getNamedTarget()));
                     } else if (inventoryButtonMode.isReturnToNearest()) {
                         if (PlayerWaystoneManager.getNearestWaystone(player).isPresent()) {
-                            mc.setScreen(new InventoryButtonReturnConfirmScreen());
+                            mc.gui.setScreen(new InventoryButtonReturnConfirmScreen());
                         }
                     } else if (inventoryButtonMode.isReturnToAny()) {
                         Balm.networking().sendToServer(ServerboundInventoryButtonPacket.INSTANCE);

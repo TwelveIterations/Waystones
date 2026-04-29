@@ -37,7 +37,6 @@ import net.blay09.mods.waystones.store.WaystonesStore;
 import net.blay09.mods.waystones.worldgen.ModWorldGen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
@@ -143,9 +142,9 @@ public class Waystones implements BalmModule {
         WaystonesRules.initialize();
 
         final var hudInfo = Balm.modSupport().hudInfo();
-        ModBlocks.waystones.forEach((_, block) -> hudInfo.registerBlockInfo(block.unwrapKey().map(ResourceKey::identifier).orElseThrow(), block, new WaystoneBlockInfoProvider()));
+        ModBlocks.waystones.forEach((_, block) -> hudInfo.registerBlockInfo(block.asResourceKey().identifier(), block, new WaystoneBlockInfoProvider()));
         hudInfo.registerBlockInfo(id("warp_plate"), ModBlocks.warpPlate, new WarpPlateBlockInfoProvider());
-        ModBlocks.sharestones.forEach((_, block) -> hudInfo.registerBlockInfo(block.unwrapKey().map(ResourceKey::identifier).orElseThrow(), block, new WaystoneBlockInfoProvider()));
+        ModBlocks.sharestones.forEach((_, block) -> hudInfo.registerBlockInfo(block.asResourceKey().identifier(), block, new WaystoneBlockInfoProvider()));
 
         Balm.initializeIfLoaded("bluemap", "net.blay09.mods.waystones.compat.BlueMapIntegration");
         Balm.initializeIfLoaded("dynmap", "net.blay09.mods.waystones.compat.DynmapIntegration");
