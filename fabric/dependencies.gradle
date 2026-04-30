@@ -2,6 +2,7 @@ dependencies {
     implementation(libs.balmFabric) {
         changing = libs.versions.balm.get().contains("SNAPSHOT")
     }
+    api(libs.shogiApi)
     implementation(libs.shogiFabric) {
         changing = libs.versions.shogi.get().contains("SNAPSHOT")
     }
