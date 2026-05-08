@@ -1,3 +1,2 @@
-- Fixed waystones being relocatable by other mods which would leave a broken half behind
-- Fixed error message in waystone edit screen not showing
-- Fixed config translation keys
+- Fixed item cost showing even if it is zero
+- Fixed some inconsistencies around distance calculation for better Sable support
