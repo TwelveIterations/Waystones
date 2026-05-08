@@ -15,10 +15,12 @@ import java.util.List;
 public class ItemRequirementRenderer implements RequirementRenderer<ItemCostInformation> {
     @Override
     public void renderWidget(Player player, ItemCostInformation requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
-        final var font = Minecraft.getInstance().font;
-        final var itemStack = requirement.item().stream().findFirst().map(Holder::value).map(Item::getDefaultInstance).orElse(ItemStack.EMPTY);
-        guiGraphics.item(itemStack, x, y);
-        guiGraphics.itemDecorations(font, itemStack, x, y, requirement.required() > 1 ? String.valueOf(requirement.required()) : null);
+        if (requirement.required() > 0) {
+            final var font = Minecraft.getInstance().font;
+            final var itemStack = requirement.item().stream().findFirst().map(Holder::value).map(Item::getDefaultInstance).orElse(ItemStack.EMPTY);
+            guiGraphics.item(itemStack, x, y);
+            guiGraphics.itemDecorations(font, itemStack, x, y, requirement.required() > 1 ? String.valueOf(requirement.required()) : null);
+        }
     }
 
     @Override
