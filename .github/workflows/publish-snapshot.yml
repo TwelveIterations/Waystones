@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+'
 
 jobs:
   prepare-matrix:
@@ -11,21 +12,17 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.result }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Preparing matrix
         id: set-matrix
-        uses: actions/github-script@v7
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         with:
           script: |
             const fs = require('fs');
-            const settingsGradle = fs.readFileSync('settings.gradle', 'utf8');
-            const includePattern = /^(?!\s*\/\/)\s*include\s*\(\s*(['"]([^'"]+)['"](?:,\s*['"]([^'"]+)['"])*\s*)\)/gm;
-            const includes = [...settingsGradle.matchAll(includePattern)]
-              .flatMap(match => match[0].match(/['"]([^'"]+)['"]/g).map(item => item.replace(/['"]/g, '')));
-            const includeFabric = includes.includes('fabric');
-            const includeForge = includes.includes('forge');
-            const includeNeoForge = includes.includes('neoforge');
             const gradleProperties = fs.readFileSync('gradle.properties', 'utf8');
+            const includeFabric = gradleProperties.match(/^(?!#)include_fabric\s*=\s*true/m);
+            const includeForge = gradleProperties.match(/^(?!#)include_forge\s*=\s*true/m);
+            const includeNeoForge = gradleProperties.match(/^(?!#)include_neoforge\s*=\s*true/m);
             const mavenSnapshots = gradleProperties.match(/^(?!#)maven_snapshots\s*=\s*(.+)/m);
             return {
               loader: ['common', includeFabric ? 'fabric' : false, includeForge ? 'forge' : false, includeNeoForge ? 'neoforge' : false].filter(Boolean),
@@ -39,11 +36,11 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v5
+        uses: gradle/actions/wrapper-validation@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e
       - name: Setup JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654
         with:
           java-version: 21
           distribution: temurin
@@ -54,7 +51,7 @@ jobs:
         run: echo "version=$(cat gradle.properties | grep -w "\bversion\s*=" | cut -d= -f2)" >> $GITHUB_OUTPUT
         id: extract-version
       - name: Bumping version
-        uses: TwelveIterations/bump-version@v1
+        uses: TwelveIterations/bump-version@86901cde5897b550e2e98fbe8962afc401c23c8f
         with:
           version: ${{ steps.extract-version.outputs.version }}
           bump: patch

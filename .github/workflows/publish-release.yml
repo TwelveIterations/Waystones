@@ -43,13 +43,13 @@ jobs:
       build-matrix: ${{ steps.set-build-matrix.outputs.result }}
       publish-matrix: ${{ steps.set-publish-matrix.outputs.result }}
     steps:
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3
         id: app-token
         with:
           app-id: ${{ vars.AUTOMATIONS_APP_ID }}
           private-key: ${{ secrets.AUTOMATIONS_PRIVATE_KEY }}
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           token: ${{ steps.app-token.outputs.token }}
       - name: Get GitHub App User ID
@@ -65,7 +65,7 @@ jobs:
         run: echo "version=$(cat gradle.properties | grep -w "\bversion\s*=" | cut -d= -f2)" >> $GITHUB_OUTPUT
         id: extract-version
       - name: Bumping version
-        uses: TwelveIterations/bump-version@v1
+        uses: TwelveIterations/bump-version@86901cde5897b550e2e98fbe8962afc401c23c8f
         with:
           version: ${{ steps.extract-version.outputs.version }}
           bump: patch
@@ -82,32 +82,27 @@ jobs:
           BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
       - name: Preparing build matrix
         id: set-build-matrix
-        uses: actions/github-script@v7
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         with:
           script: |
             const fs = require('fs');
-            const settingsGradle = fs.readFileSync('settings.gradle', 'utf8');
-            const includePattern = /^(?!\s*\/\/)\s*include\s*\(\s*(['"]([^'"]+)['"](?:,\s*['"]([^'"]+)['"])*\s*)\)/gm;
-            const includes = [...settingsGradle.matchAll(includePattern)].flatMap(match => match[0].match(/['"]([^'"]+)['"]/g).map(item => item.replace(/['"]/g, '')));
-            const includeFabric = includes.includes('fabric') && ${{inputs.fabric}};
-            const includeForge = includes.includes('forge') && ${{inputs.forge}};
-            const includeNeoForge = includes.includes('neoforge') && ${{inputs.neoforge}};
+            const gradleProperties = fs.readFileSync('gradle.properties', 'utf8');
+            const includeFabric = gradleProperties.match(/^(?!#)include_fabric\s*=\s*true/m) && ${{inputs.fabric}};
+            const includeForge = gradleProperties.match(/^(?!#)include_forge\s*=\s*true/m) && ${{inputs.forge}};
+            const includeNeoForge = gradleProperties.match(/^(?!#)include_neoforge\s*=\s*true/m) && ${{inputs.neoforge}};
             return {
               loader: [includeFabric ? 'fabric' : false, includeForge ? 'forge' : false, includeNeoForge ? 'neoforge' : false].filter(Boolean),
             }
       - name: Preparing publish matrix
         id: set-publish-matrix
-        uses: actions/github-script@v7
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         with:
           script: |
             const fs = require('fs');
-            const settingsGradle = fs.readFileSync('settings.gradle', 'utf8');
-            const includePattern = /^(?!\s*\/\/)\s*include\s*\(\s*(['"]([^'"]+)['"](?:,\s*['"]([^'"]+)['"])*\s*)\)/gm;
-            const includes = [...settingsGradle.matchAll(includePattern)].flatMap(match => match[0].match(/['"]([^'"]+)['"]/g).map(item => item.replace(/['"]/g, '')));
-            const includeFabric = includes.includes('fabric') && ${{inputs.fabric}};
-            const includeForge = includes.includes('forge') && ${{inputs.forge}};
-            const includeNeoForge = includes.includes('neoforge') && ${{inputs.neoforge}};
             const gradleProperties = fs.readFileSync('gradle.properties', 'utf8');
+            const includeFabric = gradleProperties.match(/^(?!#)include_fabric\s*=\s*true/m) && ${{inputs.fabric}};
+            const includeForge = gradleProperties.match(/^(?!#)include_forge\s*=\s*true/m) && ${{inputs.forge}};
+            const includeNeoForge = gradleProperties.match(/^(?!#)include_neoforge\s*=\s*true/m) && ${{inputs.neoforge}};
             const curseForgeProjectId = gradleProperties.match(/^(?!#)curseforge_project_id\s*=\s*(.+)/m);
             const modrinthProjectId = gradleProperties.match(/^(?!#)modrinth_project_id\s*=\s*(.+)/m);
             const mavenReleases = gradleProperties.match(/^(?!#)maven_releases\s*=\s*(.+)/m);
@@ -126,13 +121,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ needs.create-release.outputs.ref }}
       - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v5
+        uses: gradle/actions/wrapper-validation@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e
       - name: Setup JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654
         with:
           java-version: 21
           distribution: temurin
@@ -142,7 +137,7 @@ jobs:
       - name: Build common artifact
         run: ./gradlew :common:build '-Pversion=${{needs.create-release.outputs.version}}'
       - name: Upload common artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: common-artifact
           path: common/build
@@ -154,13 +149,13 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ needs.create-release.outputs.ref }}
       - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v5
+        uses: gradle/actions/wrapper-validation@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e
       - name: Setup JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654
         with:
           java-version: 21
           distribution: temurin
@@ -168,14 +163,14 @@ jobs:
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: Download common artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: common-artifact
           path: common/build
       - name: Build ${{ matrix.loader }} artifact
         run: ./gradlew :${{ matrix.loader }}:build '-Pversion=${{needs.create-release.outputs.version}}'
       - name: Upload ${{ matrix.loader }} artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: ${{ matrix.loader }}-artifact
           path: ${{ matrix.loader }}/build
@@ -190,18 +185,18 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ needs.create-release.outputs.ref }}
       - name: Download ${{ matrix.loader }} artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: ${{ matrix.loader }}-artifact
           path: ${{ matrix.loader }}/build
       - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v5
+        uses: gradle/actions/wrapper-validation@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e
       - name: Setup JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654
         with:
           java-version: 21
           distribution: temurin
