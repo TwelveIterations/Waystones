@@ -17,9 +17,9 @@ public class WaystoneTypes {
     public static final BuiltinWaystoneType BLACKSTONE = register(new BuiltinWaystoneType("blackstone", 0xFF993333, SoundType.STONE, Blocks.BLACKSTONE, () -> Ingredient.of(Blocks.BLACKSTONE), () -> ModBlocks.waystones.get(WaystoneTypes.BLACKSTONE).asBlock()));
     public static final BuiltinWaystoneType END_STONE = register(new BuiltinWaystoneType("end_stone", 0xFF7200FF, SoundType.STONE, Blocks.END_STONE_BRICKS, () -> Ingredient.of(Blocks.END_STONE_BRICKS), () -> ModBlocks.waystones.get(WaystoneTypes.END_STONE).asBlock()));
     public static final BuiltinWaystoneType RED_NETHER_BRICKS = register(new BuiltinWaystoneType("red_nether_bricks", 0xFFFFFFFF, SoundType.NETHER_BRICKS, Blocks.RED_NETHER_BRICKS, () -> Ingredient.of(Items.EMERALD), () -> ModBlocks.waystones.get(WaystoneTypes.RED_NETHER_BRICKS).asBlock()));
-    public static final BuiltinWaystoneType PURPUR = register(new BuiltinWaystoneType("purpur", 0xFFFFFFFF, SoundType.STONE, Blocks.PURPUR_BLOCK, () -> Ingredient.of(Items.REDSTONE), () -> ModBlocks.waystones.get(WaystoneTypes.PURPUR).asBlock()));
-    public static final BuiltinWaystoneType PRISMARINE = register(new BuiltinWaystoneType("prismarine", 0xFFFFFFFF, SoundType.STONE, Blocks.PRISMARINE, () -> Ingredient.of(Items.REDSTONE), () -> ModBlocks.waystones.get(WaystoneTypes.PRISMARINE).asBlock()));
-    public static final BuiltinWaystoneType MUD_BRICKS = register(new BuiltinWaystoneType("mud_bricks", 0xFFFFFFFF, SoundType.MUD_BRICKS, Blocks.MUD_BRICKS, () -> Ingredient.of(Items.REDSTONE), () -> ModBlocks.waystones.get(WaystoneTypes.MUD_BRICKS).asBlock()));
+    public static final BuiltinWaystoneType PURPUR = register(new BuiltinWaystoneType("purpur", 0xFFFFFFFF, SoundType.STONE, Blocks.PURPUR_BLOCK, () -> Ingredient.of(Blocks.PURPUR_BLOCK), () -> ModBlocks.waystones.get(WaystoneTypes.PURPUR).asBlock()));
+    public static final BuiltinWaystoneType PRISMARINE = register(new BuiltinWaystoneType("prismarine", 0xFFFFFFFF, SoundType.STONE, Blocks.PRISMARINE, () -> Ingredient.of(Blocks.PRISMARINE), () -> ModBlocks.waystones.get(WaystoneTypes.PRISMARINE).asBlock()));
+    public static final BuiltinWaystoneType MUD_BRICKS = register(new BuiltinWaystoneType("mud_bricks", 0xFFFFFFFF, SoundType.MUD_BRICKS, Blocks.MUD_BRICKS, () -> Ingredient.of(Blocks.MUD_BRICKS), () -> ModBlocks.waystones.get(WaystoneTypes.MUD_BRICKS).asBlock()));
 
     private static BuiltinWaystoneType register(BuiltinWaystoneType type) {
         return (BuiltinWaystoneType) WaystoneType.register(type);
