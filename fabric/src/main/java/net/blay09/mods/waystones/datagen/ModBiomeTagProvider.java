@@ -26,6 +26,8 @@ public class ModBiomeTagProvider extends FabricTagProvider<Biome> {
                 .addAll(List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.CRIMSON_FOREST, Biomes.WARPED_FOREST, Biomes.BASALT_DELTAS));
         tag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE)
                 .addAll(List.of(Biomes.THE_END, Biomes.END_HIGHLANDS, Biomes.END_MIDLANDS, Biomes.SMALL_END_ISLANDS, Biomes.END_BARRENS));
+        tag(ModBiomeTags.HAS_STRUCTURE_DEEPSLATE_WAYSTONE)
+                .add(Biomes.DEEP_DARK);
 
         final var hasWaystones = getOrCreateTagBuilder(ModBiomeTags.HAS_STRUCTURE_WAYSTONE);
         hasWaystones.add(
@@ -73,8 +75,7 @@ public class ModBiomeTagProvider extends FabricTagProvider<Biome> {
                 Biomes.FROZEN_OCEAN,
                 Biomes.DEEP_FROZEN_OCEAN,
                 Biomes.DRIPSTONE_CAVES,
-                Biomes.LUSH_CAVES,
-                Biomes.DEEP_DARK
+                Biomes.LUSH_CAVES
         );
     }
 

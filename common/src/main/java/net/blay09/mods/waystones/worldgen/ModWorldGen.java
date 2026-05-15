@@ -72,6 +72,9 @@ public class ModWorldGen {
             worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE),
                     GenerationStep.Decoration.VEGETAL_DECORATION,
                     getWaystoneFeature(WorldGenStyle.END_STONE));
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_DEEPSLATE_WAYSTONE),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.DEEPSLATE));
             worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE),
                     GenerationStep.Decoration.VEGETAL_DECORATION,
                     getWaystoneFeature(WorldGenStyle.DEFAULT));
