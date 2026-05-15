@@ -35,7 +35,7 @@ public class WaystonePlacement extends PlacementModifier {
     @Override
     public Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos pos) {
         if (isWaystoneChunk(context, pos)) {
-            if (context.getLevel().getLevel().dimension() == Level.NETHER) {
+            if (context.getLevel().getLevel().dimensionType().hasCeiling()) {
                 BlockPos.MutableBlockPos mutablePos = pos.mutable();
                 int topMostY = context.getHeight(heightmap, pos.getX(), pos.getZ());
                 mutablePos.setY(topMostY);
