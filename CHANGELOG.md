@@ -1,2 +1,2 @@
-- Fixed waystone button text overlapping with requirements and distance display
-- Fixed Jade integration showing outdated waystones data
+- Fixed new waystone types all taking redstone as crafting ingredient
+- Fixed item cost showing even if it is zero
