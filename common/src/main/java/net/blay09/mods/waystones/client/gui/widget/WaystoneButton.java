@@ -56,7 +56,7 @@ public class WaystoneButton extends Button {
 
         // render distance
         if (waystone.getDimension() == player.level().dimension() && isActive()) {
-            int distance = (int) player.distanceToSqr(waystone.getPos().getCenter());
+            int distance = (int) Math.sqrt(player.distanceToSqr(waystone.getPos().getCenter()));
             String distanceStr;
             if (distance < 10000 && (font.width(getMessage()) < 120 || distance < 1000)) {
                 distanceStr = distance + "m";

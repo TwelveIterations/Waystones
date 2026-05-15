@@ -269,7 +269,7 @@ public class ModCommands {
         if (waystone.getDimension() != caller.level().dimension()) {
             location = Component.translatable("commands.waystones.list.in_dimension", waystoneDimensionId.toString());
         } else {
-            final var distance = (int) caller.distanceToSqr(waystone.getPos().getCenter());
+            final var distance = (int) Math.sqrt(caller.distanceToSqr(waystone.getPos().getCenter()));
             location = Component.translatable("commands.waystones.list.at_distance", distance);
         }
 
