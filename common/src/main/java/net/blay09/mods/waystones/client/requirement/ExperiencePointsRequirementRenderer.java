@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.client.requirement;
 
 import net.blay09.mods.shogi.common.effect.cost.ExperiencePointsCostInformation;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.util.ExperienceUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -25,7 +26,7 @@ public class ExperiencePointsRequirementRenderer implements RequirementRenderer<
 
     @Override
     public void renderWidget(Player player, ExperiencePointsCostInformation requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
-        final var points = requirement.required();
+        final var points = WaystonesConfig.getActive().rules.enableXpCosts ? requirement.required() : 0;
         final var levels = ExperienceUtils.calculateDisplayedLevelCostFromExperiencePoints(player.experienceLevel, requirement.available(), points);
         if (levels > 0) {
             final var canAfford = requirement.available() >= points;
@@ -41,7 +42,7 @@ public class ExperiencePointsRequirementRenderer implements RequirementRenderer<
 
     @Override
     public void appendHoverText(Player player, ExperiencePointsCostInformation requirement, List<Component> tooltip) {
-        final var points = requirement.required();
+        final var points = WaystonesConfig.getActive().rules.enableXpCosts ? requirement.required() : 0;
         final var levels = ExperienceUtils.calculateDisplayedLevelCostFromExperiencePoints(player.experienceLevel, requirement.available(), points);
         if (levels > 0) {
             tooltip.add(Component.translatable("gui.waystones.waystone_selection.level_requirement", levels).withStyle(ChatFormatting.GREEN));

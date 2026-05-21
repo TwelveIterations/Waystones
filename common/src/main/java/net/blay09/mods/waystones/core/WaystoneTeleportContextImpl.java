@@ -12,6 +12,7 @@ import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.config.rules.WaystoneRuleContext;
+import net.blay09.mods.waystones.config.rules.WaystonesEffectExecutors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
@@ -34,7 +35,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     private final List<Entity> additionalEntities = new ArrayList<>();
     private final List<Mob> leashedEntities = new ArrayList<>();
     private final Set<Identifier> flags = new HashSet<>();
-    private EffectExecutor executor = EffectExecutor.deferred();
+    private EffectExecutor executor = WaystonesEffectExecutors.deferred();
 
     private @Nullable Waystone fromWaystone;
 
@@ -50,30 +51,6 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     public WaystoneTeleportContextImpl(Entity entity, Waystone targetWaystone) {
         this.entity = entity;
         this.targetWaystone = targetWaystone;
-
-        executor.overrideConsume(DamageItem.IDENTIFIER, (operation, value) -> {
-            if (WaystonesConfig.getActive().rules.enableDurability) {
-                operation.accept(value);
-            }
-        });
-
-        executor.overrideConsume(ExperienceLevelCost.IDENTIFIER, (operation, value) -> {
-            if (WaystonesConfig.getActive().rules.enableXpCosts) {
-                operation.accept(value);
-            }
-        });
-
-        executor.overrideConsume(ExperiencePointsCost.IDENTIFIER, (operation, value) -> {
-            if (WaystonesConfig.getActive().rules.enableXpCosts) {
-                operation.accept(value);
-            }
-        });
-
-        executor.overrideConsume(CooldownCost.IDENTIFIER, (operation, value) -> {
-            if (WaystonesConfig.getActive().rules.enableCooldowns) {
-                operation.accept(value);
-            }
-        });
     }
 
     @Override

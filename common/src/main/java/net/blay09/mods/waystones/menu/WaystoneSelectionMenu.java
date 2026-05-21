@@ -6,6 +6,7 @@ import net.blay09.mods.shogi.network.ShogiStreamCodecs;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
+import net.blay09.mods.waystones.config.rules.WaystonesEffectExecutors;
 import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.blay09.mods.waystones.core.WaystoneTeleportContextImpl;
 import net.minecraft.core.BlockPos;
@@ -141,7 +142,7 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
             context.setWarpHand(warpHand);
             context.addFlags(flags);
             if (context instanceof WaystoneTeleportContextImpl impl) {
-                impl.setExecutor(EffectExecutor.simulated());
+                impl.setExecutor(WaystonesEffectExecutors.simulated());
             }
             warpRequirements.put(waystone.getWaystoneUid(), context.getRequirements());
         }
