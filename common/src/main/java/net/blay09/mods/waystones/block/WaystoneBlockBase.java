@@ -208,7 +208,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             return InteractionResult.FAIL;
         }
 
-        Waystone waystone = waystoneBlockEntity.getWaystone();
+        Waystone waystone = waystoneBlockEntity.getOrLoadWaystone();
         InteractionResult result = handleEditActions(level, player, waystoneBlockEntity, waystone);
         if (result != null) {
             return result;
