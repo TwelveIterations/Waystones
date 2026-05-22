@@ -1,2 +1,2 @@
-- Fixed new waystone types all taking redstone as crafting ingredient
-- Fixed item cost showing even if it is zero
+- Fixed Enable XP Costs and Enable Cooldowns options not being respected (requires latest Shogi version)
+- Fixed waystones sometimes remaining invalid after load by force-initializing them on interaction
