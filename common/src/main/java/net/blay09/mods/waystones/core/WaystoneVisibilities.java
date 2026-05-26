@@ -4,7 +4,6 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +24,6 @@ public class WaystoneVisibilities {
                 }
             }
         }
-        return result;
+        return result.stream().filter(it -> it.isSupportedForWaystoneType(waystone.getWaystoneType())).toList();
     }
 }

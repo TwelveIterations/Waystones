@@ -6,8 +6,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.IntFunction;
 
@@ -60,5 +58,27 @@ public enum WaystoneVisibility {
         } else {
             return WaystoneVisibility.ACTIVATION;
         }
+    }
+
+    public boolean isSupportedForWaystoneType(ResourceLocation waystoneType) {
+        return switch (this) {
+            case ACTIVATION, GLOBAL -> WaystoneTypes.WAYSTONE.equals(waystoneType);
+            case SHARD_ONLY -> WaystoneTypes.WARP_PLATE.equals(waystoneType);
+            case ORANGE_SHARESTONE,
+                 MAGENTA_SHARESTONE,
+                 LIGHT_BLUE_SHARESTONE,
+                 YELLOW_SHARESTONE,
+                 LIME_SHARESTONE,
+                 PINK_SHARESTONE,
+                 GRAY_SHARESTONE,
+                 LIGHT_GRAY_SHARESTONE,
+                 CYAN_SHARESTONE,
+                 PURPLE_SHARESTONE,
+                 BLUE_SHARESTONE,
+                 BROWN_SHARESTONE,
+                 GREEN_SHARESTONE,
+                 RED_SHARESTONE,
+                 BLACK_SHARESTONE -> WaystoneTypes.isSharestone(waystoneType);
+        };
     }
 }
