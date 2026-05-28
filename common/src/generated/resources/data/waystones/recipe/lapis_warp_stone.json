@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": "minecraft:lapis_lazuli",
+    "W": "waystones:warp_stone"
+  },
+  "pattern": [
+    " M ",
+    "MWM",
+    " M "
+  ],
+  "result": {
+    "id": "waystones:lapis_warp_stone"
+  }
+}

@@ -1,7 +1,10 @@
 package net.blay09.mods.waystones.datagen;
 
 import net.blay09.mods.balm.tags.BalmItemTags;
-import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.PortstoneTypes;
+import net.blay09.mods.waystones.api.SharestoneTypes;
+import net.blay09.mods.waystones.api.WarpStoneTypes;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.BuiltinPortstoneType;
 import net.blay09.mods.waystones.block.BuiltinSharestoneType;
 import net.blay09.mods.waystones.block.ModBlocks;
@@ -91,6 +94,19 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .define('A', Items.AMETHYST_SHARD)
                         .unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
                         .save(exporter);
+
+                ModItems.warpStones.forEach((type, item) -> {
+                    if (type != WarpStoneTypes.UNSCOPED) {
+                        shaped(RecipeCategory.DECORATIONS, ModItems.warpStones.get(type))
+                                .pattern(" M ")
+                                .pattern("MWM")
+                                .pattern(" M ")
+                                .define('W', ModItems.warpStones.get(WarpStoneTypes.UNSCOPED))
+                                .define('M', type.ingredient())
+                                .unlockedBy("has_warp_stone", has(ModItems.warpStones.get(WarpStoneTypes.UNSCOPED)))
+                                .save(exporter);
+                    }
+                });
 
                 shaped(RecipeCategory.DECORATIONS, ModItems.warpScroll, 3)
                         .pattern("GIG")

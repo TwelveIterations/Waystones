@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": "minecraft:copper_ingot",
+    "W": "waystones:warp_stone"
+  },
+  "pattern": [
+    " M ",
+    "MWM",
+    " M "
+  ],
+  "result": {
+    "id": "waystones:copper_warp_stone"
+  }
+}
