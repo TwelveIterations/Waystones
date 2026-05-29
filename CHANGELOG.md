@@ -1,6 +1,1 @@
-- Fixed distance being displayed wrongly in waystone selection and `/waystones list` command
-- Data Packs: Added `has_structure/deepslate_waystone` tag and generation logic
-  - However, waystones still won't generate in the Deep Dark as this is not supported by the default placement modifier.
-  - Additionally, use of these tags is at your own risk. Vanilla generation is very fickle and it's recommended to use something like Lithostitched to add waystone generation to other biomes instead.
-- Data Packs: Fixed `waystones:waystone` placement modifier only respecting dimension ceilings in the Nether
-  - Same disclaimer as above.
+- Fixed activation visibility incorrectly showing up on Sharestones
