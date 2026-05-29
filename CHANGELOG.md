@@ -1,2 +1,1 @@
-- Fixed Enable XP Costs and Enable Cooldowns options not being respected (requires latest Shogi version)
-- Fixed waystones sometimes remaining invalid after load by force-initializing them on interaction
+- Fixed missing scoped warp stone recipes
