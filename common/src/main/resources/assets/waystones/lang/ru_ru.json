@@ -59,7 +59,7 @@
   "chat.waystones.cannot_transport_leashed": "Вы не можете брать с собой мобов на поводке",
   "chat.waystones.cannot_transport_leashed_dimensional": "Вы не можете брать с собой мобов на поводке между мирами",
   "chat.waystones.cannot_transport_this_leashed": "Вы не можете брать с собой этого моба",
-  "chat.waystones.warpstone_not_charged": "Камень перемещения еще не полностью заряжен.",
+  "chat.waystones.warpstone_not_charged": "Камень перемещения ещё не полностью заряжен.",
   "chat.waystones.only_owner_can_edit": "Переименовать путеводные обелиски может только тот, кто их установил.",
   "chat.waystones.only_creative_can_edit": "Нужно быть в творческом режиме, чтобы редактировать глобальный обелиск.",
   "chat.waystones.waystone_to_waystone_disabled": "Вы касаетесь путевого обелиска, но ничего не происходит.",
