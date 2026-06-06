@@ -20,8 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     name: manage-labels
     steps:
-      - uses: actions/checkout@v2
-      - uses: TwelveIterations/manage-labels@main
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: TwelveIterations/manage-labels@2eb52a52431a345ad446f03003ba5c50ddf18d08
         with:
           dry: ${{ inputs.dry }}
           remove_missing: ${{ inputs.remove_missing }}
