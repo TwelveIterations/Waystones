@@ -70,6 +70,7 @@
   "gui.waystones.waystone_selection.click_to_delete": "Click to delete",
   "gui.waystones.waystone_selection.deleting_global_for_all": "This will remove the waystone for everyone.",
   "gui.waystones.waystone_selection.no_waystones_activated": "You have not activated any waystones yet.",
+  "gui.waystones.waystone_selection.no_sharestones_available": "There are no matching Sharestones to teleport to.",
   "gui.waystones.waystone_selection.level_requirement": "Level Cost: %d",
   "gui.waystones.waystone_selection.xp_requirement": "Experience Cost: %d",
   "gui.waystones.waystone_selection.item_requirement": "Item Cost: %d %s",

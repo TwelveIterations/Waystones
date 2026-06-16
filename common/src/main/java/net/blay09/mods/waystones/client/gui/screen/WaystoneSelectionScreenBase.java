@@ -5,6 +5,7 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.mixin.ScreenAccessor;
 import net.blay09.mods.kuma.api.Kuma;
 import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.trait.WaystoneKindScoped;
 import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
@@ -264,11 +265,20 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
         if (waystones.isEmpty()) {
             guiGraphics.centeredText(font,
-                    ChatFormatting.RED + I18n.get("gui.waystones.waystone_selection.no_waystones_activated"),
+                    ChatFormatting.RED + I18n.get(getNoWaystonesMessageKey()),
                     imageWidth / 2,
                     imageHeight / 2 - 20,
                     0xFFFFFFFF);
         }
+    }
+
+    private String getNoWaystonesMessageKey() {
+        final var warpItem = menu.getWarpItem();
+        if (warpItem.getItem() instanceof WaystoneKindScoped kindScoped && WaystoneKinds.isSharestone(kindScoped.getWaystoneKind())) {
+            return "gui.waystones.waystone_selection.no_sharestones_available";
+        }
+
+        return "gui.waystones.waystone_selection.no_waystones_activated";
     }
 
     private void drawLocationHeader(GuiGraphicsExtractor guiGraphics, Waystone waystone, int mouseX, int mouseY, int x, int y) {
