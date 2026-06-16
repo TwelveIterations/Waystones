@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class WaystoneButton extends Button.Plain {
         final var font = Minecraft.getInstance().font;
         final var player = Objects.requireNonNull(Minecraft.getInstance().player);
         if (waystone.getDimension() == player.level().dimension() && isActive()) {
-            int distance = (int) player.position().distanceTo(waystone.getPos().getCenter());
+            int distance = (int) player.position().distanceTo(Vec3.atCenterOf(waystone.getPos()));
             String distanceStr;
             if (distance < 10000 && (font.width(getMessage()) < 120 || distance < 1000)) {
                 distanceStr = distance + "m";

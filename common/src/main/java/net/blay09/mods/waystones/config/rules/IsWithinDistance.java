@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.shogi.context.ShogiContext;
 import net.blay09.mods.shogi.effect.ShogiEffect;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.phys.Vec3;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
@@ -24,7 +25,7 @@ public record IsWithinDistance(float distance) implements ShogiEffect<Boolean> {
     @Override
     public Either<? extends Boolean, ?> apply(ShogiContext context) {
         final var actualDistance = WaystoneRuleContext.getTargetWaystone(context)
-                .map(waystone -> (float) Math.sqrt(context.requireEntity().distanceToSqr(waystone.getPos().getCenter())));
+                .map(waystone -> (float) Math.sqrt(context.requireEntity().distanceToSqr(Vec3.atCenterOf(waystone.getPos()))));
         return Either.left(actualDistance.map(it -> it <= distance).orElse(false));
     }
 }

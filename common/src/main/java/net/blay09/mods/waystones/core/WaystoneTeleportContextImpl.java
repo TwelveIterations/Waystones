@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
@@ -231,7 +232,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
             case WaystoneRuleContext.TARGET_WAYSTONE_VARIABLE -> Optional.of(targetWaystone);
             case WaystoneRuleContext.FLAGS_VARIABLE -> Optional.of(flags);
             case "distance" ->
-                    Optional.of((float) Math.sqrt(entity.distanceToSqr(targetWaystone.getPos().getCenter())));
+                    Optional.of((float) Math.sqrt(entity.distanceToSqr(Vec3.atCenterOf(targetWaystone.getPos()))));
             case "leashed" -> Optional.of((float) WaystoneTeleportManager.findLeashedAnimals(entity).size());
             case "pets" ->
                     Optional.of(entity instanceof LivingEntity livingEntity ? (float) WaystoneTeleportManager.findPets(livingEntity).size() : 0f);

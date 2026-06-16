@@ -20,6 +20,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
 
@@ -263,7 +264,7 @@ public class ModCommands {
         if (waystone.getDimension() != caller.level().dimension()) {
             location = Component.translatable("commands.waystones.list.in_dimension", waystoneDimensionId.toString());
         } else {
-            final var distance = (int) caller.position().distanceTo(waystonePos.getCenter());
+            final var distance = (int) caller.position().distanceTo(Vec3.atCenterOf(waystonePos));
             location = Component.translatable("commands.waystones.list.at_distance", distance);
         }
 
