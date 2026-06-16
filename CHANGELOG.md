@@ -1,1 +1,1 @@
-- Fixed missing scoped warp stone recipes
+- Updated to Minecraft 26.2
