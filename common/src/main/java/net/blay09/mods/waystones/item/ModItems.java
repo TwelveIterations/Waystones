@@ -10,7 +10,10 @@ import net.blay09.mods.waystones.api.WarpStoneTypes;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.BuiltinWarpStoneType;
 import net.blay09.mods.waystones.block.ModBlocks;
+import net.blay09.mods.waystones.component.DescriptionComponent;
+import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.migration.MigrationUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -33,7 +36,13 @@ public class ModItems {
         boundScroll = items.register("bound_scroll", BoundScrollItem::new).asDeferredItem();
         warpScroll = items.register("warp_scroll", WarpScrollItem::new).asDeferredItem();
         final var warpStoneTypes = WarpStoneTypes.builtinValues().collect(Collectors.toCollection(HashSet::new));
-        warpStones = items.registerDiscriminated(warpStoneTypes, type -> DiscriminatedItems.prefix(type != WarpStoneTypes.UNSCOPED ? type : null, "warp_stone"), WarpStoneItem::new, it -> it).asDiscriminatedItems();
+        warpStones = items.registerDiscriminated(warpStoneTypes, type -> DiscriminatedItems.prefix(type != WarpStoneTypes.UNSCOPED ? type : null, "warp_stone"), WarpStoneItem::new, (type, it) -> {
+            if (type == WarpStoneTypes.UNSCOPED) {
+                return it;
+            }
+
+            return it.component(ModComponents.description.value(), new DescriptionComponent(Component.translatable("tooltip.waystones." + type + "_sharestone").withStyle(ChatFormatting.GRAY)));
+        }).asDiscriminatedItems();
         dormantShard = items.register("dormant_shard", ShardItem::new).asDeferredItem();
         attunedShard = items.register("attuned_shard", AttunedShardItem::new).asDeferredItem();
         crumblingAttunedShard = items.register("crumbling_attuned_shard", CrumblingAttunedShardItem::new).asDeferredItem();

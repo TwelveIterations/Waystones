@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.api.WarpStoneType;
 import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
 import net.blay09.mods.waystones.api.trait.WaystoneKindScoped;
 import net.blay09.mods.waystones.compat.Compat;
+import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
@@ -29,10 +30,13 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class WarpStoneItem extends Item implements IResetUseOnDamage, WaystoneKindScoped {
 
@@ -51,6 +55,11 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage, WaystoneKi
     @Override
     public Identifier getWaystoneKind() {
         return type.kind();
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
+        itemStack.addToTooltip(ModComponents.description.value(), context, display, list, flag);
     }
 
     @Override
