@@ -1,1 +1,2 @@
-- Fixed missing scoped warp stone recipes
+- Fixed misleading error message in scoped warp stones
+- Added tooltips to scoped warp stones
