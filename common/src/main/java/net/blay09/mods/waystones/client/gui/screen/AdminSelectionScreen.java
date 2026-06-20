@@ -25,7 +25,7 @@ public class AdminSelectionScreen extends WaystoneSelectionScreenBase {
     }
 
     @Override
-    public @Nullable Comparator<Waystone> getSorting() {
+    protected @Nullable Comparator<Waystone> getManualSorting() {
         return null;
     }
 }
