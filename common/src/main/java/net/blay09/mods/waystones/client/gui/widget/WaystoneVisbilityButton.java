@@ -4,15 +4,15 @@ import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class WaystoneVisbilityButton extends Button implements ITooltipProvider {
+public class WaystoneVisbilityButton extends Button {
 
     private final WidgetSprites ACTIVATION_SPRITES = new WidgetSprites(
             ResourceLocation.withDefaultNamespace("waystones/visibility_button_activation"),
@@ -37,6 +37,7 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
         this.options = options;
         this.visibility = visibility;
         this.canEdit = canEdit;
+        updateTooltip();
     }
 
     @Override
@@ -45,21 +46,13 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
         guiGraphics.blitSprite(sprite, getX(), getY(), 20, 20);
     }
 
-    @Override
-    public boolean shouldShowTooltip() {
-        return isHovered;
-    }
-
-    @Override
-    public List<Component> getTooltipComponents() {
-        final var visibilityValueComponent = Component.translatable("tooltip.waystones.visibility." + visibility.name().toLowerCase(Locale.ROOT))
-                .withStyle(ChatFormatting.WHITE);
-        final var result = new ArrayList<Component>();
-        result.add(Component.translatable("tooltip.waystones.visibility", visibilityValueComponent).withStyle(ChatFormatting.YELLOW));
+    private void updateTooltip() {
+        final var tooltip = Component.translatable("gui.waystones.waystone_settings.visibility." + visibility.name().toLowerCase(Locale.ROOT))
+                .withStyle(ChatFormatting.YELLOW);
         if (!canEdit) {
-            result.add(Component.translatable("tooltip.waystones.edit_restricted").withStyle(ChatFormatting.RED));
+            tooltip.append("\n").append(Component.translatable("tooltip.waystones.edit_restricted").withStyle(ChatFormatting.RED));
         }
-        return result;
+        setTooltip(Tooltip.create(tooltip));
     }
 
     public WaystoneVisibility getVisibility() {
@@ -82,6 +75,7 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
         if (canEdit) {
             final var index = options.indexOf(visibility);
             visibility = options.get((index + 1) % options.size());
+            updateTooltip();
         }
     }
 }
