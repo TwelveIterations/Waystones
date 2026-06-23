@@ -21,8 +21,13 @@ public class WaystoneButton extends Button.Plain {
     private final Either<List<Object>, List<Object>> warpRequirements;
     private final Waystone waystone;
 
-    public WaystoneButton(int x, int y, Waystone waystone, Either<List<Object>, List<Object>> warpRequirements, OnPress pressable) {
-        super(x, y, 200, 20, getWaystoneNameComponent(waystone), pressable, Button.DEFAULT_NARRATION);
+    public WaystoneButton(int x,
+                          int y,
+                          int width,
+                          Waystone waystone,
+                          Either<List<Object>, List<Object>> warpRequirements,
+                          OnPress pressable) {
+        super(x, y, width, 20, getWaystoneNameComponent(waystone), pressable, Button.DEFAULT_NARRATION);
         this.warpRequirements = warpRequirements;
         this.waystone = waystone;
         active = warpRequirements.left().isPresent();

@@ -15,7 +15,7 @@ public class AdminSelectionScreen extends WaystoneSelectionScreenBase {
     }
 
     @Override
-    protected boolean allowSorting() {
+    protected boolean allowReordering() {
         return false;
     }
 
@@ -25,7 +25,7 @@ public class AdminSelectionScreen extends WaystoneSelectionScreenBase {
     }
 
     @Override
-    public @Nullable Comparator<Waystone> getSorting() {
+    protected @Nullable Comparator<Waystone> getManualSorting() {
         return null;
     }
 }
