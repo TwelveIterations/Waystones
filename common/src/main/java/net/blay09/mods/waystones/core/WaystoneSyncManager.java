@@ -45,19 +45,19 @@ public class WaystoneSyncManager {
     }
 
     public static void sendActivatedWaystones(Player player) {
-        final var waystones = new ArrayList<>(PlayerWaystoneManager.getActivatedWaystones(player));
+        final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getActivatedWaystones(player));
         Balm.networking().sendTo(player, new ClientboundKnownWaystonesPacket(WaystoneKinds.WAYSTONE, waystones));
     }
 
     public static void sendWaystonesOfType(Identifier waystoneType, ServerPlayer player) {
         List<Waystone> warpPlates = new ArrayList<>(SavedDataWaystonesStore.get(player.level().getServer()).getWaystonesByKind(waystoneType));
-        Balm.networking().sendTo(player, new ClientboundKnownWaystonesPacket(waystoneType, warpPlates));
+        Balm.networking().sendTo(player, new ClientboundKnownWaystonesPacket(waystoneType, PlayerWaystoneManager.getPlayerDecoratedWaystones(player, warpPlates)));
     }
 
     public static void sendWaystoneUpdate(Player player, Waystone waystone) {
         // If this is a waystone, only send an update if the player has activated it already
         if (!waystone.getWaystoneKind().equals(WaystoneKinds.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
-            Balm.networking().sendTo(player, new ClientboundUpdateWaystonePacket(waystone));
+            Balm.networking().sendTo(player, new ClientboundUpdateWaystonePacket(PlayerWaystoneManager.getPlayerDecoratedWaystone(player, waystone)));
         }
     }
 

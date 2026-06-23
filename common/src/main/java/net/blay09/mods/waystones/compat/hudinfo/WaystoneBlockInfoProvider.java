@@ -21,7 +21,7 @@ public class WaystoneBlockInfoProvider implements BlockInfoProvider {
             final var isActivated = !waystone.getWaystoneKind().equals(WaystoneKinds.WAYSTONE)
                     || PlayerWaystoneManager.isWaystoneActivated(context.player(), waystone);
             if (isActivated && waystone.hasName() && waystone.isValid()) {
-                output.text(waystone.getName());
+                output.text(PlayerWaystoneManager.getPlayerDecoratedWaystone(context.player(), waystone).getEffectiveName());
             } else {
                 output.text(Component.translatable("tooltip.waystones.undiscovered"));
             }

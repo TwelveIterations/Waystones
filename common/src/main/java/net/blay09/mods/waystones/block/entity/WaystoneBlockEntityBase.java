@@ -286,7 +286,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
                 final var error = WaystonePermissionManager.mayEditWaystone(((ServerPlayer) player), getWaystone());
                 final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions(((ServerPlayer) player), waystone);
                 return new WaystoneEditMenu(i,
-                        getWaystone(),
+                        PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone()),
                         getModifierCount(),
                         error.orElse(null),
                         visibilityOptions,
@@ -298,7 +298,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
                 final var error = WaystonePermissionManager.mayEditWaystone(player, getWaystone());
                 final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions(player, waystone);
                 return new WaystoneEditMenu.Data(worldPosition,
-                        getWaystone(),
+                        PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone()),
                         getModifierCount(),
                         error,
                         visibilityOptions);
@@ -312,7 +312,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
     }
 
     public Optional<MenuProvider> getModifierMenuProvider() {
-        return Optional.of(new BalmMenuProvider<Waystone>() {
+        return Optional.of(new BalmMenuProvider<UserDecoratedWaystone>() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable("container.waystones.waystone_modifiers");
@@ -324,13 +324,13 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
             }
 
             @Override
-            public Waystone getScreenOpeningData(ServerPlayer serverPlayer) {
-                return getWaystone();
+            public UserDecoratedWaystone getScreenOpeningData(ServerPlayer serverPlayer) {
+                return PlayerWaystoneManager.getPlayerDecoratedWaystone(serverPlayer, getWaystone());
             }
 
             @Override
-            public StreamCodec<RegistryFriendlyByteBuf, Waystone> getScreenStreamCodec() {
-                return WaystoneImpl.STREAM_CODEC;
+            public StreamCodec<RegistryFriendlyByteBuf, UserDecoratedWaystone> getScreenStreamCodec() {
+                return UserDecoratedWaystone.STREAM_CODEC;
             }
         });
     }

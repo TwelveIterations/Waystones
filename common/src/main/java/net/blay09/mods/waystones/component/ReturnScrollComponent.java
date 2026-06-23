@@ -22,7 +22,7 @@ public record ReturnScrollComponent() implements TooltipProvider {
         final var player = Balm.safeClientAccess().getClientPlayer();
         if (player != null) {
             final var nearestWaystone = PlayerWaystoneManager.getNearestWaystone(player);
-            tooltip.accept(nearestWaystone.map(it -> it.getName().copy().withStyle(ChatFormatting.DARK_AQUA))
+            tooltip.accept(nearestWaystone.map(it -> it.getEffectiveName().copy().withStyle(ChatFormatting.DARK_AQUA))
                     .map(it -> Component.translatable("tooltip.waystones.bound_to", it).withStyle(ChatFormatting.GRAY))
                     .orElseGet(() -> Component.translatable("gui.waystones.inventory.no_waystones_activated").withStyle(ChatFormatting.RED)));
         }

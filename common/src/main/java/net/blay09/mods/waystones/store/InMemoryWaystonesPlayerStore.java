@@ -8,6 +8,7 @@ import java.util.*;
 public class InMemoryWaystonesPlayerStore implements WaystonesPlayerStore {
     private final List<UUID> sortingIndex = new ArrayList<>();
     private final Map<UUID, Waystone> waystones = new HashMap<>();
+    private final Map<UUID, String> aliases = new HashMap<>();
 
     @Override
     public void activateWaystone(Player player, Waystone waystone) {
@@ -29,6 +30,20 @@ public class InMemoryWaystonesPlayerStore implements WaystonesPlayerStore {
     @Override
     public Collection<Waystone> getWaystones(Player player) {
         return waystones.values();
+    }
+
+    @Override
+    public Optional<String> getWaystoneAlias(Player player, UUID waystoneUid) {
+        return Optional.ofNullable(aliases.get(waystoneUid));
+    }
+
+    @Override
+    public void setWaystoneAlias(Player player, UUID waystoneUid, String alias) {
+        if (alias.trim().isEmpty()) {
+            aliases.remove(waystoneUid);
+        } else {
+            aliases.put(waystoneUid, alias);
+        }
     }
 
     @Override
@@ -58,7 +73,7 @@ public class InMemoryWaystonesPlayerStore implements WaystonesPlayerStore {
     }
 
     @Override
-    public List<UUID> ensureSortingIndex(Player player, Collection<Waystone> waystones) {
+    public List<UUID> ensureSortingIndex(Player player, Collection<? extends Waystone> waystones) {
         final var existing = new HashSet<>(sortingIndex);
 
         for (final var waystone : waystones) {

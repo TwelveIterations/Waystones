@@ -36,7 +36,7 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
     @Override
     public ItemStack finishUsingItem(ItemStack itemStack, Level world, LivingEntity entity) {
         if (!world.isClientSide() && entity instanceof ServerPlayer player) {
-            final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForItem(player, itemStack));
+            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForItem(player, itemStack));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
             Balm.networking().openMenu(player, new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
                 @Override
