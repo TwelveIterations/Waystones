@@ -2,13 +2,9 @@ package net.blay09.mods.waystones.client.gui.widget;
 
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneKinds;
-import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -16,10 +12,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class WaystoneButton extends Button.Plain {
+public class WaystoneButton extends AbstractWaystoneButton {
 
     private final Either<List<Object>, List<Object>> warpRequirements;
-    private final Waystone waystone;
 
     public WaystoneButton(int x,
                           int y,
@@ -27,21 +22,9 @@ public class WaystoneButton extends Button.Plain {
                           Waystone waystone,
                           Either<List<Object>, List<Object>> warpRequirements,
                           OnPress pressable) {
-        super(x, y, width, 20, getWaystoneNameComponent(waystone), pressable, Button.DEFAULT_NARRATION);
+        super(x, y, width, waystone, pressable);
         this.warpRequirements = warpRequirements;
-        this.waystone = waystone;
         active = warpRequirements.left().isPresent();
-    }
-
-    private static Component getWaystoneNameComponent(Waystone waystone) {
-        var effectiveName = waystone.getName().copy();
-        if (effectiveName.getString().isEmpty()) {
-            effectiveName = Component.translatable("gui.waystones.waystone_selection.unnamed_waystone");
-        }
-        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && waystone.getWaystoneKind().equals(WaystoneKinds.WAYSTONE)) {
-            effectiveName.withStyle(ChatFormatting.YELLOW);
-        }
-        return effectiveName;
     }
 
     @Override
@@ -49,13 +32,18 @@ public class WaystoneButton extends Button.Plain {
         extractDefaultSprite(graphics);
 
         final int leftPadding = renderRequirements(graphics, mouseX, mouseY, partialTicks);
-        final int rightPadding = renderDistance(graphics);
+        final int rightPadding = renderRightContent(graphics);
         final int labelLeft = getX() + leftPadding + TEXT_MARGIN;
         final int labelRight = getX() + getWidth() - TEXT_MARGIN - rightPadding;
         final int labelTop = getY();
         final int labelBottom = getY() + getHeight();
         final var buttonTextOutput = graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE);
         buttonTextOutput.acceptScrolling(message, getX() + getWidth() / 2, labelLeft, labelRight, labelTop, labelBottom);
+    }
+
+    private int renderRightContent(GuiGraphicsExtractor graphics) {
+        final int overlayWidth = renderDimensionOverlay(graphics);
+        return Math.max(overlayWidth, renderDistance(graphics));
     }
 
     private int renderDistance(GuiGraphicsExtractor graphics) {

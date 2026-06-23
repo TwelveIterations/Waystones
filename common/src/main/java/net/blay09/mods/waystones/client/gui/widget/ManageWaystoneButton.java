@@ -1,28 +1,26 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneKinds;
-import net.blay09.mods.waystones.api.WaystoneVisibility;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
-public class ManageWaystoneButton extends Button.Plain {
+public class ManageWaystoneButton extends AbstractWaystoneButton {
 
     public ManageWaystoneButton(int width, Waystone waystone) {
-        super(0, 0, width, 20, getWaystoneName(waystone), _ -> {
-        }, Button.DEFAULT_NARRATION);
+        super(0, 0, width, waystone, _ -> {
+        });
         active = false;
     }
 
-    private static Component getWaystoneName(Waystone waystone) {
-        var effectiveName = waystone.getName().copy();
-        if (effectiveName.getString().isEmpty()) {
-            effectiveName = Component.translatable("gui.waystones.waystone_selection.unnamed_waystone");
-        }
-        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && waystone.getWaystoneKind().equals(WaystoneKinds.WAYSTONE)) {
-            effectiveName.withStyle(ChatFormatting.YELLOW);
-        }
-        return effectiveName;
+    @Override
+    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        extractDefaultSprite(graphics);
+
+        final int rightPadding = renderDimensionOverlay(graphics);
+        final int labelLeft = getX() + TEXT_MARGIN;
+        final int labelRight = getX() + getWidth() - TEXT_MARGIN - rightPadding;
+        final int labelTop = getY();
+        final int labelBottom = getY() + getHeight();
+        final var buttonTextOutput = graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE);
+        buttonTextOutput.acceptScrolling(message, getX() + getWidth() / 2, labelLeft, labelRight, labelTop, labelBottom);
     }
 }
