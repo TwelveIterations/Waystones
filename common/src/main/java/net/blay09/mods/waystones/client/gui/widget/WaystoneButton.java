@@ -2,30 +2,24 @@ package net.blay09.mods.waystones.client.gui.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneTypes;
-import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class WaystoneButton extends Button {
+public class WaystoneButton extends AbstractWaystoneButton {
 
     private final WarpRequirement warpRequirement;
-    private final Waystone waystone;
 
     public WaystoneButton(int x, int y, int width, Waystone waystone, WarpRequirement warpRequirement, OnPress pressable) {
-        super(x, y, width, 20, getWaystoneNameComponent(waystone), pressable, Button.DEFAULT_NARRATION);
+        super(x, y, width, waystone, pressable);
         final var player = Minecraft.getInstance().player;
         this.warpRequirement = warpRequirement;
-        this.waystone = waystone;
         if (player == null) {
             active = false;
         } else if (!warpRequirement.canAfford(player) && !player.getAbilities().instabuild) {
@@ -33,22 +27,17 @@ public class WaystoneButton extends Button {
         }
     }
 
-    private static Component getWaystoneNameComponent(Waystone waystone) {
-        var effectiveName = waystone.getName().copy();
-        if (effectiveName.getString().isEmpty()) {
-            effectiveName = Component.translatable("gui.waystones.waystone_selection.unnamed_waystone");
-        }
-        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
-            effectiveName.withStyle(ChatFormatting.YELLOW);
-        }
-        return effectiveName;
-    }
-
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
+        renderDimensionOverlay(guiGraphics);
+        renderDistance(guiGraphics);
+        renderRequirements(warpRequirement, guiGraphics, mouseX, mouseY, partialTicks);
+    }
+
+    private void renderDistance(GuiGraphics guiGraphics) {
         final var font = Minecraft.getInstance().font;
         final var player = Minecraft.getInstance().player;
 
@@ -63,8 +52,6 @@ public class WaystoneButton extends Button {
             int xOffset = getWidth() - font.width(distanceStr);
             guiGraphics.drawString(font, distanceStr, getX() + xOffset - 4, getY() + 6, 0xFFFFFF);
         }
-
-        renderRequirements(warpRequirement, guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @SuppressWarnings("unchecked")
