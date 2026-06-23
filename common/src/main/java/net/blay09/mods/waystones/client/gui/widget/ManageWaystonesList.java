@@ -83,24 +83,35 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
         draggedEntry = null;
     }
 
-    public void moveToBoundary(WaystoneEntry entry, boolean moveToBottom) {
+    public void moveToTop(WaystoneEntry entry) {
         final int currentIndex = children().indexOf(entry);
-        final int targetIndex = moveToBottom ? children().size() - 1 : 0;
+        final int targetIndex = 0;
         if (currentIndex == -1 || currentIndex == targetIndex) {
             return;
         }
 
-        if (moveToBottom) {
-            screen.moveWaystoneToBottom(entry.waystone);
-        } else {
-            screen.moveWaystoneToTop(entry.waystone);
-        }
+        screen.moveWaystoneToTop(entry.waystone);
 
         int index = currentIndex;
-        final int direction = Integer.compare(targetIndex, currentIndex);
         while (index != targetIndex) {
-            swap(index, index + direction);
-            index += direction;
+            swap(index, index - 1);
+            index--;
+        }
+    }
+
+    public void moveToBottom(WaystoneEntry entry) {
+        final int currentIndex = children().indexOf(entry);
+        final int targetIndex = children().size() - 1;
+        if (currentIndex == -1 || currentIndex == targetIndex) {
+            return;
+        }
+
+        screen.moveWaystoneToBottom(entry.waystone);
+
+        int index = currentIndex;
+        while (index != targetIndex) {
+            swap(index, index + 1);
+            index++;
         }
     }
 
@@ -131,7 +142,7 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
         public WaystoneEntry(Waystone waystone) {
             this.waystone = waystone;
 
-            if (screen.canSortWaystones()) {
+            if (screen.canReorderWaystones()) {
                 dragHandleButton = new DragHandleButton(ManageWaystonesList.this, this);
                 widgets.add(dragHandleButton);
             } else {

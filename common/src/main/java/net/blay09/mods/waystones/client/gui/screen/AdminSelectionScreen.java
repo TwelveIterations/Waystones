@@ -15,7 +15,7 @@ public class AdminSelectionScreen extends WaystoneSelectionScreenBase {
     }
 
     @Override
-    protected boolean allowSorting() {
+    protected boolean allowReordering() {
         return false;
     }
 

@@ -36,8 +36,8 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
                 this);
     }
 
-    public boolean canSortWaystones() {
-        return parent.allowSorting();
+    public boolean canReorderWaystones() {
+        return parent.allowReordering();
     }
 
     public boolean canDeleteWaystone(Waystone waystone) {
@@ -118,7 +118,7 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
     }
 
     @Override
-    protected boolean showSortButton() {
+    protected boolean allowSorting() {
         return false;
     }
 

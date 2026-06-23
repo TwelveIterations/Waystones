@@ -12,6 +12,7 @@ import static net.blay09.mods.waystones.Waystones.id;
 public class DragHandleButton extends Button {
 
     private static final Identifier ICON = id("waystone_selection/drag_handle");
+    private static final Identifier HIGHLIGHTED_ICON = id("waystone_selection/drag_handle_highlighted");
 
     private final ManageWaystonesList list;
     private final ManageWaystonesList.WaystoneEntry entry;
@@ -27,7 +28,11 @@ public class DragHandleButton extends Button {
     public void onClick(MouseButtonEvent event, boolean doubleClick) {
         if (doubleClick) {
             list.stopDragging();
-            list.moveToBoundary(entry, event.hasShiftDown());
+            if (event.hasShiftDown()) {
+                list.moveToBottom(entry);
+            } else {
+                list.moveToTop(entry);
+            }
             return;
         }
 
@@ -46,7 +51,7 @@ public class DragHandleButton extends Button {
 
     @Override
     protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        final int color = list.isDragging(entry) || isHovered ? 0xFFFFFFFF : 0xFFA0A0A0;
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ICON, getX(), getY() + 2, 16, 16, color);
+        final var icon = list.isDragging(entry) || isHovered ? HIGHLIGHTED_ICON : ICON;
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon, getX(), getY() + 2, 16, 16);
     }
 }

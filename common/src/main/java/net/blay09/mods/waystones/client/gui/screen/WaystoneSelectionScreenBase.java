@@ -22,11 +22,11 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -34,7 +34,11 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
+import static net.blay09.mods.waystones.Waystones.id;
+
 public abstract class WaystoneSelectionScreenBase extends AbstractContainerScreen<WaystoneSelectionMenu> {
+
+    private static final Identifier EDIT_ICON = id("waystone_selection/edit");
 
     protected final Collection<Waystone> waystones;
     private final Inventory playerInventory;
@@ -75,7 +79,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
         updateList();
 
-        final int searchBoxWidth = showSortButton()
+        final int searchBoxWidth = allowSorting()
                 ? HEADER_WIDTH - MARGIN - SORT_BUTTON_WIDTH
                 : HEADER_WIDTH;
         searchBox = new EditBox(font,
@@ -91,7 +95,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         });
 
         addRenderableWidget(searchBox);
-        if (showSortButton()) {
+        if (allowSorting()) {
             final var sortButton = new SortWaystonesButton(
                     searchBox.getX() + searchBox.getWidth() + MARGIN,
                     searchBox.getY(),
@@ -115,7 +119,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     protected void initSideButtons() {
-        if (allowSorting() || allowDeletion()) {
+        if (allowReordering() || allowDeletion()) {
             final var manageButton = new ManageWaystonesButton(
                     leftPos - 8,
                     searchBox != null ? searchBox.getY() : topPos,
@@ -220,17 +224,11 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         guiGraphics.text(font, fullText, x - fullWidth / 2, y, 0xFFFFFFFF);
 
         if (isLocationHeaderHovered) {
-            var poseStack = guiGraphics.pose();
-            poseStack.pushMatrix();
-            float scale = 0.5f;
-            poseStack.translate(x + fullWidth / 2f + 4, y);
-            poseStack.scale(scale, scale);
-            guiGraphics.item(new ItemStack(Items.FEATHER), 0, 0);
-            poseStack.popMatrix();
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, EDIT_ICON, x + fullWidth / 2, y - 4, 16, 16);
         }
     }
 
-    protected boolean allowSorting() {
+    protected boolean allowReordering() {
         return true;
     }
 
@@ -238,7 +236,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         return true;
     }
 
-    protected boolean showSortButton() {
+    protected boolean allowSorting() {
         return true;
     }
 

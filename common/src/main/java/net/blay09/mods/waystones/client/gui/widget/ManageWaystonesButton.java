@@ -15,7 +15,7 @@ public class ManageWaystonesButton extends Button.Plain {
     private static final Identifier ICON = id("waystone_selection/manage");
 
     public ManageWaystonesButton(int x, int y, OnPress pressable) {
-        super(x, y, 20, 20, Component.empty(), pressable, _ -> Component.translatable("container.waystones.manage_waystones"));
+        super(x, y, 20, 20, Component.empty(), pressable, _ -> LABEL.copy());
     }
 
     @Override
