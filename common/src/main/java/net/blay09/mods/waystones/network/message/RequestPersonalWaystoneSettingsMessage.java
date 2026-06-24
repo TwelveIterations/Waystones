@@ -2,12 +2,14 @@ package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
-import net.minecraft.core.BlockPos;
+import net.blay09.mods.waystones.core.WaystoneProxy;
+import net.blay09.mods.waystones.menu.PersonalWaystoneSettingsMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.UUID;
 
 public class RequestPersonalWaystoneSettingsMessage implements CustomPacketPayload {
 
@@ -15,27 +17,25 @@ public class RequestPersonalWaystoneSettingsMessage implements CustomPacketPaylo
             Waystones.MOD_ID,
             "request_personal_waystone_settings"));
 
-    private final BlockPos pos;
+    private final UUID waystoneUid;
 
-    public RequestPersonalWaystoneSettingsMessage(BlockPos pos) {
-        this.pos = pos;
+    public RequestPersonalWaystoneSettingsMessage(UUID waystoneUid) {
+        this.waystoneUid = waystoneUid;
     }
 
     public static void encode(FriendlyByteBuf buf, RequestPersonalWaystoneSettingsMessage message) {
-        buf.writeBlockPos(message.pos);
+        buf.writeUUID(message.waystoneUid);
     }
 
     public static RequestPersonalWaystoneSettingsMessage decode(FriendlyByteBuf buf) {
-        final var pos = buf.readBlockPos();
-        return new RequestPersonalWaystoneSettingsMessage(pos);
+        final var waystoneUid = buf.readUUID();
+        return new RequestPersonalWaystoneSettingsMessage(waystoneUid);
     }
 
     public static void handle(ServerPlayer player, RequestPersonalWaystoneSettingsMessage message) {
-        final var level = player.level();
-        final var blockEntity = level.isLoaded(message.pos) ? level.getBlockEntity(message.pos) : null;
-        if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-            waystoneBlockEntity.getPersonalSettingsMenuProvider(player)
-                    .ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
+        final var waystone = new WaystoneProxy(player.level().getServer(), message.waystoneUid);
+        if (waystone.isValid()) {
+            Balm.getNetworking().openGui(player, PersonalWaystoneSettingsMenu.getProvider(player, waystone));
         }
     }
 
