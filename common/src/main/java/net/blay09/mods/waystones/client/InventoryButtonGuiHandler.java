@@ -109,7 +109,7 @@ public class InventoryButtonGuiHandler {
                 } else if (inventoryButtonMode.isReturnToNearest()) {
                     tooltip.add(Component.translatable("gui.waystones.inventory.return_to_nearest_waystone").withStyle(ChatFormatting.YELLOW));
                     final var nearestWaystone = PlayerWaystoneManager.getNearestWaystone(player);
-                    tooltip.add(nearestWaystone.map(it -> it.getName().copy().withStyle(ChatFormatting.DARK_AQUA))
+                    tooltip.add(nearestWaystone.map(it -> it.getEffectiveName().copy().withStyle(ChatFormatting.DARK_AQUA))
                             .map(it -> Component.translatable("tooltip.waystones.bound_to", it).withStyle(ChatFormatting.GRAY))
                             .orElseGet(() -> Component.translatable("gui.waystones.inventory.no_waystones_activated").withStyle(ChatFormatting.RED)));
                 } else if (inventoryButtonMode.isReturnToAny()) {

@@ -1,13 +1,12 @@
 package net.blay09.mods.waystones.menu;
 
 import com.mojang.datafixers.util.Either;
-import net.blay09.mods.shogi.context.executor.EffectExecutor;
 import net.blay09.mods.shogi.network.ShogiStreamCodecs;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.config.rules.WaystonesEffectExecutors;
-import net.blay09.mods.waystones.core.WaystoneImpl;
+import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.blay09.mods.waystones.core.WaystoneTeleportContextImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
@@ -33,7 +32,7 @@ import java.util.function.Consumer;
 
 public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
-    public record Data(Waystone fromWaystone, List<Waystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements) {
+    public record Data(UserDecoratedWaystone fromWaystone, List<UserDecoratedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements) {
     }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Either<List<Object>, List<Object>>> WARP_REQUIREMENT_STREAM_CODEC = ByteBufCodecs.either(
@@ -46,23 +45,23 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
             WARP_REQUIREMENT_STREAM_CODEC
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-            WaystoneImpl.STREAM_CODEC,
+            UserDecoratedWaystone.STREAM_CODEC,
             Data::fromWaystone,
-            WaystoneImpl.LIST_STREAM_CODEC,
+            UserDecoratedWaystone.LIST_STREAM_CODEC,
             Data::waystones,
             WARP_REQUIREMENTS_STREAM_CODEC,
             Data::warpRequirements,
             Data::new);
 
     private final @Nullable Waystone fromWaystone;
-    private final List<Waystone> waystones;
+    private final List<UserDecoratedWaystone> waystones;
     private final Map<UUID, Either<List<Object>, List<Object>>> warpRequirements;
     private final Set<Identifier> flags;
     private Consumer<WaystoneTeleportContext> postTeleportHandler = _ -> {};
     private ItemStack warpItem = ItemStack.EMPTY;
     private InteractionHand warpHand = InteractionHand.MAIN_HAND;
 
-    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, List<Waystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements, Set<Identifier> flags) {
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, List<UserDecoratedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements, Set<Identifier> flags) {
         super(type, windowId);
         this.fromWaystone = fromWaystone;
         this.waystones = waystones;
@@ -108,7 +107,7 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
         return warpHand;
     }
 
-    public Collection<Waystone> getWaystones() {
+    public Collection<UserDecoratedWaystone> getWaystones() {
         return waystones;
     }
 
@@ -129,11 +128,11 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
         return warpRequirements.getOrDefault(waystone.getWaystoneUid(), Either.left(List.of()));
     }
 
-    public static Map<UUID, Either<List<Object>, List<Object>>> buildWarpRequirements(ServerPlayer player, @Nullable Waystone fromWaystone, List<Waystone> waystones, Set<Identifier> flags) {
+    public static Map<UUID, Either<List<Object>, List<Object>>> buildWarpRequirements(ServerPlayer player, @Nullable Waystone fromWaystone, List<? extends Waystone> waystones, Set<Identifier> flags) {
         return buildWarpRequirements(player, fromWaystone, waystones, flags, ItemStack.EMPTY, InteractionHand.MAIN_HAND);
     }
 
-    public static Map<UUID, Either<List<Object>, List<Object>>> buildWarpRequirements(ServerPlayer player, @Nullable Waystone fromWaystone, List<Waystone> waystones, Set<Identifier> flags, ItemStack warpItem, InteractionHand warpHand) {
+    public static Map<UUID, Either<List<Object>, List<Object>>> buildWarpRequirements(ServerPlayer player, @Nullable Waystone fromWaystone, List<? extends Waystone> waystones, Set<Identifier> flags, ItemStack warpItem, InteractionHand warpHand) {
         final var warpRequirements = new HashMap<UUID, Either<List<Object>, List<Object>>>();
         for (final var waystone : waystones) {
             final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone);

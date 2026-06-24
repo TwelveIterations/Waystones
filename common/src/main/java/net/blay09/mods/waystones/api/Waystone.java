@@ -14,7 +14,17 @@ import java.util.UUID;
 public interface Waystone {
     UUID getWaystoneUid();
 
+    /**
+     * @return the base name of this waystone, as it was set by its owner
+     */
     Component getName();
+
+    /**
+     * @return the display name of this waystone with modifiers like aliases applied
+     */
+    default Component getEffectiveName() {
+        return getName();
+    }
 
     ResourceKey<Level> getDimension();
 

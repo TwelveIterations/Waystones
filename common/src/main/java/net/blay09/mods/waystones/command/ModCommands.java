@@ -62,11 +62,11 @@ public class ModCommands {
 
                                         if (targets.size() == 1) {
                                             context.getSource().sendSuccess(() -> Component.translatable("commands.waystones.activate.success.single",
-                                                    waystone.getName(), targets.iterator().next().getDisplayName()), true);
+                                                    waystone.getEffectiveName(), targets.iterator().next().getDisplayName()), true);
                                         } else {
                                             context.getSource()
                                                     .sendSuccess(() -> Component.translatable("commands.waystones.activate.success.multiple",
-                                                            waystone.getName(),
+                                                            waystone.getEffectiveName(),
                                                             targets.size()), true);
                                         }
                                     } else {
@@ -89,11 +89,11 @@ public class ModCommands {
 
                                         if (targets.size() == 1) {
                                             context.getSource().sendSuccess(() -> Component.translatable("commands.waystones.forget.success.single",
-                                                    waystone.getName(), targets.iterator().next().getDisplayName()), true);
+                                                    waystone.getEffectiveName(), targets.iterator().next().getDisplayName()), true);
                                         } else {
                                             context.getSource()
                                                     .sendSuccess(() -> Component.translatable("commands.waystones.forget.success.multiple",
-                                                            waystone.getName(),
+                                                            waystone.getEffectiveName(),
                                                             targets.size()), true);
                                         }
                                     } else {
@@ -277,7 +277,7 @@ public class ModCommands {
                 .withStyle(ChatFormatting.YELLOW)
                 .withStyle(Style.EMPTY.withClickEvent(new ClickEvent.SuggestCommand(suggestedCommand)));
 
-        final var waystoneName = waystone.getName().copy()
+        final var waystoneName = PlayerWaystoneManager.getPlayerDecoratedWaystone(target, waystone).getEffectiveName().copy()
                 .withStyle(ChatFormatting.GREEN)
                 .withStyle(Style.EMPTY.withClickEvent(new ClickEvent.SuggestCommand(suggestedCommand)));
 

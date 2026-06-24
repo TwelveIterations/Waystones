@@ -25,7 +25,7 @@ public class WaystoneEditInteractionHandler {
             }
 
             if (!level.isClientSide()) {
-                waystoneBlockEntity.getSettingsMenuProvider()
+                waystoneBlockEntity.getSettingsMenuProvider(player)
                         .ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
             }
 

@@ -17,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -38,7 +37,10 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    public Optional<MenuProvider> getSelectionMenuProvider() {
+    public Optional<MenuProvider> getSelectionMenuProvider(Player player) {
+        final var fromWaystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone());
+        final var waystones =  PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone()));
+        PlayerWaystoneManager.ensureSortingIndex(player, waystones);
         return Optional.of(new BalmMenuProvider<WaystoneSelectionMenu.Data>() {
             @Override
             public Component getDisplayName() {
@@ -47,15 +49,11 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
 
             @Override
             public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-                final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone()));
-                PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.value(), getWaystone(), windowId, waystones, Collections.emptyMap(), Collections.emptySet());
+                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.value(), fromWaystone, windowId, waystones, Collections.emptyMap(), Collections.emptySet());
             }
 
             @Override
             public WaystoneSelectionMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                final var fromWaystone = getWaystone();
-                final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, fromWaystone));
                 final var warpRequirements = WaystoneSelectionMenu.buildWarpRequirements(serverPlayer, fromWaystone, waystones, Collections.emptySet());
                 return new WaystoneSelectionMenu.Data(fromWaystone, waystones, warpRequirements);
             }

@@ -18,7 +18,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
 
@@ -44,7 +43,7 @@ public class ServerboundInventoryButtonPacket implements CustomPacketPayload {
             WaystonesAPI.createDefaultTeleportContext(player, waystone.get(), it -> it.addFlag(TeleportFlags.INVENTORY_BUTTON))
                     .mapLeft(WaystonesAPI::tryTeleport);
         } else if (inventoryButtonMode.isReturnToAny()) {
-            final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForInventoryButton(player));
+            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, (PlayerWaystoneManager.getTargetsForInventoryButton(player)));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
             final var containerProvider = new BalmMenuProvider<ModMenus.WaystoneListMenuData>() {
                 @Override

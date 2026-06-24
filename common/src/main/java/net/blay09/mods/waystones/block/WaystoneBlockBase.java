@@ -176,7 +176,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     protected InteractionResult handleEditActions(Level world, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide()) {
-                blockEntity.getSettingsMenuProvider().ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
+                blockEntity.getSettingsMenuProvider(player).ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
             }
             return InteractionResult.SUCCESS;
         }
@@ -272,7 +272,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             // Open settings screen on placement since people don't realize you can shift-click waystones to edit them
             if (!level.isClientSide() && placer instanceof ServerPlayer player) {
                 if (shouldOpenMenuWhenPlaced()) {
-                    waystoneBlockEntity.getSettingsMenuProvider().ifPresent(it -> Balm.networking().openMenu(player, it));
+                    waystoneBlockEntity.getSettingsMenuProvider(player).ifPresent(it -> Balm.networking().openMenu(player, it));
                 }
             }
         }

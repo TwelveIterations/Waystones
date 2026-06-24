@@ -39,6 +39,11 @@ public record ServerboundEditWaystonePacket(UUID waystoneUid, String name, Wayst
             return;
         }
 
+        final var pos = waystone.getPos();
+        if (player.distanceToSqr(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) > 64) {
+            return;
+        }
+
         final var error = WaystonePermissionManager.mayEditWaystone(player, waystone);
         if (error.isPresent()) {
             return;
@@ -49,11 +54,6 @@ public record ServerboundEditWaystonePacket(UUID waystoneUid, String name, Wayst
         if (!visibilityOptions.contains(message.visibility)) {
             Waystones.logger.warn("{} tried to edit a waystone with an invalid visibility {}", player.getName().getString(), message.visibility);
             visibility = visibilityOptions.getFirst();
-        }
-
-        final var pos = waystone.getPos();
-        if (player.distanceToSqr(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) > 64) {
-            return;
         }
 
         final var backingWaystone = (WaystoneImpl) waystone.getBackingWaystone();
