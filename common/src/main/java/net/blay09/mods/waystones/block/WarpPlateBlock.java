@@ -189,7 +189,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         }
 
         if (level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
-            warpPlate.getSettingsMenuProvider().ifPresent(it -> Balm.getNetworking().openGui(player, it));
+            warpPlate.getSettingsMenuProvider(player).ifPresent(it -> Balm.getNetworking().openGui(player, it));
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
 

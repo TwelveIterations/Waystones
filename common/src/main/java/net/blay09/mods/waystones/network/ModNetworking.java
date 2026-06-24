@@ -10,6 +10,7 @@ public class ModNetworking {
     public static void initialize(BalmNetworking networking) {
         networking.registerServerboundPacket(InventoryButtonMessage.TYPE, InventoryButtonMessage.class, InventoryButtonMessage::encode, InventoryButtonMessage::decode, InventoryButtonMessage::handle);
         networking.registerServerboundPacket(EditWaystoneMessage.TYPE, EditWaystoneMessage.class, EditWaystoneMessage::encode, EditWaystoneMessage::decode, EditWaystoneMessage::handle);
+        networking.registerServerboundPacket(UserDecorateWaystoneMessage.TYPE, UserDecorateWaystoneMessage.class, UserDecorateWaystoneMessage::encode, UserDecorateWaystoneMessage::decode, UserDecorateWaystoneMessage::handle);
         networking.registerServerboundPacket(SelectWaystoneMessage.TYPE, SelectWaystoneMessage.class, SelectWaystoneMessage::encode, SelectWaystoneMessage::decode, SelectWaystoneMessage::handle);
         networking.registerServerboundPacket(SortWaystoneMessage.TYPE, SortWaystoneMessage.class, SortWaystoneMessage::encode, SortWaystoneMessage::decode, SortWaystoneMessage::handle);
         networking.registerServerboundPacket(RemoveWaystoneMessage.TYPE, RemoveWaystoneMessage.class, RemoveWaystoneMessage::encode, RemoveWaystoneMessage::decode, RemoveWaystoneMessage::handle);

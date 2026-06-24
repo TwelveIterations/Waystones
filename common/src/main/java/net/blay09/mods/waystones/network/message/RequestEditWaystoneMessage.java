@@ -34,10 +34,10 @@ public class RequestEditWaystoneMessage implements CustomPacketPayload {
         final var level = player.level();
         final var blockEntity = level.isLoaded(message.pos) ? level.getBlockEntity(message.pos) : null;
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-            if(player.distanceToSqr(waystoneBlockEntity.getWaystone().getPos().getCenter()) > 64) {
+            if (player.distanceToSqr(waystoneBlockEntity.getWaystone().getPos().getCenter()) > 64) {
                 return;
             }
-            waystoneBlockEntity.getSettingsMenuProvider()
+            waystoneBlockEntity.getSettingsMenuProvider(player)
                     .ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
         }
     }
@@ -47,4 +47,3 @@ public class RequestEditWaystoneMessage implements CustomPacketPayload {
         return TYPE;
     }
 }
-

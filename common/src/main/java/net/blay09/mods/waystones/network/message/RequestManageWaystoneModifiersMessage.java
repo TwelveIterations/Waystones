@@ -37,7 +37,7 @@ public class RequestManageWaystoneModifiersMessage implements CustomPacketPayloa
             if (player.distanceToSqr(waystoneBlockEntity.getWaystone().getPos().getCenter()) > 64) {
                 return;
             }
-            waystoneBlockEntity.getModifierMenuProvider()
+            waystoneBlockEntity.getModifierMenuProvider(player)
                     .ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
         }
     }
@@ -47,4 +47,3 @@ public class RequestManageWaystoneModifiersMessage implements CustomPacketPayloa
         return TYPE;
     }
 }
-

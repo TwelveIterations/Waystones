@@ -10,6 +10,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     private final List<UUID> sortingIndex = new ArrayList<>();
     private final Map<UUID, Waystone> waystones = new HashMap<>();
     private final Map<ResourceLocation, Long> cooldowns = new HashMap<>();
+    private final Map<UUID, String> aliases = new HashMap<>();
 
     @Override
     public void activateWaystone(Player player, Waystone waystone) {
@@ -54,6 +55,20 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
+    public Optional<String> getWaystoneAlias(Player player, UUID waystoneUid) {
+        return Optional.ofNullable(aliases.get(waystoneUid));
+    }
+
+    @Override
+    public void setWaystoneAlias(Player player, UUID waystoneUid, String alias) {
+        if (alias.trim().isEmpty()) {
+            aliases.remove(waystoneUid);
+        } else {
+            aliases.put(waystoneUid, alias);
+        }
+    }
+
+    @Override
     public void sortWaystoneAsFirst(Player player, UUID waystoneUid) {
         sortingIndex.remove(waystoneUid);
         sortingIndex.add(0, waystoneUid);
@@ -80,7 +95,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public List<UUID> ensureSortingIndex(Player player, Collection<Waystone> waystones) {
+    public List<UUID> ensureSortingIndex(Player player, Collection<? extends Waystone> waystones) {
         final var existing = new HashSet<>(sortingIndex);
 
         for (final var waystone : waystones) {
@@ -99,7 +114,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
         this.sortingIndex.addAll(sortingIndex);
     }
 
-    public void setWaystones(Collection<Waystone> waystones) {
+    public void setWaystones(Collection<? extends Waystone> waystones) {
         this.waystones.clear();
         for (final var waystone : waystones) {
             this.waystones.put(waystone.getWaystoneUid(), waystone);

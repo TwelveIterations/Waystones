@@ -15,6 +15,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     private static final String ACTIVATED_WAYSTONES = "Waystones";
     private static final String SORTING_INDEX = "SortingIndex";
     private static final String COOLDOWNS = "Cooldowns";
+    private static final String ALIASES = "Aliases";
 
     @Override
     public void activateWaystone(Player player, Waystone waystone) {
@@ -53,6 +54,23 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
+    public Optional<String> getWaystoneAlias(Player player, UUID waystoneUid) {
+        final var aliases = getAliasesData(getWaystonesData(player));
+        final var key = waystoneUid.toString();
+        return aliases.contains(key) ? Optional.of(aliases.getString(key)) : Optional.empty();
+    }
+
+    @Override
+    public void setWaystoneAlias(Player player, UUID waystoneUid, String alias) {
+        final var aliases = getAliasesData(getWaystonesData(player));
+        if (alias.trim().isEmpty()) {
+            aliases.remove(waystoneUid.toString());
+        } else {
+            aliases.putString(waystoneUid.toString(), alias);
+        }
+    }
+
+    @Override
     public List<UUID> getSortingIndex(Player player) {
         final var sortingIndex = getSortingIndexData(getWaystonesData(player));
         return sortingIndex.stream().map(entry -> UUID.fromString(entry.getAsString())).toList();
@@ -68,7 +86,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public List<UUID> ensureSortingIndex(Player player, Collection<Waystone> waystones) {
+    public List<UUID> ensureSortingIndex(Player player, Collection<? extends Waystone> waystones) {
         final var sortingIndexData = getSortingIndexData(getWaystonesData(player));
         final var sortingIndex = new ArrayList<UUID>();
         final var existing = new HashSet<UUID>();
@@ -192,6 +210,12 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
         ListTag list = data.contains(SORTING_INDEX) ? data.getList(SORTING_INDEX, Tag.TAG_STRING) : createSortingIndexFromLegacy(data);
         data.put(SORTING_INDEX, list);
         return list;
+    }
+
+    private static CompoundTag getAliasesData(CompoundTag data) {
+        CompoundTag aliases = data.contains(ALIASES, Tag.TAG_COMPOUND) ? data.getCompound(ALIASES) : new CompoundTag();
+        data.put(ALIASES, aliases);
+        return aliases;
     }
 
     private static CompoundTag getWaystonesData(Player player) {

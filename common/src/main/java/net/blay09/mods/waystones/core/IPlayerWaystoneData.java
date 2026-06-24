@@ -13,9 +13,11 @@ public interface IPlayerWaystoneData {
     long getCooldownUntil(Player player, ResourceLocation key);
     void setCooldownUntil(Player player, ResourceLocation key, long timeStamp);
     List<UUID> getSortingIndex(Player player);
-    List<UUID> ensureSortingIndex(Player player, Collection<Waystone> waystones);
+    List<UUID> ensureSortingIndex(Player player, Collection<? extends Waystone> waystones);
     void setSortingIndex(Player player, List<UUID> sortingIndex);
     Collection<Waystone> getWaystones(Player player);
+    Optional<String> getWaystoneAlias(Player player, UUID waystoneUid);
+    void setWaystoneAlias(Player player, UUID waystoneUid, String alias);
     void sortWaystoneAsFirst(Player player, UUID waystoneUid);
     void sortWaystoneAsLast(Player player, UUID waystoneUid);
     void sortWaystoneSwap(Player player, UUID waystoneUid, UUID otherWaystoneUid);

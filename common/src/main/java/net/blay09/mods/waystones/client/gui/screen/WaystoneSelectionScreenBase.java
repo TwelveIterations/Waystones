@@ -10,6 +10,7 @@ import net.blay09.mods.waystones.comparator.DistanceToPlayerComparator;
 import net.blay09.mods.waystones.comparator.PreferSameDimensionComparator;
 import net.blay09.mods.waystones.comparator.UserSortingComparator;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.network.message.RequestEditWaystoneMessage;
 import net.minecraft.ChatFormatting;
@@ -36,7 +37,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
     private static final ResourceLocation EDIT_ICON = id("waystone_selection/edit");
 
-    protected final Collection<Waystone> waystones;
+    protected final Collection<UserDecoratedWaystone> waystones;
     private final Inventory playerInventory;
     protected List<Waystone> filteredWaystones;
 
@@ -133,7 +134,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     protected void updateList() {
         List<Waystone> list = new ArrayList<>();
         for (Waystone waystone : waystones) {
-            if (waystone.getName().getString().toLowerCase().contains(searchText.toLowerCase())) {
+            if (waystone.getEffectiveName().getString().toLowerCase().contains(searchText.toLowerCase())) {
                 list.add(waystone);
             }
         }
@@ -199,7 +200,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
         int locationPrefixWidth = font.width(Component.translatable("gui.waystones.waystone_selection.current_location", ""));
 
-        var effectiveName = waystone.getName().copy();
+        var effectiveName = waystone.getEffectiveName().copy();
         if (effectiveName.getString().isEmpty()) {
             effectiveName = Component.translatable("gui.waystones.waystone_selection.unnamed_waystone");
         }
@@ -261,7 +262,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
             case MANUAL -> manualSorting;
             case NAME -> {
                 final Comparator<Waystone> nameSorting = Comparator.comparing(
-                        waystone -> waystone.getName().getString(),
+                        waystone -> waystone.getEffectiveName().getString(),
                         String.CASE_INSENSITIVE_ORDER);
                 yield manualSorting != null ? nameSorting.thenComparing(manualSorting) : nameSorting;
             }
