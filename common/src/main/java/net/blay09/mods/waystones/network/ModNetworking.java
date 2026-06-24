@@ -8,6 +8,7 @@ public class ModNetworking {
     public static void initialize(BalmNetworking networking) {
         networking.registerServerboundPacket(ServerboundInventoryButtonPacket.TYPE, ServerboundInventoryButtonPacket.class, ServerboundInventoryButtonPacket.STREAM_CODEC, ServerboundInventoryButtonPacket::handle);
         networking.registerServerboundPacket(ServerboundEditWaystonePacket.TYPE, ServerboundEditWaystonePacket.class, ServerboundEditWaystonePacket.STREAM_CODEC, ServerboundEditWaystonePacket::handle);
+        networking.registerServerboundPacket(ServerboundUserDecorateWaystonePacket.TYPE, ServerboundUserDecorateWaystonePacket.class, ServerboundUserDecorateWaystonePacket.STREAM_CODEC, ServerboundUserDecorateWaystonePacket::handle);
         networking.registerServerboundPacket(ServerboundSelectWaystonePacket.TYPE, ServerboundSelectWaystonePacket.class, ServerboundSelectWaystonePacket.STREAM_CODEC, ServerboundSelectWaystonePacket::handle);
         networking.registerServerboundPacket(ServerboundSortWaystonePacket.TYPE, ServerboundSortWaystonePacket.class, ServerboundSortWaystonePacket.STREAM_CODEC, ServerboundSortWaystonePacket::handle);
         networking.registerServerboundPacket(ServerboundRemoveWaystonePacket.TYPE, ServerboundRemoveWaystonePacket.class, ServerboundRemoveWaystonePacket.STREAM_CODEC, ServerboundRemoveWaystonePacket::handle);

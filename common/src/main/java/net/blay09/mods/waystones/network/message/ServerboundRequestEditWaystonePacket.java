@@ -27,7 +27,7 @@ public record ServerboundRequestEditWaystonePacket(BlockPos pos) implements Cust
 
         final var blockEntity = player.level().getBlockEntity(pos);
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-            waystoneBlockEntity.getSettingsMenuProvider().ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
+            waystoneBlockEntity.getSettingsMenuProvider(player).ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
         }
     }
 

@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.api.PortstoneType;
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.core.BlockPos;
@@ -37,6 +38,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public class PortstoneBlock extends WaystoneBlockBase {
@@ -134,7 +136,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult blockHitResult) {
         if (!world.isClientSide()) {
-            final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForKind(player, type.kind()));
+            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForKind(player, type.kind()));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
             Balm.networking().openMenu(player, new BalmMenuProvider<ModMenus.WaystoneListMenuData>() {
                 @Override

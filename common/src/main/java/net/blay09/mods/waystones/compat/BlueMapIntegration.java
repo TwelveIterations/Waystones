@@ -48,7 +48,7 @@ public class BlueMapIntegration {
 
     public static POIMarker createWaystoneMarker(Waystone waystone) {
         return POIMarker.builder()
-                .label(waystone.getName().getString())
+                .label(waystone.getEffectiveName().getString())
                 .position((double) waystone.getPos().getX(), waystone.getPos().getY(), waystone.getPos().getZ())
                 .maxDistance(1000)
                 .build();

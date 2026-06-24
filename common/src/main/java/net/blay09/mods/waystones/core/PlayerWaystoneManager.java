@@ -17,6 +17,7 @@ import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 import net.blay09.mods.waystones.store.WaystonesPlayerStore;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -98,6 +99,26 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.level()).getWaystones(player);
     }
 
+    public static Optional<String> getWaystoneAlias(Player player, UUID waystoneUid) {
+        return getPlayerWaystoneData(player.level()).getWaystoneAlias(player, waystoneUid);
+    }
+
+    public static void setWaystoneAlias(Player player, UUID waystoneUid, String alias) {
+        getPlayerWaystoneData(player.level()).setWaystoneAlias(player, waystoneUid, alias);
+    }
+
+    public static UserDecoratedWaystone getPlayerDecoratedWaystone(Player player, Waystone waystone) {
+        final var backingWaystone = waystone instanceof UserDecoratedWaystone userDecoratedWaystone ? userDecoratedWaystone.getBackingWaystone() : waystone;
+        final Optional<Component> alias = getWaystoneAlias(player, backingWaystone.getWaystoneUid()).map(Component::literal);
+        return new UserDecoratedWaystone(backingWaystone, alias.orElse(null));
+    }
+
+    public static List<UserDecoratedWaystone> getPlayerDecoratedWaystones(Player player, Collection<Waystone> waystones) {
+        return waystones.stream()
+                .map(waystone -> getPlayerDecoratedWaystone(player, waystone))
+                .toList();
+    }
+
     public static WaystonesPlayerStore getPlayerWaystoneData(@Nullable Level world) {
         return world == null || world.isClientSide() ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
     }
@@ -110,7 +131,7 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.level()).getSortingIndex(player);
     }
 
-    public static List<UUID> ensureSortingIndex(Player player, Collection<Waystone> waystones) {
+    public static List<UUID> ensureSortingIndex(Player player, Collection<? extends Waystone> waystones) {
         return getPlayerWaystoneData(player.level()).ensureSortingIndex(player, waystones);
     }
 

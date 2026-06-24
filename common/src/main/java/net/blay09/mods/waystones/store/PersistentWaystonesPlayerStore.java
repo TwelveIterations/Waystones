@@ -13,6 +13,7 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     private static final String TAG_NAME = "WaystonesData";
     private static final String ACTIVATED_WAYSTONES = "Waystones";
     private static final String SORTING_INDEX = "SortingIndex";
+    private static final String ALIASES = "Aliases";
 
     @Override
     public void activateWaystone(Player player, Waystone waystone) {
@@ -53,6 +54,21 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     }
 
     @Override
+    public Optional<String> getWaystoneAlias(Player player, UUID waystoneUid) {
+        return getAliasesData(getWaystonesData(player)).getString(waystoneUid.toString());
+    }
+
+    @Override
+    public void setWaystoneAlias(Player player, UUID waystoneUid, String alias) {
+        final var aliases = getAliasesData(getWaystonesData(player));
+        if (alias.trim().isEmpty()) {
+            aliases.remove(waystoneUid.toString());
+        } else {
+            aliases.putString(waystoneUid.toString(), alias);
+        }
+    }
+
+    @Override
     public List<UUID> getSortingIndex(Player player) {
         final var sortingIndex = getSortingIndexData(getWaystonesData(player));
         final var result = new ArrayList<UUID>();
@@ -72,7 +88,7 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     }
 
     @Override
-    public List<UUID> ensureSortingIndex(Player player, Collection<Waystone> waystones) {
+    public List<UUID> ensureSortingIndex(Player player, Collection<? extends Waystone> waystones) {
         final var sortingIndexData = getSortingIndexData(getWaystonesData(player));
         final var sortingIndex = new ArrayList<UUID>();
         final var existing = new HashSet<UUID>();
@@ -164,6 +180,12 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
         ListTag list = data.getList(SORTING_INDEX).orElseGet(() -> createSortingIndexFromLegacy(data));
         data.put(SORTING_INDEX, list);
         return list;
+    }
+
+    private static CompoundTag getAliasesData(CompoundTag data) {
+        CompoundTag aliases = data.getCompoundOrEmpty(ALIASES);
+        data.put(ALIASES, aliases);
+        return aliases;
     }
 
     private static CompoundTag getWaystonesData(Player player) {

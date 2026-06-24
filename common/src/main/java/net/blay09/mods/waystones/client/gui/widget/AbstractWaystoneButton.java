@@ -27,7 +27,7 @@ public abstract class AbstractWaystoneButton extends Button.Plain {
     }
 
     protected static Component getWaystoneNameComponent(Waystone waystone) {
-        var effectiveName = waystone.getName().copy();
+        var effectiveName = waystone.getEffectiveName().copy();
         if (effectiveName.getString().isEmpty()) {
             effectiveName = Component.translatable("gui.waystones.waystone_selection.unnamed_waystone");
         }

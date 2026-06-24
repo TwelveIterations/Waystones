@@ -17,26 +17,27 @@ import java.util.List;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record ClientboundKnownWaystonesPacket(Identifier waystoneType, List<Waystone> waystones) implements CustomPacketPayload {
+public record ClientboundKnownWaystonesPacket(Identifier waystoneType, List<UserDecoratedWaystone> waystones) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<ClientboundKnownWaystonesPacket> TYPE = new CustomPacketPayload.Type<>(id("known_waystones"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundKnownWaystonesPacket> STREAM_CODEC = StreamCodec.composite(
             Identifier.STREAM_CODEC,
             ClientboundKnownWaystonesPacket::waystoneType,
-            WaystoneImpl.LIST_STREAM_CODEC,
+            UserDecoratedWaystone.LIST_STREAM_CODEC,
             ClientboundKnownWaystonesPacket::waystones,
             ClientboundKnownWaystonesPacket::new
     );
 
     public static void handle(Player player, ClientboundKnownWaystonesPacket message) {
+        final List<Waystone> waystones = List.copyOf(message.waystones);
         if (message.waystoneType.equals(WaystoneKinds.WAYSTONE)) {
             InMemoryWaystonesPlayerStore playerWaystoneData = (InMemoryWaystonesPlayerStore) PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
-            playerWaystoneData.setWaystones(message.waystones);
+            playerWaystoneData.setWaystones(waystones);
         }
 
-        WaystonesListReceivedEvent.EVENT.invoker().accept(new WaystonesListReceivedEvent(message.waystoneType, message.waystones));
+        WaystonesListReceivedEvent.EVENT.invoker().accept(new WaystonesListReceivedEvent(message.waystoneType, waystones));
 
-        for (Waystone waystone : message.waystones) {
+        for (Waystone waystone : waystones) {
             WaystonesClient.getWaystonesStore().updateWaystone(waystone);
         }
     }

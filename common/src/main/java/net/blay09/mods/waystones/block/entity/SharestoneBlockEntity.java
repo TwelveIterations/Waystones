@@ -49,7 +49,10 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    public Optional<MenuProvider> getSelectionMenuProvider() {
+    public Optional<MenuProvider> getSelectionMenuProvider(Player player) {
+        final var fromWaystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone());
+        final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForWaystone(player, fromWaystone));
+        PlayerWaystoneManager.ensureSortingIndex(player, waystones);
         return Optional.of(new BalmMenuProvider<WaystoneSelectionMenu.Data>() {
             @Override
             public Component getDisplayName() {
@@ -58,16 +61,11 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
 
             @Override
             public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-                final var fromWaystone = getWaystone();
-                final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(player, fromWaystone));
-                PlayerWaystoneManager.ensureSortingIndex(player, waystones);
                 return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.value(), fromWaystone, windowId, waystones, Collections.emptyMap(), Collections.emptySet());
             }
 
             @Override
             public WaystoneSelectionMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                final var fromWaystone = getWaystone();
-                final var waystones = new ArrayList<>(PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, fromWaystone));
                 final var warpRequirements = WaystoneSelectionMenu.buildWarpRequirements(serverPlayer, fromWaystone, waystones, Collections.emptySet());
                 return new WaystoneSelectionMenu.Data(fromWaystone, waystones, warpRequirements);
             }

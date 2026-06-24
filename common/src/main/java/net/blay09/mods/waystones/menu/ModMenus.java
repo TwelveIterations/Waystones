@@ -5,7 +5,7 @@ import net.blay09.mods.balm.world.BalmMenuFactory;
 import net.blay09.mods.balm.world.inventory.BalmMenuTypeRegistrar;
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.core.WaystoneImpl;
+import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -21,9 +21,9 @@ import java.util.UUID;
 
 public class ModMenus {
 
-    public record ItemInitiatedWaystoneMenuData(List<Waystone> waystones, ItemStack itemStack, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements) {
+    public record ItemInitiatedWaystoneMenuData(List<UserDecoratedWaystone> waystones, ItemStack itemStack, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements) {
         public static final StreamCodec<RegistryFriendlyByteBuf, ItemInitiatedWaystoneMenuData> STREAM_CODEC = StreamCodec.composite(
-                WaystoneImpl.LIST_STREAM_CODEC,
+                UserDecoratedWaystone.LIST_STREAM_CODEC,
                 ItemInitiatedWaystoneMenuData::waystones,
                 ItemStack.STREAM_CODEC,
                 ItemInitiatedWaystoneMenuData::itemStack,
@@ -33,9 +33,9 @@ public class ModMenus {
         );
     }
 
-    public record WaystoneListMenuData(List<Waystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements) {
+    public record WaystoneListMenuData(List<UserDecoratedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements) {
         public static final StreamCodec<RegistryFriendlyByteBuf, WaystoneListMenuData> STREAM_CODEC = StreamCodec.composite(
-                WaystoneImpl.LIST_STREAM_CODEC,
+                UserDecoratedWaystone.LIST_STREAM_CODEC,
                 WaystoneListMenuData::waystones,
                 WaystoneSelectionMenu.WARP_REQUIREMENTS_STREAM_CODEC,
                 WaystoneListMenuData::warpRequirements,
@@ -151,15 +151,15 @@ public class ModMenus {
                     }
                 }).asHolder();
         waystoneModifiers = menus.register("waystone_modifiers",
-                new BalmMenuFactory<WaystoneModifierMenu, Waystone>() {
+                new BalmMenuFactory<WaystoneModifierMenu, UserDecoratedWaystone>() {
                     @Override
-                    public WaystoneModifierMenu create(int windowId, Inventory inventory, Waystone waystone) {
+                    public WaystoneModifierMenu create(int windowId, Inventory inventory, UserDecoratedWaystone waystone) {
                         return new WaystoneModifierMenu(windowId, inventory, waystone);
                     }
 
                     @Override
-                    public StreamCodec<RegistryFriendlyByteBuf, Waystone> getStreamCodec() {
-                        return WaystoneImpl.STREAM_CODEC;
+                    public StreamCodec<RegistryFriendlyByteBuf, UserDecoratedWaystone> getStreamCodec() {
+                        return UserDecoratedWaystone.STREAM_CODEC;
                     }
                 }).asHolder();
         waystoneSettings = menus.register("waystone",

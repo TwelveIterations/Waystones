@@ -268,13 +268,16 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
         return silkTouched;
     }
 
-    public Optional<MenuProvider> getSelectionMenuProvider() {
+    public Optional<MenuProvider> getSelectionMenuProvider(Player player) {
         return Optional.empty();
     }
 
     public abstract Component getName();
 
-    public Optional<MenuProvider> getSettingsMenuProvider() {
+    public Optional<MenuProvider> getSettingsMenuProvider(Player player) {
+        final var waystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone());
+        final var error = WaystonePermissionManager.mayEditWaystone((ServerPlayer) player, getWaystone());
+        final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions((ServerPlayer) player, waystone);
         return Optional.of(new BalmMenuProvider<WaystoneEditMenu.Data>() {
             @Override
             public Component getDisplayName() {
@@ -283,10 +286,8 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
-                final var error = WaystonePermissionManager.mayEditWaystone(((ServerPlayer) player), getWaystone());
-                final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions(((ServerPlayer) player), waystone);
                 return new WaystoneEditMenu(i,
-                        getWaystone(),
+                        waystone,
                         getModifierCount(),
                         error.orElse(null),
                         visibilityOptions,
@@ -295,10 +296,8 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
             @Override
             public WaystoneEditMenu.Data getScreenOpeningData(ServerPlayer player) {
-                final var error = WaystonePermissionManager.mayEditWaystone(player, getWaystone());
-                final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions(player, waystone);
                 return new WaystoneEditMenu.Data(worldPosition,
-                        getWaystone(),
+                        waystone,
                         getModifierCount(),
                         error,
                         visibilityOptions);
@@ -311,8 +310,9 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
         });
     }
 
-    public Optional<MenuProvider> getModifierMenuProvider() {
-        return Optional.of(new BalmMenuProvider<Waystone>() {
+    public Optional<MenuProvider> getModifierMenuProvider(Player player) {
+        final var waystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone());
+        return Optional.of(new BalmMenuProvider<UserDecoratedWaystone>() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable("container.waystones.waystone_modifiers");
@@ -320,17 +320,17 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
-                return new WaystoneModifierMenu(i, playerInventory, getWaystone(), getContainer());
+                return new WaystoneModifierMenu(i, playerInventory, waystone, getContainer());
             }
 
             @Override
-            public Waystone getScreenOpeningData(ServerPlayer serverPlayer) {
-                return getWaystone();
+            public UserDecoratedWaystone getScreenOpeningData(ServerPlayer serverPlayer) {
+                return waystone;
             }
 
             @Override
-            public StreamCodec<RegistryFriendlyByteBuf, Waystone> getScreenStreamCodec() {
-                return WaystoneImpl.STREAM_CODEC;
+            public StreamCodec<RegistryFriendlyByteBuf, UserDecoratedWaystone> getScreenStreamCodec() {
+                return UserDecoratedWaystone.STREAM_CODEC;
             }
         });
     }
