@@ -80,6 +80,7 @@
   "gui.waystones.waystone_selection.current_location": "Current Location: %s",
   "gui.waystones.waystone_selection.manage": "Manage",
   "gui.waystones.waystone_selection.back": "Back",
+  "gui.waystones.waystone_selection.edit_personal_settings": "Configure Alias",
   "gui.waystones.waystone_selection.sort": "Sort: %s",
   "gui.waystones.waystone_selection.sort.manual": "Manual",
   "gui.waystones.waystone_selection.sort.name": "By Name",

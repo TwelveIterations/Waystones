@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.menu;
 
-import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.UserDecoratedWaystone;

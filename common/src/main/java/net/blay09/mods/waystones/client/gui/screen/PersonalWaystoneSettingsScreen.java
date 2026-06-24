@@ -36,8 +36,10 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
         final var currentAlias = menu.getAlias() != null ? menu.getAlias().getString() : "";
         final var oldAliasText = aliasField != null ? aliasField.getValue() : currentAlias;
         final var y = topPos + titleLabelY + 16;
+        final var canEditWaystone = isWaystoneInRange();
+        final var aliasFieldWidth = canEditWaystone ? 150 : 176;
 
-        aliasField = new EditBox(Minecraft.getInstance().font, leftPos, y + 1, 150, 19, aliasField, Component.empty());
+        aliasField = new EditBox(Minecraft.getInstance().font, leftPos, y + 1, aliasFieldWidth, 19, aliasField, Component.empty());
         aliasField.setMaxLength(128);
         aliasField.setValue(oldAliasText);
         addRenderableWidget(aliasField);
@@ -45,7 +47,7 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
             setInitialFocus(aliasField);
         }
 
-        if (isWaystoneInRange()) {
+        if (canEditWaystone) {
             final var editButtonLabel = Component.translatable("gui.waystones.personal_waystone_settings.configure_waystone");
             final var editButtonSprites = new WidgetSprites(
                     id("widgets/edit_button"),

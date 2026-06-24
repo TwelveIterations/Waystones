@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.client.gui.widget.BackToWaystoneSelectionButton
 import net.blay09.mods.waystones.client.gui.widget.ManageWaystonesList;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
+import net.blay09.mods.waystones.network.message.RequestPersonalWaystoneSettingsMessage;
 import net.blay09.mods.waystones.network.message.RemoveWaystoneMessage;
 import net.blay09.mods.waystones.network.message.SortWaystoneMessage;
 import net.minecraft.client.Minecraft;
@@ -64,6 +65,10 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
         waystones.remove(waystone);
         Balm.getNetworking().sendToServer(new RemoveWaystoneMessage(waystone.getWaystoneUid()));
         updateList();
+    }
+
+    public void openPersonalWaystoneSettings(Waystone waystone) {
+        Balm.getNetworking().sendToServer(new RequestPersonalWaystoneSettingsMessage(waystone.getWaystoneUid()));
     }
 
     public void reorderWaystone(Waystone waystone, Waystone otherWaystone) {
