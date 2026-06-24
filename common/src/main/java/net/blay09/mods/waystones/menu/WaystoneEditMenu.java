@@ -114,10 +114,6 @@ public class WaystoneEditMenu extends AbstractContainerMenu {
         return error;
     }
 
-    public @Nullable Component getAlias() {
-        return waystone.getAlias().orElse(null);
-    }
-
     public List<WaystoneVisibility> getVisibilityOptions() {
         return visibilityOptions;
     }

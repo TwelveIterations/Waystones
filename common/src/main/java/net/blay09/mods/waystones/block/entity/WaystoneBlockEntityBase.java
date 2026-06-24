@@ -16,6 +16,7 @@ import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
+import net.blay09.mods.waystones.menu.PersonalWaystoneSettingsMenu;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
 import net.minecraft.core.BlockPos;
@@ -312,6 +313,31 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
                 return new WaystoneModifierMenu(i, playerInventory, waystone, getContainer());
+            }
+
+            @Override
+            public UserDecoratedWaystone getScreenOpeningData(ServerPlayer serverPlayer) {
+                return waystone;
+            }
+
+            @Override
+            public StreamCodec<RegistryFriendlyByteBuf, UserDecoratedWaystone> getScreenStreamCodec() {
+                return UserDecoratedWaystone.STREAM_CODEC;
+            }
+        });
+    }
+
+    public Optional<MenuProvider> getPersonalSettingsMenuProvider(Player player) {
+        final var waystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone());
+        return Optional.of(new BalmMenuProvider<UserDecoratedWaystone>() {
+            @Override
+            public Component getDisplayName() {
+                return Component.translatable("container.waystones.personal_waystone_settings", getName());
+            }
+
+            @Override
+            public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
+                return new PersonalWaystoneSettingsMenu(i, waystone);
             }
 
             @Override

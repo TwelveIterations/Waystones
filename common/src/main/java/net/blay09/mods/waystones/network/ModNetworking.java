@@ -16,6 +16,7 @@ public class ModNetworking {
         networking.registerServerboundPacket(RemoveWaystoneMessage.TYPE, RemoveWaystoneMessage.class, RemoveWaystoneMessage::encode, RemoveWaystoneMessage::decode, RemoveWaystoneMessage::handle);
         networking.registerServerboundPacket(RequestEditWaystoneMessage.TYPE, RequestEditWaystoneMessage.class, RequestEditWaystoneMessage::encode, RequestEditWaystoneMessage::decode, RequestEditWaystoneMessage::handle);
         networking.registerServerboundPacket(RequestManageWaystoneModifiersMessage.TYPE, RequestManageWaystoneModifiersMessage.class, RequestManageWaystoneModifiersMessage::encode, RequestManageWaystoneModifiersMessage::decode, RequestManageWaystoneModifiersMessage::handle);
+        networking.registerServerboundPacket(RequestPersonalWaystoneSettingsMessage.TYPE, RequestPersonalWaystoneSettingsMessage.class, RequestPersonalWaystoneSettingsMessage::encode, RequestPersonalWaystoneSettingsMessage::decode, RequestPersonalWaystoneSettingsMessage::handle);
 
         networking.registerClientboundPacket(UpdateWaystoneMessage.TYPE, UpdateWaystoneMessage.class, UpdateWaystoneMessage::encode, UpdateWaystoneMessage::decode, UpdateWaystoneMessage::handle);
         networking.registerClientboundPacket(WaystoneRemovedMessage.TYPE, WaystoneRemovedMessage.class, WaystoneRemovedMessage::encode, WaystoneRemovedMessage::decode, WaystoneRemovedMessage::handle);

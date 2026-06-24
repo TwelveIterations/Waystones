@@ -150,6 +150,18 @@ public class ModMenus {
                     return WaystoneEditMenu.STREAM_CODEC;
                 }
             });
+    public static DeferredObject<MenuType<PersonalWaystoneSettingsMenu>> personalWaystoneSettings = menus.registerMenu(id("personal_waystone_settings"),
+            new BalmMenuFactory<PersonalWaystoneSettingsMenu, UserDecoratedWaystone>() {
+                @Override
+                public PersonalWaystoneSettingsMenu create(int windowId, Inventory inventory, UserDecoratedWaystone waystone) {
+                    return new PersonalWaystoneSettingsMenu(windowId, waystone);
+                }
+
+                @Override
+                public StreamCodec<RegistryFriendlyByteBuf, UserDecoratedWaystone> getStreamCodec() {
+                    return UserDecoratedWaystone.STREAM_CODEC;
+                }
+            });
 
     public static void initialize() {
     }
