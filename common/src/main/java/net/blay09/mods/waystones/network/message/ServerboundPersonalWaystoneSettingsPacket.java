@@ -15,19 +15,19 @@ import java.util.UUID;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record ServerboundUserDecorateWaystonePacket(UUID waystoneUid, String alias) implements CustomPacketPayload {
+public record ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, String alias) implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<ServerboundUserDecorateWaystonePacket> TYPE = new CustomPacketPayload.Type<>(id("user_decorate_waystone"));
+    public static final CustomPacketPayload.Type<ServerboundPersonalWaystoneSettingsPacket> TYPE = new CustomPacketPayload.Type<>(id("personal_waystone_settings"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundUserDecorateWaystonePacket> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundPersonalWaystoneSettingsPacket> STREAM_CODEC = StreamCodec.composite(
             UUIDUtil.STREAM_CODEC,
-            ServerboundUserDecorateWaystonePacket::waystoneUid,
+            ServerboundPersonalWaystoneSettingsPacket::waystoneUid,
             ByteBufCodecs.STRING_UTF8,
-            ServerboundUserDecorateWaystonePacket::alias,
-            ServerboundUserDecorateWaystonePacket::new
+            ServerboundPersonalWaystoneSettingsPacket::alias,
+            ServerboundPersonalWaystoneSettingsPacket::new
     );
 
-    public static void handle(ServerPlayer player, ServerboundUserDecorateWaystonePacket message) {
+    public static void handle(ServerPlayer player, ServerboundPersonalWaystoneSettingsPacket message) {
         final var server = player.level().getServer();
         final var waystone = new WaystoneProxy(server, message.waystoneUid);
         if (!waystone.isValid()) {

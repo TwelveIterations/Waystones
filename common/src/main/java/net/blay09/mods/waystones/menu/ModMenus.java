@@ -4,7 +4,6 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.world.BalmMenuFactory;
 import net.blay09.mods.balm.world.inventory.BalmMenuTypeRegistrar;
 import net.blay09.mods.waystones.api.TeleportFlags;
-import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -52,6 +51,7 @@ public class ModMenus {
     public static Holder<MenuType<WaystoneSelectionMenu>> sharestoneSelection;
     public static Holder<MenuType<WaystoneModifierMenu>> waystoneModifiers;
     public static Holder<MenuType<WaystoneEditMenu>> waystoneSettings;
+    public static Holder<MenuType<PersonalWaystoneSettingsMenu>> personalWaystoneSettings;
 
     public static void initialize(BalmMenuTypeRegistrar menus) {
         waystoneSelection = menus.register("waystone_selection",
@@ -172,6 +172,18 @@ public class ModMenus {
                     @Override
                     public StreamCodec<RegistryFriendlyByteBuf, WaystoneEditMenu.Data> getStreamCodec() {
                         return WaystoneEditMenu.STREAM_CODEC;
+                    }
+                }).asHolder();
+        personalWaystoneSettings = menus.register("personal_waystone_settings",
+                new BalmMenuFactory<PersonalWaystoneSettingsMenu, UserDecoratedWaystone>() {
+                    @Override
+                    public PersonalWaystoneSettingsMenu create(int windowId, Inventory inventory, UserDecoratedWaystone waystone) {
+                        return new PersonalWaystoneSettingsMenu(windowId, waystone);
+                    }
+
+                    @Override
+                    public StreamCodec<RegistryFriendlyByteBuf, UserDecoratedWaystone> getStreamCodec() {
+                        return UserDecoratedWaystone.STREAM_CODEC;
                     }
                 }).asHolder();
     }

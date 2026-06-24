@@ -5,7 +5,7 @@ import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.network.message.ServerboundEditWaystonePacket;
 import net.blay09.mods.waystones.network.message.ServerboundRequestManageWaystoneModifiersPacket;
-import net.blay09.mods.waystones.network.message.ServerboundUserDecorateWaystonePacket;
+import net.blay09.mods.waystones.network.message.ServerboundRequestPersonalWaystoneSettingsPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
@@ -19,13 +19,13 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Locale;
 
+import static net.blay09.mods.waystones.Waystones.id;
+
 public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu> {
 
     private @Nullable EditBox nameField;
-    private @Nullable EditBox aliasField;
     private @Nullable WaystoneVisbilityButton visibilityButton;
     private @Nullable ImageButton modifierButton;
-    private boolean aliasMode;
 
     public WaystoneEditScreen(WaystoneEditMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title, 176, 210);
@@ -37,8 +37,6 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         super.init();
         final var waystone = menu.getWaystone();
         final var oldNameText = nameField != null ? nameField.getValue() : waystone.getName().getString();
-        final var currentAlias = menu.getAlias() != null ? menu.getAlias().getString() : "";
-        final var oldAliasText = aliasField != null ? aliasField.getValue() : currentAlias;
         var oldVisibility = waystone.getVisibility();
         if (visibilityButton != null) {
             oldVisibility = visibilityButton.getVisibility();
@@ -57,33 +55,20 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         nameField.setValue(oldNameText);
         nameField.setEditable(menu.canEdit());
 
-        aliasField = new EditBox(Minecraft.getInstance().font, leftPos, y + 1, textFieldWidth, 19, aliasField, Component.empty());
-        aliasField.setMaxLength(128);
-        aliasField.setValue(oldAliasText);
-        aliasField.setEditable(true);
-
-        final var textField = getActiveTextField();
-        addRenderableWidget(textField);
-        if ((menu.canEdit() || aliasMode) && textField.getValue().isEmpty()) {
-            setInitialFocus(textField);
+        addRenderableWidget(nameField);
+        if (menu.canEdit() && nameField.getValue().isEmpty()) {
+            setInitialFocus(nameField);
         }
-        final var aliasButtonLabel = Component.translatable(aliasMode
-                ? "gui.waystones.waystone_settings.save_alias"
-                : "gui.waystones.waystone_settings.configure_alias");
-        final var aliasButtonSprites = aliasMode
-                ? new WidgetSprites(
-                Identifier.withDefaultNamespace("waystones/save_button"),
-                Identifier.withDefaultNamespace("waystones/save_button_highlighted"))
-                : new WidgetSprites(
-                Identifier.withDefaultNamespace("waystones/alias_button"),
-                Identifier.withDefaultNamespace("waystones/alias_button_highlighted"));
+        final var aliasButtonLabel = Component.translatable("gui.waystones.waystone_settings.configure_alias");
+        final var aliasButtonSprites = new WidgetSprites(
+                id("widgets/alias_button"),
+                id("widgets/alias_button_highlighted"));
         final var aliasButton = new ImageButton(21,
                 21,
                 aliasButtonSprites,
                 _ -> {
-                    aliasMode = !aliasMode;
-                    clearWidgets();
-                    init();
+                    saveWaystoneSettings();
+                    Balm.networking().sendToServer(new ServerboundRequestPersonalWaystoneSettingsPacket(menu.getWaystone().getPos()));
                 },
                 aliasButtonLabel);
         aliasButton.setPosition(leftPos + 155, y);
@@ -103,22 +88,17 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
                 21,
                 modifierSprites,
                 (_) -> {
-                    final var nameField = this.nameField;
-                    Balm.networking()
-                            .sendToServer(new ServerboundEditWaystonePacket(
-                                    menu.getWaystone().getWaystoneUid(),
-                                    nameField != null ? nameField.getValue() : menu.getWaystone().getName().getString(),
-                                    visibilityButton.getVisibility()));
+                    saveWaystoneSettings();
                     Balm.networking().sendToServer(new ServerboundRequestManageWaystoneModifiersPacket(menu.getWaystone().getPos()));
                 },
-                Component.literal("gui.waystones.waystone_settings.manage_modifiers"));
+                Component.translatable("gui.waystones.waystone_settings.manage_modifiers"));
         modifierButton.setPosition(leftPos, y);
         modifierButton.active = menu.canEdit();
         addRenderableWidget(modifierButton);
         y += 25;
 
         final var saveButton = Button.builder(
-                        Component.translatable(menu.canEdit() || aliasMode ? "gui.waystones.waystone_settings.save" : "gui.waystones.waystone_settings.close"),
+                        Component.translatable(menu.canEdit() ? "gui.waystones.waystone_settings.save" : "gui.waystones.waystone_settings.close"),
                         _ -> onClose())
                 .pos(leftPos + 176 / 2 - 50, y)
                 .size(100, 20)
@@ -128,9 +108,8 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        final var textField = getActiveTextField();
-        if (textField != null && (menu.canEdit() || aliasMode) && textField.isMouseOver(event.x(), event.y()) && event.button() == 1) {
-            textField.setValue("");
+        if (nameField != null && menu.canEdit() && nameField.isMouseOver(event.x(), event.y()) && event.button() == 1) {
+            nameField.setValue("");
             return true;
         }
 
@@ -139,8 +118,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        final var textField = getActiveTextField();
-        if (textField != null && (textField.keyPressed(event) || textField.isFocused())) {
+        if (nameField != null && (nameField.keyPressed(event) || nameField.isFocused())) {
             if (event.isEscape() || event.isConfirmation()) {
                 this.onClose();
             }
@@ -155,12 +133,11 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
     public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.extractContents(guiGraphics, mouseX, mouseY, partialTicks);
 
-        final var textField = getActiveTextField();
-        if (textField != null && (menu.canEdit() || aliasMode) && textField.getValue().isEmpty()) {
+        if (nameField != null && menu.canEdit() && nameField.getValue().isEmpty()) {
             guiGraphics.text(Minecraft.getInstance().font,
-                    Component.translatable(aliasMode ? "gui.waystones.waystone_settings.no_alias" : "waystones.untitled_waystone"),
-                    textField.getX() + 4,
-                    textField.getY() + 6,
+                    Component.translatable("waystones.untitled_waystone"),
+                    nameField.getX() + 4,
+                    nameField.getY() + 6,
                     0xFF808080);
         }
     }
@@ -196,8 +173,11 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
 
     @Override
     public void onClose() {
-        final var currentAlias = menu.getAlias() != null ? menu.getAlias().getString() : "";
+        saveWaystoneSettings();
+        super.onClose();
+    }
 
+    private void saveWaystoneSettings() {
         if (menu.canEdit()) {
             Balm.networking()
                     .sendToServer(new ServerboundEditWaystonePacket(
@@ -205,19 +185,6 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
                             nameField != null ? nameField.getValue() : menu.getWaystone().getName().getString(),
                             visibilityButton != null ? visibilityButton.getVisibility() : menu.getWaystone().getVisibility()));
         }
-
-        if (aliasMode || aliasField != null && !aliasField.getValue().equals(currentAlias)) {
-            Balm.networking()
-                    .sendToServer(new ServerboundUserDecorateWaystonePacket(
-                            menu.getWaystone().getWaystoneUid(),
-                            aliasField != null ? aliasField.getValue() : ""));
-        }
-
-        super.onClose();
-    }
-
-    private @Nullable EditBox getActiveTextField() {
-        return aliasMode ? aliasField : nameField;
     }
 
 }
