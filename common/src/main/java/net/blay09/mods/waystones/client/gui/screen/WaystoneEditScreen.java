@@ -68,7 +68,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
                 aliasButtonSprites,
                 _ -> {
                     saveWaystoneSettings();
-                    Balm.networking().sendToServer(new ServerboundRequestPersonalWaystoneSettingsPacket(menu.getWaystone().getPos()));
+                    Balm.networking().sendToServer(new ServerboundRequestPersonalWaystoneSettingsPacket(menu.getWaystone().getWaystoneUid()));
                 },
                 aliasButtonLabel);
         aliasButton.setPosition(leftPos + 155, y);
