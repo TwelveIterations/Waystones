@@ -27,7 +27,7 @@ public record ServerboundRequestManageWaystoneModifiersPacket(BlockPos pos) impl
 
         final var blockEntity = player.level().getBlockEntity(pos);
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-            waystoneBlockEntity.getModifierMenuProvider().ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
+            waystoneBlockEntity.getModifierMenuProvider(player).ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
         }
     }
 

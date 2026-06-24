@@ -8,11 +8,7 @@ import net.blay09.mods.waystones.network.message.ServerboundRequestManageWayston
 import net.blay09.mods.waystones.network.message.ServerboundUserDecorateWaystonePacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -76,11 +72,11 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
                 : "gui.waystones.waystone_settings.configure_alias");
         final var aliasButtonSprites = aliasMode
                 ? new WidgetSprites(
-                        Identifier.withDefaultNamespace("waystones/save_button"),
-                        Identifier.withDefaultNamespace("waystones/save_button_highlighted"))
+                Identifier.withDefaultNamespace("waystones/save_button"),
+                Identifier.withDefaultNamespace("waystones/save_button_highlighted"))
                 : new WidgetSprites(
-                        Identifier.withDefaultNamespace("waystones/alias_button"),
-                        Identifier.withDefaultNamespace("waystones/alias_button_highlighted"));
+                Identifier.withDefaultNamespace("waystones/alias_button"),
+                Identifier.withDefaultNamespace("waystones/alias_button_highlighted"));
         final var aliasButton = new ImageButton(21,
                 21,
                 aliasButtonSprites,
@@ -200,23 +196,21 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
 
     @Override
     public void onClose() {
-        if (visibilityButton != null) {
-            final var currentAlias = menu.getAlias() != null ? menu.getAlias().getString() : "";
+        final var currentAlias = menu.getAlias() != null ? menu.getAlias().getString() : "";
 
-            if (menu.canEdit()) {
-                Balm.networking()
-                        .sendToServer(new ServerboundEditWaystonePacket(
-                                menu.getWaystone().getWaystoneUid(),
-                                nameField != null ? nameField.getValue() : menu.getWaystone().getName().getString(),
-                                visibilityButton.getVisibility()));
-            }
+        if (menu.canEdit()) {
+            Balm.networking()
+                    .sendToServer(new ServerboundEditWaystonePacket(
+                            menu.getWaystone().getWaystoneUid(),
+                            nameField != null ? nameField.getValue() : menu.getWaystone().getName().getString(),
+                            visibilityButton != null ? visibilityButton.getVisibility() : menu.getWaystone().getVisibility()));
+        }
 
-            if (aliasMode || aliasField != null && !aliasField.getValue().equals(currentAlias)) {
-                Balm.networking()
-                        .sendToServer(new ServerboundUserDecorateWaystonePacket(
-                                menu.getWaystone().getWaystoneUid(),
-                                aliasField != null ? aliasField.getValue() : ""));
-            }
+        if (aliasMode || aliasField != null && !aliasField.getValue().equals(currentAlias)) {
+            Balm.networking()
+                    .sendToServer(new ServerboundUserDecorateWaystonePacket(
+                            menu.getWaystone().getWaystoneUid(),
+                            aliasField != null ? aliasField.getValue() : ""));
         }
 
         super.onClose();

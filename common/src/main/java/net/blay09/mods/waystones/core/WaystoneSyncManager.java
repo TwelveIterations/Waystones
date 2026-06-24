@@ -11,7 +11,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class WaystoneSyncManager {
@@ -50,14 +49,15 @@ public class WaystoneSyncManager {
     }
 
     public static void sendWaystonesOfType(Identifier waystoneType, ServerPlayer player) {
-        List<Waystone> warpPlates = new ArrayList<>(SavedDataWaystonesStore.get(player.level().getServer()).getWaystonesByKind(waystoneType));
-        Balm.networking().sendTo(player, new ClientboundKnownWaystonesPacket(waystoneType, PlayerWaystoneManager.getPlayerDecoratedWaystones(player, warpPlates)));
+        final var warpPlates = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, SavedDataWaystonesStore.get(player.level().getServer()).getWaystonesByKind(waystoneType));
+        Balm.networking().sendTo(player, new ClientboundKnownWaystonesPacket(waystoneType, warpPlates));
     }
 
     public static void sendWaystoneUpdate(Player player, Waystone waystone) {
         // If this is a waystone, only send an update if the player has activated it already
         if (!waystone.getWaystoneKind().equals(WaystoneKinds.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
-            Balm.networking().sendTo(player, new ClientboundUpdateWaystonePacket(PlayerWaystoneManager.getPlayerDecoratedWaystone(player, waystone)));
+            final var decoratedWaystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, waystone);
+            Balm.networking().sendTo(player, new ClientboundUpdateWaystonePacket(decoratedWaystone));
         }
     }
 
