@@ -13,9 +13,10 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
 
     private static final int MARGIN = 2;
     private static final int DRAG_HANDLE_WIDTH = 16;
+    private static final int EDIT_BUTTON_WIDTH = 18;
     private static final int REMOVE_BUTTON_WIDTH = 18;
     private static final int BUTTON_LEFT_OFFSET = DRAG_HANDLE_WIDTH + MARGIN;
-    private static final int BUTTON_RIGHT_OFFSET = REMOVE_BUTTON_WIDTH + MARGIN;
+    private static final int BUTTON_RIGHT_OFFSET = EDIT_BUTTON_WIDTH + MARGIN + REMOVE_BUTTON_WIDTH + MARGIN;
     private static final int BUTTON_WIDTH = ENTRY_WIDTH - BUTTON_LEFT_OFFSET - BUTTON_RIGHT_OFFSET;
 
     private final ManageWaystonesScreen screen;
@@ -137,6 +138,7 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
         private final List<AbstractWidget> widgets = new ArrayList<>();
         private final @Nullable ManageWaystoneButton waystoneButton;
         private final @Nullable DragHandleButton dragHandleButton;
+        private final EditWaystoneButton editButton;
         private final @Nullable RemoveWaystoneButton removeButton;
 
         public WaystoneEntry(Waystone waystone) {
@@ -151,6 +153,13 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
 
             waystoneButton = new ManageWaystoneButton(BUTTON_WIDTH, waystone);
             widgets.add(waystoneButton);
+
+            editButton = new EditWaystoneButton(0,
+                    0,
+                    ManageWaystonesList.this.getY(),
+                    ManageWaystonesList.this.getHeight(),
+                    _ -> screen.openPersonalWaystoneSettings(waystone));
+            widgets.add(editButton);
 
             if (screen.canDeleteWaystone(waystone)) {
                 removeButton = new RemoveWaystoneButton(0,
@@ -205,8 +214,9 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
                 dragHandleButton.setPosition(x, y);
             }
             waystoneButton.setPosition(x + BUTTON_LEFT_OFFSET, y);
+            editButton.setPosition(x + BUTTON_LEFT_OFFSET + BUTTON_WIDTH + MARGIN, y + 4);
             if (removeButton != null) {
-                removeButton.setPosition(x + BUTTON_LEFT_OFFSET + BUTTON_WIDTH + MARGIN, y + 4);
+                removeButton.setPosition(x + BUTTON_LEFT_OFFSET + BUTTON_WIDTH + MARGIN + EDIT_BUTTON_WIDTH + MARGIN, y + 4);
             }
         }
 
