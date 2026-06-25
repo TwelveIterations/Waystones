@@ -8,12 +8,12 @@ import net.minecraft.resources.ResourceLocation;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public class ManageWaystonesButton extends Button {
+public class ManageWaystoneGroupsButton extends Button {
 
-    private static final Component LABEL = Component.translatable("container.waystones.manage_waystones");
-    private static final ResourceLocation ICON = id("waystone_selection/manage_waystones");
+    private static final Component LABEL = Component.translatable("container.waystones.manage_groups");
+    private static final ResourceLocation ICON = id("waystone_selection/manage_groups");
 
-    public ManageWaystonesButton(int x, int y, OnPress pressable) {
+    public ManageWaystoneGroupsButton(int x, int y, OnPress pressable) {
         super(x, y, 20, 20, Component.empty(), pressable, Button.DEFAULT_NARRATION);
         setTooltip(Tooltip.create(LABEL));
     }
