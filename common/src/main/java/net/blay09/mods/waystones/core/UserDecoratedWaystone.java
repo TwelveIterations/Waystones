@@ -16,10 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class UserDecoratedWaystone implements Waystone {
 
@@ -28,21 +25,29 @@ public class UserDecoratedWaystone implements Waystone {
             UserDecoratedWaystone::getBackingWaystone,
             ComponentSerialization.OPTIONAL_STREAM_CODEC,
             UserDecoratedWaystone::getAlias,
+            ByteBufCodecs.collection(ArrayList::new, Identifier.STREAM_CODEC),
+            UserDecoratedWaystone::getConfiguredGroups,
             UserDecoratedWaystone::new
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, List<UserDecoratedWaystone>> LIST_STREAM_CODEC = ByteBufCodecs.collection(ArrayList::new, STREAM_CODEC);
 
     private final Waystone backingWaystone;
     private final @Nullable Component alias;
+    private final Set<Identifier> configuredGroups;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private UserDecoratedWaystone(Waystone backingWaystone, Optional<Component> alias) {
-        this(backingWaystone, alias.orElse(null));
+    private UserDecoratedWaystone(Waystone backingWaystone, Optional<Component> alias, Collection<Identifier> configuredGroups) {
+        this(backingWaystone, alias.orElse(null), configuredGroups);
     }
 
     public UserDecoratedWaystone(Waystone backingWaystone, @Nullable Component alias) {
+        this(backingWaystone, alias, List.of());
+    }
+
+    public UserDecoratedWaystone(Waystone backingWaystone, @Nullable Component alias, Collection<Identifier> configuredGroups) {
         this.backingWaystone = backingWaystone;
         this.alias = alias;
+        this.configuredGroups = Set.copyOf(configuredGroups);
     }
 
     public Waystone getBackingWaystone() {
@@ -51,6 +56,10 @@ public class UserDecoratedWaystone implements Waystone {
 
     public Optional<Component> getAlias() {
         return Optional.ofNullable(alias);
+    }
+
+    public Set<Identifier> getConfiguredGroups() {
+        return configuredGroups;
     }
 
     @Override
@@ -122,4 +131,12 @@ public class UserDecoratedWaystone implements Waystone {
     public WaystoneVisibility getVisibility() {
         return backingWaystone.getVisibility();
     }
+
+    @Override
+    public Set<Identifier> getWaystoneGroups() {
+        final var groups = new HashSet<>(configuredGroups);
+        groups.addAll(backingWaystone.getWaystoneGroups());
+        return Collections.unmodifiableSet(groups);
+    }
+
 }

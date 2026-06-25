@@ -32,7 +32,7 @@ public record ClientboundKnownWaystonesPacket(Identifier waystoneType, List<User
         final List<Waystone> waystones = List.copyOf(message.waystones);
         if (message.waystoneType.equals(WaystoneKinds.WAYSTONE)) {
             InMemoryWaystonesPlayerStore playerWaystoneData = (InMemoryWaystonesPlayerStore) PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
-            playerWaystoneData.setWaystones(waystones);
+            playerWaystoneData.setWaystones(player, waystones);
         }
 
         WaystonesListReceivedEvent.EVENT.invoker().accept(new WaystonesListReceivedEvent(message.waystoneType, waystones));

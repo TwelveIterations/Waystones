@@ -23,6 +23,8 @@ public class LoginHandler {
             }
 
             WaystoneSyncManager.sendSortingIndex(player);
+            WaystoneSyncManager.ensureDynamicGroups(player);
+            WaystoneSyncManager.sendWaystoneGroups(player);
             WaystoneSyncManager.sendActivatedWaystones(player);
             WaystoneSyncManager.sendWaystonesOfType(WaystoneKinds.WARP_PLATE, player);
             for (Identifier dyedSharestone : WaystoneKinds.SHARESTONES) {

@@ -3,9 +3,15 @@ package net.blay09.mods.waystones.store;
 
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneGroup;
+import net.blay09.mods.waystones.core.WaystoneGroupImpl;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.nbt.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -14,6 +20,12 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     private static final String ACTIVATED_WAYSTONES = "Waystones";
     private static final String SORTING_INDEX = "SortingIndex";
     private static final String ALIASES = "Aliases";
+    private static final String GROUPS = "Groups";
+    private static final String GROUP_REGISTRY = "GroupRegistry";
+    private static final String GROUP_ID = "Id";
+    private static final String GROUP_ICON = "Icon";
+    private static final String GROUP_COLOR = "Color";
+    private static final String GROUP_INBUILT = "Inbuilt";
 
     @Override
     public void activateWaystone(Player player, Waystone waystone) {
@@ -54,18 +66,116 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     }
 
     @Override
-    public Optional<String> getWaystoneAlias(Player player, UUID waystoneUid) {
-        return getAliasesData(getWaystonesData(player)).getString(waystoneUid.toString());
+    public Optional<Component> getWaystoneAlias(Player player, UUID waystoneUid) {
+        final var aliases = getAliasesData(getWaystonesData(player));
+        final var aliasKey = waystoneUid.toString();
+        return aliases.contains(aliasKey) ? readAlias(aliases.get(aliasKey)) : Optional.empty();
     }
 
     @Override
-    public void setWaystoneAlias(Player player, UUID waystoneUid, String alias) {
+    public void setWaystoneAlias(Player player, UUID waystoneUid, @Nullable Component alias) {
         final var aliases = getAliasesData(getWaystonesData(player));
-        if (alias.trim().isEmpty()) {
-            aliases.remove(waystoneUid.toString());
+        if (alias != null) {
+            writeAlias(aliases, waystoneUid, alias);
         } else {
-            aliases.putString(waystoneUid.toString(), alias);
+            aliases.remove(waystoneUid.toString());
         }
+    }
+
+    @Override
+    public Collection<WaystoneGroup> getWaystoneGroupRegistry(Player player) {
+        final var groupRegistry = getGroupRegistryData(getWaystonesData(player));
+        final var groups = new ArrayList<WaystoneGroup>();
+        final var existing = new HashSet<Identifier>();
+        for (final var groupId : groupRegistry.keySet()) {
+            final var group = readGroup(groupRegistry.getCompoundOrEmpty(groupId));
+            if (group != null && existing.add(group.identifier())) {
+                groups.add(group);
+            }
+        }
+        return List.copyOf(groups);
+    }
+
+    @Override
+    public void setWaystoneGroupRegistry(Player player, Collection<WaystoneGroup> groups) {
+        final var groupRegistry = getGroupRegistryData(getWaystonesData(player));
+        for (final var groupId : List.copyOf(groupRegistry.keySet())) {
+            groupRegistry.remove(groupId);
+        }
+        final var normalizedGroups = new LinkedHashMap<Identifier, WaystoneGroup>();
+        for (final var group : groups) {
+            normalizedGroups.putIfAbsent(group.identifier(), group);
+        }
+        for (final var group : normalizedGroups.values()) {
+            writeGroup(groupRegistry, group);
+        }
+    }
+
+    @Override
+    public void addWaystoneGroups(Player player, Collection<WaystoneGroup> groups) {
+        final var groupRegistry = getGroupRegistryData(getWaystonesData(player));
+        for (final var group : groups) {
+            final var existingGroup = readGroup(groupRegistry.getCompoundOrEmpty(group.identifier().toString()));
+            if (existingGroup == null || group.inbuilt() && !existingGroup.inbuilt()) {
+                writeGroup(groupRegistry, group);
+            }
+        }
+    }
+
+    @Override
+    public Set<Identifier> getConfiguredWaystoneGroups(Player player, UUID waystoneUid) {
+        final var groupsByWaystone = getGroupsData(getWaystonesData(player));
+        final var groupsData = groupsByWaystone.getListOrEmpty(waystoneUid.toString());
+        final var configuredGroups = new HashSet<Identifier>();
+        for (final var groupEntry : groupsData) {
+            groupEntry.asString().map(Identifier::tryParse).ifPresent(configuredGroups::add);
+        }
+        return configuredGroups;
+    }
+
+    private static @Nullable WaystoneGroup readGroup(Tag groupEntry) {
+        if (groupEntry instanceof CompoundTag groupData) {
+            final var id = groupData.getString(GROUP_ID).map(Identifier::tryParse).orElse(null);
+            if (id == null) {
+                return null;
+            }
+
+            final var icon = groupData.getString(GROUP_ICON).map(Identifier::tryParse).orElse(id);
+            final var color = groupData.getInt(GROUP_COLOR).orElse(0xFFFFFFFF);
+            final var inbuilt = groupData.getBoolean(GROUP_INBUILT).orElse(false);
+            return new WaystoneGroupImpl(id, icon, color, inbuilt);
+        }
+
+        return null;
+    }
+
+    @Override
+    public void setConfiguredWaystoneGroups(Player player, UUID waystoneUid, Set<Identifier> groupIds) {
+        final var groupsByWaystone = getGroupsData(getWaystonesData(player));
+        writeGroupIds(groupsByWaystone, waystoneUid, groupIds);
+    }
+
+    private static void writeGroupIds(CompoundTag groupsByWaystone, UUID waystoneUid, Collection<Identifier> groupIds) {
+        final var normalizedGroupIds = new LinkedHashSet<>(groupIds);
+        if (normalizedGroupIds.isEmpty()) {
+            groupsByWaystone.remove(waystoneUid.toString());
+            return;
+        }
+
+        final var groupsData = new ListTag();
+        for (final var groupId : normalizedGroupIds) {
+            groupsData.add(StringTag.valueOf(groupId.toString()));
+        }
+        groupsByWaystone.put(waystoneUid.toString(), groupsData);
+    }
+
+    private static void writeGroup(CompoundTag groupRegistry, WaystoneGroup group) {
+        final var groupData = new CompoundTag();
+        groupData.putString(GROUP_ID, group.identifier().toString());
+        groupData.putString(GROUP_ICON, group.icon().toString());
+        groupData.putInt(GROUP_COLOR, group.color());
+        groupData.putBoolean(GROUP_INBUILT, group.inbuilt());
+        groupRegistry.put(group.identifier().toString(), groupData);
     }
 
     @Override
@@ -186,6 +296,31 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
         CompoundTag aliases = data.getCompoundOrEmpty(ALIASES);
         data.put(ALIASES, aliases);
         return aliases;
+    }
+
+    private static Optional<Component> readAlias(@Nullable Tag aliasTag) {
+        if (aliasTag == null) {
+            return Optional.empty();
+        }
+        return ComponentSerialization.CODEC.parse(NbtOps.INSTANCE, aliasTag).result();
+    }
+
+    private static void writeAlias(CompoundTag aliases, UUID waystoneUid, Component alias) {
+        ComponentSerialization.CODEC.encodeStart(NbtOps.INSTANCE, alias)
+                .result()
+                .ifPresent(aliasTag -> aliases.put(waystoneUid.toString(), aliasTag));
+    }
+
+    private static CompoundTag getGroupsData(CompoundTag data) {
+        CompoundTag groups = data.getCompoundOrEmpty(GROUPS);
+        data.put(GROUPS, groups);
+        return groups;
+    }
+
+    private static CompoundTag getGroupRegistryData(CompoundTag data) {
+        CompoundTag groupRegistry = data.getCompoundOrEmpty(GROUP_REGISTRY);
+        data.put(GROUP_REGISTRY, groupRegistry);
+        return groupRegistry;
     }
 
     private static CompoundTag getWaystonesData(Player player) {
