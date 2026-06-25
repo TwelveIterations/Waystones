@@ -16,12 +16,12 @@ public class EditWaystoneButton extends Button {
     private final int visibleRegionStart;
     private final int visibleRegionHeight;
 
-    public EditWaystoneButton(int x, int y, int visibleRegionStart, int visibleRegionHeight, OnPress pressable) {
+    public EditWaystoneButton(int x, int y, int visibleRegionStart, int visibleRegionHeight, Component message, OnPress pressable) {
         super(x,
                 y,
                 18,
                 18,
-                Component.translatable("gui.waystones.waystone_selection.edit_personal_settings"),
+                message,
                 pressable,
                 Button.DEFAULT_NARRATION);
         this.visibleRegionStart = visibleRegionStart;

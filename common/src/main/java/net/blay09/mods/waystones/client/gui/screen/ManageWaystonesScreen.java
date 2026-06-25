@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.client.gui.widget.AbstractWaystoneList;
 import net.blay09.mods.waystones.client.gui.widget.BackToWaystoneSelectionButton;
+import net.blay09.mods.waystones.client.gui.widget.ManageWaystoneGroupsButton;
 import net.blay09.mods.waystones.client.gui.widget.ManageWaystonesList;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
@@ -22,17 +23,19 @@ import java.util.Objects;
 public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
 
     private final WaystoneSelectionScreenBase parent;
+    private final Inventory playerInventory;
 
     public ManageWaystonesScreen(WaystoneSelectionMenu menu, Inventory playerInventory, WaystoneSelectionScreenBase parent) {
         super(menu, playerInventory, Component.translatable("container.waystones.manage_waystones"));
         this.parent = parent;
+        this.playerInventory = playerInventory;
     }
 
     @Override
     protected AbstractWaystoneList<?> createWaystoneList() {
-        return new ManageWaystonesList(leftPos,
+        return new ManageWaystonesList(leftPos + (imageWidth - AbstractWaystoneList.ENTRY_WIDTH) / 2,
                 topPos + HEADER_HEIGHT,
-                imageWidth,
+                AbstractWaystoneList.ENTRY_WIDTH,
                 imageHeight - HEADER_HEIGHT - FOOTER_HEIGHT,
                 this);
     }
@@ -120,6 +123,11 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
                 topPos + HEADER_HEIGHT - 24,
                 _ -> returnToSelection());
         addRenderableWidget(backButton);
+
+        final var manageGroupsButton = new ManageWaystoneGroupsButton(leftPos - 8,
+                topPos + HEADER_HEIGHT,
+                _ -> Minecraft.getInstance().gui.setScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, this)));
+        addRenderableWidget(manageGroupsButton);
     }
 
     @Override

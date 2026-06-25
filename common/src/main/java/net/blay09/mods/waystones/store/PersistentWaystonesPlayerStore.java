@@ -23,9 +23,11 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     private static final String GROUPS = "Groups";
     private static final String GROUP_REGISTRY = "GroupRegistry";
     private static final String GROUP_ID = "Id";
+    private static final String GROUP_NAME = "Name";
     private static final String GROUP_ICON = "Icon";
     private static final String GROUP_COLOR = "Color";
     private static final String GROUP_INBUILT = "Inbuilt";
+    private static final String GROUP_HIDDEN = "Hidden";
 
     @Override
     public void activateWaystone(Player player, Waystone waystone) {
@@ -69,14 +71,14 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     public Optional<Component> getWaystoneAlias(Player player, UUID waystoneUid) {
         final var aliases = getAliasesData(getWaystonesData(player));
         final var aliasKey = waystoneUid.toString();
-        return aliases.contains(aliasKey) ? readAlias(aliases.get(aliasKey)) : Optional.empty();
+        return aliases.contains(aliasKey) ? readComponent(aliases.get(aliasKey)) : Optional.empty();
     }
 
     @Override
     public void setWaystoneAlias(Player player, UUID waystoneUid, @Nullable Component alias) {
         final var aliases = getAliasesData(getWaystonesData(player));
         if (alias != null) {
-            writeAlias(aliases, waystoneUid, alias);
+            writeComponent(aliases, waystoneUid.toString(), alias);
         } else {
             aliases.remove(waystoneUid.toString());
         }
@@ -141,9 +143,11 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
             }
 
             final var icon = groupData.getString(GROUP_ICON).map(Identifier::tryParse).orElse(id);
+            final var name = readComponent(groupData.get(GROUP_NAME)).orElseGet(() -> Component.literal(id.toString()));
             final var color = groupData.getInt(GROUP_COLOR).orElse(0xFFFFFFFF);
             final var inbuilt = groupData.getBoolean(GROUP_INBUILT).orElse(false);
-            return new WaystoneGroupImpl(id, icon, color, inbuilt);
+            final var hidden = groupData.getBoolean(GROUP_HIDDEN).orElse(false);
+            return new WaystoneGroupImpl(id, name, icon, color, inbuilt, hidden);
         }
 
         return null;
@@ -172,9 +176,11 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     private static void writeGroup(CompoundTag groupRegistry, WaystoneGroup group) {
         final var groupData = new CompoundTag();
         groupData.putString(GROUP_ID, group.identifier().toString());
+        writeComponent(groupData, GROUP_NAME, group.name());
         groupData.putString(GROUP_ICON, group.icon().toString());
         groupData.putInt(GROUP_COLOR, group.color());
         groupData.putBoolean(GROUP_INBUILT, group.inbuilt());
+        groupData.putBoolean(GROUP_HIDDEN, group.hidden());
         groupRegistry.put(group.identifier().toString(), groupData);
     }
 
@@ -298,17 +304,17 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
         return aliases;
     }
 
-    private static Optional<Component> readAlias(@Nullable Tag aliasTag) {
-        if (aliasTag == null) {
+    private static Optional<Component> readComponent(@Nullable Tag componentTag) {
+        if (componentTag == null) {
             return Optional.empty();
         }
-        return ComponentSerialization.CODEC.parse(NbtOps.INSTANCE, aliasTag).result();
+        return ComponentSerialization.CODEC.parse(NbtOps.INSTANCE, componentTag).result();
     }
 
-    private static void writeAlias(CompoundTag aliases, UUID waystoneUid, Component alias) {
-        ComponentSerialization.CODEC.encodeStart(NbtOps.INSTANCE, alias)
+    private static void writeComponent(CompoundTag data, String key, Component component) {
+        ComponentSerialization.CODEC.encodeStart(NbtOps.INSTANCE, component)
                 .result()
-                .ifPresent(aliasTag -> aliases.put(waystoneUid.toString(), aliasTag));
+                .ifPresent(componentTag -> data.put(key, componentTag));
     }
 
     private static CompoundTag getGroupsData(CompoundTag data) {

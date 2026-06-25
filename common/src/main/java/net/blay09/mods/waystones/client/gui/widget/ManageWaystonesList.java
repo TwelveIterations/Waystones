@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.client.gui.screen.ManageWaystonesScreen;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -158,6 +159,7 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
                     0,
                     ManageWaystonesList.this.getY(),
                     ManageWaystonesList.this.getHeight(),
+                    Component.translatable("gui.waystones.waystone_selection.edit_personal_settings"),
                     _ -> screen.openPersonalWaystoneSettings(waystone));
             widgets.add(editButton);
 
