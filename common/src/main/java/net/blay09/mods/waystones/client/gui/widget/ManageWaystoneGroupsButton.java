@@ -9,12 +9,12 @@ import net.minecraft.resources.Identifier;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public class ManageWaystonesButton extends Button.Plain {
+public class ManageWaystoneGroupsButton extends Button.Plain {
 
-    private static final Component LABEL = Component.translatable("container.waystones.manage_waystones");
-    private static final Identifier ICON = id("waystone_selection/manage_waystones");
+    private static final Component LABEL = Component.translatable("container.waystones.manage_groups");
+    private static final Identifier ICON = id("waystone_selection/manage_groups");
 
-    public ManageWaystonesButton(int x, int y, OnPress pressable) {
+    public ManageWaystoneGroupsButton(int x, int y, OnPress pressable) {
         super(x, y, 20, 20, Component.empty(), pressable, _ -> LABEL.copy());
     }
 
