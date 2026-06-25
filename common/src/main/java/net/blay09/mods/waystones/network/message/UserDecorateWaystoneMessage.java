@@ -4,11 +4,14 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class UserDecorateWaystoneMessage implements CustomPacketPayload {
@@ -17,20 +20,20 @@ public class UserDecorateWaystoneMessage implements CustomPacketPayload {
             "user_decorate_waystone"));
 
     private final UUID waystoneUid;
-    private final String alias;
+    private final Optional<Component> alias;
 
-    public UserDecorateWaystoneMessage(UUID waystoneUid, String alias) {
+    public UserDecorateWaystoneMessage(UUID waystoneUid, Optional<Component> alias) {
         this.waystoneUid = waystoneUid;
         this.alias = alias;
     }
 
-    public static void encode(FriendlyByteBuf buf, UserDecorateWaystoneMessage message) {
+    public static void encode(RegistryFriendlyByteBuf buf, UserDecorateWaystoneMessage message) {
         buf.writeUUID(message.waystoneUid);
-        buf.writeUtf(message.alias);
+        ComponentSerialization.OPTIONAL_STREAM_CODEC.encode(buf, message.alias);
     }
 
-    public static UserDecorateWaystoneMessage decode(FriendlyByteBuf buf) {
-        return new UserDecorateWaystoneMessage(buf.readUUID(), buf.readUtf(128));
+    public static UserDecorateWaystoneMessage decode(RegistryFriendlyByteBuf buf) {
+        return new UserDecorateWaystoneMessage(buf.readUUID(), ComponentSerialization.OPTIONAL_STREAM_CODEC.decode(buf));
     }
 
     public static void handle(ServerPlayer player, UserDecorateWaystoneMessage message) {
@@ -40,7 +43,7 @@ public class UserDecorateWaystoneMessage implements CustomPacketPayload {
             return;
         }
 
-        PlayerWaystoneManager.setWaystoneAlias(player, waystone.getWaystoneUid(), message.alias);
+        PlayerWaystoneManager.setWaystoneAlias(player, waystone.getWaystoneUid(), message.alias.orElse(null));
         WaystoneSyncManager.sendActivatedWaystones(player);
     }
 

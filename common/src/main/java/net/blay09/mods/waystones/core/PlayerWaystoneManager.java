@@ -50,6 +50,7 @@ public class PlayerWaystoneManager {
 
         if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
             getPlayerWaystoneData(player.level()).activateWaystone(player, waystone);
+            ensureWaystoneGroups(player, waystone);
 
             Balm.getEvents().fireEvent(new WaystoneActivatedEvent(player, waystone));
         }
@@ -105,18 +106,35 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.level()).getWaystones(player);
     }
 
-    public static Optional<String> getWaystoneAlias(Player player, UUID waystoneUid) {
+    public static Optional<Component> getWaystoneAlias(Player player, UUID waystoneUid) {
         return getPlayerWaystoneData(player.level()).getWaystoneAlias(player, waystoneUid);
     }
 
-    public static void setWaystoneAlias(Player player, UUID waystoneUid, String alias) {
+    public static void setWaystoneAlias(Player player, UUID waystoneUid, @Nullable Component alias) {
         getPlayerWaystoneData(player.level()).setWaystoneAlias(player, waystoneUid, alias);
+    }
+
+    public static Set<ResourceLocation> getConfiguredWaystoneGroups(Player player, UUID waystoneUid) {
+        return getPlayerWaystoneData(player.level()).getConfiguredWaystoneGroups(player, waystoneUid);
+    }
+
+    public static void setConfiguredWaystoneGroups(Player player, UUID waystoneUid, Set<ResourceLocation> groupIds) {
+        getPlayerWaystoneData(player.level()).setConfiguredWaystoneGroups(player, waystoneUid, groupIds);
+    }
+
+    public static void ensureWaystoneGroups(Player player, Waystone waystone) {
+        ensureWaystoneGroups(player, WaystoneGroups.getDynamicGroupDefinitions(waystone));
+    }
+
+    public static void ensureWaystoneGroups(Player player, Collection<WaystoneGroup> groups) {
+        getPlayerWaystoneData(player.level()).addWaystoneGroups(player, groups);
     }
 
     public static UserDecoratedWaystone getPlayerDecoratedWaystone(Player player, Waystone waystone) {
         final var backingWaystone = waystone instanceof UserDecoratedWaystone userDecoratedWaystone ? userDecoratedWaystone.getBackingWaystone() : waystone;
-        final Optional<Component> alias = getWaystoneAlias(player, backingWaystone.getWaystoneUid()).map(Component::literal);
-        return new UserDecoratedWaystone(backingWaystone, alias.orElse(null));
+        final var alias = getWaystoneAlias(player, backingWaystone.getWaystoneUid());
+        final var configuredWaystoneGroups = getConfiguredWaystoneGroups(player, backingWaystone.getWaystoneUid());
+        return new UserDecoratedWaystone(backingWaystone, alias.orElse(null), configuredWaystoneGroups);
     }
 
     public static List<UserDecoratedWaystone> getPlayerDecoratedWaystones(Player player, Collection<Waystone> waystones) {

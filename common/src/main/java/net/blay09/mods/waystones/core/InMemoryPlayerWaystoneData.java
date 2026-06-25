@@ -1,8 +1,13 @@
 package net.blay09.mods.waystones.core;
 
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.SetMultimap;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneGroup;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -10,7 +15,9 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     private final List<UUID> sortingIndex = new ArrayList<>();
     private final Map<UUID, Waystone> waystones = new HashMap<>();
     private final Map<ResourceLocation, Long> cooldowns = new HashMap<>();
-    private final Map<UUID, String> aliases = new HashMap<>();
+    private final Map<UUID, Component> aliases = new HashMap<>();
+    private final SetMultimap<UUID, ResourceLocation> waystoneToConfiguredGroups = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final Map<ResourceLocation, WaystoneGroup> groupRegistry = new HashMap<>();
 
     @Override
     public void activateWaystone(Player player, Waystone waystone) {
@@ -55,17 +62,50 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public Optional<String> getWaystoneAlias(Player player, UUID waystoneUid) {
+    public Optional<Component> getWaystoneAlias(Player player, UUID waystoneUid) {
         return Optional.ofNullable(aliases.get(waystoneUid));
     }
 
     @Override
-    public void setWaystoneAlias(Player player, UUID waystoneUid, String alias) {
-        if (alias.trim().isEmpty()) {
-            aliases.remove(waystoneUid);
-        } else {
+    public void setWaystoneAlias(Player player, UUID waystoneUid, @Nullable Component alias) {
+        if (alias != null) {
             aliases.put(waystoneUid, alias);
+        } else {
+            aliases.remove(waystoneUid);
         }
+    }
+
+    @Override
+    public Collection<WaystoneGroup> getWaystoneGroupRegistry(Player player) {
+        return List.copyOf(groupRegistry.values());
+    }
+
+    @Override
+    public void setWaystoneGroupRegistry(Player player, Collection<WaystoneGroup> groups) {
+        groupRegistry.clear();
+        for (final var group : groups) {
+            groupRegistry.put(group.identifier(), group);
+        }
+    }
+
+    @Override
+    public void addWaystoneGroups(Player player, Collection<WaystoneGroup> groups) {
+        for (final var group : groups) {
+            final var existingGroup = groupRegistry.get(group.identifier());
+            if (existingGroup == null || group.inbuilt() && !existingGroup.inbuilt()) {
+                groupRegistry.put(group.identifier(), group);
+            }
+        }
+    }
+
+    @Override
+    public Set<ResourceLocation> getConfiguredWaystoneGroups(Player player, UUID waystoneUid) {
+        return waystoneToConfiguredGroups.get(waystoneUid);
+    }
+
+    @Override
+    public void setConfiguredWaystoneGroups(Player player, UUID waystoneUid, Set<ResourceLocation> configuredGroups) {
+        waystoneToConfiguredGroups.replaceValues(waystoneUid, configuredGroups);
     }
 
     @Override
@@ -114,15 +154,21 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
         this.sortingIndex.addAll(sortingIndex);
     }
 
-    public void setWaystones(Collection<? extends Waystone> waystones) {
+    public void setWaystones(Player player, Collection<? extends Waystone> waystones) {
         this.waystones.clear();
+        aliases.clear();
+        waystoneToConfiguredGroups.clear();
         for (final var waystone : waystones) {
             this.waystones.put(waystone.getWaystoneUid(), waystone);
+            if (waystone instanceof UserDecoratedWaystone userDecoratedWaystone) {
+                userDecoratedWaystone.getAlias().ifPresent(alias -> setWaystoneAlias(player, waystone.getWaystoneUid(), alias));
+                setConfiguredWaystoneGroups(player, userDecoratedWaystone.getWaystoneUid(), userDecoratedWaystone.getConfiguredGroups());
+            }
         }
     }
 
     @Override
     public Optional<Waystone> findWaystoneByName(Player player, String name) {
-        return this.waystones.values().stream().filter(it -> it.getName().getString().equals(name)).findFirst();
+        return this.waystones.values().stream().filter(it -> it.getEffectiveName().getString().equals(name)).findFirst();
     }
 }

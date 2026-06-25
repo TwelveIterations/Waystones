@@ -51,7 +51,7 @@ public class KnownWaystonesMessage implements CustomPacketPayload {
         final List<Waystone> waystones = new ArrayList<>(message.waystones); // backwards compat for event expecting a List
         if (message.type.equals(WaystoneTypes.WAYSTONE)) {
             InMemoryPlayerWaystoneData playerWaystoneData = (InMemoryPlayerWaystoneData) PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
-            playerWaystoneData.setWaystones(message.waystones);
+            playerWaystoneData.setWaystones(player, message.waystones);
         }
 
         Balm.getEvents().fireEvent(new WaystonesListReceivedEvent(message.type, waystones));

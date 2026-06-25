@@ -31,6 +31,7 @@ public class UpdateWaystoneMessage implements CustomPacketPayload {
     }
 
     public static void handle(Player player, UpdateWaystoneMessage message) {
+        PlayerWaystoneManager.setConfiguredWaystoneGroups(player, message.waystone.getWaystoneUid(), message.waystone.getConfiguredGroups());
         WaystoneManagerImpl.get(player.getServer()).updateWaystone(message.waystone);
         Balm.getEvents().fireEvent(new WaystoneUpdateReceivedEvent(message.waystone));
     }

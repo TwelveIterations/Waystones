@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Set;
 import java.util.UUID;
 
 public interface Waystone {
@@ -60,4 +61,8 @@ public interface Waystone {
     boolean isTransient();
 
     WaystoneVisibility getVisibility();
+
+    default Set<ResourceLocation> getWaystoneGroups() {
+        return WaystonesAPI.getDynamicWaystoneGroups(this);
+    }
 }
