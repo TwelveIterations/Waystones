@@ -18,6 +18,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Optional;
+
 import static net.blay09.mods.waystones.Waystones.id;
 
 public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<PersonalWaystoneSettingsMenu> {
@@ -127,7 +129,7 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
             Balm.networking()
                     .sendToServer(new ServerboundPersonalWaystoneSettingsPacket(
                             menu.getWaystone().getWaystoneUid(),
-                            aliasField.getValue()));
+                            aliasField.getValue().trim().isEmpty() ? Optional.empty() : Optional.of(Component.literal(aliasField.getValue()))));
         }
     }
 

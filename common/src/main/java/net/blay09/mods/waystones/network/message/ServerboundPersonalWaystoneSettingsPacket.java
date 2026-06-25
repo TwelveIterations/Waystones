@@ -6,23 +6,25 @@ import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, String alias) implements CustomPacketPayload {
+public record ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, Optional<Component> alias) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<ServerboundPersonalWaystoneSettingsPacket> TYPE = new CustomPacketPayload.Type<>(id("personal_waystone_settings"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundPersonalWaystoneSettingsPacket> STREAM_CODEC = StreamCodec.composite(
             UUIDUtil.STREAM_CODEC,
             ServerboundPersonalWaystoneSettingsPacket::waystoneUid,
-            ByteBufCodecs.STRING_UTF8,
+            ComponentSerialization.OPTIONAL_STREAM_CODEC,
             ServerboundPersonalWaystoneSettingsPacket::alias,
             ServerboundPersonalWaystoneSettingsPacket::new
     );
@@ -35,7 +37,7 @@ public record ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, String
             return;
         }
 
-        PlayerWaystoneManager.setWaystoneAlias(player, waystone.getWaystoneUid(), message.alias);
+        PlayerWaystoneManager.setWaystoneAlias(player, waystone.getWaystoneUid(), message.alias.orElse(null));
         WaystoneSyncManager.sendActivatedWaystones(player);
     }
 

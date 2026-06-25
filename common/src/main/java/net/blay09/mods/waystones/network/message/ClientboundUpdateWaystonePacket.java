@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.api.event.WaystoneUpdateReceivedEvent;
 import net.blay09.mods.waystones.client.WaystonesClient;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -20,6 +21,8 @@ public record ClientboundUpdateWaystonePacket(UserDecoratedWaystone waystone) im
     );
 
     public static void handle(Player player, ClientboundUpdateWaystonePacket message) {
+        message.waystone.getAlias().ifPresent(alias -> PlayerWaystoneManager.setWaystoneAlias(player, message.waystone.getWaystoneUid(), alias));
+        PlayerWaystoneManager.setConfiguredWaystoneGroups(player, message.waystone.getWaystoneUid(), message.waystone.getConfiguredGroups());
         WaystonesClient.getWaystonesStore().updateWaystone(message.waystone);
         WaystoneUpdateReceivedEvent.EVENT.invoker().accept(new WaystoneUpdateReceivedEvent(message.waystone()));
     }

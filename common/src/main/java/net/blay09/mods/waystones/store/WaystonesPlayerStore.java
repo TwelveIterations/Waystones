@@ -1,13 +1,13 @@
 package net.blay09.mods.waystones.store;
 
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.core.UserDecoratedWaystone;
+import net.blay09.mods.waystones.api.WaystoneGroup;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
+import org.jspecify.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public interface WaystonesPlayerStore {
     void activateWaystone(Player player, Waystone waystone);
@@ -17,8 +17,13 @@ public interface WaystonesPlayerStore {
     List<UUID> ensureSortingIndex(Player player, Collection<? extends Waystone> waystones);
     void setSortingIndex(Player player, List<UUID> sortingIndex);
     Collection<Waystone> getWaystones(Player player);
-    Optional<String> getWaystoneAlias(Player player, UUID waystoneUid);
-    void setWaystoneAlias(Player player, UUID waystoneUid, String alias);
+    Optional<Component> getWaystoneAlias(Player player, UUID waystoneUid);
+    void setWaystoneAlias(Player player, UUID waystoneUid, @Nullable Component alias);
+    Collection<WaystoneGroup> getWaystoneGroupRegistry(Player player);
+    void setWaystoneGroupRegistry(Player player, Collection<WaystoneGroup> groups);
+    void addWaystoneGroups(Player player, Collection<WaystoneGroup> groups);
+    Set<Identifier> getConfiguredWaystoneGroups(Player player, UUID waystoneUid);
+    void setConfiguredWaystoneGroups(Player player, UUID waystoneUid, Set<Identifier> groupIds);
     void sortWaystoneAsFirst(Player player, UUID waystoneUid);
     void sortWaystoneAsLast(Player player, UUID waystoneUid);
     void sortWaystoneSwap(Player player, UUID waystoneUid, UUID otherWaystoneUid);
