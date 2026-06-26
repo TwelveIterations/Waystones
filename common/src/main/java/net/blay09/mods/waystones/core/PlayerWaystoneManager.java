@@ -115,6 +115,9 @@ public class PlayerWaystoneManager {
     }
 
     public static void setConfiguredWaystoneGroups(Player player, UUID waystoneUid, Set<Identifier> groupIds) {
+        if (groupIds.contains(WaystoneGroups.FAVORITES.identifier())) {
+            ensureWaystoneGroups(player, List.of(WaystoneGroups.FAVORITES));
+        }
         getPlayerWaystoneData(player.level()).setConfiguredWaystoneGroups(player, waystoneUid, groupIds);
     }
 

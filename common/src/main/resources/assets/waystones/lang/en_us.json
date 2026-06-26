@@ -129,6 +129,7 @@
   "gui.waystones.waystone_settings.manage_modifiers": "Manage Modifiers",
   "gui.waystones.personal_waystone_settings.configure_waystone": "Edit Waystone",
   "gui.waystones.personal_waystone_settings.no_alias": "No alias",
+  "gui.waystones.personal_waystone_settings.favorite": "Favorite",
   "gui.waystones.personal_waystone_settings.no_group": "No Group",
   "gui.waystones.personal_waystone_settings.no_groups_defined": "No groups defined",
   "gui.waystones.personal_waystone_settings.save": "Save",
