@@ -11,7 +11,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -83,8 +82,8 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         y += 24;
 
         final var modifierSprites = new WidgetSprites(
-                ResourceLocation.withDefaultNamespace("waystones/modifier_button"),
-                ResourceLocation.withDefaultNamespace("waystones/modifier_button_highlighted"));
+                id("edit_waystone/modifier_button"),
+                id("edit_waystone/modifier_button_highlighted"));
         modifierButton = new ImageButton(20,
                 20,
                 modifierSprites,

@@ -7,25 +7,26 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 import java.util.Locale;
 
+import static net.blay09.mods.waystones.Waystones.id;
+
 public class WaystoneVisbilityButton extends Button {
 
     private final WidgetSprites ACTIVATION_SPRITES = new WidgetSprites(
-            ResourceLocation.withDefaultNamespace("waystones/visibility_button_activation"),
-            ResourceLocation.withDefaultNamespace("waystones/visibility_button_activation_highlighted"));
+            id("edit_waystone/visibility/visibility_button_activation"),
+            id("edit_waystone/visibility/visibility_button_activation_highlighted"));
     private final WidgetSprites GLOBAL_SPRITES = new WidgetSprites(
-            ResourceLocation.withDefaultNamespace("waystones/visibility_button_global"),
-            ResourceLocation.withDefaultNamespace("waystones/visibility_button_global_highlighted"));
+            id("edit_waystone/visibility/visibility_button_global"),
+            id("edit_waystone/visibility/visibility_button_global_highlighted"));
     private final WidgetSprites SHARD_ONLY_SPRITES = new WidgetSprites(
-            ResourceLocation.withDefaultNamespace("waystones/visibility_button_shard_only"),
-            ResourceLocation.withDefaultNamespace("waystones/visibility_button_shard_only_highlighted"));
+            id("edit_waystone/visibility/visibility_button_shard_only"),
+            id("edit_waystone/visibility/visibility_button_shard_only_highlighted"));
     private final WidgetSprites SHARESTONE_SPRITES = new WidgetSprites(
-            ResourceLocation.withDefaultNamespace("waystones/visibility_button_sharestone"),
-            ResourceLocation.withDefaultNamespace("waystones/visibility_button_sharestone_highlighted"));
+            id("edit_waystone/visibility/visibility_button_sharestone"),
+            id("edit_waystone/visibility/visibility_button_sharestone_highlighted"));
 
     private final List<WaystoneVisibility> options;
     private final boolean canEdit;
