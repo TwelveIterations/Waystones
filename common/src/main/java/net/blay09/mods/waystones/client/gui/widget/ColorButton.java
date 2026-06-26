@@ -9,7 +9,23 @@ import net.minecraft.world.item.DyeColor;
 
 public class ColorButton extends Button {
 
-    private static final DyeColor[] COLORS = DyeColor.values();
+    private static final DyeColor[] COLORS = {
+            DyeColor.WHITE,
+            DyeColor.ORANGE,
+            DyeColor.MAGENTA,
+            DyeColor.LIGHT_BLUE,
+            DyeColor.YELLOW,
+            DyeColor.LIME,
+            DyeColor.PINK,
+            DyeColor.GRAY,
+            DyeColor.LIGHT_GRAY,
+            DyeColor.CYAN,
+            DyeColor.PURPLE,
+            DyeColor.BLUE,
+            DyeColor.BROWN,
+            DyeColor.GREEN,
+            DyeColor.RED
+    };
     private DyeColor color;
 
     public ColorButton(int x, int y, int color) {
@@ -27,12 +43,12 @@ public class ColorButton extends Button {
     }
 
     private void cycleColor() {
-        color = COLORS[(color.ordinal() + 1) % COLORS.length];
+        color = COLORS[(indexOf(color) + 1) % COLORS.length];
         updateTooltip();
     }
 
     private void cycleColorBackwards() {
-        color = COLORS[(color.ordinal() + COLORS.length - 1) % COLORS.length];
+        color = COLORS[(indexOf(color) + COLORS.length - 1) % COLORS.length];
         updateTooltip();
     }
 
@@ -70,5 +86,15 @@ public class ColorButton extends Button {
         }
 
         return DyeColor.WHITE;
+    }
+
+    private static int indexOf(DyeColor color) {
+        for (int i = 0; i < COLORS.length; i++) {
+            if (COLORS[i] == color) {
+                return i;
+            }
+        }
+
+        return 0;
     }
 }
