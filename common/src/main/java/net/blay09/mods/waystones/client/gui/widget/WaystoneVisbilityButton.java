@@ -14,20 +14,22 @@ import net.minecraft.resources.Identifier;
 import java.util.List;
 import java.util.Locale;
 
+import static net.blay09.mods.waystones.Waystones.id;
+
 public class WaystoneVisbilityButton extends Button {
 
     private final WidgetSprites ACTIVATION_SPRITES = new WidgetSprites(
-            Identifier.withDefaultNamespace("waystones/visibility_activation_button"),
-            Identifier.withDefaultNamespace("waystones/visibility_activation_button_highlighted"));
+            id("edit_waystone/visibility/visibility_activation_button"),
+            id("edit_waystone/visibility/visibility_activation_button_highlighted"));
     private final WidgetSprites GLOBAL_SPRITES = new WidgetSprites(
-            Identifier.withDefaultNamespace("waystones/visibility_global_button"),
-            Identifier.withDefaultNamespace("waystones/visibility_global_button_highlighted"));
+            id("edit_waystone/visibility/visibility_global_button"),
+            id("edit_waystone/visibility/visibility_global_button_highlighted"));
     private final WidgetSprites SHARD_ONLY_SPRITES = new WidgetSprites(
-            Identifier.withDefaultNamespace("waystones/visibility_shard_only_button"),
-            Identifier.withDefaultNamespace("waystones/visibility_shard_only_button_highlighted"));
+            id("edit_waystone/visibility/visibility_shard_only_button"),
+            id("edit_waystone/visibility/visibility_shard_only_button_highlighted"));
     private final WidgetSprites SHARESTONE_SPRITES = new WidgetSprites(
-            Identifier.withDefaultNamespace("waystones/visibility_sharestones_button"),
-            Identifier.withDefaultNamespace("waystones/visibility_sharestones_button_highlighted"));
+            id("edit_waystone/visibility/visibility_sharestones_button"),
+            id("edit_waystone/visibility/visibility_sharestones_button_highlighted"));
 
     private final List<WaystoneVisibility> options;
     private final boolean canEdit;

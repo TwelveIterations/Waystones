@@ -17,7 +17,7 @@ import static net.blay09.mods.waystones.Waystones.id;
 
 public class RemoveWaystoneButton extends Button {
 
-    private static final Identifier SPRITE = id("waystone_selection/delete");
+    private static final Identifier SPRITE = id("widgets/delete");
 
     private final Tooltip tooltip;
     private final Tooltip activeTooltip;
