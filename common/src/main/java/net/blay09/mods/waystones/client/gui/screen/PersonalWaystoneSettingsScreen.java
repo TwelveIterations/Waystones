@@ -1,6 +1,10 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.balm.Balm;
+import net.blay09.mods.waystones.api.WaystoneGroup;
+import net.blay09.mods.waystones.api.WaystoneGroups;
+import net.blay09.mods.waystones.client.gui.widget.WaystoneGroupButton;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.PersonalWaystoneSettingsMenu;
 import net.blay09.mods.waystones.network.message.ServerboundPersonalWaystoneSettingsPacket;
 import net.blay09.mods.waystones.network.message.ServerboundRequestEditWaystonePacket;
@@ -15,16 +19,22 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import org.jspecify.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
 public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<PersonalWaystoneSettingsMenu> {
 
     private @Nullable EditBox aliasField;
+    private @Nullable WaystoneGroupButton groupButton;
+    private List<WaystoneGroup> groups = List.of();
+    private @Nullable WaystoneGroup selectedGroup;
 
     public PersonalWaystoneSettingsScreen(PersonalWaystoneSettingsMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, 176, 210);
@@ -37,9 +47,17 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
 
         final var currentAlias = menu.getAlias() != null ? menu.getAlias().getString() : "";
         final var oldAliasText = aliasField != null ? aliasField.getValue() : currentAlias;
+        final var oldSelectedGroup = selectedGroup;
         final var y = topPos + titleLabelY + 16;
         final var canEditWaystone = isWaystoneInRange();
         final var aliasFieldWidth = canEditWaystone ? 150 : 176;
+        groups = WaystoneGroups.sorted(PlayerWaystoneManager.getWaystoneGroupRegistry(minecraft.player))
+                .stream()
+                .filter(group -> !group.inbuilt() && !group.hidden())
+                .toList();
+        selectedGroup = groupButton != null
+                ? getStillAvailableGroup(oldSelectedGroup)
+                : getSelectedGroup();
 
         aliasField = new EditBox(Minecraft.getInstance().font, leftPos, y + 1, aliasFieldWidth, 19, aliasField, Component.empty());
         aliasField.setMaxLength(128);
@@ -66,6 +84,16 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
             editButton.setTooltip(Tooltip.create(editButtonLabel));
             addRenderableWidget(editButton);
         }
+
+        final var emptyGroupLabel = Component.translatable("gui.waystones.personal_waystone_settings.no_group");
+        groupButton = new WaystoneGroupButton(leftPos,
+                y + 26,
+                176,
+                selectedGroup,
+                emptyGroupLabel,
+                _ -> cycleGroup(1),
+                _ -> cycleGroup(-1));
+        addRenderableWidget(groupButton);
 
         final var saveButton = Button.builder(
                         Component.translatable("gui.waystones.personal_waystone_settings.save"),
@@ -125,12 +153,46 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
 
     private void savePersonalWaystoneSettings() {
         final var currentAlias = menu.getAlias() != null ? menu.getAlias().getString() : "";
-        if (aliasField != null && !aliasField.getValue().equals(currentAlias)) {
+        final var selectedGroupIds = selectedGroup != null ? Set.of(selectedGroup.identifier()) : Set.<Identifier>of();
+        if (aliasField != null && (!aliasField.getValue().equals(currentAlias) || !selectedGroupIds.equals(menu.getConfiguredGroups()))) {
             Balm.networking()
                     .sendToServer(new ServerboundPersonalWaystoneSettingsPacket(
                             menu.getWaystone().getWaystoneUid(),
-                            aliasField.getValue().trim().isEmpty() ? Optional.empty() : Optional.of(Component.literal(aliasField.getValue()))));
+                            aliasField.getValue().trim().isEmpty() ? Optional.empty() : Optional.of(Component.literal(aliasField.getValue())),
+                            Optional.ofNullable(selectedGroup).map(WaystoneGroup::identifier)));
         }
+    }
+
+    private void cycleGroup(int direction) {
+        if (groups.isEmpty()) {
+            selectedGroup = null;
+            return;
+        }
+
+        final var currentGroupId = selectedGroup != null ? selectedGroup.identifier() : null;
+        final int currentIndex = currentGroupId != null ? WaystoneGroups.indexOfGroup(groups, currentGroupId) : -1;
+        final int nextIndex;
+        if (direction > 0) {
+            nextIndex = currentIndex + 1 < groups.size() ? currentIndex + 1 : -1;
+        } else {
+            nextIndex = currentIndex == -1 ? groups.size() - 1 : currentIndex - 1;
+        }
+        selectedGroup = nextIndex == -1 ? null : groups.get(nextIndex);
+        if (groupButton != null) {
+            groupButton.setGroup(selectedGroup, Component.translatable("gui.waystones.personal_waystone_settings.no_group"));
+        }
+    }
+
+    private @Nullable WaystoneGroup getStillAvailableGroup(@Nullable WaystoneGroup group) {
+        return group != null && WaystoneGroups.indexOfGroup(groups, group) != -1 ? group : null;
+    }
+
+    private @Nullable WaystoneGroup getSelectedGroup() {
+        final var configuredGroups = menu.getConfiguredGroups();
+        return groups.stream()
+                .filter(group -> configuredGroups.contains(group.identifier()))
+                .findFirst()
+                .orElse(null);
     }
 
     private boolean isWaystoneInRange() {
