@@ -12,7 +12,7 @@ import static net.blay09.mods.waystones.Waystones.id;
 public class BackToWaystoneSelectionButton extends Button.Plain {
 
     private static final Component LABEL = Component.translatable("gui.waystones.waystone_selection.back");
-    private static final Identifier ICON = id("waystone_selection/back");
+    private static final Identifier ICON = id("widgets/back");
 
     public BackToWaystoneSelectionButton(int x, int y, OnPress pressable) {
         super(x, y, 20, 20, Component.empty(), pressable, _ -> LABEL.copy());

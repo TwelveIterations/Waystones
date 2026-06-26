@@ -1,9 +1,0 @@
-{
-  "sources": [
-    {
-      "type": "directory",
-      "source": "waystones_gui",
-      "prefix": "waystones/"
-    }
-  ]
-}

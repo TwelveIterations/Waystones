@@ -82,8 +82,8 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         y += 25;
 
         final var modifierSprites = new WidgetSprites(
-                Identifier.withDefaultNamespace("waystones/modifier_button"),
-                Identifier.withDefaultNamespace("waystones/modifier_button_highlighted"));
+                id("edit_waystone/modifier_button"),
+                id("edit_waystone/modifier_button_highlighted"));
         modifierButton = new ImageButton(21,
                 21,
                 modifierSprites,

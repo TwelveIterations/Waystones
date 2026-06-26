@@ -42,7 +42,7 @@ import static net.blay09.mods.waystones.Waystones.id;
 
 public abstract class WaystoneSelectionScreenBase extends AbstractContainerScreen<WaystoneSelectionMenu> {
 
-    private static final Identifier EDIT_ICON = id("waystone_selection/edit");
+    private static final Identifier EDIT_ICON = id("widgets/edit");
 
     protected final Collection<UserDecoratedWaystone> waystones;
     private final Inventory playerInventory;

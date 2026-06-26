@@ -11,8 +11,8 @@ import static net.blay09.mods.waystones.Waystones.id;
 
 public class DragHandleButton extends Button {
 
-    private static final Identifier ICON = id("waystone_selection/drag_handle");
-    private static final Identifier HIGHLIGHTED_ICON = id("waystone_selection/drag_handle_highlighted");
+    private static final Identifier ICON = id("widgets/drag_handle");
+    private static final Identifier HIGHLIGHTED_ICON = id("widgets/drag_handle_highlighted");
 
     private final ListDragController list;
     private final Object entry;
