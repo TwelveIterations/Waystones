@@ -95,7 +95,7 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
         final var emptyGroupLabel = getEmptyGroupLabel();
         groupButton = new WaystoneGroupButton(leftPos,
                 y + 26,
-                176 - MARGIN - MANAGE_GROUPS_BUTTON_WIDTH,
+                172 - MARGIN - MANAGE_GROUPS_BUTTON_WIDTH,
                 selectedGroup,
                 emptyGroupLabel,
                 button -> cycleGroup(1),

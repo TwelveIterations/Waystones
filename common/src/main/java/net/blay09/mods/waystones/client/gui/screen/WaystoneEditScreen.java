@@ -59,7 +59,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
             setInitialFocus(nameField);
         }
 
-        final var aliasButtonLabel = Component.translatable("gui.waystones.waystone_settings.configure_alias");
+        final var aliasButtonLabel = Component.translatable("gui.waystones.waystone_settings.personal_settings");
         final var aliasButtonSprites = new WidgetSprites(
                 id("widgets/alias_button"),
                 id("widgets/alias_button_highlighted"));
