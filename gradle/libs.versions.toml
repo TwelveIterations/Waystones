@@ -6,7 +6,7 @@ neoForge = "26.2.0.0-beta"
 forge = "63.0.2"
 fabricApi = "0.152.1+26.2"
 fabricLoader = "0.19.3"
-journeyMapApi = "2.0.0-26.1-SNAPSHOT"
+journeyMapApi = "26.2-2.0.0"
 unbreakables = "26.1.0.2"
 shogi = "26.2.0.1-SNAPSHOT"
 
