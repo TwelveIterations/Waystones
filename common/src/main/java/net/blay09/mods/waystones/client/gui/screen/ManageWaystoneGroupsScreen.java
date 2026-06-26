@@ -17,11 +17,13 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -29,7 +31,7 @@ import java.util.*;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<WaystoneSelectionMenu> {
+public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<AbstractContainerMenu> {
 
     private static final ResourceLocation EDIT_ICON = id("widgets/edit");
 
@@ -39,7 +41,7 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Waystone
     private static final int CREATE_BUTTON_WIDTH = 20;
     private static final int MARGIN = 2;
 
-    private final ManageWaystonesScreen parent;
+    private final Screen parent;
     private final Inventory playerInventory;
     private final List<WaystoneGroup> groups;
     private List<WaystoneGroup> filteredGroups;
@@ -49,7 +51,7 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Waystone
     private @Nullable EditBox searchBox;
     private boolean isLocationHeaderHovered;
 
-    public ManageWaystoneGroupsScreen(WaystoneSelectionMenu menu, Inventory playerInventory, ManageWaystonesScreen parent) {
+    public ManageWaystoneGroupsScreen(AbstractContainerMenu menu, Inventory playerInventory, Screen parent) {
         super(menu, playerInventory, Component.translatable("container.waystones.manage_groups"));
         imageWidth = 270;
         imageHeight = 200;
@@ -122,8 +124,9 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Waystone
 
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        if (isLocationHeaderHovered && menu.getWaystoneFrom() != null) {
-            Balm.getNetworking().sendToServer(new RequestEditWaystoneMessage(menu.getWaystoneFrom().getPos()));
+        final var fromWaystone = getWaystoneFrom();
+        if (isLocationHeaderHovered && fromWaystone != null) {
+            Balm.getNetworking().sendToServer(new RequestEditWaystoneMessage(fromWaystone.getPos()));
             return true;
         }
 
@@ -132,7 +135,7 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Waystone
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        Waystone fromWaystone = menu.getWaystoneFrom();
+        Waystone fromWaystone = getWaystoneFrom();
         final int locationHeaderY = 20;
         guiGraphics.drawCenteredString(font, getTitle(), imageWidth / 2, fromWaystone != null ? 0 : locationHeaderY, 0xFFFFFFFF);
         if (fromWaystone != null) {
@@ -292,5 +295,9 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Waystone
 
     void returnFromEdit() {
         Minecraft.getInstance().setScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, parent));
+    }
+
+    private @Nullable Waystone getWaystoneFrom() {
+        return menu instanceof WaystoneSelectionMenu waystoneSelectionMenu ? waystoneSelectionMenu.getWaystoneFrom() : null;
     }
 }
