@@ -57,6 +57,7 @@ public class WaystoneGroupEditScreen extends AbstractContainerScreen<WaystoneSel
         nameField = new EditBox(Minecraft.getInstance().font, leftPos, y + 1, 176, 19, nameField, Component.empty());
         nameField.setMaxLength(128);
         nameField.setValue(oldNameText);
+        updateNameFieldColor();
         addRenderableWidget(nameField);
         setInitialFocus(nameField);
         y += 28;
@@ -85,7 +86,9 @@ public class WaystoneGroupEditScreen extends AbstractContainerScreen<WaystoneSel
             return true;
         }
 
-        return super.mouseClicked(event, doubleClick);
+        final var result = super.mouseClicked(event, doubleClick);
+        updateNameFieldColor();
+        return result;
     }
 
     @Override
@@ -152,6 +155,13 @@ public class WaystoneGroupEditScreen extends AbstractContainerScreen<WaystoneSel
     private int getInitialColor() {
         final var existingGroup = findExistingGroup();
         return existingGroup != null ? existingGroup.color() : ColorButton.toArgb(DyeColor.WHITE);
+    }
+
+    private void updateNameFieldColor() {
+        if (nameField != null) {
+            final var color = colorButton != null ? colorButton.getColor() : getInitialColor();
+            nameField.setTextColor(color);
+        }
     }
 
     private Identifier getInitialIcon() {
