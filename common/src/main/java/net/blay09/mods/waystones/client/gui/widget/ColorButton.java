@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.client.gui.widget;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.DyeColor;
 
@@ -30,8 +31,23 @@ public class ColorButton extends Button {
         updateTooltip();
     }
 
+    private void cycleColorBackwards() {
+        color = COLORS[(color.ordinal() + COLORS.length - 1) % COLORS.length];
+        updateTooltip();
+    }
+
     private void updateTooltip() {
         setTooltip(Tooltip.create(getColorName()));
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (event.button() == 1 && active && visible && isMouseOver(event.x(), event.y())) {
+            cycleColorBackwards();
+            return true;
+        }
+
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
