@@ -10,7 +10,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesList.WaystoneEntry> {
+public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesList.WaystoneEntry> implements ListDragController {
 
     private static final int MARGIN = 2;
     private static final int DRAG_HANDLE_WIDTH = 16;
@@ -40,12 +40,17 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
         return new WaystoneEntry(waystone);
     }
 
-    public void startDragging(WaystoneEntry entry, double mouseY) {
-        draggedEntry = entry;
+    @Override
+    public void startDragging(Object entry, double mouseY) {
+        if (!(entry instanceof WaystoneEntry waystoneEntry)) {
+            return;
+        }
+        draggedEntry = waystoneEntry;
         dragMouseY = mouseY;
-        dragGrabOffsetY = mouseY - entry.getY();
+        dragGrabOffsetY = mouseY - waystoneEntry.getY();
     }
 
+    @Override
     public void dragTo(double mouseY) {
         if (draggedEntry == null) {
             return;
@@ -81,18 +86,23 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
         }
     }
 
+    @Override
     public void stopDragging() {
         draggedEntry = null;
     }
 
-    public void moveToTop(WaystoneEntry entry) {
-        final int currentIndex = children().indexOf(entry);
+    @Override
+    public void moveToTop(Object entry) {
+        if (!(entry instanceof WaystoneEntry waystoneEntry)) {
+            return;
+        }
+        final int currentIndex = children().indexOf(waystoneEntry);
         final int targetIndex = 0;
         if (currentIndex == -1 || currentIndex == targetIndex) {
             return;
         }
 
-        screen.moveWaystoneToTop(entry.waystone);
+        screen.moveWaystoneToTop(waystoneEntry.waystone);
 
         int index = currentIndex;
         while (index != targetIndex) {
@@ -101,14 +111,18 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
         }
     }
 
-    public void moveToBottom(WaystoneEntry entry) {
-        final int currentIndex = children().indexOf(entry);
+    @Override
+    public void moveToBottom(Object entry) {
+        if (!(entry instanceof WaystoneEntry waystoneEntry)) {
+            return;
+        }
+        final int currentIndex = children().indexOf(waystoneEntry);
         final int targetIndex = children().size() - 1;
         if (currentIndex == -1 || currentIndex == targetIndex) {
             return;
         }
 
-        screen.moveWaystoneToBottom(entry.waystone);
+        screen.moveWaystoneToBottom(waystoneEntry.waystone);
 
         int index = currentIndex;
         while (index != targetIndex) {
@@ -117,7 +131,8 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
         }
     }
 
-    public boolean isDragging(WaystoneEntry entry) {
+    @Override
+    public boolean isDragging(Object entry) {
         return draggedEntry == entry;
     }
 
