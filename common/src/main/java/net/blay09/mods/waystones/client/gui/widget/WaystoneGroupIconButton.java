@@ -38,7 +38,8 @@ public class WaystoneGroupIconButton extends Button {
     }
 
     private void updateTooltip() {
-        setTooltip(Tooltip.create(Component.translatable("waystones." + icon.getPath().replace('/', '.'))));
+        final var iconName = Component.translatable("waystones." + icon.getPath().replace('/', '.'));
+        setTooltip(Tooltip.create(Component.translatable("gui.waystones.group_settings.icon", iconName)));
     }
 
     @Override

@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.WaystoneGroup;
 import net.blay09.mods.waystones.api.WaystoneGroups;
 import net.blay09.mods.waystones.client.gui.widget.ColorButton;
+import net.blay09.mods.waystones.client.gui.widget.GroupColor;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneGroupIconButton;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneGroupImpl;
@@ -17,7 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -158,7 +158,7 @@ public class WaystoneGroupEditScreen extends AbstractContainerScreen<AbstractCon
 
     private int getInitialColor() {
         final var existingGroup = findExistingGroup();
-        return existingGroup != null ? existingGroup.color() : ColorButton.toArgb(DyeColor.WHITE);
+        return existingGroup != null ? existingGroup.color() : GroupColor.WHITE.toArgb();
     }
 
     private void updateNameFieldColor() {
