@@ -4,16 +4,21 @@ import net.blay09.mods.waystones.api.WaystoneGroup;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
 
 public class ManageWaystoneGroupButton extends Button.Plain {
 
     private final WaystoneGroup group;
 
     public ManageWaystoneGroupButton(int width, WaystoneGroup group) {
-        super(0, 0, width, 20, group.name(), _ -> {
+        super(0, 0, width, 20, coloredGroupName(group), _ -> {
         }, Button.DEFAULT_NARRATION);
         this.group = group;
         active = false;
+    }
+
+    private static Component coloredGroupName(WaystoneGroup group) {
+        return group.name().copy().withColor(group.color() & 0x00FFFFFF);
     }
 
     @Override
