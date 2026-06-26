@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.api.WaystoneGroups;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -32,8 +33,24 @@ public class WaystoneGroupIconButton extends Button {
         updateTooltip();
     }
 
+    private void cycleIconBackwards() {
+        final var currentIndex = PRESET_ICONS.indexOf(icon);
+        icon = PRESET_ICONS.get(currentIndex <= 0 ? PRESET_ICONS.size() - 1 : currentIndex - 1);
+        updateTooltip();
+    }
+
     private void updateTooltip() {
         setTooltip(Tooltip.create(Component.translatable("waystones." + icon.getPath().replace('/', '.'))));
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (event.button() == 1 && active && visible && isMouseOver(event.x(), event.y())) {
+            cycleIconBackwards();
+            return true;
+        }
+
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
