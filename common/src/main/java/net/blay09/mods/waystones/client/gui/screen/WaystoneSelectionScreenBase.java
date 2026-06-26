@@ -189,7 +189,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         }
 
         final var shownGroups = new ArrayList<WaystoneGroup>();
-        final var groupRegistry = PlayerWaystoneManager.getPlayerWaystoneData(playerInventory.player.level()).getWaystoneGroupRegistry(playerInventory.player);
+        final var groupRegistry = PlayerWaystoneManager.getWaystoneGroupRegistry(playerInventory.player);
         for (final var group : groupRegistry) {
             if (!group.hidden() && nonEmptyGroups.contains(group.identifier())) {
                 shownGroups.add(group);

@@ -135,8 +135,8 @@ public class WaystoneGroupEditScreen extends AbstractContainerScreen<WaystoneSel
                 : Component.literal(name);
 
         final var store = PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
-        final var groups = new ArrayList<>(store.getWaystoneGroupRegistry(playerInventory.player));
-        final int existingGroupIndex = indexOfGroup(groups, groupId);
+        final var groups = new ArrayList<>(PlayerWaystoneManager.getWaystoneGroupRegistry(playerInventory.player));
+        final int existingGroupIndex = WaystoneGroups.indexOfGroup(groups, groupId);
         final var existingGroup = existingGroupIndex != -1 ? groups.get(existingGroupIndex) : null;
         final var color = colorButton != null ? colorButton.getColor() : getInitialColor();
         final var icon = iconButton != null ? iconButton.getIcon() : getInitialIcon();
@@ -170,24 +170,7 @@ public class WaystoneGroupEditScreen extends AbstractContainerScreen<WaystoneSel
     }
 
     private @Nullable WaystoneGroup findExistingGroup() {
-        final var store = PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
-        for (final var it : store.getWaystoneGroupRegistry(playerInventory.player)) {
-            if (it.identifier().equals(groupId)) {
-                return it;
-            }
-        }
-
-        return null;
-    }
-
-    private static int indexOfGroup(ArrayList<WaystoneGroup> groups, Identifier groupId) {
-        for (int i = 0; i < groups.size(); i++) {
-            if (groups.get(i).identifier().equals(groupId)) {
-                return i;
-            }
-        }
-
-        return -1;
+        return WaystoneGroups.findGroup(PlayerWaystoneManager.getWaystoneGroupRegistry(playerInventory.player), groupId).orElse(null);
     }
 
 }
