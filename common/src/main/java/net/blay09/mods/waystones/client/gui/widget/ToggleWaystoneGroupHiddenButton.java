@@ -10,8 +10,8 @@ import static net.blay09.mods.waystones.Waystones.id;
 
 public class ToggleWaystoneGroupHiddenButton extends Button {
 
-    private static final ResourceLocation VISIBLE_SPRITE = id("edit_waystone/visibility/visibility_button_global");
-    private static final ResourceLocation HIDDEN_SPRITE = id("edit_waystone/visibility/visibility_button_activation");
+    private static final ResourceLocation VISIBLE_SPRITE = id("widgets/shown");
+    private static final ResourceLocation HIDDEN_SPRITE = id("widgets/hidden");
 
     private final boolean hidden;
     private final int visibleRegionStart;
