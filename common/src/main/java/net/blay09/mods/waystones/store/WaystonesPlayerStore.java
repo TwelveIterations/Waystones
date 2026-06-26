@@ -22,6 +22,9 @@ public interface WaystonesPlayerStore {
     Collection<WaystoneGroup> getWaystoneGroupRegistry(Player player);
     void setWaystoneGroupRegistry(Player player, Collection<WaystoneGroup> groups);
     void addWaystoneGroups(Player player, Collection<WaystoneGroup> groups);
+    void sortWaystoneGroupAsFirst(Player player, Identifier groupId);
+    void sortWaystoneGroupAsLast(Player player, Identifier groupId);
+    void sortWaystoneGroupSwap(Player player, Identifier groupId, Identifier otherGroupId);
     Set<Identifier> getConfiguredWaystoneGroups(Player player, UUID waystoneUid);
     void setConfiguredWaystoneGroups(Player player, UUID waystoneUid, Set<Identifier> groupIds);
     void sortWaystoneAsFirst(Player player, UUID waystoneUid);

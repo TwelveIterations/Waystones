@@ -138,8 +138,8 @@ public class WaystoneGroupEditScreen extends AbstractContainerScreen<WaystoneSel
         final var color = colorButton != null ? colorButton.getColor() : getInitialColor();
         final var icon = iconButton != null ? iconButton.getIcon() : getInitialIcon();
         final var group = existingGroup != null
-                ? new WaystoneGroupImpl(groupId, groupName, icon, color, existingGroup.inbuilt(), existingGroup.hidden())
-                : new WaystoneGroupImpl(groupId, groupName, icon, color, false, false);
+                ? new WaystoneGroupImpl(groupId, groupName, icon, color, existingGroup.inbuilt(), existingGroup.hidden(), existingGroup.sortIndex())
+                : new WaystoneGroupImpl(groupId, groupName, icon, color, false, false, groups.size());
         groups.add(group);
         store.setWaystoneGroupRegistry(playerInventory.player, groups);
         Balm.networking().sendToServer(new ServerboundEditWaystoneGroupPacket(groupId, name, group.icon(), group.color(), group.hidden()));

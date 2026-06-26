@@ -37,13 +37,23 @@ public final class WaystoneGroups {
             VILLAGES_ICON,
             GLOBAL_ICON);
 
+    public static final WaystoneGroup FAVORITES = new WaystoneGroupImpl(
+            id("favorites"),
+            Component.translatable("waystones.groups.favorites"),
+            FAVORITES_ICON,
+            0xFFF5C542,
+            true,
+            false,
+            -2);
+
     public static final WaystoneGroup GLOBAL = new WaystoneGroupImpl(
             id("global"),
             Component.translatable("waystones.groups.global"),
             GLOBAL_ICON,
             0xFFF5C542,
             true,
-            false);
+            false,
+            -1);
 
     private WaystoneGroups() {
     }
@@ -52,7 +62,7 @@ public final class WaystoneGroups {
         final var location = dimension.identifier();
         final var identifier = id("dimension/" + location.getNamespace() + "/" + location.getPath());
         final var name = Component.translatable("waystones.groups." + identifier.getPath().replace('/', '.'));
-        return new WaystoneGroupImpl(identifier, name, getDimensionIcon(dimension), 0xFF6DB4FF, true, false);
+        return new WaystoneGroupImpl(identifier, name, getDimensionIcon(dimension), 0xFF6DB4FF, true, false, 0);
     }
 
     private static Identifier getDimensionIcon(ResourceKey<Level> dimension) {

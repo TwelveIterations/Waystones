@@ -8,7 +8,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 
-public record WaystoneGroupImpl(Identifier identifier, Component name, Identifier icon, int color, boolean inbuilt, boolean hidden) implements WaystoneGroup {
+public record WaystoneGroupImpl(Identifier identifier, Component name, Identifier icon, int color, boolean inbuilt, boolean hidden, int sortIndex) implements WaystoneGroup {
     public static final StreamCodec<RegistryFriendlyByteBuf, WaystoneGroup> STREAM_CODEC = StreamCodec.composite(
             Identifier.STREAM_CODEC,
             WaystoneGroup::identifier,
@@ -22,6 +22,8 @@ public record WaystoneGroupImpl(Identifier identifier, Component name, Identifie
             WaystoneGroup::inbuilt,
             ByteBufCodecs.BOOL,
             WaystoneGroup::hidden,
+            ByteBufCodecs.INT,
+            WaystoneGroup::sortIndex,
             WaystoneGroupImpl::new
     );
 }
