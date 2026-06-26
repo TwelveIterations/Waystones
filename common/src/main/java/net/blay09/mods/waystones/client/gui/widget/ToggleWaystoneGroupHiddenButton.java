@@ -7,12 +7,14 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
+import static net.blay09.mods.waystones.Waystones.id;
+
 public class ToggleWaystoneGroupHiddenButton extends Button {
 
-    private static final Identifier VISIBLE_SPRITE = Identifier.withDefaultNamespace("waystones/visibility_global_button");
-    private static final Identifier HIDDEN_SPRITE = Identifier.withDefaultNamespace("waystones/visibility_activation_button");
+    private static final Identifier VISIBLE_SPRITE = id("widgets/shown");
+    private static final Identifier HIDDEN_SPRITE = id("widgets/hidden");
 
-    private boolean hidden;
+    private final boolean hidden;
     private final int visibleRegionStart;
     private final int visibleRegionHeight;
 
