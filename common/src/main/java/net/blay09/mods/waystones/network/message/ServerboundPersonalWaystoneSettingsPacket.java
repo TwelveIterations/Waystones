@@ -6,18 +6,21 @@ import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.Set;
 import java.util.Optional;
 import java.util.UUID;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, Optional<Component> alias) implements CustomPacketPayload {
+public record ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, Optional<Component> alias, Optional<Identifier> groupId) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<ServerboundPersonalWaystoneSettingsPacket> TYPE = new CustomPacketPayload.Type<>(id("personal_waystone_settings"));
 
@@ -26,6 +29,8 @@ public record ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, Option
             ServerboundPersonalWaystoneSettingsPacket::waystoneUid,
             ComponentSerialization.OPTIONAL_STREAM_CODEC,
             ServerboundPersonalWaystoneSettingsPacket::alias,
+            ByteBufCodecs.optional(Identifier.STREAM_CODEC),
+            ServerboundPersonalWaystoneSettingsPacket::groupId,
             ServerboundPersonalWaystoneSettingsPacket::new
     );
 
@@ -38,6 +43,7 @@ public record ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, Option
         }
 
         PlayerWaystoneManager.setWaystoneAlias(player, waystone.getWaystoneUid(), message.alias.orElse(null));
+        PlayerWaystoneManager.setConfiguredWaystoneGroups(player, waystone.getWaystoneUid(), message.groupId.map(Set::of).orElseGet(Set::of));
         WaystoneSyncManager.sendActivatedWaystones(player);
     }
 
