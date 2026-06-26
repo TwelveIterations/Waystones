@@ -222,9 +222,10 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         Waystone fromWaystone = menu.getWaystoneFrom();
-        guiGraphics.drawCenteredString(font, title, imageWidth / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFFFF);
+        final int locationHeaderY = headerY + 20;
+        guiGraphics.drawCenteredString(font, getTitle(), imageWidth / 2, fromWaystone != null ? headerY : locationHeaderY, 0xFFFFFFFF);
         if (fromWaystone != null) {
-            drawLocationHeader(guiGraphics, fromWaystone, mouseX, mouseY, imageWidth / 2, headerY);
+            drawLocationHeader(guiGraphics, fromWaystone, mouseX, mouseY, imageWidth / 2, locationHeaderY);
         }
 
         if (waystones.isEmpty()) {
