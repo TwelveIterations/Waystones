@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.api;
 
+import net.blay09.mods.waystones.client.gui.widget.GroupColor;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneGroupImpl;
 import net.minecraft.network.chat.Component;
@@ -43,7 +44,7 @@ public final class WaystoneGroups {
             id("favorites"),
             Component.translatable("waystones.groups.favorites"),
             FAVORITES_ICON,
-            0xFFF5C542,
+            GroupColor.GOLD.rgb(),
             true,
             false,
             -2);
@@ -52,7 +53,7 @@ public final class WaystoneGroups {
             id("global"),
             Component.translatable("waystones.groups.global"),
             GLOBAL_ICON,
-            0xFFF5C542,
+            GroupColor.YELLOW.rgb(),
             true,
             false,
             -1);
@@ -123,7 +124,7 @@ public final class WaystoneGroups {
         final var location = dimension.identifier();
         final var identifier = id("dimension/" + location.getNamespace() + "/" + location.getPath());
         final var name = Component.translatable("waystones.groups." + identifier.getPath().replace('/', '.'));
-        return new WaystoneGroupImpl(identifier, name, getDimensionIcon(dimension), 0xFF6DB4FF, true, false, 0);
+        return new WaystoneGroupImpl(identifier, name, getDimensionIcon(dimension), GroupColor.WHITE.rgb(), true, false, 0);
     }
 
     private static Identifier getDimensionIcon(ResourceKey<Level> dimension) {
