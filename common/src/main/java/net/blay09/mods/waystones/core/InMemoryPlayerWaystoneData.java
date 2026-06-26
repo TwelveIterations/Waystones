@@ -17,7 +17,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     private final Map<ResourceLocation, Long> cooldowns = new HashMap<>();
     private final Map<UUID, Component> aliases = new HashMap<>();
     private final SetMultimap<UUID, ResourceLocation> waystoneToConfiguredGroups = MultimapBuilder.hashKeys().hashSetValues().build();
-    private final Map<ResourceLocation, WaystoneGroup> groupRegistry = new HashMap<>();
+    private final Map<ResourceLocation, WaystoneGroup> groupRegistry = new LinkedHashMap<>();
 
     @Override
     public void activateWaystone(Player player, Waystone waystone) {
@@ -77,13 +77,13 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
 
     @Override
     public Collection<WaystoneGroup> getWaystoneGroupRegistry(Player player) {
-        return List.copyOf(groupRegistry.values());
+        return sortedGroups(groupRegistry.values());
     }
 
     @Override
     public void setWaystoneGroupRegistry(Player player, Collection<WaystoneGroup> groups) {
         groupRegistry.clear();
-        for (final var group : groups) {
+        for (final var group : normalizeGroupSortIndices(groups)) {
             groupRegistry.put(group.identifier(), group);
         }
     }
@@ -93,8 +93,40 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
         for (final var group : groups) {
             final var existingGroup = groupRegistry.get(group.identifier());
             if (existingGroup == null || group.inbuilt() && !existingGroup.inbuilt()) {
-                groupRegistry.put(group.identifier(), group);
+                final int sortIndex = existingGroup != null ? existingGroup.sortIndex() : groupRegistry.size();
+                groupRegistry.put(group.identifier(), withSortIndex(group, sortIndex));
             }
+        }
+    }
+
+    @Override
+    public void sortWaystoneGroupAsFirst(Player player, ResourceLocation groupId) {
+        final var groups = new ArrayList<>(getWaystoneGroupRegistry(player));
+        final var group = removeGroup(groups, groupId);
+        if (group != null) {
+            groups.addFirst(group);
+            setWaystoneGroupRegistry(player, groups);
+        }
+    }
+
+    @Override
+    public void sortWaystoneGroupAsLast(Player player, ResourceLocation groupId) {
+        final var groups = new ArrayList<>(getWaystoneGroupRegistry(player));
+        final var group = removeGroup(groups, groupId);
+        if (group != null) {
+            groups.add(group);
+            setWaystoneGroupRegistry(player, groups);
+        }
+    }
+
+    @Override
+    public void sortWaystoneGroupSwap(Player player, ResourceLocation groupId, ResourceLocation otherGroupId) {
+        final var groups = new ArrayList<>(getWaystoneGroupRegistry(player));
+        final var groupIndex = indexOfGroup(groups, groupId);
+        final var otherGroupIndex = indexOfGroup(groups, otherGroupId);
+        if (groupIndex != -1 && otherGroupIndex != -1) {
+            Collections.swap(groups, groupIndex, otherGroupIndex);
+            setWaystoneGroupRegistry(player, groups);
         }
     }
 
@@ -171,4 +203,42 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     public Optional<Waystone> findWaystoneByName(Player player, String name) {
         return this.waystones.values().stream().filter(it -> it.getEffectiveName().getString().equals(name)).findFirst();
     }
+
+    private static List<WaystoneGroup> sortedGroups(Collection<WaystoneGroup> groups) {
+        return groups.stream()
+                .sorted(Comparator.comparingInt(WaystoneGroup::sortIndex)
+                        .thenComparing(group -> group.name().getString(), String.CASE_INSENSITIVE_ORDER)
+                        .thenComparing(group -> group.identifier().toString()))
+                .toList();
+    }
+
+    private static List<WaystoneGroup> normalizeGroupSortIndices(Collection<WaystoneGroup> groups) {
+        final var result = new ArrayList<WaystoneGroup>();
+        final var existing = new HashSet<ResourceLocation>();
+        for (final var group : groups) {
+            if (existing.add(group.identifier())) {
+                result.add(withSortIndex(group, result.size()));
+            }
+        }
+        return result;
+    }
+
+    private static WaystoneGroup withSortIndex(WaystoneGroup group, int sortIndex) {
+        return new WaystoneGroupImpl(group.identifier(), group.name(), group.icon(), group.color(), group.inbuilt(), group.hidden(), sortIndex);
+    }
+
+    private static @Nullable WaystoneGroup removeGroup(List<WaystoneGroup> groups, ResourceLocation groupId) {
+        final int index = indexOfGroup(groups, groupId);
+        return index != -1 ? groups.remove(index) : null;
+    }
+
+    private static int indexOfGroup(List<WaystoneGroup> groups, ResourceLocation groupId) {
+        for (int i = 0; i < groups.size(); i++) {
+            if (groups.get(i).identifier().equals(groupId)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
 }

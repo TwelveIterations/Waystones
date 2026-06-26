@@ -15,4 +15,6 @@ public interface WaystoneGroup {
     boolean inbuilt();
 
     boolean hidden();
+
+    int sortIndex();
 }

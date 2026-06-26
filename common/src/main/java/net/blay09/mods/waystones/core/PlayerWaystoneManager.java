@@ -171,6 +171,18 @@ public class PlayerWaystoneManager {
         getPlayerWaystoneData(player.level()).sortWaystoneSwap(player, waystoneUid, otherWaystoneUid);
     }
 
+    public static void sortWaystoneGroupAsFirst(Player player, ResourceLocation groupId) {
+        getPlayerWaystoneData(player.level()).sortWaystoneGroupAsFirst(player, groupId);
+    }
+
+    public static void sortWaystoneGroupAsLast(Player player, ResourceLocation groupId) {
+        getPlayerWaystoneData(player.level()).sortWaystoneGroupAsLast(player, groupId);
+    }
+
+    public static void sortWaystoneGroupSwap(Player player, ResourceLocation groupId, ResourceLocation otherGroupId) {
+        getPlayerWaystoneData(player.level()).sortWaystoneGroupSwap(player, groupId, otherGroupId);
+    }
+
     public static void activeWaystoneForEveryone(@Nullable MinecraftServer server, Waystone waystone) {
         if (server == null) {
             return;

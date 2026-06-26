@@ -24,6 +24,9 @@ public interface IPlayerWaystoneData {
     Collection<WaystoneGroup> getWaystoneGroupRegistry(Player player);
     void setWaystoneGroupRegistry(Player player, Collection<WaystoneGroup> groups);
     void addWaystoneGroups(Player player, Collection<WaystoneGroup> groups);
+    void sortWaystoneGroupAsFirst(Player player, ResourceLocation groupId);
+    void sortWaystoneGroupAsLast(Player player, ResourceLocation groupId);
+    void sortWaystoneGroupSwap(Player player, ResourceLocation groupId, ResourceLocation otherGroupId);
     Set<ResourceLocation> getConfiguredWaystoneGroups(Player player, UUID waystoneUid);
     void setConfiguredWaystoneGroups(Player player, UUID waystoneUid, Set<ResourceLocation> groupIds);
     void sortWaystoneAsFirst(Player player, UUID waystoneUid);

@@ -52,9 +52,10 @@ public record ServerboundEditWaystoneGroupPacket(ResourceLocation groupId, Strin
                 ? Component.translatable("gui.waystones.manage_groups.unnamed_group")
                 : Component.literal(message.name);
         final var hidden = existingGroup != null && existingGroup.inbuilt() && message.hidden;
+        final var sortIndex = existingGroup != null ? existingGroup.sortIndex() : groups.size();
         groups.add(existingGroup != null
-                ? new WaystoneGroupImpl(message.groupId, name, message.icon, message.color, existingGroup.inbuilt(), hidden)
-                : new WaystoneGroupImpl(message.groupId, name, message.icon, message.color, false, false));
+                ? new WaystoneGroupImpl(message.groupId, name, message.icon, message.color, existingGroup.inbuilt(), hidden, sortIndex)
+                : new WaystoneGroupImpl(message.groupId, name, message.icon, message.color, false, false, sortIndex));
         store.setWaystoneGroupRegistry(player, groups);
         WaystoneSyncManager.sendWaystoneGroups(player);
     }
