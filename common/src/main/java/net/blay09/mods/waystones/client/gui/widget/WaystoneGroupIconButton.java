@@ -7,6 +7,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 
 import java.util.List;
@@ -40,7 +41,8 @@ public class WaystoneGroupIconButton extends Button {
     }
 
     private void updateTooltip() {
-        setTooltip(Tooltip.create(Component.translatable("waystones." + icon.getPath().replace('/', '.'))));
+        final var iconName = Component.translatable("waystones." + icon.getPath().replace('/', '.'));
+        setTooltip(Tooltip.create(Component.translatable("gui.waystones.group_settings.icon", iconName)));
     }
 
     @Override
