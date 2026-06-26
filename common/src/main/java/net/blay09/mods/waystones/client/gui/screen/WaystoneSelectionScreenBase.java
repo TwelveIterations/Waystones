@@ -2,11 +2,13 @@ package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneGroup;
 import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.trait.WaystoneKindScoped;
 import net.blay09.mods.waystones.client.gui.widget.AbstractWaystoneList;
 import net.blay09.mods.waystones.client.gui.widget.ManageWaystonesButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystonesButton;
+import net.blay09.mods.waystones.client.gui.widget.WaystoneGroupFilterButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneList;
 import net.blay09.mods.waystones.comparator.DistanceToPlayerComparator;
 import net.blay09.mods.waystones.comparator.PreferSameDimensionComparator;
@@ -33,6 +35,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 
 import static net.blay09.mods.waystones.Waystones.id;
@@ -50,6 +53,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     private @Nullable AbstractWaystoneList<?> waystoneList;
     private @Nullable EditBox searchBox;
     private SortWaystonesButton.Mode sortMode = SortWaystonesButton.Mode.MANUAL;
+    private @Nullable Identifier activeGroupFilter;
     private int headerY;
     private boolean isLocationHeaderHovered;
 
@@ -112,20 +116,41 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     protected AbstractWaystoneList<?> createWaystoneList() {
-        return new WaystoneList(leftPos,
+        return new WaystoneList(leftPos + (imageWidth - AbstractWaystoneList.ENTRY_WIDTH) / 2,
                 topPos + HEADER_HEIGHT,
-                imageWidth,
+                AbstractWaystoneList.ENTRY_WIDTH,
                 imageHeight - HEADER_HEIGHT - FOOTER_HEIGHT,
                 menu);
     }
 
     protected void initSideButtons() {
+        int y = searchBox != null ? searchBox.getY() : topPos;
         if (allowReordering() || allowDeletion()) {
             final var manageButton = new ManageWaystonesButton(
                     leftPos - 8,
-                    searchBox != null ? searchBox.getY() : topPos,
+                    y,
                     _ -> openManageScreen());
             addRenderableWidget(manageButton);
+            y += manageButton.getHeight() + MARGIN;
+        }
+
+        y += 5;
+
+        for (final var group : getShownGroupFilters()) {
+            final var groupId = group.identifier();
+            final var groupButton = new WaystoneGroupFilterButton(leftPos - 8,
+                    y,
+                    group,
+                    () -> groupId.equals(activeGroupFilter),
+                    _ -> {
+                        activeGroupFilter = groupId.equals(activeGroupFilter) ? null : groupId;
+                        if (waystoneList != null) {
+                            waystoneList.setScrollAmount(0);
+                        }
+                        updateList();
+                    });
+            addRenderableWidget(groupButton);
+            y += groupButton.getHeight() + MARGIN;
         }
     }
 
@@ -136,6 +161,10 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     protected void updateList() {
         List<Waystone> list = new ArrayList<>();
         for (Waystone waystone : waystones) {
+            if (activeGroupFilter != null && !waystone.getWaystoneGroups().contains(activeGroupFilter)) {
+                continue;
+            }
+
             if (waystone.getEffectiveName().getString().toLowerCase().contains(searchText.toLowerCase())) {
                 list.add(waystone);
             }
@@ -151,6 +180,26 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         if (waystoneList != null) {
             waystoneList.setWaystones(filteredWaystones);
         }
+    }
+
+    private List<WaystoneGroup> getShownGroupFilters() {
+        final var nonEmptyGroups = new HashSet<Identifier>();
+        for (final var waystone : waystones) {
+            nonEmptyGroups.addAll(waystone.getWaystoneGroups());
+        }
+
+        final var shownGroups = new ArrayList<WaystoneGroup>();
+        final var groupRegistry = PlayerWaystoneManager.getPlayerWaystoneData(playerInventory.player.level()).getWaystoneGroupRegistry(playerInventory.player);
+        for (final var group : groupRegistry) {
+            if (!group.hidden() && nonEmptyGroups.contains(group.identifier())) {
+                shownGroups.add(group);
+                if (shownGroups.size() >= 5) {
+                    break;
+                }
+            }
+        }
+
+        return shownGroups;
     }
 
     @Override
