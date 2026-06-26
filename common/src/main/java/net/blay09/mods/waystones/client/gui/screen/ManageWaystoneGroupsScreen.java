@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmEnvironment;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneGroup;
 import net.blay09.mods.waystones.client.gui.widget.AbstractWaystoneList;
 import net.blay09.mods.waystones.client.gui.widget.BackToWaystoneSelectionButton;
@@ -10,9 +11,7 @@ import net.blay09.mods.waystones.client.gui.widget.ManageWaystoneGroupsList;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneGroupImpl;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
-import net.blay09.mods.waystones.network.message.ServerboundEditWaystoneGroupPacket;
-import net.blay09.mods.waystones.network.message.ServerboundRemoveWaystoneGroupPacket;
-import net.blay09.mods.waystones.network.message.ServerboundSortWaystoneGroupPacket;
+import net.blay09.mods.waystones.network.message.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -20,6 +19,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -35,6 +35,8 @@ import static net.blay09.mods.waystones.Waystones.id;
 
 public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<WaystoneSelectionMenu> {
 
+    private static final ResourceLocation EDIT_ICON = id("widgets/edit");
+
     private static final int HEADER_WIDTH = AbstractWaystoneList.ENTRY_WIDTH;
     private static final int HEADER_HEIGHT = 64;
     private static final int FOOTER_HEIGHT = 25;
@@ -49,6 +51,7 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Waystone
 
     private @Nullable ManageWaystoneGroupsList groupList;
     private @Nullable EditBox searchBox;
+    private boolean isLocationHeaderHovered;
 
     public ManageWaystoneGroupsScreen(WaystoneSelectionMenu menu, Inventory playerInventory, ManageWaystonesScreen parent) {
         super(menu, playerInventory, Component.translatable("container.waystones.manage_groups"));
@@ -127,14 +130,61 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Waystone
     }
 
     @Override
+    public boolean mouseClicked(double x, double y, int button) {
+        if (isLocationHeaderHovered && menu.getWaystoneFrom() != null) {
+            Balm.getNetworking().sendToServer(new RequestEditWaystoneMessage(menu.getWaystoneFrom().getPos()));
+            return true;
+        }
+
+        return super.mouseClicked(x, y, button);
+    }
+
+    @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawCenteredString(font, getTitle(), imageWidth / 2, 0, 0xFFFFFFFF);
+        Waystone fromWaystone = menu.getWaystoneFrom();
+        final int locationHeaderY = 20;
+        guiGraphics.drawCenteredString(font, getTitle(), imageWidth / 2, fromWaystone != null ? 0 : locationHeaderY, 0xFFFFFFFF);
+        if (fromWaystone != null) {
+            drawLocationHeader(guiGraphics, fromWaystone, mouseX, mouseY, imageWidth / 2, locationHeaderY);
+        }
+
         if (groups.isEmpty()) {
             guiGraphics.drawCenteredString(font,
                     ChatFormatting.RED + I18n.get("gui.waystones.manage_groups.no_groups"),
                     imageWidth / 2,
                     imageHeight / 2 - 20,
                     0xFFFFFFFF);
+        }
+    }
+
+    private void drawLocationHeader(GuiGraphics guiGraphics, Waystone waystone, int mouseX, int mouseY, int x, int y) {
+        final var font = Minecraft.getInstance().font;
+
+        int locationPrefixWidth = font.width(Component.translatable("gui.waystones.waystone_selection.current_location", ""));
+
+        var effectiveName = waystone.getEffectiveName().copy();
+        if (effectiveName.getString().isEmpty()) {
+            effectiveName = Component.translatable("gui.waystones.waystone_selection.unnamed_waystone");
+        }
+        int locationWidth = font.width(effectiveName);
+
+        int fullWidth = locationPrefixWidth + locationWidth;
+
+        int startX = leftPos + x - fullWidth / 2 + locationPrefixWidth;
+        int startY = y + topPos;
+        isLocationHeaderHovered = mouseX >= startX && mouseX < startX + locationWidth + 16
+                && mouseY >= startY && mouseY < startY + font.lineHeight;
+
+        if (isLocationHeaderHovered) {
+            effectiveName.withStyle(ChatFormatting.UNDERLINE);
+        }
+
+        final var fullText = Component.translatable("gui.waystones.waystone_selection.current_location",
+                effectiveName.withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.YELLOW);
+        guiGraphics.drawString(font, fullText, x - fullWidth / 2, y, 0xFFFFFFFF);
+
+        if (isLocationHeaderHovered) {
+            guiGraphics.blitSprite(EDIT_ICON, x + fullWidth / 2, y - 4, 16, 16);
         }
     }
 
