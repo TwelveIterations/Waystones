@@ -31,8 +31,24 @@ public class WaystoneGroupIconButton extends Button {
         updateTooltip();
     }
 
+    private void cycleIconBackwards() {
+        final var currentIndex = PRESET_ICONS.indexOf(icon);
+        icon = PRESET_ICONS.get(currentIndex <= 0 ? PRESET_ICONS.size() - 1 : currentIndex - 1);
+        updateTooltip();
+    }
+
     private void updateTooltip() {
         setTooltip(Tooltip.create(Component.translatable("waystones." + icon.getPath().replace('/', '.'))));
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 1 && active && visible && isMouseOver(mouseX, mouseY)) {
+            cycleIconBackwards();
+            return true;
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

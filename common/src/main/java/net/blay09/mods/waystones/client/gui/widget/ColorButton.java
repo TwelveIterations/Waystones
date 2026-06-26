@@ -30,8 +30,23 @@ public class ColorButton extends Button {
         updateTooltip();
     }
 
+    private void cycleColorBackwards() {
+        color = COLORS[(color.ordinal() + COLORS.length - 1) % COLORS.length];
+        updateTooltip();
+    }
+
     private void updateTooltip() {
         setTooltip(Tooltip.create(getColorName()));
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 1 && active && visible && isMouseOver(mouseX, mouseY)) {
+            cycleColorBackwards();
+            return true;
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
