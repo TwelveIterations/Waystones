@@ -54,7 +54,7 @@ public class WaystoneSyncManager {
     }
 
     public static void sendWaystoneGroups(Player player) {
-        final var groupRegistry = PlayerWaystoneManager.getPlayerWaystoneData(player.level()).getWaystoneGroupRegistry(player);
+        final var groupRegistry = PlayerWaystoneManager.getWaystoneGroupRegistry(player);
         Balm.getNetworking().sendTo(player, new ClientboundWaystoneGroupsPacket(List.copyOf(groupRegistry)));
     }
 

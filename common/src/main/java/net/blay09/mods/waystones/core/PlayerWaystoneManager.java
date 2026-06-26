@@ -130,6 +130,10 @@ public class PlayerWaystoneManager {
         getPlayerWaystoneData(player.level()).addWaystoneGroups(player, groups);
     }
 
+    public static Collection<WaystoneGroup> getWaystoneGroupRegistry(Player player) {
+        return getPlayerWaystoneData(player.level()).getWaystoneGroupRegistry(player);
+    }
+
     public static UserDecoratedWaystone getPlayerDecoratedWaystone(Player player, Waystone waystone) {
         final var backingWaystone = waystone instanceof UserDecoratedWaystone userDecoratedWaystone ? userDecoratedWaystone.getBackingWaystone() : waystone;
         final var alias = getWaystoneAlias(player, backingWaystone.getWaystoneUid());

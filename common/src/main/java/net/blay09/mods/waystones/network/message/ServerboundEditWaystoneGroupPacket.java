@@ -37,7 +37,7 @@ public record ServerboundEditWaystoneGroupPacket(ResourceLocation groupId, Strin
 
     public static void handle(ServerPlayer player, ServerboundEditWaystoneGroupPacket message) {
         final var store = PlayerWaystoneManager.getPlayerWaystoneData(player.level());
-        final var groups = new ArrayList<>(store.getWaystoneGroupRegistry(player));
+        final var groups = new ArrayList<>(PlayerWaystoneManager.getWaystoneGroupRegistry(player));
         WaystoneGroup existingGroup = null;
         int existingGroupIndex = -1;
         for (int i = 0; i < groups.size(); i++) {

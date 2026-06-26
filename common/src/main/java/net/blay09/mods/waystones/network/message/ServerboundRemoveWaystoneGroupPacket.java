@@ -29,7 +29,7 @@ public record ServerboundRemoveWaystoneGroupPacket(ResourceLocation groupId) imp
         final var store = PlayerWaystoneManager.getPlayerWaystoneData(player.level());
         final var groups = new ArrayList<WaystoneGroup>();
         var removed = false;
-        for (final var group : store.getWaystoneGroupRegistry(player)) {
+        for (final var group : PlayerWaystoneManager.getWaystoneGroupRegistry(player)) {
             if (group.identifier().equals(message.groupId)) {
                 if (group.inbuilt()) {
                     return;

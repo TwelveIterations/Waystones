@@ -1,8 +1,7 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneGroup;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.api.WaystoneGroups;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -10,8 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-
-import java.util.Optional;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
@@ -31,25 +28,14 @@ public abstract class AbstractWaystoneButton extends Button {
         if (effectiveName.getString().isEmpty()) {
             effectiveName = Component.translatable("gui.waystones.waystone_selection.unnamed_waystone");
         }
-        final var firstGroup = getFirstGroup(waystone);
-        if (firstGroup.isPresent()) {
-            effectiveName.withColor(firstGroup.get().color() & 0x00FFFFFF);
+        final var player = Minecraft.getInstance().player;
+        if (player != null) {
+            final var firstGroup = WaystoneGroups.getFirstGroup(player, waystone);
+            if (firstGroup.isPresent()) {
+                effectiveName.withColor(firstGroup.get().color() & 0x00FFFFFF);
+            }
         }
         return effectiveName;
-    }
-
-    private static Optional<WaystoneGroup> getFirstGroup(Waystone waystone) {
-        final var player = Minecraft.getInstance().player;
-        if (player == null) {
-            return Optional.empty();
-        }
-
-        final var waystoneGroups = waystone.getWaystoneGroups();
-        return PlayerWaystoneManager.getPlayerWaystoneData(player.level())
-                .getWaystoneGroupRegistry(player)
-                .stream()
-                .filter(group -> waystoneGroups.contains(group.identifier()))
-                .findFirst();
     }
 
     protected int renderDimensionOverlay(GuiGraphics guiGraphics) {

@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.BalmEnvironment;
 import net.blay09.mods.waystones.api.WaystoneGroup;
 import net.blay09.mods.waystones.api.WaystoneGroups;
 import net.blay09.mods.waystones.client.gui.widget.ColorButton;
@@ -139,9 +138,9 @@ public class WaystoneGroupEditScreen extends AbstractContainerScreen<WaystoneSel
                 ? Component.translatable("gui.waystones.manage_groups.unnamed_group")
                 : Component.literal(name);
 
-        final var store = PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
-        final var groups = new ArrayList<>(store.getWaystoneGroupRegistry(playerInventory.player));
-        final int existingGroupIndex = indexOfGroup(groups, groupId);
+        final var store = PlayerWaystoneManager.getPlayerWaystoneData(playerInventory.player.level());
+        final var groups = new ArrayList<>(PlayerWaystoneManager.getWaystoneGroupRegistry(playerInventory.player));
+        final int existingGroupIndex = WaystoneGroups.indexOfGroup(groups, groupId);
         final var existingGroup = existingGroupIndex != -1 ? groups.get(existingGroupIndex) : null;
         final var color = colorButton != null ? colorButton.getColor() : getInitialColor();
         final var icon = iconButton != null ? iconButton.getIcon() : getInitialIcon();
@@ -175,23 +174,6 @@ public class WaystoneGroupEditScreen extends AbstractContainerScreen<WaystoneSel
     }
 
     private @Nullable WaystoneGroup findExistingGroup() {
-        final var store = PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
-        for (final var it : store.getWaystoneGroupRegistry(playerInventory.player)) {
-            if (it.identifier().equals(groupId)) {
-                return it;
-            }
-        }
-
-        return null;
-    }
-
-    private static int indexOfGroup(ArrayList<WaystoneGroup> groups, ResourceLocation groupId) {
-        for (int i = 0; i < groups.size(); i++) {
-            if (groups.get(i).identifier().equals(groupId)) {
-                return i;
-            }
-        }
-
-        return -1;
+        return WaystoneGroups.findGroup(PlayerWaystoneManager.getWaystoneGroupRegistry(playerInventory.player), groupId).orElse(null);
     }
 }
