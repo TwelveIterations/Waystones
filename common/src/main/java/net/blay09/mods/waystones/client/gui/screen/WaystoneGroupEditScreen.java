@@ -138,14 +138,18 @@ public class WaystoneGroupEditScreen extends AbstractContainerScreen<WaystoneSel
 
         final var store = PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
         final var groups = new ArrayList<>(store.getWaystoneGroupRegistry(playerInventory.player));
-        final var existingGroup = findExistingGroup();
-        groups.removeIf(it -> it.identifier().equals(groupId));
+        final int existingGroupIndex = indexOfGroup(groups, groupId);
+        final var existingGroup = existingGroupIndex != -1 ? groups.get(existingGroupIndex) : null;
         final var color = colorButton != null ? colorButton.getColor() : getInitialColor();
         final var icon = iconButton != null ? iconButton.getIcon() : getInitialIcon();
         final var group = existingGroup != null
                 ? new WaystoneGroupImpl(groupId, groupName, icon, color, existingGroup.inbuilt(), existingGroup.hidden(), existingGroup.sortIndex())
                 : new WaystoneGroupImpl(groupId, groupName, icon, color, false, false, groups.size());
-        groups.add(group);
+        if (existingGroupIndex != -1) {
+            groups.set(existingGroupIndex, group);
+        } else {
+            groups.add(group);
+        }
         store.setWaystoneGroupRegistry(playerInventory.player, groups);
         Balm.getNetworking().sendToServer(new ServerboundEditWaystoneGroupPacket(groupId, name, group.icon(), group.color(), group.hidden()));
     }
@@ -169,5 +173,14 @@ public class WaystoneGroupEditScreen extends AbstractContainerScreen<WaystoneSel
         }
 
         return null;
+    }
+    private static int indexOfGroup(ArrayList<WaystoneGroup> groups, ResourceLocation groupId) {
+        for (int i = 0; i < groups.size(); i++) {
+            if (groups.get(i).identifier().equals(groupId)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }

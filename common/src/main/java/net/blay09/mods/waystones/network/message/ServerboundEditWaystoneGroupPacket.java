@@ -37,15 +37,16 @@ public record ServerboundEditWaystoneGroupPacket(ResourceLocation groupId, Strin
 
     public static void handle(ServerPlayer player, ServerboundEditWaystoneGroupPacket message) {
         final var store = PlayerWaystoneManager.getPlayerWaystoneData(player.level());
-        final var groups = new ArrayList<WaystoneGroup>();
+        final var groups = new ArrayList<>(store.getWaystoneGroupRegistry(player));
         WaystoneGroup existingGroup = null;
-        for (final var group : store.getWaystoneGroupRegistry(player)) {
+        int existingGroupIndex = -1;
+        for (int i = 0; i < groups.size(); i++) {
+            final var group = groups.get(i);
             if (group.identifier().equals(message.groupId)) {
                 existingGroup = group;
-                continue;
+                existingGroupIndex = i;
+                break;
             }
-
-            groups.add(group);
         }
 
         final var name = message.name.trim().isEmpty()
@@ -53,9 +54,14 @@ public record ServerboundEditWaystoneGroupPacket(ResourceLocation groupId, Strin
                 : Component.literal(message.name);
         final var hidden = existingGroup != null && existingGroup.inbuilt() && message.hidden;
         final var sortIndex = existingGroup != null ? existingGroup.sortIndex() : groups.size();
-        groups.add(existingGroup != null
+        final var updatedGroup = existingGroup != null
                 ? new WaystoneGroupImpl(message.groupId, name, message.icon, message.color, existingGroup.inbuilt(), hidden, sortIndex)
-                : new WaystoneGroupImpl(message.groupId, name, message.icon, message.color, false, false, sortIndex));
+                : new WaystoneGroupImpl(message.groupId, name, message.icon, message.color, false, false, sortIndex);
+        if (existingGroupIndex != -1) {
+            groups.set(existingGroupIndex, updatedGroup);
+        } else {
+            groups.add(updatedGroup);
+        }
         store.setWaystoneGroupRegistry(player, groups);
         WaystoneSyncManager.sendWaystoneGroups(player);
     }
