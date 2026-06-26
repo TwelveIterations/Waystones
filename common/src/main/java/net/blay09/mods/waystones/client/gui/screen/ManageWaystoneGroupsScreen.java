@@ -4,6 +4,7 @@ import net.blay09.mods.balm.platform.BalmEnvironment;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneGroup;
+import net.blay09.mods.waystones.api.WaystoneGroups;
 import net.blay09.mods.waystones.client.gui.widget.AbstractWaystoneList;
 import net.blay09.mods.waystones.client.gui.widget.BackToWaystoneSelectionButton;
 import net.blay09.mods.waystones.client.gui.widget.CreateWaystoneGroupButton;
@@ -30,12 +31,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
@@ -63,13 +59,8 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Waystone
         super(menu, playerInventory, Component.translatable("container.waystones.manage_groups"), 270, 200);
         this.parent = parent;
         this.playerInventory = playerInventory;
-        this.groups = new ArrayList<>(PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT)
-                .getWaystoneGroupRegistry(playerInventory.player)
-                .stream()
-                .sorted(Comparator.comparingInt(WaystoneGroup::sortIndex)
-                        .thenComparing(group -> group.name().getString(), String.CASE_INSENSITIVE_ORDER)
-                        .thenComparing(group -> group.identifier().toString()))
-                .toList());
+        final var groupRegistry = PlayerWaystoneManager.getWaystoneGroupRegistry(playerInventory.player);
+        this.groups = new ArrayList<>(WaystoneGroups.sorted(groupRegistry));
         this.filteredGroups = new ArrayList<>(groups);
     }
 
@@ -235,8 +226,8 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Waystone
     }
 
     public void reorderGroup(WaystoneGroup group, WaystoneGroup otherGroup) {
-        final int index = indexOfGroup(groups, group);
-        final int otherIndex = indexOfGroup(groups, otherGroup);
+        final int index = WaystoneGroups.indexOfGroup(groups, group);
+        final int otherIndex = WaystoneGroups.indexOfGroup(groups, otherGroup);
         if (index == -1 || otherIndex == -1) {
             return;
         }
@@ -247,7 +238,7 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Waystone
     }
 
     public void moveGroupToTop(WaystoneGroup group) {
-        final int index = indexOfGroup(groups, group);
+        final int index = WaystoneGroups.indexOfGroup(groups, group);
         if (index == -1) {
             return;
         }
@@ -259,7 +250,7 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Waystone
     }
 
     public void moveGroupToBottom(WaystoneGroup group) {
-        final int index = indexOfGroup(groups, group);
+        final int index = WaystoneGroups.indexOfGroup(groups, group);
         if (index == -1) {
             return;
         }
@@ -280,7 +271,7 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Waystone
         updateList();
 
         final var store = PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
-        final var registry = new ArrayList<>(store.getWaystoneGroupRegistry(playerInventory.player));
+        final var registry = new ArrayList<>(PlayerWaystoneManager.getWaystoneGroupRegistry(playerInventory.player));
         registry.replaceAll(it -> it.identifier().equals(group.identifier()) ? updatedGroup : it);
         store.setWaystoneGroupRegistry(playerInventory.player, registry);
         Balm.networking().sendToServer(new ServerboundEditWaystoneGroupPacket(group.identifier(), group.name().getString(), updatedGroup.icon(), updatedGroup.color(), updatedGroup.hidden()));
@@ -290,22 +281,13 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Waystone
         final var store = PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
         store.setWaystoneGroupRegistry(playerInventory.player, groups);
         groups.clear();
-        groups.addAll(store.getWaystoneGroupRegistry(playerInventory.player));
+        groups.addAll(PlayerWaystoneManager.getWaystoneGroupRegistry(playerInventory.player));
         filteredGroups = filteredGroups.stream()
                 .map(group -> groups.stream()
                         .filter(it -> it.identifier().equals(group.identifier()))
                         .findFirst()
                         .orElse(group))
                 .toList();
-    }
-
-    private static int indexOfGroup(List<WaystoneGroup> groups, WaystoneGroup group) {
-        for (int i = 0; i < groups.size(); i++) {
-            if (groups.get(i).identifier().equals(group.identifier())) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     void returnFromEdit() {

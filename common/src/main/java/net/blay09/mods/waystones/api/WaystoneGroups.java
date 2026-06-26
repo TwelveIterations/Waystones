@@ -1,9 +1,11 @@
 package net.blay09.mods.waystones.api;
 
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneGroupImpl;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.*;
@@ -56,6 +58,65 @@ public final class WaystoneGroups {
             -1);
 
     private WaystoneGroups() {
+    }
+
+    public static List<WaystoneGroup> sorted(Collection<WaystoneGroup> groups) {
+        return groups.stream()
+                .sorted(Comparator.comparingInt(WaystoneGroup::sortIndex)
+                        .thenComparing(group -> group.name().getString(), String.CASE_INSENSITIVE_ORDER)
+                        .thenComparing(group -> group.identifier().toString()))
+                .toList();
+    }
+
+    public static List<WaystoneGroup> normalizeSortIndices(Collection<WaystoneGroup> groups) {
+        final var result = new ArrayList<WaystoneGroup>();
+        final var existing = new HashSet<Identifier>();
+        for (final var group : groups) {
+            if (existing.add(group.identifier())) {
+                result.add(withSortIndex(group, result.size()));
+            }
+        }
+        return result;
+    }
+
+    public static WaystoneGroup withSortIndex(WaystoneGroup group, int sortIndex) {
+        return new WaystoneGroupImpl(group.identifier(), group.name(), group.icon(), group.color(), group.inbuilt(), group.hidden(), sortIndex);
+    }
+
+    public static Optional<WaystoneGroup> findGroup(Collection<WaystoneGroup> groups, Identifier groupId) {
+        return groups.stream()
+                .filter(group -> group.identifier().equals(groupId))
+                .findFirst();
+    }
+
+    public static int indexOfGroup(List<WaystoneGroup> groups, WaystoneGroup group) {
+        return indexOfGroup(groups, group.identifier());
+    }
+
+    public static int indexOfGroup(List<WaystoneGroup> groups, Identifier groupId) {
+        for (int i = 0; i < groups.size(); i++) {
+            if (groups.get(i).identifier().equals(groupId)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static Optional<WaystoneGroup> removeGroup(List<WaystoneGroup> groups, Identifier groupId) {
+        final int index = indexOfGroup(groups, groupId);
+        return index != -1 ? Optional.of(groups.remove(index)) : Optional.empty();
+    }
+
+    public static Optional<WaystoneGroup> getFirstGroup(Player player, Waystone waystone) {
+        final var groupRegistry = PlayerWaystoneManager.getWaystoneGroupRegistry(player);
+        return getFirstGroup(groupRegistry, waystone);
+    }
+
+    public static Optional<WaystoneGroup> getFirstGroup(Collection<WaystoneGroup> groups, Waystone waystone) {
+        final var waystoneGroups = waystone.getWaystoneGroups();
+        return groups.stream()
+                .filter(group -> waystoneGroups.contains(group.identifier()))
+                .findFirst();
     }
 
     public static WaystoneGroup dimension(ResourceKey<Level> dimension) {
