@@ -8,7 +8,6 @@ import net.blay09.mods.waystones.client.gui.widget.ColorButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneGroupIconButton;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneGroupImpl;
-import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.network.message.ServerboundEditWaystoneGroupPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -20,12 +19,13 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 
-public class WaystoneGroupEditScreen extends AbstractContainerScreen<WaystoneSelectionMenu> {
+public class WaystoneGroupEditScreen extends AbstractContainerScreen<AbstractContainerMenu> {
 
     private final ManageWaystoneGroupsScreen parent;
     private final Inventory playerInventory;
@@ -36,7 +36,7 @@ public class WaystoneGroupEditScreen extends AbstractContainerScreen<WaystoneSel
     private @Nullable ColorButton colorButton;
     private @Nullable WaystoneGroupIconButton iconButton;
 
-    public WaystoneGroupEditScreen(WaystoneSelectionMenu menu, Inventory playerInventory, ManageWaystoneGroupsScreen parent, Identifier groupId, String initialName) {
+    public WaystoneGroupEditScreen(AbstractContainerMenu menu, Inventory playerInventory, ManageWaystoneGroupsScreen parent, Identifier groupId, String initialName) {
         super(menu, playerInventory, Component.translatable("container.waystones.edit_group"), 176, 120);
         this.parent = parent;
         this.playerInventory = playerInventory;

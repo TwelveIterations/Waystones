@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.client.gui.screen;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.WaystoneGroup;
 import net.blay09.mods.waystones.api.WaystoneGroups;
+import net.blay09.mods.waystones.client.gui.widget.ManageWaystoneGroupsButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneGroupButton;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.PersonalWaystoneSettingsMenu;
@@ -31,6 +32,10 @@ import static net.blay09.mods.waystones.Waystones.id;
 
 public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<PersonalWaystoneSettingsMenu> {
 
+    private static final int MARGIN = 2;
+    private static final int MANAGE_GROUPS_BUTTON_WIDTH = 20;
+
+    private final Inventory playerInventory;
     private @Nullable EditBox aliasField;
     private @Nullable WaystoneGroupButton groupButton;
     private List<WaystoneGroup> groups = List.of();
@@ -38,6 +43,7 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
 
     public PersonalWaystoneSettingsScreen(PersonalWaystoneSettingsMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, 176, 210);
+        this.playerInventory = playerInventory;
         titleLabelY = 44;
     }
 
@@ -85,15 +91,20 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
             addRenderableWidget(editButton);
         }
 
-        final var emptyGroupLabel = Component.translatable("gui.waystones.personal_waystone_settings.no_group");
+        final var emptyGroupLabel = getEmptyGroupLabel();
         groupButton = new WaystoneGroupButton(leftPos,
                 y + 26,
-                176,
+                176 - MARGIN - MANAGE_GROUPS_BUTTON_WIDTH,
                 selectedGroup,
                 emptyGroupLabel,
                 _ -> cycleGroup(1),
                 _ -> cycleGroup(-1));
         addRenderableWidget(groupButton);
+
+        final var manageGroupsButton = new ManageWaystoneGroupsButton(leftPos + groupButton.getWidth() + MARGIN,
+                y + 26,
+                _ -> openManageGroupsScreen());
+        addRenderableWidget(manageGroupsButton);
 
         final var saveButton = Button.builder(
                         Component.translatable("gui.waystones.personal_waystone_settings.save"),
@@ -166,6 +177,9 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
     private void cycleGroup(int direction) {
         if (groups.isEmpty()) {
             selectedGroup = null;
+            if (groupButton != null) {
+                groupButton.setGroup(null, getEmptyGroupLabel());
+            }
             return;
         }
 
@@ -179,8 +193,19 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
         }
         selectedGroup = nextIndex == -1 ? null : groups.get(nextIndex);
         if (groupButton != null) {
-            groupButton.setGroup(selectedGroup, Component.translatable("gui.waystones.personal_waystone_settings.no_group"));
+            groupButton.setGroup(selectedGroup, getEmptyGroupLabel());
         }
+    }
+
+    private Component getEmptyGroupLabel() {
+        return Component.translatable(groups.isEmpty()
+                ? "gui.waystones.personal_waystone_settings.no_groups_defined"
+                : "gui.waystones.personal_waystone_settings.no_group");
+    }
+
+    private void openManageGroupsScreen() {
+        savePersonalWaystoneSettings();
+        Minecraft.getInstance().gui.setScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, this));
     }
 
     private @Nullable WaystoneGroup getStillAvailableGroup(@Nullable WaystoneGroup group) {
