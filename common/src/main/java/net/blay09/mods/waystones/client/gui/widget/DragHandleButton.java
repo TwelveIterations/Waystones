@@ -14,10 +14,10 @@ public class DragHandleButton extends Button {
     private static final Identifier ICON = id("waystone_selection/drag_handle");
     private static final Identifier HIGHLIGHTED_ICON = id("waystone_selection/drag_handle_highlighted");
 
-    private final ManageWaystonesList list;
-    private final ManageWaystonesList.WaystoneEntry entry;
+    private final ListDragController list;
+    private final Object entry;
 
-    public DragHandleButton(ManageWaystonesList list, ManageWaystonesList.WaystoneEntry entry) {
+    public DragHandleButton(ListDragController list, Object entry) {
         super(0, 0, 16, 20, Component.translatable("gui.waystones.manage_waystones.drag_to_reorder"), _ -> {
         }, Button.DEFAULT_NARRATION);
         this.list = list;
