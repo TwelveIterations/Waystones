@@ -155,7 +155,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     private void openManageScreen() {
-        Minecraft.getInstance().gui.setScreen(new ManageWaystonesScreen(menu, playerInventory, this));
+        Minecraft.getInstance().setScreen(new ManageWaystonesScreen(menu, playerInventory, this));
     }
 
     protected void updateList() {

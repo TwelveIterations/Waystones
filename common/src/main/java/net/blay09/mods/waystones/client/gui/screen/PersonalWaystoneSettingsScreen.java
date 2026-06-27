@@ -227,7 +227,7 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
 
     private void openManageGroupsScreen() {
         savePersonalWaystoneSettings();
-        Minecraft.getInstance().gui.setScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, this));
+        Minecraft.getInstance().setScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, this));
     }
 
     private @Nullable WaystoneGroup getStillAvailableGroup(@Nullable WaystoneGroup group) {

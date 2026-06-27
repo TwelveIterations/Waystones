@@ -126,7 +126,7 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
 
         final var manageGroupsButton = new ManageWaystoneGroupsButton(leftPos - 8,
                 topPos + HEADER_HEIGHT,
-                _ -> Minecraft.getInstance().gui.setScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, this)));
+                _ -> Minecraft.getInstance().setScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, this)));
         addRenderableWidget(manageGroupsButton);
     }
 
@@ -141,6 +141,6 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
     }
 
     private void returnToSelection() {
-        Minecraft.getInstance().gui.setScreen(parent);
+        Minecraft.getInstance().setScreen(parent);
     }
 }

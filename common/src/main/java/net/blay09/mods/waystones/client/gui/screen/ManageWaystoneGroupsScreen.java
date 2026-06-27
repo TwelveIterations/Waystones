@@ -205,17 +205,17 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Abstract
     }
 
     private void returnToManageWaystones() {
-        Minecraft.getInstance().gui.setScreen(parent);
+        Minecraft.getInstance().setScreen(parent);
     }
 
     private void createGroup() {
         final var initialName = searchText;
         final var groupId = id("user/" + UUID.randomUUID());
-        Minecraft.getInstance().gui.setScreen(new WaystoneGroupEditScreen(menu, playerInventory, this, groupId, initialName));
+        Minecraft.getInstance().setScreen(new WaystoneGroupEditScreen(menu, playerInventory, this, groupId, initialName));
     }
 
     public void editGroup(WaystoneGroup group) {
-        Minecraft.getInstance().gui.setScreen(new WaystoneGroupEditScreen(menu, playerInventory, this, group.identifier(), group.name().getString()));
+        Minecraft.getInstance().setScreen(new WaystoneGroupEditScreen(menu, playerInventory, this, group.identifier(), group.name().getString()));
     }
 
     public void deleteGroup(WaystoneGroup group) {
@@ -294,7 +294,7 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Abstract
     }
 
     void returnFromEdit() {
-        Minecraft.getInstance().gui.setScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, parent));
+        Minecraft.getInstance().setScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, parent));
     }
 
     private @Nullable Waystone getWaystoneFrom() {
