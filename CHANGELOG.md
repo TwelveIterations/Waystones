@@ -1,2 +1,14 @@
-- Fixed misleading error message in scoped warp stones
-- Added tooltips to scoped warp stones
+- Added a scrollable waystone list, replacing the previous pagination system
+- Added personal aliases for waystones
+    - There is a "Personal Settings" button that allows assigning an alias
+    - This is useful for multiplayer cases where others have used names that are too generic
+- Added group filters to the waystone selection screen
+    - This includes inbuilt groups like "Global Waystones", "Favorites", and a group for each dimension
+    - You can also create custom groups, assigning an icon and a text color; groups are personal and not shared
+    - The first five groups will be available as filters on the waystone selection screen
+    - You can reorder groups or hide/show inbuilt ones to customize what filters are shown
+- Added "Favorites" - a checkbox in a waystone's Personal Settings that will add it to the inbuilt Favorites group
+- Added a "Sort" button to the waystone selection, cycling between Manual, Alphabetic, and Distance
+- Added a separate "Manage Waystones" screen, allowing drag-drop rearranging of the waystone list
+    - Deletion has been moved to this screen as well
+- Added a small dimension button overlay for Nether and End waystones to the selection list
