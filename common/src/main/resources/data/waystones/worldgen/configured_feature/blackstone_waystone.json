@@ -1,8 +1,0 @@
-{
-  "type": "waystones:waystone",
-  "config": {
-    "state": {
-      "Name": "waystones:blackstone_waystone"
-    }
-  }
-}
