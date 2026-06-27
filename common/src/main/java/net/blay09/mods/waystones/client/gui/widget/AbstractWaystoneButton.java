@@ -32,7 +32,7 @@ public abstract class AbstractWaystoneButton extends Button {
         if (player != null) {
             final var firstGroup = WaystoneGroups.getFirstGroup(player, waystone);
             if (firstGroup.isPresent()) {
-                effectiveName.withColor(firstGroup.get().color() & 0x00FFFFFF);
+                effectiveName.withColor(firstGroup.get().color());
             }
         }
         return effectiveName;

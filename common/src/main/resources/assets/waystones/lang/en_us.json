@@ -122,6 +122,7 @@
   "gui.waystones.waystone_settings.manage_modifiers": "Manage Modifiers",
   "gui.waystones.personal_waystone_settings.configure_waystone": "Edit Waystone",
   "gui.waystones.personal_waystone_settings.no_alias": "No alias",
+  "gui.waystones.personal_waystone_settings.no_group": "No Group",
   "gui.waystones.personal_waystone_settings.save": "Save",
   "gui.waystones.waystone_settings.visibility.activation": "Visible upon Activation",
   "gui.waystones.waystone_settings.visibility.global": "Visible to Everyone",

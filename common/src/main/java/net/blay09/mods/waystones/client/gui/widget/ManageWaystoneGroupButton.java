@@ -20,7 +20,7 @@ public class ManageWaystoneGroupButton extends Button {
     }
 
     private static Component coloredGroupName(WaystoneGroup group) {
-        return group.name().copy().withColor(group.color() & 0x00FFFFFF);
+        return group.name().copy().withColor(group.color());
     }
 
     private static int groupTextColor(WaystoneGroup group) {

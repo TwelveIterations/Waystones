@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,6 +15,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 
 public class PersonalWaystoneSettingsMenu extends AbstractContainerMenu {
 
@@ -65,5 +68,9 @@ public class PersonalWaystoneSettingsMenu extends AbstractContainerMenu {
 
     public @Nullable Component getAlias() {
         return waystone.getAlias().orElse(null);
+    }
+
+    public Set<ResourceLocation> getConfiguredGroups() {
+        return waystone.getConfiguredGroups();
     }
 }
