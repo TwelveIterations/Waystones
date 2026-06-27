@@ -1,4 +1,1 @@
-- Fixed setting waystones to activation visibility no longer working when default visibility is set to global
-- Fixed silk-touched waystones still showing up in global/team index
-- Fixed unseen, unnamed waystones showing up when default visibility is global
-- Fixed animations becoming choppy as time passes
+- Updated to Minecraft 26.3
