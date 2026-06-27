@@ -9,15 +9,12 @@ import net.blay09.mods.balm.client.renderer.blockentity.BalmBlockEntityRendererR
 import net.blay09.mods.waystones.client.config.WaystonesConfigScreenFactory;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
-import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.store.EventfulWaystonesStore;
 import net.blay09.mods.waystones.store.InMemoryWaystonesStore;
 import net.blay09.mods.waystones.store.WaystonesStore;
-import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.resources.Identifier;
 
 import java.util.List;
-import java.util.Locale;
 
 public class WaystonesClient implements BalmClientModule {
     private static final WaystonesStore waystonesStore = new EventfulWaystonesStore(new InMemoryWaystonesStore(List.of()));
@@ -58,8 +55,6 @@ public class WaystonesClient implements BalmClientModule {
         InventoryButtonGuiHandler.initialize();
 
         RequirementClientRegistry.registerDefaults();
-
-        Compat.isVivecraftInstalled = ClientBrandRetriever.getClientModName().toLowerCase(Locale.ENGLISH).contains(Compat.VIVECRAFT);
     }
 
     public static WaystonesStore getWaystonesStore() {

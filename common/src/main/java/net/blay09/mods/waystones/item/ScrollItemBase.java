@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.waystones.compat.Compat;
+import net.blay09.mods.balm.Balm;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -25,7 +25,8 @@ public class ScrollItemBase extends Item {
 
     @Override
     public ItemUseAnimation getUseAnimation(ItemStack itemStack) {
-        if (Compat.isVivecraftInstalled) {
+        final var player = Balm.safeClientAccess().getClientPlayer();
+        if (player != null && Balm.modSupport().vr().isInVR(player)) {
             return ItemUseAnimation.NONE;
         }
 
@@ -38,7 +39,7 @@ public class ScrollItemBase extends Item {
         if (!player.isUsingItem() && !world.isClientSide()) {
             world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.1f, 2f);
         }
-        if (getUseDuration(itemStack, player) <= 0 || Compat.isVivecraftInstalled) {
+        if (getUseDuration(itemStack, player) <= 0 || Balm.modSupport().vr().isInVR(player)) {
             finishUsingItem(itemStack, world, player);
         } else {
             player.startUsingItem(hand);

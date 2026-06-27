@@ -4,7 +4,6 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.WarpStoneType;
 import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
 import net.blay09.mods.waystones.api.trait.WaystoneKindScoped;
-import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.menu.ModMenus;
@@ -63,7 +62,8 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage, WaystoneKi
 
     @Override
     public ItemUseAnimation getUseAnimation(ItemStack itemStack) {
-        if (Compat.isVivecraftInstalled) {
+        final var player = Balm.safeClientAccess().getClientPlayer();
+        if (player != null && Balm.modSupport().vr().isInVR(player)) {
             return ItemUseAnimation.NONE;
         }
 
@@ -158,7 +158,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage, WaystoneKi
         if (!player.isUsingItem() && !world.isClientSide()) {
             world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.1f, 2f);
         }
-        if (getUseDuration(itemStack, player) <= 0 || Compat.isVivecraftInstalled) {
+        if (getUseDuration(itemStack, player) <= 0 || Balm.modSupport().vr().isInVR(player)) {
             finishUsingItem(itemStack, world, player);
         } else {
             player.startUsingItem(hand);
