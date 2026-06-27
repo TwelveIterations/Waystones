@@ -125,7 +125,7 @@ public class Waystones implements BalmModule {
 
     @Override
     public void registerAdditional(BalmRegistrar registrar) {
-        ModWorldGen.initializeFeatures(registrar.scoped(Registries.FEATURE, getId().getNamespace()));
+        ModWorldGen.initializeFeatures(registrar.scoped(Registries.FEATURE_TYPE, getId().getNamespace()));
         ModWorldGen.initializePlacementModifierTypes(registrar.scoped(Registries.PLACEMENT_MODIFIER_TYPE, getId().getNamespace()));
     }
 

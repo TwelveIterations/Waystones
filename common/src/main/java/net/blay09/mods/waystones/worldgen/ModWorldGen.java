@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.worldgen;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.MapCodec;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.core.BalmRegistrar;
@@ -57,8 +58,8 @@ public class ModWorldGen {
 
     public static Holder<PlacementModifierType<?>> waystonePlacement;
 
-    public static void initializeFeatures(BalmRegistrar.Scoped<Feature<?>> registrar) {
-        registrar.register(waystone.getPath(), (id) -> new WaystoneFeature());
+    public static void initializeFeatures(BalmRegistrar.Scoped<MapCodec<? extends Feature>> registrar) {
+        registrar.register(waystone.getPath(), (id) -> WaystoneFeature.CODEC);
     }
 
     public static void initializePlacementModifierTypes(BalmRegistrar.Scoped<PlacementModifierType<?>> registrar) {
