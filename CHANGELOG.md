@@ -1,5 +1,1 @@
-- Added button to hide waystones if they can't be deleted
-- Fixed custom reach distance being ignored in distance validity checks
-- Fixed warp modifiers not being applied to waystones
-- Fixed warp plates teleporting previously received entities back when the chunk was unloaded in between
-- Fixed possible crashes with chunk multithreading mods
+- Updated to Minecraft 26.3
