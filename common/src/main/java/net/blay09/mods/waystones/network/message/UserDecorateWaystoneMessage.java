@@ -11,6 +11,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -22,28 +23,28 @@ public class UserDecorateWaystoneMessage implements CustomPacketPayload {
 
     private final UUID waystoneUid;
     private final Optional<Component> alias;
-    private final Optional<ResourceLocation> groupId;
+    private final Set<ResourceLocation> groupIds;
 
     public UserDecorateWaystoneMessage(UUID waystoneUid, Optional<Component> alias) {
-        this(waystoneUid, alias, Optional.empty());
+        this(waystoneUid, alias, Set.of());
     }
 
-    public UserDecorateWaystoneMessage(UUID waystoneUid, Optional<Component> alias, Optional<ResourceLocation> groupId) {
+    public UserDecorateWaystoneMessage(UUID waystoneUid, Optional<Component> alias, Set<ResourceLocation> groupIds) {
         this.waystoneUid = waystoneUid;
         this.alias = alias;
-        this.groupId = groupId;
+        this.groupIds = groupIds;
     }
 
     public static void encode(RegistryFriendlyByteBuf buf, UserDecorateWaystoneMessage message) {
         buf.writeUUID(message.waystoneUid);
         ComponentSerialization.OPTIONAL_STREAM_CODEC.encode(buf, message.alias);
-        buf.writeOptional(message.groupId, (innerBuf, groupId) -> innerBuf.writeResourceLocation(groupId));
+        buf.writeCollection(message.groupIds, (innerBuf, groupId) -> innerBuf.writeResourceLocation(groupId));
     }
 
     public static UserDecorateWaystoneMessage decode(RegistryFriendlyByteBuf buf) {
         return new UserDecorateWaystoneMessage(buf.readUUID(),
                 ComponentSerialization.OPTIONAL_STREAM_CODEC.decode(buf),
-                buf.readOptional(innerBuf -> innerBuf.readResourceLocation()));
+                buf.readCollection(HashSet::new, innerBuf -> innerBuf.readResourceLocation()));
     }
 
     public static void handle(ServerPlayer player, UserDecorateWaystoneMessage message) {
@@ -54,7 +55,7 @@ public class UserDecorateWaystoneMessage implements CustomPacketPayload {
         }
 
         PlayerWaystoneManager.setWaystoneAlias(player, waystone.getWaystoneUid(), message.alias.orElse(null));
-        PlayerWaystoneManager.setConfiguredWaystoneGroups(player, waystone.getWaystoneUid(), message.groupId.map(Set::of).orElseGet(Set::of));
+        PlayerWaystoneManager.setConfiguredWaystoneGroups(player, waystone.getWaystoneUid(), message.groupIds);
         WaystoneSyncManager.sendActivatedWaystones(player);
     }
 

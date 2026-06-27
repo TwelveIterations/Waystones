@@ -12,6 +12,7 @@ import net.blay09.mods.waystones.network.message.UserDecorateWaystoneMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -23,6 +24,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -37,6 +39,7 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
     private final Inventory playerInventory;
     private @Nullable EditBox aliasField;
     private @Nullable WaystoneGroupButton groupButton;
+    private @Nullable Checkbox favoriteCheckbox;
     private List<WaystoneGroup> groups = List.of();
     private @Nullable WaystoneGroup selectedGroup;
 
@@ -55,6 +58,7 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
         final var currentAlias = menu.getAlias() != null ? menu.getAlias().getString() : "";
         final var oldAliasText = aliasField != null ? aliasField.getValue() : currentAlias;
         final var oldSelectedGroup = selectedGroup;
+        final var oldFavoriteSelected = favoriteCheckbox != null ? favoriteCheckbox.selected() : isFavoriteConfigured();
         final var y = topPos + titleLabelY + 16;
         final var canEditWaystone = isWaystoneInRange();
         final var aliasFieldWidth = canEditWaystone ? 150 : 176;
@@ -106,6 +110,13 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
                 y + 26,
                 button -> openManageGroupsScreen());
         addRenderableWidget(manageGroupsButton);
+
+        favoriteCheckbox = Checkbox.builder(Component.translatable("gui.waystones.personal_waystone_settings.favorite"), font)
+                .pos(leftPos, y + 52)
+                .selected(oldFavoriteSelected)
+                .maxWidth(176)
+                .build();
+        addRenderableWidget(favoriteCheckbox);
 
         final var saveButton = Button.builder(
                         Component.translatable("gui.waystones.personal_waystone_settings.save"),
@@ -171,14 +182,25 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
 
     private void savePersonalWaystoneSettings() {
         final var currentAlias = menu.getAlias() != null ? menu.getAlias().getString() : "";
-        final var selectedGroupIds = selectedGroup != null ? Set.of(selectedGroup.identifier()) : Set.<ResourceLocation>of();
+        final var selectedGroupIds = getSelectedGroupIds();
         if (aliasField != null && (!aliasField.getValue().equals(currentAlias) || !selectedGroupIds.equals(menu.getConfiguredGroups()))) {
             Balm.getNetworking()
                     .sendToServer(new UserDecorateWaystoneMessage(
                             menu.getWaystone().getWaystoneUid(),
                             aliasField.getValue().trim().isEmpty() ? Optional.empty() : Optional.of(Component.literal(aliasField.getValue())),
-                            Optional.ofNullable(selectedGroup).map(WaystoneGroup::identifier)));
+                            selectedGroupIds));
         }
+    }
+
+    private Set<ResourceLocation> getSelectedGroupIds() {
+        final var selectedGroupIds = new LinkedHashSet<ResourceLocation>();
+        if (selectedGroup != null) {
+            selectedGroupIds.add(selectedGroup.identifier());
+        }
+        if (favoriteCheckbox != null && favoriteCheckbox.selected()) {
+            selectedGroupIds.add(WaystoneGroups.FAVORITES.identifier());
+        }
+        return Set.copyOf(selectedGroupIds);
     }
 
     private void cycleGroup(int direction) {
@@ -225,6 +247,10 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
                 .filter(group -> configuredGroups.contains(group.identifier()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    private boolean isFavoriteConfigured() {
+        return menu.getConfiguredGroups().contains(WaystoneGroups.FAVORITES.identifier());
     }
 
     private boolean isWaystoneInRange() {
