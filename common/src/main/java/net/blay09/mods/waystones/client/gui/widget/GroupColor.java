@@ -21,7 +21,6 @@ public record GroupColor(String serializedName, int rgb) {
     public static final GroupColor DARK_BLUE = new GroupColor("dark_blue", 0x0000AA);
     public static final GroupColor DARK_GREEN = new GroupColor("dark_green", 0x00AA00);
     public static final GroupColor DARK_RED = new GroupColor("dark_red", 0xAA0000);
-    public static final GroupColor BLACK = new GroupColor("black", 0x000000);
 
     public static final List<GroupColor> COLORS = List.of(
             WHITE,
@@ -38,8 +37,7 @@ public record GroupColor(String serializedName, int rgb) {
             BLUE,
             DARK_BLUE,
             DARK_GREEN,
-            DARK_RED,
-            BLACK);
+            DARK_RED);
 
     public int toArgb() {
         return rgb | 0xFF000000;
