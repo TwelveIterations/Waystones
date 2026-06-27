@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import net.blay09.mods.waystones.api.WaystoneGroup;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -34,8 +34,10 @@ public class ManageWaystoneGroupButton extends Button {
         final int iconLeft = getX() + 3;
         final int iconTop = getY() + 2;
         graphics.blitSprite(group.icon(), iconLeft, iconTop, 16, 16);
+    }
 
-        final var font = Minecraft.getInstance().font;
+    @Override
+    public void renderString(GuiGraphics graphics, Font font, int color) {
         final int labelLeft = getX() + TEXT_MARGIN + 18;
         final int maxWidth = getX() + getWidth() - TEXT_MARGIN - labelLeft;
         final var label = font.plainSubstrByWidth(group.name().getString(), maxWidth);
