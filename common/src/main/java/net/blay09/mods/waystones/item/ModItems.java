@@ -30,6 +30,7 @@ public class ModItems {
     public static DeferredItem dormantShard;
     public static DeferredItem attunedShard;
     public static DeferredItem crumblingAttunedShard;
+    public static DeferredItem twinboundFeather;
 
     public static void initialize(BalmItemRegistrar items) {
         returnScroll = items.register("return_scroll", ReturnScrollItem::new).asDeferredItem();
@@ -48,6 +49,7 @@ public class ModItems {
         dormantShard = items.register("dormant_shard", ShardItem::new).asDeferredItem();
         attunedShard = items.register("attuned_shard", AttunedShardItem::new).asDeferredItem();
         crumblingAttunedShard = items.register("crumbling_attuned_shard", CrumblingAttunedShardItem::new).asDeferredItem();
+        twinboundFeather = items.register("twinbound_feather", TwinboundFeatherItem::new).asDeferredItem();
 
         MigrationUtils.migrateItems(items);
     }
@@ -67,6 +69,7 @@ public class ModItems {
                             output.accept(ModItems.portalScroll);
                             output.accept(ModItems.warpStones.get(WarpStoneTypes.UNSCOPED));
                             output.accept(ModItems.dormantShard);
+                            output.accept(ModItems.twinboundFeather);
                             ModBlocks.waystones.forEach((type, block) -> {
                                 if (type != WaystoneTypes.ANDESITE) {
                                     output.accept(block);

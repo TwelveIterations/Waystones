@@ -1,16 +1,13 @@
 package net.blay09.mods.waystones.core;
 
-import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.shogi.context.executor.DeferredEffectExecutor;
 import net.blay09.mods.waystones.api.TeleportDestination;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
-import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
-import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesRules;
@@ -193,28 +190,9 @@ public class WaystoneTeleportManager {
             return Either.right(new WaystoneTeleportError.InvalidDimension(waystone.getDimension()));
         }
 
-        final var pos = waystone.getPos();
-        final var state = level.getBlockState(pos);
-        var direction = state.hasProperty(WaystoneBlock.FACING) ? state.getValue(WaystoneBlock.FACING) : Direction.NORTH;
-
-        // Use a list to keep order intact - it might check one direction twice, but no one cares
-        final var directionCandidates = Lists.newArrayList(direction, Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH);
-        for (Direction candidate : directionCandidates) {
-            BlockPos offsetPos = pos.relative(candidate);
-            BlockPos offsetPosUp = offsetPos.above();
-            if (level.getBlockState(offsetPos).isSuffocating(level, offsetPos) || level.getBlockState(offsetPosUp).isSuffocating(level, offsetPosUp)) {
-                continue;
-            }
-
-            direction = candidate;
-            break;
-        }
-
-        final var waystoneType = waystone.getWaystoneKind();
-        final var shouldOffsetFacing = !(waystoneType.equals(WaystoneKinds.WARP_PLATE));
-        final var targetPos = shouldOffsetFacing ? pos.relative(direction) : pos;
-        final var location = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
-        return Either.left(new TeleportDestination(level, location, direction));
+        return waystone.resolveDestination(level)
+                .map(Either::<TeleportDestination, WaystoneTeleportError>left)
+                .orElseGet(() -> Either.right(new WaystoneTeleportError.InvalidWaystone(waystone)));
     }
 
     private static void sendHackySyncPacketsAfterTeleport(Entity entity) {
@@ -230,8 +208,6 @@ public class WaystoneTeleportManager {
         if (event.isCanceled()) {
             return Either.right(new WaystoneTeleportError.CancelledByEvent());
         }
-
-        final var entity = context.getEntity();
 
         if (!context.getLeashedEntities().isEmpty()) {
             if (WaystonesConfig.getActive().rules.transportLeashed == WaystonesConfig.TransportMobs.DISABLED) {
