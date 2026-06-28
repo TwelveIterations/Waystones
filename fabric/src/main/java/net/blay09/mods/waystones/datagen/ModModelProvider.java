@@ -50,6 +50,7 @@ public class ModModelProvider extends FabricModelProvider {
                         .select(WarpPlateBlock.WarpPlateStatus.LOCKED, plainVariant(id("block/warp_plate_locked")))
                 ));
         blockStateModelGenerator.registerSimpleTintedItemModel(ModBlocks.warpPlate.asBlock(), ModelLocationUtils.getModelLocation(ModBlocks.warpPlate.asBlock()), new Constant(0xffc456bd));
+        createWarpPortal(blockStateModelGenerator);
         for (final var entry : ModBlocks.waystones.entrySet()) {
             createDoubleBlockWaystone(blockStateModelGenerator, entry.getKey(), entry.getValue().asBlock());
         }
@@ -68,9 +69,21 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.generateFlatItem(ModItems.crumblingAttunedShard.asItem(), ModelTemplates.FLAT_ITEM);
         ModItems.warpStones.forEach((_, warpStone) -> itemModelGenerator.generateFlatItem(warpStone.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM));
         itemModelGenerator.generateFlatItem(ModItems.warpScroll.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.portalScroll.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.returnScroll.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.boundScroll.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.blankScroll.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
+    }
+
+    private void createWarpPortal(BlockModelGenerators blockStateModelGenerator) {
+        final var topModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_portal_top");
+        final var bottomModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_portal_bottom");
+        final var generator = MultiVariantGenerator.dispatch(ModBlocks.warpPortal.asBlock())
+                .with(PropertyDispatch.initial(WarpPortalBlock.HALF)
+                        .select(DoubleBlockHalf.LOWER, plainVariant(bottomModelLocation))
+                        .select(DoubleBlockHalf.UPPER, plainVariant(topModelLocation)))
+                .with(ROTATION_HORIZONTAL_FACING);
+        blockStateModelGenerator.blockStateOutput.accept(generator);
     }
 
     private void createDoubleBlockWaystone(BlockModelGenerators blockStateModelGenerator, BuiltinWaystoneType type, Block block) {

@@ -8,6 +8,7 @@ public class ModScreens {
     public static void initialize(BalmMenuScreenRegistrar screens) {
         screens.register(ModMenus.waystoneSelection, WaystoneSelectionScreen::new);
         screens.register(ModMenus.warpScrollSelection, WaystoneSelectionScreen::new);
+        screens.register(ModMenus.portalScrollSelection, WaystoneSelectionScreen::new);
         screens.register(ModMenus.warpStoneSelection, WaystoneSelectionScreen::new);
         screens.register(ModMenus.portstoneSelection, WaystoneSelectionScreen::new);
         screens.register(ModMenus.inventorySelection, WaystoneSelectionScreen::new);

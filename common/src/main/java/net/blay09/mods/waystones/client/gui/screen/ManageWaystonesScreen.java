@@ -40,6 +40,11 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
                 this);
     }
 
+    @Override
+    protected boolean shouldShowWaystone(Waystone waystone) {
+        return !isReturnPortal(waystone);
+    }
+
     public boolean canReorderWaystones() {
         return parent.allowReordering();
     }

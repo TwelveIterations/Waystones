@@ -34,6 +34,7 @@ public class ModBlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 
         final var isTeleportTargetBuilder = tag(ModBlockTags.IS_TELEPORT_TARGET);
         isTeleportTargetBuilder.add(ModBlocks.warpPlate.asBlock());
+        isTeleportTargetBuilder.add(ModBlocks.warpPortal.asBlock());
         ModBlocks.waystones.sortedValues().forEach(it -> isTeleportTargetBuilder.add(it.asBlock()));
         ModBlocks.portstones.sortedValues().forEach(it -> isTeleportTargetBuilder.add(it.asBlock()));
         ModBlocks.sharestones.sortedValues().forEach(it -> isTeleportTargetBuilder.add(it.asBlock()));

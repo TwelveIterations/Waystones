@@ -24,10 +24,11 @@ public class ModItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
     protected void addTags(HolderLookup.Provider lookup) {
         final var enchantableDurabilityTag = tag(TagKey.create(Registries.ITEM, Identifier.withDefaultNamespace("enchantable/durability")));
         ModItems.warpStones.sortedValues().map(ItemLike::asItem).forEach(enchantableDurabilityTag::add);
-        tag(ModItemTags.SCROLLS).add(ModItems.warpScroll.asItem(), ModItems.returnScroll.asItem(), ModItems.boundScroll.asItem(), ModItems.blankScroll.asItem());
+        tag(ModItemTags.SCROLLS).add(ModItems.warpScroll.asItem(), ModItems.portalScroll.asItem(), ModItems.returnScroll.asItem(), ModItems.boundScroll.asItem(), ModItems.blankScroll.asItem());
         tag(ModItemTags.WARP_SCROLLS).add(ModItems.warpScroll.asItem());
         tag(ModItemTags.RETURN_SCROLLS).add(ModItems.returnScroll.asItem());
         tag(ModItemTags.BOUND_SCROLLS).add(ModItems.boundScroll.asItem());
+        tag(ModItemTags.PORTAL_SCROLLS).add(ModItems.portalScroll.asItem());
         final var warpStonesTag = tag(ModItemTags.WARP_STONES);
         ModItems.warpStones.sortedValues().map(ItemLike::asItem).forEach(warpStonesTag::add);
         tag(ModItemTags.WARP_SHARDS).add(ModItems.attunedShard.asItem(),
