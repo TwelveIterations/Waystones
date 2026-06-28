@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -160,5 +161,9 @@ public class WaystonesAPI {
 
     public static void deactivateWaystone(ServerPlayer player, Waystone waystone) {
         __internalMethods.deactivateWaystone(player, waystone);
+    }
+
+    public static Set<ResourceLocation> getDynamicWaystoneGroups(Waystone waystone) {
+        return WaystoneGroups.getDynamicGroups(waystone);
     }
 }

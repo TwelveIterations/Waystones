@@ -1,8 +1,11 @@
 package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneGroup;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -13,9 +16,19 @@ public interface IPlayerWaystoneData {
     long getCooldownUntil(Player player, ResourceLocation key);
     void setCooldownUntil(Player player, ResourceLocation key, long timeStamp);
     List<UUID> getSortingIndex(Player player);
-    List<UUID> ensureSortingIndex(Player player, Collection<Waystone> waystones);
+    List<UUID> ensureSortingIndex(Player player, Collection<? extends Waystone> waystones);
     void setSortingIndex(Player player, List<UUID> sortingIndex);
     Collection<Waystone> getWaystones(Player player);
+    Optional<Component> getWaystoneAlias(Player player, UUID waystoneUid);
+    void setWaystoneAlias(Player player, UUID waystoneUid, @Nullable Component alias);
+    Collection<WaystoneGroup> getWaystoneGroupRegistry(Player player);
+    void setWaystoneGroupRegistry(Player player, Collection<WaystoneGroup> groups);
+    void addWaystoneGroups(Player player, Collection<WaystoneGroup> groups);
+    void sortWaystoneGroupAsFirst(Player player, ResourceLocation groupId);
+    void sortWaystoneGroupAsLast(Player player, ResourceLocation groupId);
+    void sortWaystoneGroupSwap(Player player, ResourceLocation groupId, ResourceLocation otherGroupId);
+    Set<ResourceLocation> getConfiguredWaystoneGroups(Player player, UUID waystoneUid);
+    void setConfiguredWaystoneGroups(Player player, UUID waystoneUid, Set<ResourceLocation> groupIds);
     void sortWaystoneAsFirst(Player player, UUID waystoneUid);
     void sortWaystoneAsLast(Player player, UUID waystoneUid);
     void sortWaystoneSwap(Player player, UUID waystoneUid, UUID otherWaystoneUid);

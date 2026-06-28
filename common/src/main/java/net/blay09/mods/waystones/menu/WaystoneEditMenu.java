@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
-import net.blay09.mods.waystones.core.WaystoneImpl;
+import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -23,14 +23,14 @@ import java.util.Optional;
 
 public class WaystoneEditMenu extends AbstractContainerMenu {
 
-    public record Data(BlockPos pos, Waystone waystone, int modifierCount, Optional<Component> error,
+    public record Data(BlockPos pos, UserDecoratedWaystone waystone, int modifierCount, Optional<Component> error,
                        List<WaystoneVisibility> visibilityOptions) {
     }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, WaystoneEditMenu.Data> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC.cast(),
             WaystoneEditMenu.Data::pos,
-            WaystoneImpl.STREAM_CODEC,
+            UserDecoratedWaystone.STREAM_CODEC,
             WaystoneEditMenu.Data::waystone,
             ByteBufCodecs.INT,
             WaystoneEditMenu.Data::modifierCount,
@@ -40,17 +40,17 @@ public class WaystoneEditMenu extends AbstractContainerMenu {
             WaystoneEditMenu.Data::visibilityOptions,
             WaystoneEditMenu.Data::new);
 
-    private final Waystone waystone;
+    private final UserDecoratedWaystone waystone;
     private final int modifierCount;
     private final Component error;
     private final List<WaystoneVisibility> visibilityOptions;
     private final Container container;
 
-    public WaystoneEditMenu(int windowId, Waystone waystone, int modifierCount, Component error, List<WaystoneVisibility> visibilityOptions) {
+    public WaystoneEditMenu(int windowId, UserDecoratedWaystone waystone, int modifierCount, @Nullable Component error, List<WaystoneVisibility> visibilityOptions) {
         this(windowId, waystone, modifierCount, error, visibilityOptions, new SimpleContainer(5));
     }
 
-    public WaystoneEditMenu(int windowId, Waystone waystone, int modifierCount, Component error, List<WaystoneVisibility> visibilityOptions, Container container) {
+    public WaystoneEditMenu(int windowId, UserDecoratedWaystone waystone, int modifierCount, @Nullable Component error, List<WaystoneVisibility> visibilityOptions, Container container) {
         super(ModMenus.waystoneSettings.get(), windowId);
         this.waystone = waystone;
         this.modifierCount = modifierCount;

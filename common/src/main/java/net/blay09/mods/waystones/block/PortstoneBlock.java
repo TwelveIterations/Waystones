@@ -9,9 +9,9 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
-import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -43,7 +43,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -143,9 +142,9 @@ public class PortstoneBlock extends WaystoneBlockBase {
     public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult blockHitResult) {
         if (!world.isClientSide) {
             final var targetWaystoneType = getTargetWaystoneType();
-            final var waystones = PlayerWaystoneManager.getTargetsForWaystoneType(player, targetWaystoneType);
+            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForWaystoneType(player, targetWaystoneType));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            Balm.getNetworking().openGui(player, new BalmMenuProvider<Collection<Waystone>>() {
+            Balm.getNetworking().openGui(player, new BalmMenuProvider<List<UserDecoratedWaystone>>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("container.waystones." + color.getSerializedName() + "_portstone");
@@ -157,13 +156,13 @@ public class PortstoneBlock extends WaystoneBlockBase {
                 }
 
                 @Override
-                public Collection<Waystone> getScreenOpeningData(ServerPlayer serverPlayer) {
+                public List<UserDecoratedWaystone> getScreenOpeningData(ServerPlayer serverPlayer) {
                     return waystones;
                 }
 
                 @Override
-                public StreamCodec<RegistryFriendlyByteBuf, Collection<Waystone>> getScreenStreamCodec() {
-                    return WaystoneImpl.LIST_STREAM_CODEC;
+                public StreamCodec<RegistryFriendlyByteBuf, List<UserDecoratedWaystone>> getScreenStreamCodec() {
+                    return UserDecoratedWaystone.LIST_STREAM_CODEC;
                 }
             });
         }

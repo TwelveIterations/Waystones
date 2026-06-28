@@ -22,9 +22,9 @@ public class KnownWaystonesMessage implements CustomPacketPayload {
             "known_waystones"));
 
     private final ResourceLocation type;
-    private final Collection<Waystone> waystones;
+    private final Collection<UserDecoratedWaystone> waystones;
 
-    public KnownWaystonesMessage(ResourceLocation type, Collection<Waystone> waystones) {
+    public KnownWaystonesMessage(ResourceLocation type, Collection<UserDecoratedWaystone> waystones) {
         this.type = type;
         this.waystones = waystones;
     }
@@ -32,26 +32,26 @@ public class KnownWaystonesMessage implements CustomPacketPayload {
     public static void encode(RegistryFriendlyByteBuf buf, KnownWaystonesMessage message) {
         buf.writeResourceLocation(message.type);
         buf.writeShort(message.waystones.size());
-        for (Waystone waystone : message.waystones) {
-            WaystoneImpl.write(buf, waystone);
+        for (UserDecoratedWaystone waystone : message.waystones) {
+            UserDecoratedWaystone.STREAM_CODEC.encode(buf, waystone);
         }
     }
 
     public static KnownWaystonesMessage decode(RegistryFriendlyByteBuf buf) {
         ResourceLocation type = buf.readResourceLocation();
         int waystoneCount = buf.readShort();
-        List<Waystone> waystones = new ArrayList<>();
+        List<UserDecoratedWaystone> waystones = new ArrayList<>();
         for (int i = 0; i < waystoneCount; i++) {
-            waystones.add(WaystoneImpl.read(buf));
+            waystones.add(UserDecoratedWaystone.STREAM_CODEC.decode(buf));
         }
         return new KnownWaystonesMessage(type, waystones);
     }
 
     public static void handle(Player player, KnownWaystonesMessage message) {
-        final var waystones = message.waystones.stream().toList(); // backwards compat for event expecting a List
+        final List<Waystone> waystones = new ArrayList<>(message.waystones); // backwards compat for event expecting a List
         if (message.type.equals(WaystoneTypes.WAYSTONE)) {
             InMemoryPlayerWaystoneData playerWaystoneData = (InMemoryPlayerWaystoneData) PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
-            playerWaystoneData.setWaystones(message.waystones);
+            playerWaystoneData.setWaystones(player, message.waystones);
         }
 
         Balm.getEvents().fireEvent(new WaystonesListReceivedEvent(message.type, waystones));

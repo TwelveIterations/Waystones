@@ -81,13 +81,13 @@ public class WaystoneBlock extends WaystoneBlockBase {
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
             if (!world.isClientSide) {
-                blockEntity.getSelectionMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
+                blockEntity.getSelectionMenuProvider(player).ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
             }
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);
 
             if (!world.isClientSide) {
-                final var nameComponent = waystone.getName().copy().withStyle(ChatFormatting.WHITE);
+                final var nameComponent = waystone.getEffectiveName().copy().withStyle(ChatFormatting.WHITE);
                 final var chatComponent = Component.translatable("chat.waystones.waystone_activated", nameComponent).withStyle(ChatFormatting.YELLOW);
                 player.sendSystemMessage(chatComponent);
 

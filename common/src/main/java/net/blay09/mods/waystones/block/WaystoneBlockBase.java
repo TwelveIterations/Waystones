@@ -193,7 +193,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     protected InteractionResult handleEditActions(Level world, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide) {
-                blockEntity.getSettingsMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
+                blockEntity.getSettingsMenuProvider(player).ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
             }
             return InteractionResult.SUCCESS;
         }
@@ -327,7 +327,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                 final ServerPlayer player = (ServerPlayer) placer;
                 final WaystoneBlockEntityBase waystoneTileEntity = (WaystoneBlockEntityBase) blockEntity;
                 if (shouldOpenMenuWhenPlaced()) {
-                    waystoneTileEntity.getSettingsMenuProvider().ifPresent(it -> Balm.getNetworking().openGui(player, it));
+                    waystoneTileEntity.getSettingsMenuProvider(player).ifPresent(it -> Balm.getNetworking().openGui(player, it));
                 }
             }
         }

@@ -17,9 +17,11 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Supplier;
 
+import static net.blay09.mods.waystones.Waystones.id;
+
 public class WaystoneInventoryButton extends Button {
 
-    private static final ResourceLocation INVENTORY_BUTTON_SPRITE = ResourceLocation.withDefaultNamespace("waystones/inventory_button");
+    private static final ResourceLocation INVENTORY_BUTTON_SPRITE = id("inventory/inventory_button");
 
     private final AbstractContainerScreen<?> parentScreen;
     private final ItemStack iconItem;

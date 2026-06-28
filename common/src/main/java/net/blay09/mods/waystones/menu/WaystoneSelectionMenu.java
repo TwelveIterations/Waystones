@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
-import net.blay09.mods.waystones.core.WaystoneImpl;
+import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -13,28 +13,29 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
 public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
-    public record Data(Waystone fromWaystone, Collection<Waystone> waystones) {
+    public record Data(UserDecoratedWaystone fromWaystone, List<UserDecoratedWaystone> waystones) {
     }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-            WaystoneImpl.STREAM_CODEC,
+            UserDecoratedWaystone.STREAM_CODEC,
             Data::fromWaystone,
-            WaystoneImpl.LIST_STREAM_CODEC,
+            UserDecoratedWaystone.LIST_STREAM_CODEC,
             Data::waystones,
             Data::new);
 
-    private final Waystone fromWaystone;
-    private final Collection<Waystone> waystones;
+    private final @Nullable Waystone fromWaystone;
+    private final Collection<UserDecoratedWaystone> waystones;
     private final Set<ResourceLocation> flags;
     private Consumer<WaystoneTeleportContext> postTeleportHandler = it -> {};
     private ItemStack warpItem = ItemStack.EMPTY;
 
-    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<Waystone> waystones, Set<ResourceLocation> flags) {
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<UserDecoratedWaystone> waystones, Set<ResourceLocation> flags) {
         super(type, windowId);
         this.fromWaystone = fromWaystone;
         this.waystones = waystones;
@@ -69,7 +70,7 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
         return warpItem;
     }
 
-    public Collection<Waystone> getWaystones() {
+    public Collection<UserDecoratedWaystone> getWaystones() {
         return waystones;
     }
 

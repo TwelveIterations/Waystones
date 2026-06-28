@@ -2,11 +2,7 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmEnvironment;
-import net.blay09.mods.waystones.api.MutableWaystone;
-import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.*;
-import net.blay09.mods.waystones.api.WaystoneTypes;
-import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
@@ -14,6 +10,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -53,6 +50,7 @@ public class PlayerWaystoneManager {
 
         if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
             getPlayerWaystoneData(player.level()).activateWaystone(player, waystone);
+            ensureWaystoneGroups(player, waystone);
 
             Balm.getEvents().fireEvent(new WaystoneActivatedEvent(player, waystone));
         }
@@ -108,6 +106,50 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.level()).getWaystones(player);
     }
 
+    public static Optional<Component> getWaystoneAlias(Player player, UUID waystoneUid) {
+        return getPlayerWaystoneData(player.level()).getWaystoneAlias(player, waystoneUid);
+    }
+
+    public static void setWaystoneAlias(Player player, UUID waystoneUid, @Nullable Component alias) {
+        getPlayerWaystoneData(player.level()).setWaystoneAlias(player, waystoneUid, alias);
+    }
+
+    public static Set<ResourceLocation> getConfiguredWaystoneGroups(Player player, UUID waystoneUid) {
+        return getPlayerWaystoneData(player.level()).getConfiguredWaystoneGroups(player, waystoneUid);
+    }
+
+    public static void setConfiguredWaystoneGroups(Player player, UUID waystoneUid, Set<ResourceLocation> groupIds) {
+        if (groupIds.contains(WaystoneGroups.FAVORITES.identifier())) {
+            ensureWaystoneGroups(player, List.of(WaystoneGroups.FAVORITES));
+        }
+        getPlayerWaystoneData(player.level()).setConfiguredWaystoneGroups(player, waystoneUid, groupIds);
+    }
+
+    public static void ensureWaystoneGroups(Player player, Waystone waystone) {
+        ensureWaystoneGroups(player, WaystoneGroups.getDynamicGroupDefinitions(waystone));
+    }
+
+    public static void ensureWaystoneGroups(Player player, Collection<WaystoneGroup> groups) {
+        getPlayerWaystoneData(player.level()).addWaystoneGroups(player, groups);
+    }
+
+    public static Collection<WaystoneGroup> getWaystoneGroupRegistry(Player player) {
+        return getPlayerWaystoneData(player.level()).getWaystoneGroupRegistry(player);
+    }
+
+    public static UserDecoratedWaystone getPlayerDecoratedWaystone(Player player, Waystone waystone) {
+        final var backingWaystone = waystone instanceof UserDecoratedWaystone userDecoratedWaystone ? userDecoratedWaystone.getBackingWaystone() : waystone;
+        final var alias = getWaystoneAlias(player, backingWaystone.getWaystoneUid());
+        final var configuredWaystoneGroups = getConfiguredWaystoneGroups(player, backingWaystone.getWaystoneUid());
+        return new UserDecoratedWaystone(backingWaystone, alias.orElse(null), configuredWaystoneGroups);
+    }
+
+    public static List<UserDecoratedWaystone> getPlayerDecoratedWaystones(Player player, Collection<Waystone> waystones) {
+        return waystones.stream()
+                .map(waystone -> getPlayerDecoratedWaystone(player, waystone))
+                .toList();
+    }
+
     public static IPlayerWaystoneData getPlayerWaystoneData(@Nullable Level world) {
         return world == null || world.isClientSide ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
     }
@@ -120,7 +162,7 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.level()).getSortingIndex(player);
     }
 
-    public static List<UUID> ensureSortingIndex(Player player, Collection<Waystone> waystones) {
+    public static List<UUID> ensureSortingIndex(Player player, Collection<? extends Waystone> waystones) {
         return getPlayerWaystoneData(player.level()).ensureSortingIndex(player, waystones);
     }
 
@@ -134,6 +176,18 @@ public class PlayerWaystoneManager {
 
     public static void sortWaystoneSwap(Player player, UUID waystoneUid, UUID otherWaystoneUid) {
         getPlayerWaystoneData(player.level()).sortWaystoneSwap(player, waystoneUid, otherWaystoneUid);
+    }
+
+    public static void sortWaystoneGroupAsFirst(Player player, ResourceLocation groupId) {
+        getPlayerWaystoneData(player.level()).sortWaystoneGroupAsFirst(player, groupId);
+    }
+
+    public static void sortWaystoneGroupAsLast(Player player, ResourceLocation groupId) {
+        getPlayerWaystoneData(player.level()).sortWaystoneGroupAsLast(player, groupId);
+    }
+
+    public static void sortWaystoneGroupSwap(Player player, ResourceLocation groupId, ResourceLocation otherGroupId) {
+        getPlayerWaystoneData(player.level()).sortWaystoneGroupSwap(player, groupId, otherGroupId);
     }
 
     public static void activeWaystoneForEveryone(@Nullable MinecraftServer server, Waystone waystone) {

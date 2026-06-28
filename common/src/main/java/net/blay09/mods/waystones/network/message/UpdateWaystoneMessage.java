@@ -16,21 +16,22 @@ public class UpdateWaystoneMessage implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<UpdateWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
             "update_waystone"));
 
-    private final Waystone waystone;
+    private final UserDecoratedWaystone waystone;
 
-    public UpdateWaystoneMessage(Waystone waystone) {
+    public UpdateWaystoneMessage(UserDecoratedWaystone waystone) {
         this.waystone = waystone;
     }
 
     public static void encode(RegistryFriendlyByteBuf buf, UpdateWaystoneMessage message) {
-        WaystoneImpl.write(buf, message.waystone);
+        UserDecoratedWaystone.STREAM_CODEC.encode(buf, message.waystone);
     }
 
     public static UpdateWaystoneMessage decode(RegistryFriendlyByteBuf buf) {
-        return new UpdateWaystoneMessage(WaystoneImpl.read(buf));
+        return new UpdateWaystoneMessage(UserDecoratedWaystone.STREAM_CODEC.decode(buf));
     }
 
     public static void handle(Player player, UpdateWaystoneMessage message) {
+        PlayerWaystoneManager.setConfiguredWaystoneGroups(player, message.waystone.getWaystoneUid(), message.waystone.getConfiguredGroups());
         WaystoneManagerImpl.get(player.getServer()).updateWaystone(message.waystone);
         Balm.getEvents().fireEvent(new WaystoneUpdateReceivedEvent(message.waystone));
     }

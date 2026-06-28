@@ -8,10 +8,10 @@ import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -23,7 +23,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 public class InventoryButtonMessage implements CustomPacketPayload {
@@ -58,9 +58,9 @@ public class InventoryButtonMessage implements CustomPacketPayload {
             WaystonesAPI.createDefaultTeleportContext(player, waystone.get(), it -> it.addFlag(TeleportFlags.INVENTORY_BUTTON))
                     .mapLeft(WaystonesAPI::tryTeleport);
         } else if (inventoryButtonMode.isReturnToAny()) {
-            final var waystones = PlayerWaystoneManager.getTargetsForInventoryButton(player);
+            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForInventoryButton(player));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            final var containerProvider = new BalmMenuProvider<Collection<Waystone>>() {
+            final var containerProvider = new BalmMenuProvider<List<UserDecoratedWaystone>>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("container.waystones.waystone_selection");
@@ -72,13 +72,13 @@ public class InventoryButtonMessage implements CustomPacketPayload {
                 }
 
                 @Override
-                public Collection<Waystone> getScreenOpeningData(ServerPlayer serverPlayer) {
+                public List<UserDecoratedWaystone> getScreenOpeningData(ServerPlayer serverPlayer) {
                     return waystones;
                 }
 
                 @Override
-                public StreamCodec<RegistryFriendlyByteBuf, Collection<Waystone>> getScreenStreamCodec() {
-                    return WaystoneImpl.LIST_STREAM_CODEC;
+                public StreamCodec<RegistryFriendlyByteBuf, List<UserDecoratedWaystone>> getScreenStreamCodec() {
+                    return UserDecoratedWaystone.LIST_STREAM_CODEC;
                 }
             };
             Balm.getNetworking().openGui(player, containerProvider);

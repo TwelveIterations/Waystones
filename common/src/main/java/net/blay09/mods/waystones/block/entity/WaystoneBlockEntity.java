@@ -37,7 +37,10 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    public Optional<MenuProvider> getSelectionMenuProvider() {
+    public Optional<MenuProvider> getSelectionMenuProvider(Player player) {
+        final var fromWaystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone());
+        final var waystones =  PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone()));
+        PlayerWaystoneManager.ensureSortingIndex(player, waystones);
         return Optional.of(new BalmMenuProvider<WaystoneSelectionMenu.Data>() {
             @Override
             public Component getDisplayName() {
@@ -46,14 +49,12 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
 
             @Override
             public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-                final var waystones = PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone());
-                PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), getWaystone(), windowId, waystones, Collections.emptySet());
+                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), fromWaystone, windowId, waystones, Collections.emptySet());
             }
 
             @Override
             public WaystoneSelectionMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                return new WaystoneSelectionMenu.Data(getWaystone(), PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, getWaystone()));
+                return new WaystoneSelectionMenu.Data(fromWaystone, waystones);
             }
 
             @Override
