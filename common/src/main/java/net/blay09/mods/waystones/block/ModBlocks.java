@@ -57,6 +57,7 @@ public class ModBlocks {
     public static Block blackstoneWaystone;
     public static Block endStoneWaystone;
     public static Block warpPlate;
+    public static Block warpPortal;
     public static final PortstoneBlock[] portstones = new PortstoneBlock[portstoneColors.length];
     public static final SharestoneBlock[] sharestones = new SharestoneBlock[sharestoneColors.length];
 
@@ -70,6 +71,7 @@ public class ModBlocks {
         blocks.register(() -> blackstoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(blackstoneWaystone), id("blackstone_waystone"));
         blocks.register(() -> endStoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(endStoneWaystone), id("end_stone_waystone"));
         blocks.register(() -> warpPlate = new WarpPlateBlock(defaultProperties()), () -> itemBlock(warpPlate), id("warp_plate"));
+        blocks.registerBlock(() -> warpPortal = new WarpPortalBlock(defaultProperties().noLootTable().lightLevel(state -> 10).strength(-1f, 3600000f)), id("warp_portal"));
 
         for (final var color : portstoneColors) {
             blocks.register(() -> portstones[color.ordinal()] = new PortstoneBlock(color, defaultProperties()),

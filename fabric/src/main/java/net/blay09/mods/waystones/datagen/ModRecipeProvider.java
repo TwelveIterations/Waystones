@@ -124,6 +124,17 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy("has_deepslate", has(Items.DEEPSLATE))
                 .save(exporter);
 
+        shaped(RecipeCategory.DECORATIONS, ModItems.portalScroll, 3)
+                .pattern("SIS")
+                .pattern("SES")
+                .pattern("PPP")
+                .define('S', Items.AMETHYST_SHARD)
+                .define('I', Items.INK_SAC)
+                .define('E', Items.ENDER_PEARL)
+                .define('P', Items.PAPER)
+                .unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
+                .save(exporter);
+
         createPortstoneRecipe(exporter, DyeColor.WHITE, BalmItemTags.WHITE_DYES);
         createPortstoneRecipe(exporter, DyeColor.ORANGE, BalmItemTags.ORANGE_DYES);
         createPortstoneRecipe(exporter, DyeColor.MAGENTA, BalmItemTags.MAGENTA_DYES);

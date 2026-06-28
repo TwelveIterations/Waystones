@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.datagen;
 
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
+import net.blay09.mods.waystones.block.WarpPortalBlock;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.item.ModItems;
@@ -40,6 +41,7 @@ public class ModModelProvider extends FabricModelProvider {
                         .select(WarpPlateBlock.WarpPlateStatus.WARPING_INVALID, Variant.variant().with(VariantProperties.MODEL, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_plate")))
                         .select(WarpPlateBlock.WarpPlateStatus.LOCKED, Variant.variant().with(VariantProperties.MODEL, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_plate_locked")))
                 ));
+        createWarpPortal(blockStateModelGenerator);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.waystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.sandyWaystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.mossyWaystone);
@@ -63,6 +65,7 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.generateFlatItem(ModItems.deepslateShard, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.warpStone, ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.warpScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.portalScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.returnScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.boundScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.blankScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
@@ -76,6 +79,17 @@ public class ModModelProvider extends FabricModelProvider {
         for (final var portstone : ModBlocks.portstones) {
             itemModelGenerator.generateFlatItem(portstone.asItem(), portstoneTemplate);
         }
+    }
+
+    private void createWarpPortal(BlockModelGenerators blockStateModelGenerator) {
+        final var topModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_portal_top");
+        final var bottomModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_portal_bottom");
+        final var generator = MultiVariantGenerator.multiVariant(ModBlocks.warpPortal)
+                .with(createHorizontalFacingDispatch())
+                .with(PropertyDispatch.property(WarpPortalBlock.HALF)
+                        .select(DoubleBlockHalf.LOWER, Variant.variant().with(VariantProperties.MODEL, bottomModelLocation))
+                        .select(DoubleBlockHalf.UPPER, Variant.variant().with(VariantProperties.MODEL, topModelLocation)));
+        blockStateModelGenerator.blockStateOutput.accept(generator);
     }
 
     private void createDoubleBlockWaystone(BlockModelGenerators blockStateModelGenerator, Block block) {

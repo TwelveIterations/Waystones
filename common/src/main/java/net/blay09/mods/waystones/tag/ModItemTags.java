@@ -11,6 +11,7 @@ public class ModItemTags {
     public static final TagKey<Item> BOUND_SCROLLS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "bound_scrolls"));
     public static final TagKey<Item> RETURN_SCROLLS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "return_scrolls"));
     public static final TagKey<Item> WARP_SCROLLS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "warp_scrolls"));
+    public static final TagKey<Item> PORTAL_SCROLLS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "portal_scrolls"));
     public static final TagKey<Item> WARP_STONES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "warp_stones"));
     public static final TagKey<Item> WARP_SHARDS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "warp_shards"));
     public static final TagKey<Item> SINGLE_USE_WARP_SHARDS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "single_use_warp_shards"));

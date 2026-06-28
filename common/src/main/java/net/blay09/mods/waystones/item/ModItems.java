@@ -23,6 +23,7 @@ public class ModItems {
     public static Item blankScroll;
     public static Item boundScroll;
     public static Item warpScroll;
+    public static Item portalScroll;
     public static Item warpStone;
     public static Item warpDust;
     public static Item dormantShard;
@@ -35,6 +36,7 @@ public class ModItems {
         items.registerItem(() -> blankScroll = new BlankScrollItem(items.itemProperties()), id("blank_scroll"));
         items.registerItem(() -> boundScroll = new BoundScrollItem(items.itemProperties()), id("bound_scroll"), null);
         items.registerItem(() -> warpScroll = new WarpScrollItem(items.itemProperties()), id("warp_scroll"));
+        items.registerItem(() -> portalScroll = new PortalScrollItem(items.itemProperties()), id("portal_scroll"));
         items.registerItem(() -> warpStone = new WarpStoneItem(items.itemProperties()), id("warp_stone"));
         items.registerItem(() -> warpDust = new WarpDustItem(items.itemProperties()), id("warp_dust"));
         items.registerItem(() -> dormantShard = new ShardItem(items.itemProperties()), id("dormant_shard"));
@@ -53,6 +55,7 @@ public class ModItems {
                     "blank_scroll",
                     "return_scroll",
                     "warp_scroll",
+                    "portal_scroll",
                     "warp_stone",
                     "warp_dust",
                     "dormant_shard",

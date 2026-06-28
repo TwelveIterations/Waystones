@@ -47,6 +47,7 @@ public class ModRenderers {
                 .getTextColor() | 0xFF000000, () -> ModBlocks.portstones);
 
         renderers.setBlockRenderType(() -> ModBlocks.warpPlate, RenderType.cutout());
+        renderers.setBlockRenderType(() -> ModBlocks.warpPortal, RenderType.translucent());
     }
 
 }

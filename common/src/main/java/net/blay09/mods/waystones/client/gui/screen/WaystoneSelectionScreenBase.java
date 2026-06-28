@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.client.gui.screen;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneGroup;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.client.gui.widget.AbstractWaystoneList;
 import net.blay09.mods.waystones.client.gui.widget.ManageWaystonesButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystonesButton;
@@ -159,11 +160,15 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     protected void updateList() {
         List<Waystone> list = new ArrayList<>();
         for (Waystone waystone : waystones) {
-            if (activeGroupFilter != null && !waystone.getWaystoneGroups().contains(activeGroupFilter)) {
+            if (!shouldShowWaystone(waystone)) {
                 continue;
             }
 
-            if (waystone.getEffectiveName().getString().toLowerCase().contains(searchText.toLowerCase())) {
+            if (!ignoresFilters(waystone) && activeGroupFilter != null && !waystone.getWaystoneGroups().contains(activeGroupFilter)) {
+                continue;
+            }
+
+            if (ignoresFilters(waystone) || waystone.getEffectiveName().getString().toLowerCase().contains(searchText.toLowerCase())) {
                 list.add(waystone);
             }
         }
@@ -178,6 +183,18 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         if (waystoneList != null) {
             waystoneList.setWaystones(filteredWaystones);
         }
+    }
+
+    protected boolean shouldShowWaystone(Waystone waystone) {
+        return true;
+    }
+
+    protected boolean ignoresFilters(Waystone waystone) {
+        return isReturnPortal(waystone);
+    }
+
+    protected static boolean isReturnPortal(Waystone waystone) {
+        return WaystoneTypes.WARP_PORTAL.equals(waystone.getWaystoneType());
     }
 
     private List<WaystoneGroup> getShownGroupFilters() {
@@ -308,7 +325,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     public @Nullable Comparator<Waystone> getSorting() {
         final var player = Minecraft.getInstance().player;
         final var manualSorting = getManualSorting();
-        return switch (sortMode) {
+        final Comparator<Waystone> sorting = switch (sortMode) {
             case MANUAL -> manualSorting;
             case NAME -> {
                 final Comparator<Waystone> nameSorting = Comparator.comparing(
@@ -322,11 +339,17 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                 yield manualSorting != null ? distanceSorting.thenComparing(manualSorting) : distanceSorting;
             }
         };
+        return pinReturnPortalFirst(sorting);
     }
 
     protected @Nullable Comparator<Waystone> getManualSorting() {
         final var sortingIndex = PlayerWaystoneManager.getSortingIndex(playerInventory.player);
         return new UserSortingComparator(sortingIndex);
+    }
+
+    private Comparator<Waystone> pinReturnPortalFirst(@Nullable Comparator<Waystone> sorting) {
+        final Comparator<Waystone> returnPortalSorting = Comparator.comparing(WaystoneSelectionScreenBase::isReturnPortal).reversed();
+        return sorting != null ? returnPortalSorting.thenComparing(sorting) : returnPortalSorting;
     }
 
 }

@@ -1,0 +1,21 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"render_type": "translucent",
+	"texture_size": [16, 32],
+	"textures": {
+		"0": "waystones:block/warp_portal",
+		"particle": "waystones:block/warp_portal"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 7.5],
+			"to": [16, 16, 7.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 7.5]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 8], "texture": "#0"},
+				"south": {"uv": [0, 0, 16, 8], "texture": "#0"}
+			}
+		}
+	]
+}

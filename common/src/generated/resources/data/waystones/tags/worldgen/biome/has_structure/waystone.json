@@ -44,7 +44,6 @@
     "minecraft:frozen_ocean",
     "minecraft:deep_frozen_ocean",
     "minecraft:dripstone_caves",
-    "minecraft:lush_caves",
-    "minecraft:deep_dark"
+    "minecraft:lush_caves"
   ]
 }

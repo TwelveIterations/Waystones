@@ -61,6 +61,19 @@ public class ModMenus {
                     return ItemInitiatedWaystoneMenuData.STREAM_CODEC;
                 }
             });
+    public static DeferredObject<MenuType<WaystoneSelectionMenu>> portalScrollSelection = menus.registerMenu(id("portal_scroll_selection"),
+            new BalmMenuFactory<WaystoneSelectionMenu, ItemInitiatedWaystoneMenuData>() {
+                @Override
+                public WaystoneSelectionMenu create(int windowId, Inventory inventory, ItemInitiatedWaystoneMenuData data) {
+                    return new WaystoneSelectionMenu(ModMenus.portalScrollSelection.get(), null, windowId, data.waystones(), Collections.emptySet())
+                            .withWarpItem(data.itemStack());
+                }
+
+                @Override
+                public StreamCodec<RegistryFriendlyByteBuf, ItemInitiatedWaystoneMenuData> getStreamCodec() {
+                    return ItemInitiatedWaystoneMenuData.STREAM_CODEC;
+                }
+            });
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> warpStoneSelection = menus.registerMenu(id("warp_stone_selection"),
             new BalmMenuFactory<WaystoneSelectionMenu, ItemInitiatedWaystoneMenuData>() {
                 @Override

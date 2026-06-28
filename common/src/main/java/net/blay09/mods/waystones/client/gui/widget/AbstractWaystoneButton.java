@@ -2,6 +2,8 @@ package net.blay09.mods.waystones.client.gui.widget;
 
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneGroups;
+import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -27,6 +29,10 @@ public abstract class AbstractWaystoneButton extends Button {
         var effectiveName = waystone.getEffectiveName().copy();
         if (effectiveName.getString().isEmpty()) {
             effectiveName = Component.translatable("gui.waystones.waystone_selection.unnamed_waystone");
+        }
+        if (WaystoneTypes.WARP_PORTAL.equals(waystone.getWaystoneType())) {
+            effectiveName.withStyle(ChatFormatting.LIGHT_PURPLE);
+            return effectiveName;
         }
         final var player = Minecraft.getInstance().player;
         if (player != null) {

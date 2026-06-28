@@ -54,6 +54,7 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
         isTeleportTargetBuilder.add(ModBlocks.waystone,
                 ModBlocks.sandyWaystone,
                 ModBlocks.mossyWaystone,
+                ModBlocks.warpPortal,
                 ModBlocks.deepslateWaystone,
                 ModBlocks.blackstoneWaystone,
                 ModBlocks.endStoneWaystone,
