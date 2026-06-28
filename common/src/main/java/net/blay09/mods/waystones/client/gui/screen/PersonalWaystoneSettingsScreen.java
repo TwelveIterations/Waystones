@@ -8,7 +8,7 @@ import net.blay09.mods.waystones.client.gui.widget.WaystoneGroupButton;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.PersonalWaystoneSettingsMenu;
 import net.blay09.mods.waystones.network.message.RequestEditWaystoneMessage;
-import net.blay09.mods.waystones.network.message.UserDecorateWaystoneMessage;
+import net.blay09.mods.waystones.network.message.ServerboundPersonalWaystoneSettingsPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -185,7 +185,7 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
         final var selectedGroupIds = getSelectedGroupIds();
         if (aliasField != null && (!aliasField.getValue().equals(currentAlias) || !selectedGroupIds.equals(menu.getConfiguredGroups()))) {
             Balm.getNetworking()
-                    .sendToServer(new UserDecorateWaystoneMessage(
+                    .sendToServer(new ServerboundPersonalWaystoneSettingsPacket(
                             menu.getWaystone().getWaystoneUid(),
                             aliasField.getValue().trim().isEmpty() ? Optional.empty() : Optional.of(Component.literal(aliasField.getValue())),
                             selectedGroupIds));

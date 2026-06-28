@@ -16,38 +16,39 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-public class UserDecorateWaystoneMessage implements CustomPacketPayload {
+import static net.blay09.mods.waystones.Waystones.id;
 
-    public static final CustomPacketPayload.Type<UserDecorateWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
-            "user_decorate_waystone"));
+public class ServerboundPersonalWaystoneSettingsPacket implements CustomPacketPayload {
+
+    public static final CustomPacketPayload.Type<ServerboundPersonalWaystoneSettingsPacket> TYPE = new CustomPacketPayload.Type<>(id("personal_waystone_settings"));
 
     private final UUID waystoneUid;
     private final Optional<Component> alias;
     private final Set<ResourceLocation> groupIds;
 
-    public UserDecorateWaystoneMessage(UUID waystoneUid, Optional<Component> alias) {
+    public ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, Optional<Component> alias) {
         this(waystoneUid, alias, Set.of());
     }
 
-    public UserDecorateWaystoneMessage(UUID waystoneUid, Optional<Component> alias, Set<ResourceLocation> groupIds) {
+    public ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, Optional<Component> alias, Set<ResourceLocation> groupIds) {
         this.waystoneUid = waystoneUid;
         this.alias = alias;
         this.groupIds = groupIds;
     }
 
-    public static void encode(RegistryFriendlyByteBuf buf, UserDecorateWaystoneMessage message) {
+    public static void encode(RegistryFriendlyByteBuf buf, ServerboundPersonalWaystoneSettingsPacket message) {
         buf.writeUUID(message.waystoneUid);
         ComponentSerialization.OPTIONAL_STREAM_CODEC.encode(buf, message.alias);
         buf.writeCollection(message.groupIds, (innerBuf, groupId) -> innerBuf.writeResourceLocation(groupId));
     }
 
-    public static UserDecorateWaystoneMessage decode(RegistryFriendlyByteBuf buf) {
-        return new UserDecorateWaystoneMessage(buf.readUUID(),
+    public static ServerboundPersonalWaystoneSettingsPacket decode(RegistryFriendlyByteBuf buf) {
+        return new ServerboundPersonalWaystoneSettingsPacket(buf.readUUID(),
                 ComponentSerialization.OPTIONAL_STREAM_CODEC.decode(buf),
                 buf.readCollection(HashSet::new, innerBuf -> innerBuf.readResourceLocation()));
     }
 
-    public static void handle(ServerPlayer player, UserDecorateWaystoneMessage message) {
+    public static void handle(ServerPlayer player, ServerboundPersonalWaystoneSettingsPacket message) {
         final var waystone = new WaystoneProxy(player.server, message.waystoneUid);
         if (!waystone.isValid()) {
             Waystones.logger.warn("{} tried to decorate an invalid waystone with id {}", player.getName().getString(), message.waystoneUid);
