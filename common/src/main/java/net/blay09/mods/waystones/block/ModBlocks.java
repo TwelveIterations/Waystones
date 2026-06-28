@@ -22,6 +22,7 @@ public class ModBlocks {
 
     public static DiscriminatedBlocks<BuiltinWaystoneType> waystones;
     public static DeferredBlock warpPlate;
+    public static DeferredBlock warpPortal;
     public static DiscriminatedBlocks<BuiltinPortstoneType> portstones;
     public static DiscriminatedBlocks<BuiltinSharestoneType> sharestones;
 
@@ -31,6 +32,7 @@ public class ModBlocks {
                 .withItems(WaystoneBlockItem::new)
                 .asDiscriminatedBlocks();
         warpPlate = blocks.register("warp_plate", WarpPlateBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withDefaultItem().asDeferredBlock();
+        warpPortal = blocks.register("warp_portal", WarpPortalBlock::new, it -> it.noLootTable().lightLevel(_ -> 10).strength(-1f, 3600000f)).asDeferredBlock();
 
         final var sharestoneTypes = SharestoneTypes.builtinValues().collect(Collectors.toSet());
         final var portstoneTypes = PortstoneTypes.builtinValues().collect(Collectors.toSet());

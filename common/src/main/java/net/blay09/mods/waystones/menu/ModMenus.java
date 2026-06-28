@@ -44,6 +44,7 @@ public class ModMenus {
 
     public static Holder<MenuType<WaystoneSelectionMenu>> waystoneSelection;
     public static Holder<MenuType<WaystoneSelectionMenu>> warpScrollSelection;
+    public static Holder<MenuType<WaystoneSelectionMenu>> portalScrollSelection;
     public static Holder<MenuType<WaystoneSelectionMenu>> warpStoneSelection;
     public static Holder<MenuType<WaystoneSelectionMenu>> portstoneSelection;
     public static Holder<MenuType<WaystoneSelectionMenu>> inventorySelection;
@@ -76,6 +77,19 @@ public class ModMenus {
                     @Override
                     public WaystoneSelectionMenu create(int windowId, Inventory inventory, ItemInitiatedWaystoneMenuData data) {
                         return new WaystoneSelectionMenu(ModMenus.warpScrollSelection.value(), null, windowId, data.waystones(), data.warpRequirements(), Collections.emptySet())
+                                .withWarpItem(data.itemStack());
+                    }
+
+                    @Override
+                    public StreamCodec<RegistryFriendlyByteBuf, ItemInitiatedWaystoneMenuData> getStreamCodec() {
+                        return ItemInitiatedWaystoneMenuData.STREAM_CODEC;
+                    }
+                }).asHolder();
+        portalScrollSelection = menus.register("portal_scroll_selection",
+                new BalmMenuFactory<WaystoneSelectionMenu, ItemInitiatedWaystoneMenuData>() {
+                    @Override
+                    public WaystoneSelectionMenu create(int windowId, Inventory inventory, ItemInitiatedWaystoneMenuData data) {
+                        return new WaystoneSelectionMenu(ModMenus.portalScrollSelection.value(), null, windowId, data.waystones(), data.warpRequirements(), Collections.emptySet())
                                 .withWarpItem(data.itemStack());
                     }
 

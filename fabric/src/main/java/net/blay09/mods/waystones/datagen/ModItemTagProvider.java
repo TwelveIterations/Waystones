@@ -25,10 +25,11 @@ public class ModItemTagProvider extends FabricTagsProvider.ItemTagsProvider {
     protected void addTags(HolderLookup.Provider lookup) {
         final var enchantableDurabilityTag = builder(TagKey.create(Registries.ITEM, Identifier.withDefaultNamespace("enchantable/durability")));
         ModItems.warpStones.sortedValues().map(DeferredItem::asResourceKey).forEach(enchantableDurabilityTag::add);
-        builder(ModItemTags.SCROLLS).add(ModItems.warpScroll.asResourceKey(), ModItems.returnScroll.asResourceKey(), ModItems.boundScroll.asResourceKey(), ModItems.blankScroll.asResourceKey());
+        builder(ModItemTags.SCROLLS).add(ModItems.warpScroll.asResourceKey(), ModItems.portalScroll.asResourceKey(), ModItems.returnScroll.asResourceKey(), ModItems.boundScroll.asResourceKey(), ModItems.blankScroll.asResourceKey());
         builder(ModItemTags.WARP_SCROLLS).add(ModItems.warpScroll.asResourceKey());
         builder(ModItemTags.RETURN_SCROLLS).add(ModItems.returnScroll.asResourceKey());
         builder(ModItemTags.BOUND_SCROLLS).add(ModItems.boundScroll.asResourceKey());
+        builder(ModItemTags.PORTAL_SCROLLS).add(ModItems.portalScroll.asResourceKey());
         final var warpStonesTag = builder(ModItemTags.WARP_STONES);
         ModItems.warpStones.sortedValues().map(DeferredItem::asResourceKey).forEach(warpStonesTag::add);
         builder(ModItemTags.WARP_SHARDS).add(ModItems.attunedShard.asResourceKey(),

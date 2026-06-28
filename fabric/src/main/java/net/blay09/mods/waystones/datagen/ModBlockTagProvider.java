@@ -33,6 +33,7 @@ public class ModBlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
 
         final var isTeleportTargetBuilder = builder(ModBlockTags.IS_TELEPORT_TARGET);
         isTeleportTargetBuilder.add(ModBlocks.warpPlate.asResourceKey());
+        isTeleportTargetBuilder.add(ModBlocks.warpPortal.asResourceKey());
         ModBlocks.waystones.sortedValues().map(DeferredBlock::asResourceKey).forEach(isTeleportTargetBuilder::add);
         ModBlocks.portstones.sortedValues().map(DeferredBlock::asResourceKey).forEach(isTeleportTargetBuilder::add);
         ModBlocks.sharestones.sortedValues().map(DeferredBlock::asResourceKey).forEach(isTeleportTargetBuilder::add);

@@ -89,6 +89,11 @@ public class PlayerWaystoneManager {
     }
 
     public static Optional<Waystone> getNearestWaystone(Player player) {
+        final var returnPortal = WarpPortalManager.getReturnPortal(player);
+        if (returnPortal.isPresent()) {
+            return returnPortal;
+        }
+
         return getPlayerWaystoneData(player.level()).getWaystones(player).stream()
                 .filter(it -> it.getDimension() == player.level().dimension())
                 .min((first, second) -> {
@@ -219,7 +224,9 @@ public class PlayerWaystoneManager {
         if (itemStack.getItem() instanceof WaystoneKindScoped kindScoped) {
             return getTargetsForKind(player, kindScoped.getWaystoneKind());
         }
-        return PlayerWaystoneManager.getActivatedWaystones(player);
+        final var result = new ArrayList<>(PlayerWaystoneManager.getActivatedWaystones(player));
+        WarpPortalManager.getReturnPortal(player).ifPresent(result::add);
+        return result;
     }
 
     public static Collection<Waystone> getTargetsForWaystone(Player player, Waystone waystone) {
@@ -229,6 +236,7 @@ public class PlayerWaystoneManager {
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
             result.addAll(waystoneBlockEntity.getAuxiliaryTargets());
         }
+        WarpPortalManager.getReturnPortal(player).ifPresent(result::add);
 
         return result;
     }

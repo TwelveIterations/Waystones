@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.component.ReturnScrollComponent;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WarpPortalManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +23,7 @@ public class ReturnScrollItem extends BoundScrollItem {
 
     @Override
     public Optional<Waystone> getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
-        return PlayerWaystoneManager.getNearestWaystone(player);
+        return WarpPortalManager.getReturnPortal(player).or(() -> PlayerWaystoneManager.getNearestWaystone(player));
     }
 
     @Override
