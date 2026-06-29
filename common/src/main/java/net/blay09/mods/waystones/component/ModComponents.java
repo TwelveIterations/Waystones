@@ -21,6 +21,8 @@ public class ModComponents {
     public static Holder<DataComponentType<ReturnScrollComponent>> returnScroll;
     public static Holder<DataComponentType<WaystoneReferenceComponent>> waystoneIdentity;
     public static Holder<DataComponentType<WaystoneReferenceComponent>> warpPlateAttunement;
+    public static Holder<DataComponentType<UUID>> twinboundFeather;
+    public static Holder<DataComponentType<TwinboundFeatherLinksComponent>> twinboundFeatherLinks;
 
     public static void initialize(BalmDataComponentTypeRegistrar components) {
         description = components.register("description", DescriptionComponent.CODEC).asHolder();
@@ -32,5 +34,7 @@ public class ModComponents {
         returnScroll = components.register("return_scroll", ReturnScrollComponent.CODEC).asHolder();
         waystoneIdentity = components.register("waystone_identity", WaystoneReferenceComponent.CODEC).asHolder();
         warpPlateAttunement = components.register("waystone_attunement", WaystoneReferenceComponent.CODEC).asHolder();
+        twinboundFeather = components.register("twinbound_feather", UUIDUtil.CODEC).asHolder();
+        twinboundFeatherLinks = components.register("twinbound_feather_links", TwinboundFeatherLinksComponent.CODEC).asHolder();
     }
 }

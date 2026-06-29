@@ -10,6 +10,7 @@ public class WaystoneKinds {
     public static final Identifier WAYSTONE = Identifier.fromNamespaceAndPath("waystones", "waystone");
     public static final Identifier WARP_PLATE = Identifier.fromNamespaceAndPath("waystones", "warp_plate");
     public static final Identifier WARP_PORTAL = Identifier.fromNamespaceAndPath("waystones", "warp_portal");
+    public static final Identifier TWINBOUND_FEATHER = Identifier.fromNamespaceAndPath("waystones", "twinbound_feather");
 
     public static final Set<Identifier> SHARESTONES = Collections.synchronizedSet(new HashSet<>());
 

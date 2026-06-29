@@ -16,6 +16,7 @@ import net.blay09.mods.balm.world.item.BalmItemRegistrar;
 import net.blay09.mods.balm.world.level.block.BalmBlockRegistrar;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityTypeRegistrar;
 import net.blay09.mods.balm.world.level.levelgen.BalmWorldGen;
+import net.blay09.mods.shogi.network.ShogiStreamCodecs;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.client.WaystonesClient;
@@ -30,6 +31,7 @@ import net.blay09.mods.waystones.handler.ModEventHandlers;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.network.ModNetworking;
+import net.blay09.mods.waystones.requirement.TwinboundFeatherRequirement;
 import net.blay09.mods.waystones.resources.ForceSpawnInVillagesCondition;
 import net.blay09.mods.waystones.stats.ModStats;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
@@ -140,6 +142,7 @@ public class Waystones implements BalmModule {
     @Override
     public void initialize() {
         ModEventHandlers.initialize();
+        ShogiStreamCodecs.register(id("twinbound_feather"), TwinboundFeatherRequirement.class, TwinboundFeatherRequirement.STREAM_CODEC);
         WaystonesRules.initialize();
 
         final var hudInfo = Balm.modSupport().hudInfo();

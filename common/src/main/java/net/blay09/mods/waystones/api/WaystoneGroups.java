@@ -25,6 +25,7 @@ public final class WaystoneGroups {
     public static final Identifier DIMENSION_ICON = id("groups/dimension");
     public static final Identifier VILLAGES_ICON = id("groups/villages");
     public static final Identifier GLOBAL_ICON = id("groups/global");
+    public static final Identifier PLAYERS_ICON = id("groups/players");
 
     // TODO Would be nice to expose an API for this and getDimensionIcon
     public static final List<Identifier> PRESET_ICONS = List.of(
@@ -38,7 +39,8 @@ public final class WaystoneGroups {
             THE_END_ICON,
             DIMENSION_ICON,
             VILLAGES_ICON,
-            GLOBAL_ICON);
+            GLOBAL_ICON,
+            PLAYERS_ICON);
 
     public static final WaystoneGroup FAVORITES = new WaystoneGroupImpl(
             id("favorites"),
@@ -47,7 +49,16 @@ public final class WaystoneGroups {
             GroupColor.GOLD.rgb(),
             true,
             false,
-            -2);
+            -30);
+
+    public static final WaystoneGroup PLAYERS = new WaystoneGroupImpl(
+            id("players"),
+            Component.translatable("waystones.groups.players"),
+            PLAYERS_ICON,
+            GroupColor.GREEN.rgb(),
+            true,
+            false,
+            -20);
 
     public static final WaystoneGroup GLOBAL = new WaystoneGroupImpl(
             id("global"),
@@ -56,7 +67,7 @@ public final class WaystoneGroups {
             GroupColor.YELLOW.rgb(),
             true,
             false,
-            -1);
+            -10);
 
     private WaystoneGroups() {
     }
@@ -149,6 +160,9 @@ public final class WaystoneGroups {
 
     public static List<WaystoneGroup> getDynamicGroupDefinitions(Waystone waystone) {
         final var groups = new ArrayList<WaystoneGroup>();
+        if (waystone.getWaystoneKind().equals(WaystoneKinds.TWINBOUND_FEATHER)) {
+            groups.add(PLAYERS);
+        }
         if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
             groups.add(GLOBAL);
         }

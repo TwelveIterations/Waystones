@@ -8,11 +8,13 @@ import net.blay09.mods.shogi.common.effect.cost.ExperiencePointsCost;
 import net.blay09.mods.shogi.common.effect.server.cooldown.CooldownCost;
 import net.blay09.mods.shogi.context.executor.EffectExecutor;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.config.rules.WaystoneRuleContext;
 import net.blay09.mods.waystones.config.rules.WaystonesEffectExecutors;
+import net.blay09.mods.waystones.requirement.TwinboundFeatherRequirement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
@@ -173,9 +175,22 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
             if (requirements.right().isPresent() && entity instanceof ServerPlayer player && player.getAbilities().instabuild) {
                 requirements = requirements.swap();
             }
+            if (targetWaystone.getWaystoneKind().equals(WaystoneKinds.TWINBOUND_FEATHER)) {
+                requirements = requirements.map(
+                        it -> Either.left(withTwinboundFeatherRequirement(it)),
+                        it -> Either.right(withTwinboundFeatherRequirement(it))
+                );
+            }
             requirementsDirty = false;
         }
         return requirements;
+    }
+
+    private static List<Object> withTwinboundFeatherRequirement(List<Object> requirements) {
+        final var result = new ArrayList<>(requirements.size() + 1);
+        result.addAll(requirements);
+        result.add(TwinboundFeatherRequirement.INSTANCE);
+        return result;
     }
 
     @Override

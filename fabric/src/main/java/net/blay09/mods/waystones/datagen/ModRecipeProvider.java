@@ -130,6 +130,14 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
                         .save(exporter);
 
+                shapeless(RecipeCategory.TOOLS, ModItems.twinboundFeather)
+                        .requires(Items.FEATHER)
+                        .requires(Items.AMETHYST_SHARD)
+                        .requires(Items.GOLD_NUGGET)
+                        .requires(Items.INK_SAC)
+                        .unlockedBy("has_feather", has(Items.FEATHER))
+                        .save(exporter);
+
                 shaped(RecipeCategory.DECORATIONS, ModItems.blankScroll, 3)
                         .pattern("GFG")
                         .pattern("PPP")
