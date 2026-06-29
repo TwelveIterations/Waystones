@@ -191,11 +191,12 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     protected boolean ignoresFilters(Waystone waystone) {
-        return isReturnPortal(waystone);
+        return isPinned(waystone);
     }
 
-    protected static boolean isReturnPortal(Waystone waystone) {
-        return WaystoneKinds.WARP_PORTAL.equals(waystone.getWaystoneKind());
+    protected static boolean isPinned(Waystone waystone) {
+        final var waystoneKind = waystone.getWaystoneKind();
+        return WaystoneKinds.WARP_PORTAL.equals(waystoneKind) || WaystoneKinds.FLEETING_MEMORIAL.equals(waystoneKind);
     }
 
     private List<WaystoneGroup> getShownGroupFilters() {
@@ -337,7 +338,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                 yield manualSorting != null ? distanceSorting.thenComparing(manualSorting) : distanceSorting;
             }
         };
-        return pinReturnPortalFirst(sorting);
+        return pinSpecialTargetsFirst(sorting);
     }
 
     protected @Nullable Comparator<Waystone> getManualSorting() {
@@ -345,9 +346,9 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         return new UserSortingComparator(sortingIndex);
     }
 
-    private Comparator<Waystone> pinReturnPortalFirst(@Nullable Comparator<Waystone> sorting) {
-        final Comparator<Waystone> returnPortalSorting = Comparator.comparing(WaystoneSelectionScreenBase::isReturnPortal).reversed();
-        return sorting != null ? returnPortalSorting.thenComparing(sorting) : returnPortalSorting;
+    private Comparator<Waystone> pinSpecialTargetsFirst(@Nullable Comparator<Waystone> sorting) {
+        final Comparator<Waystone> specialTargetSorting = Comparator.comparing(WaystoneSelectionScreenBase::isPinned).reversed();
+        return sorting != null ? specialTargetSorting.thenComparing(sorting) : specialTargetSorting;
     }
 
 }

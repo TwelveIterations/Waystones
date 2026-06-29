@@ -218,11 +218,29 @@ public class PlayerWaystoneManager {
             return;
         }
 
-        List<ServerPlayer> players = server.getPlayerList().getPlayers();
-        for (ServerPlayer player : players) {
+        for (final var player : getWaystoneAwareOnlinePlayers(server, waystone)) {
             deactivateWaystone(player, waystone);
             WaystoneSyncManager.sendActivatedWaystones(player);
         }
+    }
+
+    public static List<ServerPlayer> getWaystoneAwareOnlinePlayers(MinecraftServer server, Waystone waystone) {
+        final var waystoneKind = waystone.getWaystoneKind();
+        if (waystoneKind.equals(WaystoneKinds.FLEETING_MEMORIAL)) {
+            return waystone.getOwnerUid()
+                    .map(server.getPlayerList()::getPlayer)
+                    .map(List::of)
+                    .orElseGet(List::of);
+        }
+
+        if (waystoneKind.equals(WaystoneKinds.WAYSTONE)) {
+            return server.getPlayerList().getPlayers()
+                    .stream()
+                    .filter(player -> isWaystoneActivated(player, waystone))
+                    .toList();
+        }
+
+        return server.getPlayerList().getPlayers();
     }
 
     public static Collection<Waystone> getTargetsForPlayer(Player player) {
@@ -232,15 +250,17 @@ public class PlayerWaystoneManager {
     public static Collection<Waystone> getTargetsForItem(Player player, ItemStack itemStack) {
         if (itemStack.getItem() instanceof WaystoneKindScoped kindScoped) {
             final var result = new ArrayList<>(getTargetsForKind(player, kindScoped.getWaystoneKind()));
-            // Twins are only available in Waystone-target teleports
+            // Twins and memorials are only available in Waystone-target teleports
             if (WaystoneKinds.WAYSTONE.equals(kindScoped.getWaystoneKind()) && player instanceof ServerPlayer serverPlayer) {
                 result.addAll(TwinboundFeatherTargets.getTargets(serverPlayer));
+                result.addAll(FleetingMemorialManager.getTargets(serverPlayer));
             }
             return result;
         }
         final var result = new ArrayList<>(PlayerWaystoneManager.getActivatedWaystones(player));
         if (player instanceof ServerPlayer serverPlayer) {
             result.addAll(TwinboundFeatherTargets.getTargets(serverPlayer));
+            result.addAll(FleetingMemorialManager.getTargets(serverPlayer));
         }
         WarpPortalManager.getReturnPortal(player).ifPresent(result::add);
         return result;
@@ -253,9 +273,10 @@ public class PlayerWaystoneManager {
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
             result.addAll(waystoneBlockEntity.getAuxiliaryTargets());
         }
-        // Twins are only available in Waystone-target teleports
+        // Twins and memorials are only available in Waystone-target teleports
         if (WaystoneKinds.WAYSTONE.equals(waystone.getWaystoneKind()) && player instanceof ServerPlayer serverPlayer) {
             result.addAll(TwinboundFeatherTargets.getTargets(serverPlayer));
+            result.addAll(FleetingMemorialManager.getTargets(serverPlayer));
         }
         WarpPortalManager.getReturnPortal(player).ifPresent(result::add);
 
@@ -274,6 +295,7 @@ public class PlayerWaystoneManager {
     public static Collection<Waystone> getTargetsForInventoryButton(ServerPlayer player) {
         final var result = new ArrayList<>(PlayerWaystoneManager.getActivatedWaystones(player));
         result.addAll(TwinboundFeatherTargets.getTargets(player));
+        result.addAll(FleetingMemorialManager.getTargets(player));
         return result;
     }
 }

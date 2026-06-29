@@ -155,6 +155,16 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .define('P', Items.PAPER)
                         .unlockedBy("has_paper", has(Items.PAPER))
                         .save(exporter);
+
+                shaped(RecipeCategory.COMBAT, ModItems.epitaph)
+                        .pattern("GGG")
+                        .pattern("ADA")
+                        .pattern("GGG")
+                        .define('G', BalmItemTags.GOLD_NUGGETS)
+                        .define('A', Items.AMETHYST_SHARD)
+                        .define('D', Items.DEEPSLATE)
+                        .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
+                        .save(exporter);
             }
 
             private void createSharestoneRecipe(RecipeOutput exporter, BuiltinSharestoneType type) {

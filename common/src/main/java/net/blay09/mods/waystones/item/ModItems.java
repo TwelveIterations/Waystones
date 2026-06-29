@@ -15,6 +15,7 @@ import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.migration.MigrationUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashSet;
@@ -31,6 +32,7 @@ public class ModItems {
     public static DeferredItem attunedShard;
     public static DeferredItem crumblingAttunedShard;
     public static DeferredItem twinboundFeather;
+    public static DeferredItem epitaph;
 
     public static void initialize(BalmItemRegistrar items) {
         returnScroll = items.register("return_scroll", ReturnScrollItem::new).asDeferredItem();
@@ -50,6 +52,7 @@ public class ModItems {
         attunedShard = items.register("attuned_shard", AttunedShardItem::new).asDeferredItem();
         crumblingAttunedShard = items.register("crumbling_attuned_shard", CrumblingAttunedShardItem::new).asDeferredItem();
         twinboundFeather = items.register("twinbound_feather", TwinboundFeatherItem::new).asDeferredItem();
+        epitaph = items.register("epitaph", Item::new, it -> it.stacksTo(1)).asDeferredItem();
 
         MigrationUtils.migrateItems(items);
     }
@@ -70,6 +73,7 @@ public class ModItems {
                             output.accept(ModItems.warpStones.get(WarpStoneTypes.UNSCOPED));
                             output.accept(ModItems.dormantShard);
                             output.accept(ModItems.twinboundFeather);
+                            output.accept(ModItems.epitaph);
                             ModBlocks.waystones.forEach((type, block) -> {
                                 if (type != WaystoneTypes.ANDESITE) {
                                     output.accept(block);

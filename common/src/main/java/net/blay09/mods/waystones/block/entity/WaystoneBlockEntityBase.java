@@ -243,12 +243,15 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
             waystone = InvalidWaystone.INSTANCE;
             shouldNotInitialize = true;
 
-            DoubleBlockHalf half = getBlockState().getValue(WaystoneBlock.HALF);
-            BlockPos otherPos = half == DoubleBlockHalf.UPPER ? worldPosition.below() : worldPosition.above();
-            BlockEntity blockEntity = Objects.requireNonNull(level).getBlockEntity(otherPos);
-            if (blockEntity instanceof WaystoneBlockEntityBase waystoneTile) {
-                waystoneTile.waystone = InvalidWaystone.INSTANCE;
-                waystoneTile.shouldNotInitialize = true;
+            final var blockState = getBlockState();
+            if (blockState.hasProperty(WaystoneBlock.HALF)) {
+                DoubleBlockHalf half = blockState.getValue(WaystoneBlock.HALF);
+                BlockPos otherPos = half == DoubleBlockHalf.UPPER ? worldPosition.below() : worldPosition.above();
+                BlockEntity blockEntity = Objects.requireNonNull(level).getBlockEntity(otherPos);
+                if (blockEntity instanceof WaystoneBlockEntityBase waystoneTile) {
+                    waystoneTile.waystone = InvalidWaystone.INSTANCE;
+                    waystoneTile.shouldNotInitialize = true;
+                }
             }
 
             setChanged();

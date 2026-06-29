@@ -21,12 +21,14 @@ public class ModBlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider arg) {
         final var relocationNotSupported = builder(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "relocation_not_supported")));
+        relocationNotSupported.add(ModBlocks.fleetingMemorial.asResourceKey());
         ModBlocks.waystones.sortedValues().map(DeferredBlock::asResourceKey).forEach(relocationNotSupported::add);
         ModBlocks.portstones.sortedValues().map(DeferredBlock::asResourceKey).forEach(relocationNotSupported::add);
         ModBlocks.sharestones.sortedValues().map(DeferredBlock::asResourceKey).forEach(relocationNotSupported::add);
 
         final var mineableBuilder = builder(BlockTags.MINEABLE_WITH_PICKAXE);
         mineableBuilder.add(ModBlocks.warpPlate.asResourceKey());
+        mineableBuilder.add(ModBlocks.fleetingMemorial.asResourceKey());
         ModBlocks.waystones.sortedValues().map(DeferredBlock::asResourceKey).forEach(mineableBuilder::add);
         ModBlocks.portstones.sortedValues().map(DeferredBlock::asResourceKey).forEach(mineableBuilder::add);
         ModBlocks.sharestones.sortedValues().map(DeferredBlock::asResourceKey).forEach(mineableBuilder::add);
@@ -34,6 +36,7 @@ public class ModBlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
         final var isTeleportTargetBuilder = builder(ModBlockTags.IS_TELEPORT_TARGET);
         isTeleportTargetBuilder.add(ModBlocks.warpPlate.asResourceKey());
         isTeleportTargetBuilder.add(ModBlocks.warpPortal.asResourceKey());
+        isTeleportTargetBuilder.add(ModBlocks.fleetingMemorial.asResourceKey());
         ModBlocks.waystones.sortedValues().map(DeferredBlock::asResourceKey).forEach(isTeleportTargetBuilder::add);
         ModBlocks.portstones.sortedValues().map(DeferredBlock::asResourceKey).forEach(isTeleportTargetBuilder::add);
         ModBlocks.sharestones.sortedValues().map(DeferredBlock::asResourceKey).forEach(isTeleportTargetBuilder::add);
