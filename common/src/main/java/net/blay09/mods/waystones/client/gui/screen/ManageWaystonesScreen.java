@@ -67,6 +67,10 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
         return parent.allowDeletion();
     }
 
+    public boolean canEditPersonalWaystoneSettings(Waystone waystone) {
+        return true;
+    }
+
     public void deleteWaystone(Waystone waystone) {
         final var player = Objects.requireNonNull(Minecraft.getInstance().player);
         PlayerWaystoneManager.deactivateWaystone(player, waystone);

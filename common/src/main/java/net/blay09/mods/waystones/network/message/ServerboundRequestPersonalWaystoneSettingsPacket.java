@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.balm.Balm;
-import net.blay09.mods.waystones.core.WaystoneProxy;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.PersonalWaystoneSettingsMenu;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -23,10 +23,8 @@ public record ServerboundRequestPersonalWaystoneSettingsPacket(UUID waystoneUid)
     );
 
     public static void handle(ServerPlayer player, ServerboundRequestPersonalWaystoneSettingsPacket message) {
-        final var waystone = new WaystoneProxy(player.level().getServer(), message.waystoneUid);
-        if (waystone.isValid()) {
-            Balm.networking().openMenu(player, PersonalWaystoneSettingsMenu.getProvider(player, waystone));
-        }
+        PlayerWaystoneManager.findWaystone(player, message.waystoneUid)
+                .ifPresent(waystone -> Balm.networking().openMenu(player, PersonalWaystoneSettingsMenu.getProvider(player, waystone)));
     }
 
     @Override

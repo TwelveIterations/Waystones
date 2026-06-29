@@ -21,7 +21,7 @@ public record ClientboundUpdateWaystonePacket(UserDecoratedWaystone waystone) im
     );
 
     public static void handle(Player player, ClientboundUpdateWaystonePacket message) {
-        message.waystone.getAlias().ifPresent(alias -> PlayerWaystoneManager.setWaystoneAlias(player, message.waystone.getWaystoneUid(), alias));
+        PlayerWaystoneManager.setWaystoneAlias(player, message.waystone.getWaystoneUid(), message.waystone.getAlias().orElse(null));
         PlayerWaystoneManager.setConfiguredWaystoneGroups(player, message.waystone.getWaystoneUid(), message.waystone.getConfiguredGroups());
         WaystonesClient.getWaystonesStore().updateWaystone(message.waystone);
         WaystoneUpdateReceivedEvent.EVENT.invoker().accept(new WaystoneUpdateReceivedEvent(message.waystone()));

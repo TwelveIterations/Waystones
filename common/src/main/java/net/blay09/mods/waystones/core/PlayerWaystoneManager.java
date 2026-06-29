@@ -107,6 +107,15 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.level()).getWaystones(player);
     }
 
+    public static Optional<Waystone> findWaystone(ServerPlayer player, UUID waystoneUid) {
+        final var waystone = new WaystoneProxy(player.level().getServer(), waystoneUid);
+        if (waystone.isValid()) {
+            return Optional.of(waystone);
+        }
+
+        return TwinboundFeatherTargets.findTarget(player, waystoneUid);
+    }
+
     public static Optional<Component> getWaystoneAlias(Player player, UUID waystoneUid) {
         return getPlayerWaystoneData(player.level()).getWaystoneAlias(player, waystoneUid);
     }
@@ -222,9 +231,17 @@ public class PlayerWaystoneManager {
 
     public static Collection<Waystone> getTargetsForItem(Player player, ItemStack itemStack) {
         if (itemStack.getItem() instanceof WaystoneKindScoped kindScoped) {
-            return getTargetsForKind(player, kindScoped.getWaystoneKind());
+            final var result = new ArrayList<>(getTargetsForKind(player, kindScoped.getWaystoneKind()));
+            // Twins are only available in Waystone-target teleports
+            if (WaystoneKinds.WAYSTONE.equals(kindScoped.getWaystoneKind()) && player instanceof ServerPlayer serverPlayer) {
+                result.addAll(TwinboundFeatherTargets.getTargets(serverPlayer));
+            }
+            return result;
         }
         final var result = new ArrayList<>(PlayerWaystoneManager.getActivatedWaystones(player));
+        if (player instanceof ServerPlayer serverPlayer) {
+            result.addAll(TwinboundFeatherTargets.getTargets(serverPlayer));
+        }
         WarpPortalManager.getReturnPortal(player).ifPresent(result::add);
         return result;
     }
@@ -235,6 +252,10 @@ public class PlayerWaystoneManager {
         final var blockEntity = player.level().getBlockEntity(waystone.getPos());
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
             result.addAll(waystoneBlockEntity.getAuxiliaryTargets());
+        }
+        // Twins are only available in Waystone-target teleports
+        if (WaystoneKinds.WAYSTONE.equals(waystone.getWaystoneKind()) && player instanceof ServerPlayer serverPlayer) {
+            result.addAll(TwinboundFeatherTargets.getTargets(serverPlayer));
         }
         WarpPortalManager.getReturnPortal(player).ifPresent(result::add);
 
@@ -251,6 +272,8 @@ public class PlayerWaystoneManager {
     }
 
     public static Collection<Waystone> getTargetsForInventoryButton(ServerPlayer player) {
-        return PlayerWaystoneManager.getActivatedWaystones(player);
+        final var result = new ArrayList<>(PlayerWaystoneManager.getActivatedWaystones(player));
+        result.addAll(TwinboundFeatherTargets.getTargets(player));
+        return result;
     }
 }
