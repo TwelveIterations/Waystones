@@ -5,6 +5,7 @@ import net.blay09.mods.shogi.common.effect.cost.ExperiencePointsCostInformation;
 import net.blay09.mods.shogi.common.effect.cost.ItemCostInformation;
 import net.blay09.mods.shogi.common.effect.failure.RefusalInformation;
 import net.blay09.mods.shogi.common.effect.server.cooldown.CooldownInformation;
+import net.blay09.mods.waystones.requirement.EpitaphRequirement;
 import net.blay09.mods.waystones.requirement.TwinboundFeatherRequirement;
 
 import java.util.*;
@@ -79,6 +80,7 @@ public class RequirementClientRegistry {
         registerRenderer(ExperienceLevelCostInformation.class, new ExperienceLevelRequirementRenderer());
         registerRenderer(ExperiencePointsCostInformation.class, new ExperiencePointsRequirementRenderer());
         registerRenderer(ItemCostInformation.class, new ItemRequirementRenderer());
+        registerRenderer(EpitaphRequirement.class, new EpitaphRequirementRenderer());
         registerRenderer(TwinboundFeatherRequirement.class, new TwinboundFeatherRequirementRenderer());
         registerRenderer(RefusalInformation.class, new RefuseRequirementRenderer());
         registerMerger(ExperienceLevelCostInformation.class, (current, incoming) -> Optional.of(new ExperienceLevelCostInformation(

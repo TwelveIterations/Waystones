@@ -26,6 +26,7 @@ public class ModNetworking {
         networking.registerClientboundPacket(ClientboundKnownWaystonesPacket.TYPE, ClientboundKnownWaystonesPacket.class, ClientboundKnownWaystonesPacket.STREAM_CODEC, ClientboundKnownWaystonesPacket::handle);
         networking.registerClientboundPacket(ClientboundSortingIndexPacket.TYPE, ClientboundSortingIndexPacket.class, ClientboundSortingIndexPacket.STREAM_CODEC, ClientboundSortingIndexPacket::handle);
         networking.registerClientboundPacket(ClientboundTeleportEffectPacket.TYPE, ClientboundTeleportEffectPacket.class, ClientboundTeleportEffectPacket.STREAM_CODEC, ClientboundTeleportEffectPacket::handle);
+        networking.registerClientboundPacket(ClientboundEpitaphActivationPacket.TYPE, ClientboundEpitaphActivationPacket.class, ClientboundEpitaphActivationPacket.STREAM_CODEC, ClientboundEpitaphActivationPacket::handle);
     }
 
 }

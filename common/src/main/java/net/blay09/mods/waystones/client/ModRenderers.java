@@ -34,6 +34,7 @@ public class ModRenderers {
         renderers.register(ModBlockEntities.waystone, WaystoneRenderer::new);
         renderers.register(ModBlockEntities.sharestone, SharestoneRenderer::new);
         renderers.register(ModBlockEntities.portstone, PortstoneRenderer::new);
+        renderers.register(ModBlockEntities.fleetingMemorial, FleetingMemorialRenderer::new);
     }
 
     public static void initialize(BalmBlockColorRegistrar blockColors) {

@@ -34,8 +34,7 @@ public class WaystoneSyncManager {
             return;
         }
 
-        List<ServerPlayer> players = server.getPlayerList().getPlayers();
-        for (ServerPlayer player : players) {
+        for (ServerPlayer player : PlayerWaystoneManager.getWaystoneAwareOnlinePlayers(server, waystone)) {
             sendWaystoneRemoval(player, waystone, wasDestroyed);
         }
     }
@@ -89,10 +88,7 @@ public class WaystoneSyncManager {
     }
 
     public static void sendWaystoneRemoval(Player player, Waystone waystone, boolean wasDestroyed) {
-        // If this is a waystone, only send an update if the player has activated it already
-        if (!waystone.getWaystoneKind().equals(WaystoneKinds.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
-            Balm.networking().sendTo(player, new ClientboundWaystoneRemovedPacket(waystone.getWaystoneKind(), waystone.getWaystoneUid(), wasDestroyed));
-        }
+        Balm.networking().sendTo(player, new ClientboundWaystoneRemovedPacket(waystone.getWaystoneKind(), waystone.getWaystoneUid(), wasDestroyed));
     }
 
 }
