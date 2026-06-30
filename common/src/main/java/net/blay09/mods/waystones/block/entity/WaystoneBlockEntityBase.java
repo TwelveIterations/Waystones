@@ -271,16 +271,16 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
         return silkTouched;
     }
 
-    public Optional<MenuProvider> getSelectionMenuProvider(Player player) {
+    public Optional<MenuProvider> getSelectionMenuProvider(ServerPlayer player) {
         return Optional.empty();
     }
 
     public abstract Component getName();
 
-    public Optional<MenuProvider> getSettingsMenuProvider(Player player) {
+    public Optional<MenuProvider> getSettingsMenuProvider(ServerPlayer player) {
         final var waystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone());
-        final var error = WaystonePermissionManager.mayEditWaystone((ServerPlayer) player, getWaystone());
-        final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions((ServerPlayer) player, waystone);
+        final var error = WaystonePermissionManager.mayEditWaystone(player, getWaystone());
+        final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions(player, waystone);
         return Optional.of(new BalmMenuProvider<WaystoneEditMenu.Data>() {
             @Override
             public Component getDisplayName() {
@@ -313,7 +313,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
         });
     }
 
-    public Optional<MenuProvider> getModifierMenuProvider(Player player) {
+    public Optional<MenuProvider> getModifierMenuProvider(ServerPlayer player) {
         final var waystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone());
         return Optional.of(new BalmMenuProvider<UserDecoratedWaystone>() {
             @Override
