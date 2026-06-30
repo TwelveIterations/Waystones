@@ -53,11 +53,12 @@ public class PlayerWaystoneManager {
                 }
 
                 if (!waystone.hasOwner()) {
+                    final var previousVisibility = waystone.getVisibility();
                     mutableWaystone.setOwnerUid(player.getUUID());
                     mutableWaystone.setOwnerUsername(player.getGameProfile().name());
                     mutableWaystone.setVisibility(WaystonesConfig.getActive().rules.defaultVisibility.getVisibility());
                     if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
-                        PlayerWaystoneManager.activeWaystoneForEveryone(serverLevel.getServer(), waystone);
+                        WaystoneIndexManager.visibilityChanged(serverLevel.getServer(), waystone, previousVisibility);
                     }
                 }
 
@@ -218,19 +219,6 @@ public class PlayerWaystoneManager {
         getPlayerWaystoneData(player.level()).sortWaystoneGroupSwap(player, groupId, otherGroupId);
     }
 
-    public static void activeWaystoneForEveryone(@Nullable MinecraftServer server, Waystone waystone) {
-        if (server == null) {
-            return;
-        }
-
-        List<ServerPlayer> players = server.getPlayerList().getPlayers();
-        for (ServerPlayer player : players) {
-            if (!isWaystoneActivated(player, waystone)) {
-                activateWaystone(player, waystone);
-            }
-        }
-    }
-
     public static void removeKnownWaystone(@Nullable MinecraftServer server, Waystone waystone) {
         if (server == null) {
             return;
@@ -263,7 +251,7 @@ public class PlayerWaystoneManager {
 
     public static Collection<Waystone> getTargetsForPlayer(ServerPlayer player) {
         final var result = new ArrayList<>(PlayerWaystoneManager.getActivatedWaystones(player));
-        addTeamWaystones(player, result);
+        addThirdPartyWaystones(player, result);
         return result;
     }
 
@@ -319,14 +307,14 @@ public class PlayerWaystoneManager {
         return result;
     }
 
-    private static void addTeamWaystones(ServerPlayer player, Collection<Waystone> result) {
+    private static void addThirdPartyWaystones(ServerPlayer player, Collection<Waystone> result) {
         // Keep track of ones we're already listing from other sources to avoid duplicates below
         final var knownWaystoneIds = new HashSet<UUID>();
         for (final var waystone : result) {
             knownWaystoneIds.add(waystone.getWaystoneUid());
         }
 
-        for (final var waystone : TeamWaystoneManager.getTargets(player)) {
+        for (final var waystone : WaystoneIndexManager.getTargets(player)) {
             if (knownWaystoneIds.add(waystone.getWaystoneUid())) {
                 result.add(waystone);
             }

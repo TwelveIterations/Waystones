@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.mixin;
 
-import net.blay09.mods.waystones.core.TeamWaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneIndexManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerScoreboard;
 import net.minecraft.world.scores.PlayerTeam;
@@ -22,12 +22,12 @@ public class ServerScoreboardMixin {
     @Inject(method = "addPlayerToTeam", at = @At("RETURN"))
     private void addPlayerToTeam(String player, PlayerTeam team, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (callbackInfo.getReturnValue()) {
-            TeamWaystoneManager.playerTeamChanged(server, player);
+            WaystoneIndexManager.playerTeamChanged(server, player);
         }
     }
 
     @Inject(method = "removePlayerFromTeam(Ljava/lang/String;Lnet/minecraft/world/scores/PlayerTeam;)V", at = @At("RETURN"))
     private void removePlayerFromTeam(String player, PlayerTeam team, CallbackInfo callbackInfo) {
-        TeamWaystoneManager.playerTeamChanged(server, player);
+        WaystoneIndexManager.playerTeamChanged(server, player);
     }
 }
