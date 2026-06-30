@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -64,8 +65,8 @@ public class SharestoneBlock extends WaystoneBlockBase {
 
     @Override
     protected InteractionResult handleActivation(Level level, BlockPos pos, BlockState state, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
-        if (!level.isClientSide()) {
-            blockEntity.getSelectionMenuProvider(player).ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
+        if (player instanceof ServerPlayer serverPlayer) {
+            blockEntity.getSelectionMenuProvider(serverPlayer).ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
             return InteractionResult.SUCCESS;
         }
 

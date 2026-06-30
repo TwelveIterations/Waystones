@@ -37,7 +37,7 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    public Optional<MenuProvider> getSelectionMenuProvider(Player player) {
+    public Optional<MenuProvider> getSelectionMenuProvider(ServerPlayer player) {
         final var fromWaystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone());
         final var waystones =  PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone()));
         PlayerWaystoneManager.ensureSortingIndex(player, waystones);

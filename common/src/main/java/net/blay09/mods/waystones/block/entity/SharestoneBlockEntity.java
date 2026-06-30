@@ -49,7 +49,7 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    public Optional<MenuProvider> getSelectionMenuProvider(Player player) {
+    public Optional<MenuProvider> getSelectionMenuProvider(ServerPlayer player) {
         final var fromWaystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone());
         final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForWaystone(player, fromWaystone));
         PlayerWaystoneManager.ensureSortingIndex(player, waystones);

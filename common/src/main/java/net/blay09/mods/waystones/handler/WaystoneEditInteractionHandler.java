@@ -4,6 +4,7 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.platform.event.callback.BlockCallback;
 import net.blay09.mods.balm.platform.event.callback.InteractionEventResult;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.BlockItem;
 
 public class WaystoneEditInteractionHandler {
@@ -24,8 +25,8 @@ public class WaystoneEditInteractionHandler {
                 return InteractionEventResult.DEFAULT;
             }
 
-            if (!level.isClientSide()) {
-                waystoneBlockEntity.getSettingsMenuProvider(player)
+            if (player instanceof ServerPlayer serverPlayer) {
+                waystoneBlockEntity.getSettingsMenuProvider(serverPlayer)
                         .ifPresent(menuProvider -> Balm.networking().openMenu(player, menuProvider));
             }
 
