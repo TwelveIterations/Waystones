@@ -14,6 +14,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.config.rules.WaystoneRuleContext;
 import net.blay09.mods.waystones.config.rules.WaystonesEffectExecutors;
+import net.blay09.mods.waystones.requirement.EpitaphRequirement;
 import net.blay09.mods.waystones.requirement.TwinboundFeatherRequirement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
@@ -177,8 +178,13 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
             }
             if (targetWaystone.getWaystoneKind().equals(WaystoneKinds.TWINBOUND_FEATHER)) {
                 requirements = requirements.map(
-                        it -> Either.left(withTwinboundFeatherRequirement(it)),
-                        it -> Either.right(withTwinboundFeatherRequirement(it))
+                        it -> Either.left(withAdditionalRequirement(it, TwinboundFeatherRequirement.INSTANCE)),
+                        it -> Either.right(withAdditionalRequirement(it, TwinboundFeatherRequirement.INSTANCE))
+                );
+            } else if (targetWaystone.getWaystoneKind().equals(WaystoneKinds.FLEETING_MEMORIAL)) {
+                requirements = requirements.map(
+                        it -> Either.left(withAdditionalRequirement(it, EpitaphRequirement.INSTANCE)),
+                        it -> Either.right(withAdditionalRequirement(it, EpitaphRequirement.INSTANCE))
                 );
             }
             requirementsDirty = false;
@@ -186,10 +192,10 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
         return requirements;
     }
 
-    private static List<Object> withTwinboundFeatherRequirement(List<Object> requirements) {
+    private static List<Object> withAdditionalRequirement(List<Object> requirements, Object additionalRequirement) {
         final var result = new ArrayList<>(requirements.size() + 1);
         result.addAll(requirements);
-        result.add(TwinboundFeatherRequirement.INSTANCE);
+        result.add(additionalRequirement);
         return result;
     }
 

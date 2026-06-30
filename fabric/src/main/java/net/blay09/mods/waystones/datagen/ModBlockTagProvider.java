@@ -22,12 +22,14 @@ public class ModBlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
     @Override
     protected void addTags(HolderLookup.Provider arg) {
         final var relocationNotSupported = tag(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "relocation_not_supported")));
+        relocationNotSupported.add(ModBlocks.fleetingMemorial.asBlock());
         ModBlocks.waystones.sortedValues().map(DeferredBlock::asBlock).forEach(relocationNotSupported::add);
         ModBlocks.portstones.sortedValues().map(DeferredBlock::asBlock).forEach(relocationNotSupported::add);
         ModBlocks.sharestones.sortedValues().map(DeferredBlock::asBlock).forEach(relocationNotSupported::add);
 
         final var mineableBuilder = tag(BlockTags.MINEABLE_WITH_PICKAXE);
         mineableBuilder.add(ModBlocks.warpPlate.asBlock());
+        mineableBuilder.add(ModBlocks.fleetingMemorial.asBlock());
         ModBlocks.waystones.sortedValues().forEach(it -> mineableBuilder.add(it.asBlock()));
         ModBlocks.portstones.sortedValues().forEach(it -> mineableBuilder.add(it.asBlock()));
         ModBlocks.sharestones.sortedValues().forEach(it -> mineableBuilder.add(it.asBlock()));
@@ -35,6 +37,7 @@ public class ModBlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
         final var isTeleportTargetBuilder = tag(ModBlockTags.IS_TELEPORT_TARGET);
         isTeleportTargetBuilder.add(ModBlocks.warpPlate.asBlock());
         isTeleportTargetBuilder.add(ModBlocks.warpPortal.asBlock());
+        isTeleportTargetBuilder.add(ModBlocks.fleetingMemorial.asBlock());
         ModBlocks.waystones.sortedValues().forEach(it -> isTeleportTargetBuilder.add(it.asBlock()));
         ModBlocks.portstones.sortedValues().forEach(it -> isTeleportTargetBuilder.add(it.asBlock()));
         ModBlocks.sharestones.sortedValues().forEach(it -> isTeleportTargetBuilder.add(it.asBlock()));
