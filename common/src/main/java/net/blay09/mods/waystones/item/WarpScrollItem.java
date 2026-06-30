@@ -11,7 +11,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -36,6 +35,7 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
     @Override
     public ItemStack finishUsingItem(ItemStack itemStack, Level world, LivingEntity entity) {
         if (!world.isClientSide() && entity instanceof ServerPlayer player) {
+            final var hand = player.getUsedItemHand();
             final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForItem(player, itemStack));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
             Balm.networking().openMenu(player, new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
@@ -48,13 +48,14 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
                 public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
                     return new WaystoneSelectionMenu(ModMenus.warpScrollSelection.value(), null, windowId, waystones, Collections.emptyMap(), Collections.emptySet())
                             .withWarpItem(itemStack)
+                            .withHand(hand)
                             .setPostTeleportHandler(context -> itemStack.consume(1, inventory.player));
                 }
 
 
                 @Override
                 public ModMenus.ItemInitiatedWaystoneMenuData getScreenOpeningData(ServerPlayer serverPlayer) {
-                    final var warpRequirements = WaystoneSelectionMenu.buildWarpRequirements(serverPlayer, null, waystones, Collections.emptySet(), itemStack, InteractionHand.MAIN_HAND);
+                    final var warpRequirements = WaystoneSelectionMenu.buildWarpRequirements(serverPlayer, null, waystones, Collections.emptySet(), itemStack, hand);
                     return new ModMenus.ItemInitiatedWaystoneMenuData(waystones, itemStack, warpRequirements);
                 }
 

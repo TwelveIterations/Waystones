@@ -37,10 +37,14 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
         if (!world.isClientSide() && entity instanceof ServerPlayer player) {
+            final var hand = player.getUsedItemHand();
             final var boundTo = getWaystoneAttunedTo(player.level().getServer(), player, stack);
-            boundTo.ifPresent(targetWaystone -> WaystonesAPI.createDefaultTeleportContext(player, targetWaystone, it -> it.setWarpItem(stack))
-                    .mapLeft(WaystonesAPI::tryTeleport)
-                    .ifLeft(it -> stack.consume(1, player))
+            boundTo.ifPresent(targetWaystone -> WaystonesAPI.createUncheckedDefaultTeleportContext(player, targetWaystone, it -> {
+                        it.setWarpItem(stack);
+                        it.setWarpHand(hand);
+                    })
+                    .ifLeft(context -> WaystonesAPI.tryTeleportAsync(context)
+                            .thenAccept(result -> result.ifLeft(_ -> stack.consume(1, player))))
             );
         }
 

@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public interface InternalMethods {
@@ -25,6 +26,10 @@ public interface InternalMethods {
 
     Either<WaystoneTeleportContext, WaystoneTeleportError> createCustomTeleportContext(Entity entity, Waystone waystone);
 
+    Either<WaystoneTeleportContext, WaystoneTeleportError> createUncheckedDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init);
+
+    Either<WaystoneTeleportContext, WaystoneTeleportError> createUncheckedCustomTeleportContext(Entity entity, Waystone waystone);
+
     WaystoneTeleportContext createUnboundTeleportContext(Entity entity, Waystone waystone);
 
     WaystoneTeleportContext createUnboundTeleportContext(Entity entity);
@@ -32,6 +37,10 @@ public interface InternalMethods {
     Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context);
 
     Either<List<Entity>, WaystoneTeleportError> forceTeleport(WaystoneTeleportContext context);
+
+    CompletableFuture<Either<List<Entity>, WaystoneTeleportError>> tryTeleportAsync(WaystoneTeleportContext context);
+
+    CompletableFuture<Either<List<Entity>, WaystoneTeleportError>> forceTeleportAsync(WaystoneTeleportContext context);
 
     Optional<Waystone> getWaystoneAt(ServerLevel level, BlockPos pos);
 

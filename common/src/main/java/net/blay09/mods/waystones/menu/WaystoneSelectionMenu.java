@@ -59,7 +59,7 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
     private final Set<Identifier> flags;
     private Consumer<WaystoneTeleportContext> postTeleportHandler = _ -> {};
     private ItemStack warpItem = ItemStack.EMPTY;
-    private InteractionHand warpHand = InteractionHand.MAIN_HAND;
+    private @Nullable InteractionHand warpHand;
 
     public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, List<UserDecoratedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements, Set<Identifier> flags) {
         super(type, windowId);
@@ -103,7 +103,7 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
         return warpItem;
     }
 
-    public InteractionHand getWarpHand() {
+    public @Nullable InteractionHand getWarpHand() {
         return warpHand;
     }
 
@@ -129,16 +129,18 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
     }
 
     public static Map<UUID, Either<List<Object>, List<Object>>> buildWarpRequirements(ServerPlayer player, @Nullable Waystone fromWaystone, List<? extends Waystone> waystones, Set<Identifier> flags) {
-        return buildWarpRequirements(player, fromWaystone, waystones, flags, ItemStack.EMPTY, InteractionHand.MAIN_HAND);
+        return buildWarpRequirements(player, fromWaystone, waystones, flags, ItemStack.EMPTY, null);
     }
 
-    public static Map<UUID, Either<List<Object>, List<Object>>> buildWarpRequirements(ServerPlayer player, @Nullable Waystone fromWaystone, List<? extends Waystone> waystones, Set<Identifier> flags, ItemStack warpItem, InteractionHand warpHand) {
+    public static Map<UUID, Either<List<Object>, List<Object>>> buildWarpRequirements(ServerPlayer player, @Nullable Waystone fromWaystone, List<? extends Waystone> waystones, Set<Identifier> flags, ItemStack warpItem, @Nullable InteractionHand warpHand) {
         final var warpRequirements = new HashMap<UUID, Either<List<Object>, List<Object>>>();
         for (final var waystone : waystones) {
             final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone);
             context.setFromWaystone(fromWaystone);
             context.setWarpItem(warpItem);
-            context.setWarpHand(warpHand);
+            if (warpHand != null) {
+                context.setWarpHand(warpHand);
+            }
             context.addFlags(flags);
             if (context instanceof WaystoneTeleportContextImpl impl) {
                 impl.setExecutor(WaystonesEffectExecutors.simulated());

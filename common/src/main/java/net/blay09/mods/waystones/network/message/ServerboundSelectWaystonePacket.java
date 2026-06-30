@@ -1,17 +1,18 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.WaystonesAPI;
-import net.blay09.mods.waystones.core.TwinboundFeatherTargets;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
-import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.UUID;
 
@@ -40,9 +41,7 @@ public record ServerboundSelectWaystonePacket(UUID waystoneUid) implements Custo
                     message.waystoneUid);
             return;
         }
-        final var waystone = selectedWaystone.get().isTransient()
-                ? TwinboundFeatherTargets.findTarget(player, message.waystoneUid).orElse(null)
-                : new WaystoneProxy(player.level().getServer(), message.waystoneUid);
+        final var waystone = PlayerWaystoneManager.findWaystone(player, message.waystoneUid).orElse(null);
         if (waystone == null) {
             Waystones.logger.warn("{} tried to teleport to transient waystone {} that is no longer available.",
                     player.getName().getString(),
@@ -51,23 +50,37 @@ public record ServerboundSelectWaystonePacket(UUID waystoneUid) implements Custo
         }
 
         if (selectionMenu.getType() == ModMenus.portalScrollSelection.value()) {
-            WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> {
+            WaystonesAPI.createUncheckedDefaultTeleportContext(player, waystone, it -> {
                         it.setWarpItem(selectionMenu.getWarpItem());
                         it.setWarpHand(selectionMenu.getWarpHand());
                     })
-                    .ifLeft(selectionMenu.getPostTeleportHandler());
+                    .ifLeft(selectionMenu.getPostTeleportHandler())
+                    .ifRight(error -> player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED)));
             player.closeContainer();
             return;
         }
 
-        WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> {
+        final var warpHand = selectionMenu.getWarpHand();
+        final var itemInHand = warpHand != null ? player.getItemInHand(warpHand) : ItemStack.EMPTY;
+        if (warpHand != null && (itemInHand.isEmpty() || !ItemStack.isSameItemSameComponents(itemInHand, selectionMenu.getWarpItem()))) {
+            final var error = new WaystoneTeleportError.SourceItemMissing();
+            player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED));
+            player.closeContainer();
+            return;
+        }
+
+        WaystonesAPI.createUncheckedDefaultTeleportContext(player, waystone, it -> {
                     it.setFromWaystone(selectionMenu.getWaystoneFrom());
                     it.setWarpItem(selectionMenu.getWarpItem());
-                    it.setWarpHand(selectionMenu.getWarpHand());
+                    if (warpHand != null) {
+                        it.setWarpHand(warpHand);
+                    }
                     it.addFlags(selectionMenu.getFlags());
                 })
-                .ifLeft(WaystonesAPI::tryTeleport)
-                .ifLeft(selectionMenu.getPostTeleportHandler())
+                .ifLeft(context -> WaystonesAPI.tryTeleportAsync(context)
+                        .thenAccept(result -> result
+                                .ifLeft(_ -> selectionMenu.getPostTeleportHandler().accept(context))
+                                .ifRight(error -> player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED)))))
                 .ifRight(error -> player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED)));
         player.closeContainer();
     }

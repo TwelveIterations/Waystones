@@ -43,7 +43,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     private @Nullable Waystone fromWaystone;
 
     private ItemStack warpItem = ItemStack.EMPTY;
-    private InteractionHand warpHand = InteractionHand.MAIN_HAND;
+    private @Nullable InteractionHand warpHand;
 
     private boolean playsSound = true;
     private boolean playsEffect = true;
@@ -107,7 +107,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     }
 
     @Override
-    public InteractionHand getWarpHand() {
+    public @Nullable InteractionHand getWarpHand() {
         return warpHand;
     }
 
@@ -203,6 +203,10 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     public void setRequirements(Either<List<Object>, List<Object>> warpRequirements) {
         this.requirements = warpRequirements;
         this.requirementsDirty = false;
+    }
+
+    void invalidateRequirements() {
+        this.requirementsDirty = true;
     }
 
     @Override
