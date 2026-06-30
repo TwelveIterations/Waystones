@@ -1,10 +1,10 @@
 package net.blay09.mods.waystones.config.rules;
 
-import com.mojang.authlib.GameProfile;
 import net.blay09.mods.shogi.context.MutableShogiContext;
 import net.blay09.mods.shogi.context.ShogiContext;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import org.jspecify.annotations.Nullable;
@@ -98,18 +98,7 @@ public final class WaystoneRuleContext {
     }
 
     private static Optional<String> getOwnerUsername(ShogiContext context, Waystone waystone) {
-        final var ownerUsername = waystone.getOwnerUsername();
-        if (ownerUsername.isPresent()) {
-            return ownerUsername;
-        }
-
-        if (!(context.entity() instanceof ServerPlayer player)) {
-            return Optional.empty();
-        }
-
-        final var server = player.level().getServer();
-        return waystone.getOwnerUid()
-                .flatMap(ownerUid -> server.services().profileResolver().fetchById(ownerUid))
-                .map(GameProfile::name);
+        final var server = context.entity() instanceof ServerPlayer player ? player.level().getServer() : null;
+        return PlayerWaystoneManager.getOwnerUsername(waystone, server);
     }
 }

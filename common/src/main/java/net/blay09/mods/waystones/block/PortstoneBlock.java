@@ -135,8 +135,8 @@ public class PortstoneBlock extends WaystoneBlockBase {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult blockHitResult) {
-        if (!world.isClientSide()) {
-            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForKind(player, type.kind()));
+        if (player instanceof ServerPlayer serverPlayer) {
+            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForKind(serverPlayer, type.kind()));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
             Balm.networking().openMenu(player, new BalmMenuProvider<ModMenus.WaystoneListMenuData>() {
                 @Override

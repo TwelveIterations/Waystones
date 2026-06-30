@@ -147,6 +147,7 @@
   "gui.waystones.waystone_settings.visibility.global": "Visible to Everyone",
   "gui.waystones.waystone_settings.visibility.shard_only": "Teleports via Attuned Shard",
   "gui.waystones.waystone_settings.visibility.sharestones": "Visible to matching Sharestones",
+  "gui.waystones.waystone_settings.visibility.team": "Visible to Team",
   "gui.waystones.group_settings.color": "Label Color: %s",
   "gui.waystones.group_settings.icon": "Icon: %s",
   "gui.waystones.inventory.no_waystones_activated": "You have not activated any waystones yet.",
