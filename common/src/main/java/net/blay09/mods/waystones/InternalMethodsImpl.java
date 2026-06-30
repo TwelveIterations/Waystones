@@ -41,7 +41,7 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Either<WaystoneTeleportContext, WaystoneTeleportError> createUncheckedDefaultTeleportContextAsync(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init) {
+    public Either<WaystoneTeleportContext, WaystoneTeleportError> createUncheckedDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init) {
         return createDefaultTeleportContext(createUncheckedCustomTeleportContext(entity, waystone), entity, init);
     }
 

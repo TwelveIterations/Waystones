@@ -26,7 +26,7 @@ public interface InternalMethods {
 
     Either<WaystoneTeleportContext, WaystoneTeleportError> createCustomTeleportContext(Entity entity, Waystone waystone);
 
-    Either<WaystoneTeleportContext, WaystoneTeleportError> createUncheckedDefaultTeleportContextAsync(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init);
+    Either<WaystoneTeleportContext, WaystoneTeleportError> createUncheckedDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init);
 
     Either<WaystoneTeleportContext, WaystoneTeleportError> createUncheckedCustomTeleportContext(Entity entity, Waystone waystone);
 

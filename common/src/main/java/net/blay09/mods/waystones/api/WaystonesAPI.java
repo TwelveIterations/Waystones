@@ -55,7 +55,7 @@ public class WaystonesAPI {
      * context creation; {@link #tryTeleportAsync(WaystoneTeleportContext)} performs that validation after the destination chunk has loaded.
      */
     public static Either<WaystoneTeleportContext, WaystoneTeleportError> createUncheckedDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init) {
-        return __internalMethods.createUncheckedDefaultTeleportContextAsync(entity, waystone, init);
+        return __internalMethods.createUncheckedDefaultTeleportContext(entity, waystone, init);
     }
 
     /**
