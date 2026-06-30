@@ -3,10 +3,9 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.WaystonesAPI;
-import net.blay09.mods.waystones.core.TwinboundFeatherTargets;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
-import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -42,9 +41,7 @@ public record ServerboundSelectWaystonePacket(UUID waystoneUid) implements Custo
                     message.waystoneUid);
             return;
         }
-        final var waystone = selectedWaystone.get().isTransient()
-                ? TwinboundFeatherTargets.findTarget(player, message.waystoneUid).orElse(null)
-                : new WaystoneProxy(player.level().getServer(), message.waystoneUid);
+        final var waystone = PlayerWaystoneManager.findWaystone(player, message.waystoneUid).orElse(null);
         if (waystone == null) {
             Waystones.logger.warn("{} tried to teleport to transient waystone {} that is no longer available.",
                     player.getName().getString(),
