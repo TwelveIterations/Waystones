@@ -17,7 +17,8 @@ public enum WaystoneVisibility implements StringRepresentable {
     ACTIVATION,
     GLOBAL,
     SHARD_ONLY,
-    SHARESTONES;
+    SHARESTONES,
+    TEAM;
 
     private static final IntFunction<WaystoneVisibility> BY_ID = ByIdMap.continuous(WaystoneVisibility::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final StreamCodec<ByteBuf, WaystoneVisibility> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, WaystoneVisibility::ordinal);
@@ -36,7 +37,7 @@ public enum WaystoneVisibility implements StringRepresentable {
 
     public boolean isSupportedForWaystoneKind(Identifier kind) {
         return switch(this) {
-            case ACTIVATION, GLOBAL -> WaystoneKinds.WAYSTONE.equals(kind);
+            case ACTIVATION, GLOBAL, TEAM -> WaystoneKinds.WAYSTONE.equals(kind);
             case SHARD_ONLY -> WaystoneKinds.WARP_PLATE.equals(kind);
             case SHARESTONES -> WaystoneKinds.isSharestone(kind);
         };

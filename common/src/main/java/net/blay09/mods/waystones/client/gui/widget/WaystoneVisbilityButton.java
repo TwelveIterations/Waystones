@@ -24,6 +24,9 @@ public class WaystoneVisbilityButton extends Button {
     private final WidgetSprites GLOBAL_SPRITES = new WidgetSprites(
             id("edit_waystone/visibility/visibility_global_button"),
             id("edit_waystone/visibility/visibility_global_button_highlighted"));
+    private final WidgetSprites TEAM_SPRITES = new WidgetSprites(
+            id("edit_waystone/visibility/visibility_team_button"),
+            id("edit_waystone/visibility/visibility_team_button_highlighted"));
     private final WidgetSprites SHARD_ONLY_SPRITES = new WidgetSprites(
             id("edit_waystone/visibility/visibility_shard_only_button"),
             id("edit_waystone/visibility/visibility_shard_only_button_highlighted"));
@@ -67,6 +70,7 @@ public class WaystoneVisbilityButton extends Button {
         return switch (visibility) {
             case ACTIVATION -> ACTIVATION_SPRITES;
             case GLOBAL -> GLOBAL_SPRITES;
+            case TEAM -> TEAM_SPRITES;
             case SHARD_ONLY -> SHARD_ONLY_SPRITES;
             case SHARESTONES -> SHARESTONE_SPRITES;
         };

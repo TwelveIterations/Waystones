@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.core;
 
+import com.mojang.authlib.GameProfile;
 import net.blay09.mods.balm.platform.BalmEnvironment;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.MutableWaystone;
@@ -115,6 +116,22 @@ public class PlayerWaystoneManager {
         }
 
         return TwinboundFeatherTargets.findTarget(player, waystoneUid);
+    }
+
+    public static Optional<String> getOwnerUsername(Waystone waystone, @Nullable MinecraftServer server) {
+        final var ownerUsername = waystone.getOwnerUsername();
+        if (ownerUsername.isPresent()) {
+            return ownerUsername;
+        }
+
+        if (server == null) {
+            return Optional.empty();
+        }
+
+        // Legacy worlds did not store owner usernames, so we try to look it up from the server's cache as a fallback
+        return waystone.getOwnerUid()
+                .flatMap(ownerUid -> server.services().profileResolver().fetchById(ownerUid))
+                .map(GameProfile::name);
     }
 
     public static Optional<Component> getWaystoneAlias(Player player, UUID waystoneUid) {
@@ -244,11 +261,13 @@ public class PlayerWaystoneManager {
         return server.getPlayerList().getPlayers();
     }
 
-    public static Collection<Waystone> getTargetsForPlayer(Player player) {
-        return PlayerWaystoneManager.getActivatedWaystones(player);
+    public static Collection<Waystone> getTargetsForPlayer(ServerPlayer player) {
+        final var result = new ArrayList<>(PlayerWaystoneManager.getActivatedWaystones(player));
+        addTeamWaystones(player, result);
+        return result;
     }
 
-    public static Collection<Waystone> getTargetsForItem(Player player, ItemStack itemStack) {
+    public static Collection<Waystone> getTargetsForItem(ServerPlayer player, ItemStack itemStack) {
         if (itemStack.getItem() instanceof WaystoneKindScoped kindScoped) {
             final var result = new ArrayList<>(getTargetsForKind(player, kindScoped.getWaystoneKind()));
             // Twins and memorials are only available in Waystone-target teleports
@@ -258,7 +277,7 @@ public class PlayerWaystoneManager {
             }
             return result;
         }
-        final var result = new ArrayList<>(PlayerWaystoneManager.getActivatedWaystones(player));
+        final var result = new ArrayList<>(PlayerWaystoneManager.getTargetsForPlayer(player));
         if (player instanceof ServerPlayer serverPlayer) {
             result.addAll(TwinboundFeatherTargets.getTargets(serverPlayer));
             result.addAll(FleetingMemorialManager.getTargets(serverPlayer));
@@ -267,7 +286,7 @@ public class PlayerWaystoneManager {
         return result;
     }
 
-    public static Collection<Waystone> getTargetsForWaystone(Player player, Waystone waystone) {
+    public static Collection<Waystone> getTargetsForWaystone(ServerPlayer player, Waystone waystone) {
         final var result = getTargetsForKind(player, waystone.getWaystoneKind());
 
         final var blockEntity = player.level().getBlockEntity(waystone.getPos());
@@ -284,7 +303,7 @@ public class PlayerWaystoneManager {
         return result;
     }
 
-    public static Collection<Waystone> getTargetsForKind(Player player, Identifier kind) {
+    public static Collection<Waystone> getTargetsForKind(ServerPlayer player, Identifier kind) {
         if (WaystoneKinds.WAYSTONE.equals(kind)) {
             return getTargetsForPlayer(player);
         } else if (WaystoneKinds.isSharestone(kind)) {
@@ -294,9 +313,23 @@ public class PlayerWaystoneManager {
     }
 
     public static Collection<Waystone> getTargetsForInventoryButton(ServerPlayer player) {
-        final var result = new ArrayList<>(PlayerWaystoneManager.getActivatedWaystones(player));
+        final var result = new ArrayList<>(PlayerWaystoneManager.getTargetsForPlayer(player));
         result.addAll(TwinboundFeatherTargets.getTargets(player));
         result.addAll(FleetingMemorialManager.getTargets(player));
         return result;
+    }
+
+    private static void addTeamWaystones(ServerPlayer player, Collection<Waystone> result) {
+        // Keep track of ones we're already listing from other sources to avoid duplicates below
+        final var knownWaystoneIds = new HashSet<UUID>();
+        for (final var waystone : result) {
+            knownWaystoneIds.add(waystone.getWaystoneUid());
+        }
+
+        for (final var waystone : TeamWaystoneManager.getTargets(player)) {
+            if (knownWaystoneIds.add(waystone.getWaystoneUid())) {
+                result.add(waystone);
+            }
+        }
     }
 }
