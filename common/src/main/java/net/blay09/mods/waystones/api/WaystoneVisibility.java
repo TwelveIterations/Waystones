@@ -12,6 +12,7 @@ import java.util.function.IntFunction;
 public enum WaystoneVisibility {
     ACTIVATION,
     GLOBAL,
+    TEAM,
     SHARD_ONLY,
     ORANGE_SHARESTONE,
     MAGENTA_SHARESTONE,
@@ -62,7 +63,7 @@ public enum WaystoneVisibility {
 
     public boolean isSupportedForWaystoneType(ResourceLocation waystoneType) {
         return switch (this) {
-            case ACTIVATION, GLOBAL -> WaystoneTypes.WAYSTONE.equals(waystoneType);
+            case ACTIVATION, GLOBAL, TEAM -> WaystoneTypes.WAYSTONE.equals(waystoneType);
             case SHARD_ONLY -> WaystoneTypes.WARP_PLATE.equals(waystoneType);
             case ORANGE_SHARESTONE,
                  MAGENTA_SHARESTONE,

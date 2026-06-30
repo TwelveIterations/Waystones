@@ -48,7 +48,9 @@ public class RemoveWaystoneMessage implements CustomPacketPayload {
                 // If the waystone is global and the player is in creative mode, remove the global-ness
                 final var backingWaystone = waystone.getBackingWaystone();
                 if (backingWaystone instanceof MutableWaystone mutableWaystone) {
+                    final var previousVisibility = backingWaystone.getVisibility();
                     mutableWaystone.setVisibility(WaystoneVisibility.ACTIVATION);
+                    TeamWaystoneManager.visibilityChanged(player.server, backingWaystone, previousVisibility);
 
                     // Check if the waystone block still exists - if not, completely remove the waystone from existence to remove it from all players
                     // This way we can't have orphan global waystones left over. And just in case the waystone *was* just being silk-touch moved, it's easy to reactivate a global waystone for everyone (since it does that automatically).

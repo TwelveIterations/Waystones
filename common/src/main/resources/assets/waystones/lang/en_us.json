@@ -171,6 +171,7 @@
   "gui.waystones.waystone_settings.visibility.red_sharestone": "Visible to Red Sharestones",
   "gui.waystones.waystone_settings.visibility.black_sharestone": "Visible to Black Sharestones",
   "gui.waystones.waystone_settings.visibility.sharestones": "Visible to matching Sharestones",
+  "gui.waystones.waystone_settings.visibility.team": "Visible to Team",
   "gui.waystones.group_settings.color": "Label Color: %s",
   "gui.waystones.group_settings.icon": "Icon: %s",
   "gui.waystones.inventory.no_waystones_activated": "You have not activated any waystones yet.",

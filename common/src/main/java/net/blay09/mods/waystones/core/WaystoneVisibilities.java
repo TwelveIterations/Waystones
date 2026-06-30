@@ -18,6 +18,9 @@ public class WaystoneVisibilities {
             result.add(baseVisibility);
         }
         if (baseVisibility == WaystoneVisibility.ACTIVATION) {
+            if (!result.contains(WaystoneVisibility.TEAM)) {
+                result.add(WaystoneVisibility.TEAM);
+            }
             if (WaystonePermissionManager.isAllowedVisibility(WaystoneVisibility.GLOBAL) || WaystonePermissionManager.skipsPermissions(player)) {
                 if (!result.contains(WaystoneVisibility.GLOBAL)) {
                     result.add(WaystoneVisibility.GLOBAL);
