@@ -61,12 +61,9 @@ public record ServerboundEditWaystonePacket(UUID waystoneUid, String name, Wayst
         backingWaystone.setName(legalName);
 
         final var previousVisibility = backingWaystone.getVisibility();
-        if (visibility == WaystoneVisibility.GLOBAL && backingWaystone.getVisibility() != WaystoneVisibility.GLOBAL) {
-            PlayerWaystoneManager.activeWaystoneForEveryone(server, backingWaystone);
-        }
         backingWaystone.setVisibility(visibility);
 
-        TeamWaystoneManager.visibilityChanged(server, backingWaystone, previousVisibility);
+        WaystoneIndexManager.visibilityChanged(server, backingWaystone, previousVisibility);
         SavedDataWaystonesStore.get(server).setDirty();
         WaystoneSyncManager.sendWaystoneUpdateToAll(server, backingWaystone);
 

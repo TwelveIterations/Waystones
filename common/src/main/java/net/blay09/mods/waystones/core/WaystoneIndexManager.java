@@ -11,26 +11,28 @@ import net.minecraft.world.scores.PlayerTeam;
 
 import java.util.*;
 
-public class TeamWaystoneManager {
+public class WaystoneIndexManager {
 
     private static final SetMultimap<String, UUID> waystonesByTeamName = MultimapBuilder.hashKeys().linkedHashSetValues().build();
+    private static final Set<UUID> globalWaystones = new LinkedHashSet<>();
 
     public static void rebuildIndex(MinecraftServer server) {
         waystonesByTeamName.clear();
+        globalWaystones.clear();
         for (final var waystone : SavedDataWaystonesStore.get(server).getWaystones()) {
-            if (waystone.getVisibility() == WaystoneVisibility.TEAM) {
-                add(server, waystone);
-            }
+            add(server, waystone);
         }
     }
 
     public static void visibilityChanged(MinecraftServer server, Waystone waystone, WaystoneVisibility previousVisibility) {
-        if (previousVisibility == WaystoneVisibility.TEAM) {
+        if (previousVisibility == WaystoneVisibility.TEAM || previousVisibility == WaystoneVisibility.GLOBAL) {
             remove(waystone);
         }
-        if (waystone.getVisibility() == WaystoneVisibility.TEAM) {
-            add(server, waystone);
-        }
+        add(server, waystone);
+    }
+
+    public static void waystoneRemoved(Waystone waystone) {
+        remove(waystone);
     }
 
     public static void playerTeamChanged(MinecraftServer server, String playerName) {
@@ -45,6 +47,28 @@ public class TeamWaystoneManager {
     }
 
     public static Collection<Waystone> getTargets(ServerPlayer player) {
+        final var result = new ArrayList<Waystone>();
+        result.addAll(getGlobalTargets(player));
+        result.addAll(getTeamTargets(player));
+        return result;
+    }
+
+    private static Collection<Waystone> getGlobalTargets(ServerPlayer player) {
+        if (globalWaystones.isEmpty()) {
+            return List.of();
+        }
+
+        final var store = SavedDataWaystonesStore.get(player.level().getServer());
+        final var result = new ArrayList<Waystone>();
+        for (final var waystoneId : globalWaystones) {
+            store.getWaystoneById(waystoneId)
+                    .filter(waystone -> waystone.getVisibility() == WaystoneVisibility.GLOBAL)
+                    .ifPresent(result::add);
+        }
+        return result;
+    }
+
+    private static Collection<Waystone> getTeamTargets(ServerPlayer player) {
         final var team = player.getTeam();
         if (team == null) {
             return List.of();
@@ -66,6 +90,15 @@ public class TeamWaystoneManager {
     }
 
     private static void add(MinecraftServer server, Waystone waystone) {
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
+            globalWaystones.add(waystone.getWaystoneUid());
+            return;
+        }
+
+        if (waystone.getVisibility() != WaystoneVisibility.TEAM) {
+            return;
+        }
+
         PlayerWaystoneManager.getOwnerUsername(waystone, server)
                 .map(ownerUsername -> server.getScoreboard().getPlayersTeam(ownerUsername))
                 .map(PlayerTeam::getName)
@@ -73,6 +106,7 @@ public class TeamWaystoneManager {
     }
 
     private static void remove(Waystone waystone) {
+        globalWaystones.remove(waystone.getWaystoneUid());
         waystonesByTeamName.values().remove(waystone.getWaystoneUid());
     }
 }
