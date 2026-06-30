@@ -10,6 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -53,6 +54,11 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
     @Override
     public Optional<UUID> getOwnerUid() {
         return getBackingWaystone().getOwnerUid();
+    }
+
+    @Override
+    public Optional<String> getOwnerUsername() {
+        return getBackingWaystone().getOwnerUsername();
     }
 
     @Override
@@ -139,6 +145,14 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
         Waystone backingWaystone = getBackingWaystone();
         if (backingWaystone instanceof MutableWaystone) {
             ((MutableWaystone) backingWaystone).setOwnerUid(ownerUid);
+        }
+    }
+
+    @Override
+    public void setOwnerUsername(@Nullable String username) {
+        Waystone backingWaystone = getBackingWaystone();
+        if (backingWaystone instanceof MutableWaystone) {
+            ((MutableWaystone) backingWaystone).setOwnerUsername(username);
         }
     }
 
