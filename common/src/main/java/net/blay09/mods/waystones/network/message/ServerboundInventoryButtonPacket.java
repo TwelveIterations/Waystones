@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -40,8 +41,10 @@ public class ServerboundInventoryButtonPacket implements CustomPacketPayload {
 
         final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
         if (waystone.isPresent()) {
-            WaystonesAPI.createDefaultTeleportContext(player, waystone.get(), it -> it.addFlag(TeleportFlags.INVENTORY_BUTTON))
-                    .mapLeft(WaystonesAPI::tryTeleport);
+            WaystonesAPI.createUncheckedDefaultTeleportContext(player, waystone.get(), it -> it.addFlag(TeleportFlags.INVENTORY_BUTTON))
+                    .ifLeft(context -> WaystonesAPI.tryTeleportAsync(context)
+                            .thenAccept(result -> result.ifRight(error -> player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED)))))
+                    .ifRight(error -> player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED)));
         } else if (inventoryButtonMode.isReturnToAny()) {
             final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, (PlayerWaystoneManager.getTargetsForInventoryButton(player)));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);

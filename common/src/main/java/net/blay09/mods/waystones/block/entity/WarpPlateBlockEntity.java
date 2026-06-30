@@ -116,7 +116,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
         if ((ticksPassed == null || ticksPassed != -1) && hasPotentialWarpTarget()) {
             final var targetWaystone = getTargetWaystone().orElse(InvalidWaystone.INSTANCE);
             final var status = targetWaystone.isValid() ? WarpPlateBlock.WarpPlateStatus.WARPING : WarpPlateBlock.WarpPlateStatus.WARPING_INVALID;
-            final var canAfford = WaystonesAPI.createDefaultTeleportContext(entity, targetWaystone, it -> it.setFromWaystone(getWaystone()))
+            final var canAfford = WaystonesAPI.createUncheckedDefaultTeleportContext(entity, targetWaystone, it -> it.setFromWaystone(getWaystone()))
                     .mapLeft(WaystoneTeleportContext::getRequirements)
                     .mapLeft(it -> it.left().isPresent())
                     .left().orElse(true);
@@ -201,19 +201,21 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     }
 
     private void teleportToTarget(Entity entity, Waystone targetWaystone, ItemStack targetAttunementStack) {
-        WaystonesAPI.createDefaultTeleportContext(entity, targetWaystone, it -> {
+        WaystonesAPI.createUncheckedDefaultTeleportContext(entity, targetWaystone, it -> {
                     it.setFromWaystone(getWaystone());
                     it.setWarpItem(targetAttunementStack);
                 })
-                .flatMap(WaystonesAPI::tryTeleport)
+                .ifLeft(context -> WaystonesAPI.tryTeleportAsync(context)
+                        .thenAccept(result -> result
+                                .ifRight(informRejectedTeleport(entity))
+                                .ifLeft(_ -> {
+                                    if (targetAttunementStack.is(ModItemTags.SINGLE_USE_WARP_SHARDS)) {
+                                        if (!(entity instanceof Player player) || !player.getAbilities().instabuild) {
+                                            targetAttunementStack.shrink(1);
+                                        }
+                                    }
+                                })))
                 .ifRight(informRejectedTeleport(entity))
-                .ifLeft(_ -> {
-                    if (targetAttunementStack.is(ModItemTags.SINGLE_USE_WARP_SHARDS)) {
-                        if (!(entity instanceof Player player) || !player.getAbilities().instabuild) {
-                            targetAttunementStack.shrink(1);
-                        }
-                    }
-                })
                 .left();
     }
 

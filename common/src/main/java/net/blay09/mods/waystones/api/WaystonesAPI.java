@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class WaystonesAPI {
@@ -33,12 +34,36 @@ public class WaystonesAPI {
         }
     }
 
+    /**
+     * @deprecated Use {@link #createUncheckedDefaultTeleportContext(Entity, Waystone, Consumer)} instead, which avoids a synchronous chunk load by delaying some errors to later teleport stages.
+     */
+    @Deprecated
     public static Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init) {
         return __internalMethods.createDefaultTeleportContext(entity, waystone, init);
     }
 
+    /**
+     * @deprecated Use {@link #createUncheckedCustomTeleportContext(Entity, Waystone)} instead, which avoids a synchronous chunk load by delaying some errors to later teleport stages.
+     */
+    @Deprecated
     public static Either<WaystoneTeleportContext, WaystoneTeleportError> createCustomTeleportContext(Entity entity, Waystone waystone) {
         return __internalMethods.createCustomTeleportContext(entity, waystone);
+    }
+
+    /**
+     * Creates a teleport context without validating the target waystone against its destination level. This avoids destination chunk reads during
+     * context creation; {@link #tryTeleportAsync(WaystoneTeleportContext)} performs that validation after the destination chunk has loaded.
+     */
+    public static Either<WaystoneTeleportContext, WaystoneTeleportError> createUncheckedDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init) {
+        return __internalMethods.createUncheckedDefaultTeleportContext(entity, waystone, init);
+    }
+
+    /**
+     * Creates a teleport context without validating the target waystone against its destination level. This avoids destination chunk reads during
+     * context creation; {@link #tryTeleportAsync(WaystoneTeleportContext)} performs that validation after the destination chunk has loaded.
+     */
+    public static Either<WaystoneTeleportContext, WaystoneTeleportError> createUncheckedCustomTeleportContext(Entity entity, Waystone waystone) {
+        return __internalMethods.createUncheckedCustomTeleportContext(entity, waystone);
     }
 
     public static WaystoneTeleportContext createUnboundTeleportContext(Entity entity, Waystone waystone) {
@@ -49,12 +74,28 @@ public class WaystonesAPI {
         return __internalMethods.createUnboundTeleportContext(entity);
     }
 
+    /**
+     * @deprecated Use {@link #tryTeleportAsync(WaystoneTeleportContext)} to avoid blocking while destination chunks are loaded.
+     */
+    @Deprecated
     public static Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context) {
         return __internalMethods.tryTeleport(context);
     }
 
+    /**
+     * @deprecated Use {@link #forceTeleportAsync(WaystoneTeleportContext)} to avoid blocking while destination chunks are loaded.
+     */
+    @Deprecated
     public static Either<List<Entity>, WaystoneTeleportError> forceTeleport(WaystoneTeleportContext context) {
         return __internalMethods.forceTeleport(context);
+    }
+
+    public static CompletableFuture<Either<List<Entity>, WaystoneTeleportError>> tryTeleportAsync(WaystoneTeleportContext context) {
+        return __internalMethods.tryTeleportAsync(context);
+    }
+
+    public static CompletableFuture<Either<List<Entity>, WaystoneTeleportError>> forceTeleportAsync(WaystoneTeleportContext context) {
+        return __internalMethods.forceTeleportAsync(context);
     }
 
     public static Optional<Waystone> getWaystoneAt(ServerLevel level, BlockPos pos) {
