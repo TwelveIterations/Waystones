@@ -1,10 +1,12 @@
 package net.blay09.mods.waystones.config.rules;
 
+import com.mojang.authlib.GameProfile;
 import net.blay09.mods.shogi.context.MutableShogiContext;
 import net.blay09.mods.shogi.context.ShogiContext;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
@@ -15,6 +17,8 @@ public final class WaystoneRuleContext {
     public static final String SOURCE_WAYSTONE_VARIABLE = "source_waystone";
     public static final String TARGET_WAYSTONE_VARIABLE = "target_waystone";
     public static final String FLAGS_VARIABLE = "flags";
+    public static final String OWNER_VARIABLE = "owner";
+    public static final String OWNER_ID_VARIABLE = "ownerId";
 
     private WaystoneRuleContext() {
     }
@@ -84,5 +88,28 @@ public final class WaystoneRuleContext {
 
     public static void setEffectiveWaystone(MutableShogiContext nestedContext, @Nullable Waystone waystone) {
         nestedContext.withVariable(WAYSTONE_VARIABLE, Optional.ofNullable(waystone));
+        if (waystone != null) {
+            waystone.getOwnerUid().ifPresent(ownerUid -> {
+                nestedContext.withVariable(OWNER_ID_VARIABLE, ownerUid.toString());
+                getOwnerUsername(nestedContext, waystone).ifPresent(ownerUsername
+                        -> nestedContext.withVariable(OWNER_VARIABLE, ownerUsername));
+            });
+        }
+    }
+
+    private static Optional<String> getOwnerUsername(ShogiContext context, Waystone waystone) {
+        final var ownerUsername = waystone.getOwnerUsername();
+        if (ownerUsername.isPresent()) {
+            return ownerUsername;
+        }
+
+        if (!(context.entity() instanceof ServerPlayer player)) {
+            return Optional.empty();
+        }
+
+        final var server = player.level().getServer();
+        return waystone.getOwnerUid()
+                .flatMap(ownerUid -> server.services().profileResolver().fetchById(ownerUid))
+                .map(GameProfile::name);
     }
 }
