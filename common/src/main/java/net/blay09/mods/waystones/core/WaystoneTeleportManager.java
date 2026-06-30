@@ -67,7 +67,7 @@ public class WaystoneTeleportManager {
 
     public static CompletableFuture<Either<List<Entity>, WaystoneTeleportError>> forceTeleportAsync(WaystoneTeleportContext context) {
         try {
-            return resolveDestinationAsync(context, false)
+            return prepareTeleport(context, true)
                     .thenApply(result -> result.flatMap(destination -> doTeleport(context, destination)))
                     .exceptionally(WaystoneTeleportManager::handleUnexpectedAsyncFailure);
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class WaystoneTeleportManager {
         }
     }
 
-    private static CompletableFuture<Either<TeleportDestination, WaystoneTeleportError>> resolveDestinationAsync(WaystoneTeleportContext context, boolean validateTargetWaystone) {
+    private static CompletableFuture<Either<TeleportDestination, WaystoneTeleportError>> prepareTeleport(WaystoneTeleportContext context, boolean forced) {
         final var entity = context.getEntity();
         final var sourceLevel = entity.level();
         final var server = sourceLevel.getServer();
@@ -83,48 +83,53 @@ public class WaystoneTeleportManager {
             return CompletableFuture.completedFuture(Either.right(new WaystoneTeleportError.NotOnServer()));
         }
 
-        final var targetLevel = server.getLevel(context.getTargetWaystone().getDimension());
+        return loadDestinationChunksAsync(server, context.getTargetWaystone())
+                .thenApply(loadResult -> loadResult.flatMap(_ -> forced ? Either.left(null) : validatePendingTeleport(context, sourceLevel, server)))
+                .thenApply(validationResult -> validationResult.flatMap(_ -> resolveDestination(server, context.getTargetWaystone())));
+    }
+
+    private static CompletableFuture<Either<@Nullable Void, WaystoneTeleportError>> loadDestinationChunksAsync(MinecraftServer server, Waystone targetWaystone) {
+        final var targetLevel = server.getLevel(targetWaystone.getDimension());
         if (targetLevel == null) {
-            return CompletableFuture.completedFuture(Either.right(new WaystoneTeleportError.InvalidDimension(context.getTargetWaystone().getDimension())));
+            return CompletableFuture.completedFuture(Either.right(new WaystoneTeleportError.InvalidDimension(targetWaystone.getDimension())));
         }
 
-        return loadDestinationChunks(server, targetLevel, context.getTargetWaystone())
-                .thenApply(loadResult -> loadResult.flatMap(_ -> {
-                    final var currentTargetLevel = server.getLevel(context.getTargetWaystone().getDimension());
-                    if (currentTargetLevel == null) {
-                        return Either.right(new WaystoneTeleportError.InvalidDimension(context.getTargetWaystone().getDimension()));
-                    }
+        return loadDestinationChunks(server, targetLevel, targetWaystone);
+    }
 
-                    if (!arePendingEntitiesStillValid(context, sourceLevel)) {
-                        Waystones.logger.debug("Discarding pending waystone teleport because one or more transported entities are no longer valid.");
-                        return Either.right(new WaystoneTeleportError.TeleportNoLongerValid());
-                    }
+    private static Either<@Nullable Void, WaystoneTeleportError> validatePendingTeleport(WaystoneTeleportContext context, Level sourceLevel, MinecraftServer server) {
+        if (!arePendingEntitiesStillValid(context, sourceLevel)) {
+            Waystones.logger.debug("Discarding pending waystone teleport because one or more transported entities are no longer valid.");
+            return Either.right(new WaystoneTeleportError.TeleportNoLongerValid());
+        }
 
-                    if (!isSourceWaystoneStillInRange(server, context)) {
-                        Waystones.logger.debug("Discarding pending waystone teleport because the player moved away from the source waystone or the source was removed.");
-                        return Either.right(new WaystoneTeleportError.SourceWaystoneOutOfRange());
-                    }
+        if (!isSourceWaystoneStillInRange(server, context)) {
+            Waystones.logger.debug("Discarding pending waystone teleport because the player moved away from the source waystone or the source was removed.");
+            return Either.right(new WaystoneTeleportError.SourceWaystoneOutOfRange());
+        }
 
-                    if (!isWarpItemStillPresent(context)) {
-                        Waystones.logger.debug("Discarding pending waystone teleport because the source item is no longer present.");
-                        return Either.right(new WaystoneTeleportError.SourceItemMissing());
-                    }
+        if (!isWarpItemStillPresent(context)) {
+            Waystones.logger.debug("Discarding pending waystone teleport because the source item is no longer present.");
+            return Either.right(new WaystoneTeleportError.SourceItemMissing());
+        }
 
-                    if (validateTargetWaystone) {
-                        final var targetWaystone = context.getTargetWaystone();
-                        if (!targetWaystone.isValid()) {
-                            Waystones.logger.debug("Discarding pending waystone teleport because target waystone {} is no longer valid.", targetWaystone.getWaystoneUid());
-                            return Either.right(new WaystoneTeleportError.InvalidWaystone(targetWaystone));
-                        }
+        final var targetWaystone = context.getTargetWaystone();
+        final var targetLevel = server.getLevel(targetWaystone.getDimension());
+        if (targetLevel == null) {
+            return Either.right(new WaystoneTeleportError.InvalidDimension(targetWaystone.getDimension()));
+        }
 
-                        if (!targetWaystone.isValidInLevel(currentTargetLevel)) {
-                            Waystones.logger.debug("Discarding pending waystone teleport because target waystone {} is missing in {}.", targetWaystone.getWaystoneUid(), currentTargetLevel.dimension());
-                            return Either.right(new WaystoneTeleportError.MissingWaystone(targetWaystone));
-                        }
-                    }
+        if (!targetWaystone.isValid()) {
+            Waystones.logger.debug("Discarding pending waystone teleport because target waystone {} is no longer valid.", targetWaystone.getWaystoneUid());
+            return Either.right(new WaystoneTeleportError.InvalidWaystone(targetWaystone));
+        }
 
-                    return resolveDestination(server, context.getTargetWaystone());
-                }));
+        if (!targetWaystone.isValidInLevel(targetLevel)) {
+            Waystones.logger.debug("Discarding pending waystone teleport because target waystone {} is missing in {}.", targetWaystone.getWaystoneUid(), targetLevel.dimension());
+            return Either.right(new WaystoneTeleportError.MissingWaystone(targetWaystone));
+        }
+
+        return Either.left(null);
     }
 
     public static Either<List<Entity>, WaystoneTeleportError> doTeleport(WaystoneTeleportContext context, TeleportDestination destination) {
@@ -293,7 +298,7 @@ public class WaystoneTeleportManager {
                 return CompletableFuture.completedFuture(Either.right(validationResult.right().orElseThrow()));
             }
 
-            return resolveDestinationAsync(context, true)
+            return prepareTeleport(context, false)
                     .thenApply(result -> result.flatMap(destination -> {
                         if (context instanceof WaystoneTeleportContextImpl contextImpl) {
                             contextImpl.invalidateRequirements();
