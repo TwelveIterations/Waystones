@@ -6,6 +6,7 @@
   "mixins": [
     "DimensionStorageFileFixMixin",
     "JigsawPlacementPlacerMixin",
+    "ServerScoreboardMixin",
     "SinglePoolElementMixin",
     "StructureTemplatePoolAccessor"
   ],
