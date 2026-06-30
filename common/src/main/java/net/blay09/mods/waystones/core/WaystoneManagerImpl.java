@@ -54,6 +54,7 @@ public class WaystoneManagerImpl extends SavedData implements WaystoneManager {
     }
 
     public void removeWaystone(Waystone waystone) {
+        WaystoneIndexManager.waystoneRemoved(waystone);
         waystones.remove(waystone.getWaystoneUid());
         setDirty();
         Balm.getEvents().fireEvent(new WaystoneRemovedEvent(waystone));

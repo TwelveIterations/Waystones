@@ -8,7 +8,7 @@ import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
 import net.blay09.mods.waystones.core.FleetingMemorialManager;
-import net.blay09.mods.waystones.core.TeamWaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneIndexManager;
 
 public class ModEventHandlers {
     public static void initialize() {
@@ -18,6 +18,6 @@ public class ModEventHandlers {
         Balm.getEvents().onEvent(WaystoneActivatedEvent.class, WaystoneActivationStatHandler::onWaystoneActivated);
         Balm.getEvents().onEvent(WaystoneTeleportEvent.Post.class, FleetingMemorialManager::handleTeleportAfter);
         Balm.getEvents().onEvent(UseBlockEvent.class, WaystoneDebugHandler::onWaystoneUsed);
-        Balm.getEvents().onEvent(ServerStartedEvent.class, event -> TeamWaystoneManager.rebuildIndex(event.getServer()));
+        Balm.getEvents().onEvent(ServerStartedEvent.class, event -> WaystoneIndexManager.rebuildIndex(event.getServer()));
     }
 }

@@ -50,10 +50,10 @@ public class RemoveWaystoneMessage implements CustomPacketPayload {
                 if (backingWaystone instanceof MutableWaystone mutableWaystone) {
                     final var previousVisibility = backingWaystone.getVisibility();
                     mutableWaystone.setVisibility(WaystoneVisibility.ACTIVATION);
-                    TeamWaystoneManager.visibilityChanged(player.server, backingWaystone, previousVisibility);
+                    WaystoneIndexManager.visibilityChanged(player.server, backingWaystone, previousVisibility);
 
                     // Check if the waystone block still exists - if not, completely remove the waystone from existence to remove it from all players
-                    // This way we can't have orphan global waystones left over. And just in case the waystone *was* just being silk-touch moved, it's easy to reactivate a global waystone for everyone (since it does that automatically).
+                    // This way we can't have orphan global waystones left over.
                     ServerLevel targetWorld = Objects.requireNonNull(player.level().getServer()).getLevel(backingWaystone.getDimension());
                     BlockPos pos = backingWaystone.getPos();
                     BlockState state = targetWorld != null ? targetWorld.getBlockState(pos) : null;

@@ -74,14 +74,8 @@ public class EditWaystoneMessage implements CustomPacketPayload {
         backingWaystone.setName(legalName);
 
         final var previousVisibility = backingWaystone.getVisibility();
-        if (visibility == WaystoneVisibility.GLOBAL && (WaystonePermissionManager.isAllowedVisibility(visibility) || WaystonePermissionManager.skipsPermissions(
-                player))) {
-            if (backingWaystone.getVisibility() != WaystoneVisibility.GLOBAL) {
-                PlayerWaystoneManager.activeWaystoneForEveryone(player.server, backingWaystone);
-            }
-        }
         backingWaystone.setVisibility(visibility);
-        TeamWaystoneManager.visibilityChanged(player.server, backingWaystone, previousVisibility);
+        WaystoneIndexManager.visibilityChanged(player.server, backingWaystone, previousVisibility);
 
         WaystoneManagerImpl.get(player.server).setDirty();
         WaystoneSyncManager.sendWaystoneUpdateToAll(player.server, backingWaystone);
