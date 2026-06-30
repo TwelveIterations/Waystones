@@ -9,33 +9,32 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.api.WarpStoneTypes;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.sprite.SpriteGetter;
-import net.minecraft.client.resources.model.sprite.SpriteId;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
+import org.joml.Matrix4f;
 
 public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEntity, SharestoneRenderer.SharestoneRenderState> {
 
     public static class SharestoneRenderState extends BlockEntityRenderState {
+        public final BlockModelRenderState runes = new BlockModelRenderState();
         public boolean skip;
+        public Direction facing = Direction.NORTH;
         public boolean glow;
         public int runeColor;
         public final ItemStackRenderState item = new ItemStackRenderState();
@@ -43,18 +42,12 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
         public float itemOffsetY;
     }
 
-    private static final SpriteId MATERIAL = new SpriteId(TextureAtlas.LOCATION_BLOCKS, Identifier.withDefaultNamespace("waystone_overlays/sharestone_color"));
-
     private static @Nullable ItemStack warpStoneItem;
 
-    private final SpriteGetter materials;
     private final ItemModelResolver itemModelResolver;
-    private final SharestoneModel model;
 
     public SharestoneRenderer(BlockEntityRendererProvider.Context context) {
-        materials = context.sprites();
         itemModelResolver = context.itemModelResolver();
-        model = new SharestoneModel(context.bakeLayer(ModRenderers.sharestoneModel));
     }
 
     @Override
@@ -65,6 +58,9 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
     @Override
     public void extractRenderState(SharestoneBlockEntity blockEntity, SharestoneRenderState renderState, float delta, Vec3 vec, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, delta, vec, crumblingOverlay);
+        renderState.skip = false;
+        renderState.runes.clear();
+
         final var blockState = blockEntity.getBlockState();
         if (blockState.getValue(SharestoneBlock.HALF) != DoubleBlockHalf.LOWER) {
             renderState.skip = true;
@@ -76,6 +72,12 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
 
         renderState.glow = !WaystonesConfig.getActive().client.disableTextGlow;
         renderState.runeColor = ((SharestoneBlock) blockEntity.getBlockState().getBlock()).getType().textureDiffuseColor();
+        renderState.facing = blockState.getValue(SharestoneBlock.FACING);
+        final var model = ModRenderers.sharestoneRunesModel.asBlockStateModel();
+        final var modelParts = renderState.runes.setupModel(new Matrix4f(), false);
+        final var random = renderState.runes.scratchRandomSource(blockState.getSeed(blockEntity.getBlockPos()));
+        model.collectParts(random, modelParts);
+        renderState.runes.tintLayers().add(renderState.runeColor);
 
         if (warpStoneItem == null) {
             warpStoneItem = ModItems.warpStones.get(WarpStoneTypes.UNSCOPED).createStack();
@@ -95,13 +97,9 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
 
         poseStack.pushPose();
         poseStack.translate(0.5f, 0f, 0.5f);
-        poseStack.mulPose(Axis.XN.rotationDegrees(180f));
-        poseStack.translate(0f, -2f, 0f);
-        float scale = 1.01f;
-        poseStack.scale(0.5f, 0.5f, 0.5f);
-        poseStack.scale(scale, scale, scale);
-        final var sprite = materials.get(MATERIAL);
-        submitNodeCollector.submitModel(model, Unit.INSTANCE, poseStack, MATERIAL.renderType(RenderTypes::entityCutout), renderState.glow ? LightCoordsUtil.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, renderState.runeColor, sprite, 0, renderState.breakProgress);
+        poseStack.mulPose(Axis.YP.rotationDegrees(renderState.facing.toYRot()));
+        poseStack.translate(-0.5f, 0f, -0.5f);
+        renderState.runes.submit(poseStack, submitNodeCollector, renderState.glow ? LightCoordsUtil.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, 0);
         poseStack.popPose();
 
         poseStack.pushPose();

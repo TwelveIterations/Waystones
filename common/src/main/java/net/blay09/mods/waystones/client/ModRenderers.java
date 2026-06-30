@@ -1,7 +1,8 @@
 package net.blay09.mods.waystones.client;
 
 import net.blay09.mods.balm.client.color.block.BalmBlockColorRegistrar;
-import net.blay09.mods.balm.client.model.geom.BalmModelLayerRegistrar;
+import net.blay09.mods.balm.client.renderer.block.model.BalmBlockStateModelRegistrar;
+import net.blay09.mods.balm.client.renderer.block.model.DeferredBlockStateModel;
 import net.blay09.mods.balm.client.renderer.blockentity.BalmBlockEntityRendererRegistrar;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.PortstoneBlock;
@@ -9,25 +10,20 @@ import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.client.render.*;
 import net.minecraft.client.color.block.BlockTintSources;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
 
 import java.util.List;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
 public class ModRenderers {
-    public static ModelLayerLocation portstoneModel;
-    public static ModelLayerLocation sharestoneModel;
-    public static ModelLayerLocation waystoneModel;
+    public static DeferredBlockStateModel waystoneRunesModel;
+    public static DeferredBlockStateModel portstoneRunesModel;
+    public static DeferredBlockStateModel sharestoneRunesModel;
 
-    public static void initialize(BalmModelLayerRegistrar modelLayers) {
-        portstoneModel = modelLayers.register(id("portstone"),
-                () -> PortstoneModel.createLayer(CubeDeformation.NONE));
-        sharestoneModel = modelLayers.register(id("sharestone"),
-                () -> SharestoneModel.createLayer(CubeDeformation.NONE));
-        waystoneModel = modelLayers.register(id("waystone"),
-                () -> WaystoneModel.createLayer(CubeDeformation.NONE));
+    public static void initialize(BalmBlockStateModelRegistrar models) {
+        waystoneRunesModel = models.register(id("block/waystone_runes"));
+        portstoneRunesModel = models.register(id("block/portstone_runes"));
+        sharestoneRunesModel = models.register(id("block/sharestone_runes"));
     }
 
     public static void initialize(BalmBlockEntityRendererRegistrar renderers) {
