@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.core.TwinboundFeatherTargets;
 import net.blay09.mods.waystones.menu.ModMenus;
@@ -12,6 +13,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.UUID;
 
@@ -60,14 +62,27 @@ public record ServerboundSelectWaystonePacket(UUID waystoneUid) implements Custo
             return;
         }
 
-        WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> {
+        final var warpHand = selectionMenu.getWarpHand();
+        final var itemInHand = warpHand != null ? player.getItemInHand(warpHand) : ItemStack.EMPTY;
+        if (warpHand != null && (itemInHand.isEmpty() || !ItemStack.isSameItemSameComponents(itemInHand, selectionMenu.getWarpItem()))) {
+            final var error = new WaystoneTeleportError.SourceItemMissing();
+            player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED));
+            player.closeContainer();
+            return;
+        }
+
+        WaystonesAPI.createUncheckedDefaultTeleportContext(player, waystone, it -> {
                     it.setFromWaystone(selectionMenu.getWaystoneFrom());
                     it.setWarpItem(selectionMenu.getWarpItem());
-                    it.setWarpHand(selectionMenu.getWarpHand());
+                    if (warpHand != null) {
+                        it.setWarpHand(warpHand);
+                    }
                     it.addFlags(selectionMenu.getFlags());
                 })
-                .ifLeft(WaystonesAPI::tryTeleport)
-                .ifLeft(selectionMenu.getPostTeleportHandler())
+                .ifLeft(context -> WaystonesAPI.tryTeleportAsync(context)
+                        .thenAccept(result -> result
+                                .ifLeft(_ -> selectionMenu.getPostTeleportHandler().accept(context))
+                                .ifRight(error -> player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED)))))
                 .ifRight(error -> player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED)));
         player.closeContainer();
     }

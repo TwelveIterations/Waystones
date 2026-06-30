@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 
 public class WaystoneTeleportError {
@@ -99,6 +100,55 @@ public class WaystoneTeleportError {
     public static class RequirementsNotMet extends WaystoneTeleportError {
         public RequirementsNotMet() {
             super(Component.translatable("chat.waystones.requirements_not_met"));
+        }
+    }
+
+    public static class TeleportNoLongerValid extends WaystoneTeleportError {
+        public TeleportNoLongerValid() {
+            super(Component.translatable("chat.waystones.teleport_no_longer_valid"));
+        }
+    }
+
+    public static class SourceItemMissing extends WaystoneTeleportError {
+        public SourceItemMissing() {
+            super(Component.translatable("chat.waystones.source_item_missing"));
+        }
+    }
+
+    public static class SourceWaystoneOutOfRange extends WaystoneTeleportError {
+        public SourceWaystoneOutOfRange() {
+            super(Component.translatable("chat.waystones.source_waystone_out_of_range"));
+        }
+    }
+
+    public static class TeleportFailed extends WaystoneTeleportError {
+        public TeleportFailed() {
+            super(Component.translatable("chat.waystones.teleport_failed"));
+        }
+    }
+
+    public static class DestinationChunkLoadFailed extends WaystoneTeleportError {
+        private final ResourceKey<Level> dimension;
+        private final ChunkPos chunkPos;
+        private final String reason;
+
+        public DestinationChunkLoadFailed(ResourceKey<Level> dimension, ChunkPos chunkPos, String reason) {
+            super(Component.translatable("chat.waystones.destination_chunk_load_failed"));
+            this.dimension = dimension;
+            this.chunkPos = chunkPos;
+            this.reason = reason;
+        }
+
+        public ResourceKey<Level> getDimension() {
+            return dimension;
+        }
+
+        public ChunkPos getChunkPos() {
+            return chunkPos;
+        }
+
+        public String getReason() {
+            return reason;
         }
     }
 }

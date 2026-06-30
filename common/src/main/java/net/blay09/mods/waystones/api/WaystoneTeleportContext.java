@@ -32,7 +32,7 @@ public interface WaystoneTeleportContext extends ShogiContext {
 
     WaystoneTeleportContext setWarpItem(ItemStack warpItem);
 
-    InteractionHand getWarpHand();
+    @Nullable InteractionHand getWarpHand();
 
     WaystoneTeleportContext setWarpHand(InteractionHand warpHand);
 
