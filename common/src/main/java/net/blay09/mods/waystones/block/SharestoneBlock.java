@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -72,8 +73,8 @@ public class SharestoneBlock extends WaystoneBlockBase {
 
     @Override
     protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
-        if (!world.isClientSide) {
-            blockEntity.getSelectionMenuProvider(player).ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
+        if (player instanceof ServerPlayer serverPlayer) {
+            blockEntity.getSelectionMenuProvider(serverPlayer).ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
             return InteractionResult.SUCCESS;
         }
 

@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -80,8 +81,8 @@ public class WaystoneBlock extends WaystoneBlockBase {
     protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
-            if (!world.isClientSide) {
-                blockEntity.getSelectionMenuProvider(player).ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
+            if (player instanceof ServerPlayer serverPlayer) {
+                blockEntity.getSelectionMenuProvider(serverPlayer).ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
             }
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);

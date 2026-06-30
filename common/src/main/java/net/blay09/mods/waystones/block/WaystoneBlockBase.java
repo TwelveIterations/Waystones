@@ -192,8 +192,8 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     @Nullable
     protected InteractionResult handleEditActions(Level world, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
         if (player.isShiftKeyDown()) {
-            if (!world.isClientSide) {
-                blockEntity.getSettingsMenuProvider(player).ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
+            if (player instanceof ServerPlayer serverPlayer) {
+                blockEntity.getSettingsMenuProvider(serverPlayer).ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
             }
             return InteractionResult.SUCCESS;
         }

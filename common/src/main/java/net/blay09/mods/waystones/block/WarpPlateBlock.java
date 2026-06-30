@@ -16,6 +16,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
@@ -143,7 +144,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
             for (int i = 0; i < 10; i++) {
                 world.addParticle(ParticleTypes.SMOKE, pos.getX() + Math.random(), pos.getY(), pos.getZ() + Math.random(), 0f, 0.01f, 0f);
             }
-        } else if(status == WarpPlateStatus.ATTUNING) {
+        } else if (status == WarpPlateStatus.ATTUNING) {
             for (int i = 0; i < 10; i++) {
                 world.addParticle(ParticleTypes.WARPED_SPORE, pos.getX() + Math.random(), pos.getY(), pos.getZ() + Math.random(), 0f, 0f, 0f);
             }
@@ -176,8 +177,12 @@ public class WarpPlateBlock extends WaystoneBlockBase {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult blockHitResult) {
+        if (!(level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate)) {
+            return InteractionResult.FAIL;
+        }
+
         if (player.isShiftKeyDown()) {
-            if (!level.isClientSide && level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
+            if (!level.isClientSide) {
                 final var itemStack = warpPlate.getShardItem();
                 if (!itemStack.isEmpty()) {
                     final var itemEntity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, itemStack);
@@ -188,12 +193,11 @@ public class WarpPlateBlock extends WaystoneBlockBase {
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
 
-        if (level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
-            warpPlate.getSettingsMenuProvider(player).ifPresent(it -> Balm.getNetworking().openGui(player, it));
-            return InteractionResult.sidedSuccess(level.isClientSide);
+        if (player instanceof ServerPlayer serverPlayer) {
+            warpPlate.getSettingsMenuProvider(serverPlayer).ifPresent(it -> Balm.getNetworking().openGui(player, it));
         }
 
-        return InteractionResult.PASS;
+        return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Override
