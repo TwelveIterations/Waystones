@@ -42,7 +42,12 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
 
     @Override
     protected boolean shouldShowWaystone(Waystone waystone) {
-        return !isReturnPortal(waystone);
+        return isManageable(waystone);
+    }
+
+    private static boolean isManageable(Waystone waystone) {
+        final var waystoneType = waystone.getWaystoneType();
+        return !WaystoneTypes.WARP_PORTAL.equals(waystoneType) && !WaystoneTypes.FLEETING_MEMORIAL.equals(waystoneType);
     }
 
     public boolean canReorderWaystones() {

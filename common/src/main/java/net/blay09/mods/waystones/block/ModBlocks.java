@@ -58,6 +58,7 @@ public class ModBlocks {
     public static Block endStoneWaystone;
     public static Block warpPlate;
     public static Block warpPortal;
+    public static Block fleetingMemorial;
     public static final PortstoneBlock[] portstones = new PortstoneBlock[portstoneColors.length];
     public static final SharestoneBlock[] sharestones = new SharestoneBlock[sharestoneColors.length];
 
@@ -72,6 +73,7 @@ public class ModBlocks {
         blocks.register(() -> endStoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(endStoneWaystone), id("end_stone_waystone"));
         blocks.register(() -> warpPlate = new WarpPlateBlock(defaultProperties()), () -> itemBlock(warpPlate), id("warp_plate"));
         blocks.registerBlock(() -> warpPortal = new WarpPortalBlock(defaultProperties().noLootTable().lightLevel(state -> 10).strength(-1f, 3600000f)), id("warp_portal"));
+        blocks.registerBlock(() -> fleetingMemorial = new FleetingMemorialBlock(defaultProperties().noLootTable().strength(2f, 6f).lightLevel(state -> 6)), id("fleeting_memorial"));
 
         for (final var color : portstoneColors) {
             blocks.register(() -> portstones[color.ordinal()] = new PortstoneBlock(color, defaultProperties()),

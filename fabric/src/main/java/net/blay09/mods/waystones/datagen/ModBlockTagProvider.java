@@ -26,7 +26,8 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.deepslateWaystone,
                 ModBlocks.blackstoneWaystone,
                 ModBlocks.endStoneWaystone,
-                ModBlocks.warpPlate);
+                ModBlocks.warpPlate,
+                ModBlocks.fleetingMemorial);
         for (final var portstone : ModBlocks.portstones) {
             relocationNotSupported.add(portstone);
         }
@@ -42,7 +43,8 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.deepslateWaystone,
                 ModBlocks.blackstoneWaystone,
                 ModBlocks.endStoneWaystone,
-                ModBlocks.warpPlate);
+                ModBlocks.warpPlate,
+                ModBlocks.fleetingMemorial);
         for (final var portstone : ModBlocks.portstones) {
             mineableBuilder.add(portstone);
         }
@@ -55,6 +57,7 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.sandyWaystone,
                 ModBlocks.mossyWaystone,
                 ModBlocks.warpPortal,
+                ModBlocks.fleetingMemorial,
                 ModBlocks.deepslateWaystone,
                 ModBlocks.blackstoneWaystone,
                 ModBlocks.endStoneWaystone,

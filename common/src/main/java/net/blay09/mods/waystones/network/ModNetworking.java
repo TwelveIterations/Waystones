@@ -29,6 +29,7 @@ public class ModNetworking {
         networking.registerClientboundPacket(TeleportEffectMessage.TYPE, TeleportEffectMessage.class, TeleportEffectMessage::encode, TeleportEffectMessage::decode, TeleportEffectMessage::handle);
         networking.registerClientboundPacket(PlayerWaystoneCooldownsMessage.TYPE, PlayerWaystoneCooldownsMessage.class, PlayerWaystoneCooldownsMessage::encode, PlayerWaystoneCooldownsMessage::decode, PlayerWaystoneCooldownsMessage::handle);
         networking.registerClientboundPacket(WarpPlateEjectEffectMessage.TYPE, WarpPlateEjectEffectMessage.class, WarpPlateEjectEffectMessage::encode, WarpPlateEjectEffectMessage::decode, WarpPlateEjectEffectMessage::handle);
+        networking.registerClientboundPacket(ClientboundEpitaphActivationPacket.TYPE, ClientboundEpitaphActivationPacket.class, ClientboundEpitaphActivationPacket::encode, ClientboundEpitaphActivationPacket::decode, ClientboundEpitaphActivationPacket::handle);
 
         SyncConfigMessage.register(SyncWaystonesConfigMessage.TYPE, SyncWaystonesConfigMessage.class, SyncWaystonesConfigMessage::new, WaystonesConfigData.class, WaystonesConfigData::new);
     }

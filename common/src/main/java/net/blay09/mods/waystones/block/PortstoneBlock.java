@@ -140,11 +140,11 @@ public class PortstoneBlock extends WaystoneBlockBase {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult blockHitResult) {
-        if (!world.isClientSide) {
+        if (player instanceof ServerPlayer serverPlayer) {
             final var targetWaystoneType = getTargetWaystoneType();
-            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForWaystoneType(player, targetWaystoneType));
-            PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            Balm.getNetworking().openGui(player, new BalmMenuProvider<List<UserDecoratedWaystone>>() {
+            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(serverPlayer, PlayerWaystoneManager.getTargetsForWaystoneType(serverPlayer, targetWaystoneType));
+            PlayerWaystoneManager.ensureSortingIndex(serverPlayer, waystones);
+            Balm.getNetworking().openGui(serverPlayer, new BalmMenuProvider<List<UserDecoratedWaystone>>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("container.waystones." + color.getSerializedName() + "_portstone");

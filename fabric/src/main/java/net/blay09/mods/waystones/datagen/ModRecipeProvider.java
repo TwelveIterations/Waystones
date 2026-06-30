@@ -215,6 +215,16 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy("has_paper", has(Items.PAPER))
                 .save(exporter);
 
+        shaped(RecipeCategory.COMBAT, ModItems.epitaph)
+                .pattern("GGG")
+                .pattern("ADA")
+                .pattern("GGG")
+                .define('G', BalmItemTags.GOLD_NUGGETS)
+                .define('A', Items.AMETHYST_SHARD)
+                .define('D', Items.DEEPSLATE)
+                .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
+                .save(exporter);
+
         shapeless(RecipeCategory.DECORATIONS, ModItems.warpDust, 4)
                 .requires(Items.ENDER_PEARL)
                 .requires(Items.AMETHYST_SHARD)

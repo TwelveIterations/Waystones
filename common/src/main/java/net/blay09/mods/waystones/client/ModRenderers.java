@@ -33,6 +33,7 @@ public class ModRenderers {
         renderers.registerBlockEntityRenderer(ModBlockEntities.waystone::get, WaystoneRenderer::new);
         renderers.registerBlockEntityRenderer(ModBlockEntities.sharestone::get, SharestoneRenderer::new);
         renderers.registerBlockEntityRenderer(ModBlockEntities.portstone::get, PortstoneRenderer::new);
+        renderers.registerBlockEntityRenderer(ModBlockEntities.fleetingMemorial::get, FleetingMemorialRenderer::new);
 
         renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> 0xffc456bd,
                 () -> new Block[]{ModBlocks.warpPlate});
@@ -48,6 +49,7 @@ public class ModRenderers {
 
         renderers.setBlockRenderType(() -> ModBlocks.warpPlate, RenderType.cutout());
         renderers.setBlockRenderType(() -> ModBlocks.warpPortal, RenderType.translucent());
+        renderers.setBlockRenderType(() -> ModBlocks.fleetingMemorial, RenderType.cutout());
     }
 
 }

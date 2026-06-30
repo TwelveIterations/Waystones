@@ -8,12 +8,10 @@ import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.item.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.minecraft.core.Direction;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
-import net.minecraft.data.models.blockstates.MultiVariantGenerator;
-import net.minecraft.data.models.blockstates.PropertyDispatch;
-import net.minecraft.data.models.blockstates.Variant;
-import net.minecraft.data.models.blockstates.VariantProperties;
+import net.minecraft.data.models.blockstates.*;
 import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.data.models.model.ModelTemplate;
 import net.minecraft.data.models.model.ModelTemplates;
@@ -23,6 +21,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 import java.util.Optional;
 
+import static net.blay09.mods.waystones.Waystones.id;
 import static net.minecraft.data.models.BlockModelGenerators.createHorizontalFacingDispatch;
 
 public class ModModelProvider extends FabricModelProvider {
@@ -42,6 +41,7 @@ public class ModModelProvider extends FabricModelProvider {
                         .select(WarpPlateBlock.WarpPlateStatus.LOCKED, Variant.variant().with(VariantProperties.MODEL, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_plate_locked")))
                 ));
         createWarpPortal(blockStateModelGenerator);
+        createFleetingMemorial(blockStateModelGenerator);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.waystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.sandyWaystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.mossyWaystone);
@@ -63,7 +63,7 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.generateFlatItem(ModItems.attunedShard, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.crumblingAttunedShard, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.deepslateShard, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.twinboundFeather, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.epitaph, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.warpStone, ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.warpScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.portalScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
@@ -91,6 +91,13 @@ public class ModModelProvider extends FabricModelProvider {
                         .select(DoubleBlockHalf.LOWER, Variant.variant().with(VariantProperties.MODEL, bottomModelLocation))
                         .select(DoubleBlockHalf.UPPER, Variant.variant().with(VariantProperties.MODEL, topModelLocation)));
         blockStateModelGenerator.blockStateOutput.accept(generator);
+    }
+
+    private void createFleetingMemorial(BlockModelGenerators blockStateModelGenerator) {
+        final var block = ModBlocks.fleetingMemorial;
+        final var model = id("block/fleeting_memorial");
+        blockStateModelGenerator.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, model))
+                .with(createHorizontalFacingDispatch()));
     }
 
     private void createDoubleBlockWaystone(BlockModelGenerators blockStateModelGenerator, Block block) {

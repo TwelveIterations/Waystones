@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "waystones:block/fleeting_memorial",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "waystones:block/fleeting_memorial"
+    },
+    "facing=south": {
+      "model": "waystones:block/fleeting_memorial",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "waystones:block/fleeting_memorial",
+      "y": 270
+    }
+  }
+}

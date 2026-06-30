@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.blay09.mods.waystones.requirement.CombinedRequirement;
+import net.blay09.mods.waystones.requirement.EpitaphRequirement;
 import net.blay09.mods.waystones.requirement.NoRequirement;
 import net.blay09.mods.waystones.requirement.TwinboundFeatherRequirement;
 import net.minecraft.resources.ResourceLocation;
@@ -103,6 +104,10 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
             this.warpRequirement = warpRequirement.isEmpty()
                     ? TwinboundFeatherRequirement.INSTANCE
                     : new CombinedRequirement(List.of(warpRequirement, TwinboundFeatherRequirement.INSTANCE));
+        } else if (targetWaystone.getWaystoneType().equals(WaystoneTypes.FLEETING_MEMORIAL)) {
+            this.warpRequirement = warpRequirement.isEmpty()
+                    ? EpitaphRequirement.INSTANCE
+                    : new CombinedRequirement(List.of(warpRequirement, EpitaphRequirement.INSTANCE));
         } else {
             this.warpRequirement = warpRequirement;
         }

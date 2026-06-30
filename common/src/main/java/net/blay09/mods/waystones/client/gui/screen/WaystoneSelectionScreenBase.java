@@ -194,7 +194,8 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     protected static boolean isReturnPortal(Waystone waystone) {
-        return WaystoneTypes.WARP_PORTAL.equals(waystone.getWaystoneType());
+        final var waystoneType = waystone.getWaystoneType();
+        return WaystoneTypes.WARP_PORTAL.equals(waystoneType) || WaystoneTypes.FLEETING_MEMORIAL.equals(waystoneType);
     }
 
     private List<WaystoneGroup> getShownGroupFilters() {

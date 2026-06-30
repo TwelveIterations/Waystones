@@ -23,6 +23,9 @@ public class ModBlockEntities {
     public static DeferredObject<BlockEntityType<WarpPortalBlockEntity>> warpPortal = blockEntities.registerBlockEntity(id("warp_portal"),
             WarpPortalBlockEntity::new,
             () -> new Block[]{ModBlocks.warpPortal});
+    public static DeferredObject<BlockEntityType<FleetingMemorialBlockEntity>> fleetingMemorial = blockEntities.registerBlockEntity(id("fleeting_memorial"),
+            FleetingMemorialBlockEntity::new,
+            () -> new Block[]{ModBlocks.fleetingMemorial});
     public static DeferredObject<BlockEntityType<PortstoneBlockEntity>> portstone = blockEntities.registerBlockEntity(id("portstone"),
             PortstoneBlockEntity::new,
             () -> ModBlocks.portstones);
