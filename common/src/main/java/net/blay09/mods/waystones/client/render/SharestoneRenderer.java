@@ -1,23 +1,17 @@
 package net.blay09.mods.waystones.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
-import net.blay09.mods.waystones.client.ModRenderers;
+import net.blay09.mods.waystones.client.ModModels;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -28,14 +22,9 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEntity> {
 
-    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.withDefaultNamespace("waystone_overlays/sharestone_color"));
-
     private static ItemStack warpStoneItem;
 
-    private final SharestoneModel model;
-
     public SharestoneRenderer(BlockEntityRendererProvider.Context context) {
-        model = new SharestoneModel(context.bakeLayer(ModRenderers.sharestoneModel));
     }
 
     @Override
@@ -52,15 +41,14 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
         if (color != null) {
             poseStack.pushPose();
             poseStack.translate(0.5f, 0f, 0.5f);
-            poseStack.mulPose(Axis.XN.rotationDegrees(180f));
-            poseStack.translate(0f, -2f, 0f);
-            float scale = 1.01f;
-            poseStack.scale(0.5f, 0.5f, 0.5f);
-            poseStack.scale(scale, scale, scale);
-            VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
-            int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
-            int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
-            model.renderToBuffer(poseStack, vertexBuilder, light, overlay, color.getTextureDiffuseColor());
+            poseStack.mulPose(Axis.YP.rotationDegrees(state.getValue(SharestoneBlock.FACING).toYRot()));
+            poseStack.translate(-0.5f, 0f, -0.5f);
+            RuneRenderUtil.render(ModModels.sharestoneRunes.get(),
+                    poseStack,
+                    buffer,
+                    color.getTextureDiffuseColor(),
+                    combinedLightIn,
+                    !WaystonesConfig.getActive().client.disableTextGlow);
             poseStack.popPose();
         }
 

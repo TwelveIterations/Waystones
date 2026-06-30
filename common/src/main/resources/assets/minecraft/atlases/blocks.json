@@ -1,9 +1,0 @@
-{
-  "sources": [
-    {
-      "type": "directory",
-      "source": "waystone_overlays",
-      "prefix": "waystone_overlays/"
-    }
-  ]
-}
