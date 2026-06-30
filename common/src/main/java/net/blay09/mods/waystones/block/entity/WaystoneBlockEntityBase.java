@@ -206,7 +206,8 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
                     level.getLevel().dimension(),
                     worldPosition,
                     origin,
-                    player != null ? player.getUUID() : null);
+                    player != null ? player.getUUID() : null,
+                    player instanceof Player owner ? owner.getGameProfile().name() : null);
             SavedDataWaystonesStore.get(level.getLevel().getServer()).addWaystone(waystone);
             WaystoneInitializedEvent.EVENT.invoker().accept(new WaystoneInitializedEvent(waystone));
             this.waystone = waystone;

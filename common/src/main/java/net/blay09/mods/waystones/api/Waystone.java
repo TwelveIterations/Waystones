@@ -47,6 +47,10 @@ public interface Waystone {
 
     Optional<UUID> getOwnerUid();
 
+    default Optional<String> getOwnerUsername() {
+        return Optional.empty();
+    }
+
     Identifier getWaystoneKind();
 
     default boolean hasName() {
