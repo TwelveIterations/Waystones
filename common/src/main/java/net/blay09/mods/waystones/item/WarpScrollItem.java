@@ -39,6 +39,7 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
     @Override
     public ItemStack finishUsingItem(ItemStack itemStack, Level world, LivingEntity entity) {
         if (!world.isClientSide && entity instanceof ServerPlayer player) {
+            final var hand = player.getUsedItemHand();
             final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForItem(player, itemStack));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
             Balm.getNetworking().openGui(((ServerPlayer) entity), new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
@@ -51,6 +52,7 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
                 public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
                     return new WaystoneSelectionMenu(ModMenus.warpScrollSelection.get(), null, windowId, waystones, Collections.emptySet())
                             .withWarpItem(itemStack)
+                            .withHand(hand)
                             .setPostTeleportHandler(context -> itemStack.consume(1, inventory.player));
                 }
 

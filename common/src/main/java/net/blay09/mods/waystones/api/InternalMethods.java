@@ -4,9 +4,9 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -28,6 +29,10 @@ public interface InternalMethods {
 
     Either<WaystoneTeleportContext, WaystoneTeleportError> createCustomTeleportContext(Entity entity, Waystone waystone);
 
+    Either<WaystoneTeleportContext, WaystoneTeleportError> createUncheckedDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init);
+
+    Either<WaystoneTeleportContext, WaystoneTeleportError> createUncheckedCustomTeleportContext(Entity entity, Waystone waystone);
+
     WaystoneTeleportContext createUnboundTeleportContext(Entity entity, Waystone waystone);
 
     WaystoneTeleportContext createUnboundTeleportContext(Entity entity);
@@ -35,6 +40,10 @@ public interface InternalMethods {
     Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context);
 
     Either<List<Entity>, WaystoneTeleportError> forceTeleport(WaystoneTeleportContext context);
+
+    CompletableFuture<Either<List<Entity>, WaystoneTeleportError>> tryTeleportAsync(WaystoneTeleportContext context);
+
+    CompletableFuture<Either<List<Entity>, WaystoneTeleportError>> forceTeleportAsync(WaystoneTeleportContext context);
 
     Optional<Waystone> getWaystoneAt(Level level, BlockPos pos);
 

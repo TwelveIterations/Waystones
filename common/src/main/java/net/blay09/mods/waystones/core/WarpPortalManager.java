@@ -109,9 +109,15 @@ public class WarpPortalManager {
     }
 
     public static void teleportFromPortal(Entity entity, WarpPortalBlockEntity portal, Waystone targetWaystone) {
-        WaystonesAPI.createDefaultTeleportContext(entity, targetWaystone, it -> it.setFromWaystone(portal.getWaystone()))
-                .flatMap(WaystonesAPI::tryTeleport)
-                .ifLeft(teleportedEntities -> teleportedEntities.forEach(teleportedEntity -> setReturnPortal(teleportedEntity, portal.getWaystone())))
+        WaystonesAPI.createUncheckedDefaultTeleportContext(entity, targetWaystone, it -> it.setFromWaystone(portal.getWaystone()))
+                .ifLeft(context -> WaystonesAPI.tryTeleportAsync(context)
+                        .thenAccept(result -> result
+                                .ifLeft(teleportedEntities -> teleportedEntities.forEach(teleportedEntity -> setReturnPortal(teleportedEntity, portal.getWaystone())))
+                                .ifRight(error -> {
+                                    if (entity instanceof Player player) {
+                                        player.displayClientMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED), true);
+                                    }
+                                })))
                 .ifRight(error -> {
                     if (entity instanceof Player player) {
                         player.displayClientMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED), true);

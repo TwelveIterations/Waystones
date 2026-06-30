@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -44,7 +45,16 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init) {
-        return WaystonesAPI.createCustomTeleportContext(entity, waystone).ifLeft(context -> {
+        return createDefaultTeleportContext(createCustomTeleportContext(entity, waystone), entity, init);
+    }
+
+    @Override
+    public Either<WaystoneTeleportContext, WaystoneTeleportError> createUncheckedDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init) {
+        return createDefaultTeleportContext(createUncheckedCustomTeleportContext(entity, waystone), entity, init);
+    }
+
+    private Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Either<WaystoneTeleportContext, WaystoneTeleportError> contextResult, Entity entity, Consumer<WaystoneTeleportContext> init) {
+        return contextResult.ifLeft(context -> {
             final var config = WaystonesConfig.getActive();
             final var shouldTransportPets = config.teleports.transportPets;
             if (shouldTransportPets == WaystonesConfigData.TransportMobs.ENABLED || (shouldTransportPets == WaystonesConfigData.TransportMobs.SAME_DIMENSION && !context.isDimensionalTeleport())) {
@@ -59,6 +69,22 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public Either<WaystoneTeleportContext, WaystoneTeleportError> createCustomTeleportContext(Entity entity, Waystone waystone) {
+        return createUncheckedCustomTeleportContext(entity, waystone).flatMap(context -> {
+            ServerLevel targetLevel = entity.level().getServer().getLevel(waystone.getDimension());
+            if (targetLevel == null) {
+                return Either.right(new WaystoneTeleportError.InvalidDimension(waystone.getDimension()));
+            }
+
+            if (!waystone.isValidInLevel(targetLevel)) {
+                return Either.right(new WaystoneTeleportError.MissingWaystone(waystone));
+            }
+
+            return Either.left(context);
+        });
+    }
+
+    @Override
+    public Either<WaystoneTeleportContext, WaystoneTeleportError> createUncheckedCustomTeleportContext(Entity entity, Waystone waystone) {
         if (!waystone.isValid()) {
             return Either.right(new WaystoneTeleportError.InvalidWaystone(waystone));
         }
@@ -71,10 +97,6 @@ public class InternalMethodsImpl implements InternalMethods {
         ServerLevel targetLevel = server.getLevel(waystone.getDimension());
         if (targetLevel == null) {
             return Either.right(new WaystoneTeleportError.InvalidDimension(waystone.getDimension()));
-        }
-
-        if (!waystone.isValidInLevel(targetLevel)) {
-            return Either.right(new WaystoneTeleportError.MissingWaystone(waystone));
         }
 
         return Either.left(new WaystoneTeleportContextImpl(entity, waystone));
@@ -98,6 +120,16 @@ public class InternalMethodsImpl implements InternalMethods {
     @Override
     public Either<List<Entity>, WaystoneTeleportError> forceTeleport(WaystoneTeleportContext context) {
         return WaystoneTeleportManager.doTeleport(context);
+    }
+
+    @Override
+    public CompletableFuture<Either<List<Entity>, WaystoneTeleportError>> tryTeleportAsync(WaystoneTeleportContext context) {
+        return WaystoneTeleportManager.tryTeleportAsync(context);
+    }
+
+    @Override
+    public CompletableFuture<Either<List<Entity>, WaystoneTeleportError>> forceTeleportAsync(WaystoneTeleportContext context) {
+        return WaystoneTeleportManager.forceTeleportAsync(context);
     }
 
     @Override

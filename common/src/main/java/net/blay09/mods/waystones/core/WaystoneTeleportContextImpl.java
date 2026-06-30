@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.requirement.EpitaphRequirement;
 import net.blay09.mods.waystones.requirement.NoRequirement;
 import net.blay09.mods.waystones.requirement.TwinboundFeatherRequirement;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +28,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     private Waystone fromWaystone;
 
     private ItemStack warpItem = ItemStack.EMPTY;
+    private @Nullable InteractionHand warpHand;
 
     private WarpRequirement warpRequirement = NoRequirement.INSTANCE;
 
@@ -66,7 +68,6 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     }
 
     @Override
-    @Nullable
     public Optional<Waystone> getFromWaystone() {
         return Optional.ofNullable(fromWaystone);
     }
@@ -85,6 +86,17 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public WaystoneTeleportContext setWarpItem(ItemStack warpItem) {
         this.warpItem = warpItem;
+        return this;
+    }
+
+    @Override
+    public @Nullable InteractionHand getWarpHand() {
+        return warpHand;
+    }
+
+    @Override
+    public WaystoneTeleportContext setWarpHand(InteractionHand warpHand) {
+        this.warpHand = warpHand;
         return this;
     }
 
