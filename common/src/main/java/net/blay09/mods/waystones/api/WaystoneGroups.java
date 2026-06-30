@@ -26,6 +26,7 @@ public final class WaystoneGroups {
     public static final ResourceLocation VILLAGES_ICON = id("groups/villages");
     public static final ResourceLocation GLOBAL_ICON = id("groups/global");
     public static final ResourceLocation PLAYERS_ICON = id("groups/players");
+    public static final ResourceLocation TEAM_ICON = id("groups/teams");
 
     // TODO Would be nice to expose an API for this and getDimensionIcon
     public static final List<ResourceLocation> PRESET_ICONS = List.of(
@@ -40,7 +41,8 @@ public final class WaystoneGroups {
             DIMENSION_ICON,
             VILLAGES_ICON,
             GLOBAL_ICON,
-            PLAYERS_ICON);
+            PLAYERS_ICON,
+            TEAM_ICON);
 
     public static final WaystoneGroup FAVORITES = new WaystoneGroupImpl(
             id("favorites"),
@@ -68,6 +70,15 @@ public final class WaystoneGroups {
             true,
             false,
             -10);
+
+    public static final WaystoneGroup TEAM = new WaystoneGroupImpl(
+            id("team"),
+            Component.translatable("waystones.groups.team"),
+            TEAM_ICON,
+            GroupColor.AQUA.rgb(),
+            true,
+            false,
+            -5);
 
     private WaystoneGroups() {
     }
@@ -165,6 +176,9 @@ public final class WaystoneGroups {
         }
         if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
             groups.add(GLOBAL);
+        }
+        if (waystone.getVisibility() == WaystoneVisibility.TEAM) {
+            groups.add(TEAM);
         }
         groups.add(dimension(waystone.getDimension()));
         return List.copyOf(groups);
