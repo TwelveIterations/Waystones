@@ -53,11 +53,12 @@ public record ServerboundSelectWaystonePacket(UUID waystoneUid) implements Custo
         }
 
         if (selectionMenu.getType() == ModMenus.portalScrollSelection.value()) {
-            WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> {
+            WaystonesAPI.createUncheckedDefaultTeleportContext(player, waystone, it -> {
                         it.setWarpItem(selectionMenu.getWarpItem());
                         it.setWarpHand(selectionMenu.getWarpHand());
                     })
-                    .ifLeft(selectionMenu.getPostTeleportHandler());
+                    .ifLeft(selectionMenu.getPostTeleportHandler())
+                    .ifRight(error -> player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED)));
             player.closeContainer();
             return;
         }
