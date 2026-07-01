@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.client.gui.screen;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.WaystoneGroup;
 import net.blay09.mods.waystones.api.WaystoneGroups;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.client.gui.widget.ManageWaystoneGroupsButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneGroupButton;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -60,7 +61,7 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
         final var oldSelectedGroup = selectedGroup;
         final var oldFavoriteSelected = favoriteCheckbox != null ? favoriteCheckbox.selected() : isFavoriteConfigured();
         final var y = topPos + titleLabelY + 16;
-        final var canEditWaystone = isWaystoneInRange();
+        final var canEditWaystone = canEditWaystone();
         final var aliasFieldWidth = canEditWaystone ? 150 : 176;
         groups = WaystoneGroups.sorted(PlayerWaystoneManager.getWaystoneGroupRegistry(minecraft.player))
                 .stream()
@@ -251,6 +252,10 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
 
     private boolean isFavoriteConfigured() {
         return menu.getConfiguredGroups().contains(WaystoneGroups.FAVORITES.identifier());
+    }
+
+    private boolean canEditWaystone() {
+        return !menu.getWaystone().getWaystoneType().equals(WaystoneTypes.TWINBOUND_FEATHER) && isWaystoneInRange();
     }
 
     private boolean isWaystoneInRange() {

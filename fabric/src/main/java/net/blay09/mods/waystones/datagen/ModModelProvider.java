@@ -63,6 +63,7 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.generateFlatItem(ModItems.attunedShard, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.crumblingAttunedShard, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.deepslateShard, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.twinboundFeather, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.warpStone, ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.warpScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.portalScroll, ModelTemplates.FLAT_HANDHELD_ITEM);

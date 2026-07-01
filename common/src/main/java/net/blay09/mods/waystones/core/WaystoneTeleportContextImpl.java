@@ -2,8 +2,11 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
+import net.blay09.mods.waystones.requirement.CombinedRequirement;
 import net.blay09.mods.waystones.requirement.NoRequirement;
+import net.blay09.mods.waystones.requirement.TwinboundFeatherRequirement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -96,7 +99,13 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
 
     @Override
     public WaystoneTeleportContext setRequirements(WarpRequirement warpRequirement) {
-        this.warpRequirement = warpRequirement;
+        if (targetWaystone.getWaystoneType().equals(WaystoneTypes.TWINBOUND_FEATHER)) {
+            this.warpRequirement = warpRequirement.isEmpty()
+                    ? TwinboundFeatherRequirement.INSTANCE
+                    : new CombinedRequirement(List.of(warpRequirement, TwinboundFeatherRequirement.INSTANCE));
+        } else {
+            this.warpRequirement = warpRequirement;
+        }
         return this;
     }
 

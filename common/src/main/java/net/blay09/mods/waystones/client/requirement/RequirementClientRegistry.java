@@ -30,6 +30,7 @@ public class RequirementClientRegistry {
         registerRenderer(ExperienceLevelRequirement.class, new ExperienceLevelRequirementRenderer());
         registerRenderer(ExperiencePointsRequirement.class, new ExperiencePointsRequirementRenderer());
         registerRenderer(ItemRequirement.class, new ItemRequirementRenderer());
+        registerRenderer(TwinboundFeatherRequirement.class, new TwinboundFeatherRequirementRenderer());
         registerRenderer(RefuseRequirement.class, new RefuseRequirementRenderer());
         registerRenderer(CombinedRequirement.class, new CombinedRequirementRenderer());
     }

@@ -1,8 +1,9 @@
 package net.blay09.mods.waystones.network.message;
 
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WaystoneProxy;
+import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -49,15 +50,19 @@ public class ServerboundPersonalWaystoneSettingsPacket implements CustomPacketPa
     }
 
     public static void handle(ServerPlayer player, ServerboundPersonalWaystoneSettingsPacket message) {
-        final var waystone = new WaystoneProxy(player.server, message.waystoneUid);
-        if (!waystone.isValid()) {
+        final var waystone = PlayerWaystoneManager.findWaystone(player, message.waystoneUid);
+        if (waystone.isEmpty()) {
             Waystones.logger.warn("{} tried to decorate an invalid waystone with id {}", player.getName().getString(), message.waystoneUid);
             return;
         }
 
-        PlayerWaystoneManager.setWaystoneAlias(player, waystone.getWaystoneUid(), message.alias.orElse(null));
-        PlayerWaystoneManager.setConfiguredWaystoneGroups(player, waystone.getWaystoneUid(), message.groupIds);
+        final var resolvedWaystone = waystone.get();
+        PlayerWaystoneManager.setWaystoneAlias(player, resolvedWaystone.getWaystoneUid(), message.alias.orElse(null));
+        PlayerWaystoneManager.setConfiguredWaystoneGroups(player, resolvedWaystone.getWaystoneUid(), message.groupIds);
         WaystoneSyncManager.sendActivatedWaystones(player);
+        if (resolvedWaystone.isTransient()) {
+            Balm.getNetworking().sendTo(player, new UpdateWaystoneMessage(new UserDecoratedWaystone(resolvedWaystone, message.alias.orElse(null), message.groupIds)));
+        }
     }
 
     @Override

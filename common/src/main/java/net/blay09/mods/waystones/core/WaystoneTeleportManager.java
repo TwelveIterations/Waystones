@@ -222,12 +222,9 @@ public class WaystoneTeleportManager {
             return Either.right(new WaystoneTeleportError.InvalidDimension(waystone.getDimension()));
         }
 
-        final var pos = waystone.getPos();
-        final var state = level.getBlockState(pos);
-        final var facingDirection = state.hasProperty(WaystoneBlock.FACING) ? state.getValue(WaystoneBlock.FACING) : Direction.NORTH;
-        final var offsetDirection = findTeleportOffsetDirection(level, pos, waystone, facingDirection);
-        final var location = offsetDirection.map(pos::relative).orElse(pos).getCenter();
-        return Either.left(new TeleportDestination(level, location, facingDirection));
+        return waystone.resolveDestination(level)
+                .map(Either::<TeleportDestination, WaystoneTeleportError>left)
+                .orElseGet(() -> Either.right(new WaystoneTeleportError.InvalidWaystone(waystone)));
     }
 
     private static void sendHackySyncPacketsAfterTeleport(Entity entity) {
@@ -243,8 +240,6 @@ public class WaystoneTeleportManager {
         if (event.isCanceled()) {
             return Either.right(new WaystoneTeleportError.CancelledByEvent());
         }
-
-        final var entity = context.getEntity();
 
         if (!context.getLeashedEntities().isEmpty()) {
             if (WaystonesConfig.getActive().teleports.transportLeashed == WaystonesConfigData.TransportMobs.DISABLED) {
@@ -262,11 +257,11 @@ public class WaystoneTeleportManager {
             }
         }
 
-        if (entity instanceof Player player && !context.getRequirements().canAfford(player) && !player.getAbilities().instabuild) {
+        if (context.getEntity() instanceof Player player && !context.getRequirements().canAfford(player) && !player.getAbilities().instabuild) {
             return Either.right(new WaystoneTeleportError.NotEnoughXp());
         }
 
-        if (entity instanceof Player player) {
+        if (context.getEntity() instanceof Player player) {
             context.getRequirements().consume(player);
         }
 

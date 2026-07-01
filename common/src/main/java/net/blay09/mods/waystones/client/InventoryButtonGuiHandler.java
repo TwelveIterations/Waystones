@@ -61,7 +61,8 @@ public class InventoryButtonGuiHandler {
                     PlayerWaystoneManager.resetCooldowns(player);
                 }
 
-                final var requirements = WaystonesAPI.resolveRequirements(WaystonesAPI.createUnboundTeleportContext(player).addFlag(TeleportFlags.INVENTORY_BUTTON));
+                final var context = WaystonesAPI.createUnboundTeleportContext(player).addFlag(TeleportFlags.INVENTORY_BUTTON);
+                final var requirements = context.setRequirements(WaystonesAPI.resolveRequirements(context)).getRequirements();
                 if (requirements.canAfford(player)) {
                     if (inventoryButtonMode.hasNamedTarget()) {
                         mc.setScreen(new InventoryButtonReturnConfirmScreen(inventoryButtonMode.getNamedTarget()));
@@ -102,7 +103,7 @@ public class InventoryButtonGuiHandler {
                 long millisLeft = PlayerWaystoneManager.getCooldownMillisLeft(player, WaystoneCooldowns.INVENTORY_BUTTON);
                 final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
                 final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).addFlag(TeleportFlags.INVENTORY_BUTTON);
-                final var requirements = WaystonesAPI.resolveRequirements(context);
+                final var requirements = context.setRequirements(WaystonesAPI.resolveRequirements(context)).getRequirements();
                 if (inventoryButtonMode.hasNamedTarget()) {
                     tooltip.add(Component.translatable("gui.waystones.inventory.return_to_waystone").withStyle(ChatFormatting.YELLOW));
                     final var targetComponent = Component.literal(inventoryButtonMode.getNamedTarget()).withStyle(ChatFormatting.DARK_AQUA);

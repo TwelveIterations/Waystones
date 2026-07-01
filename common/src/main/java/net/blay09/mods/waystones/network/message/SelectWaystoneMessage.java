@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystonesAPI;
+import net.blay09.mods.waystones.core.TwinboundFeatherTargets;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.WaystoneProxy;
@@ -38,11 +39,22 @@ public class SelectWaystoneMessage implements CustomPacketPayload {
             return;
         }
 
-        final var waystone = new WaystoneProxy(player.server, message.waystoneUid);
-        if (selectionMenu.getWaystones().stream().noneMatch(it -> it.getWaystoneUid().equals(waystone.getWaystoneUid()))) {
+        final var selectedWaystone = selectionMenu.getWaystones().stream()
+                .filter(it -> it.getWaystoneUid().equals(message.waystoneUid))
+                .findFirst();
+        if (selectedWaystone.isEmpty()) {
             Waystones.logger.warn("{} tried to teleport to waystone {} that they don't have access to.",
                     player.getName().getString(),
-                    waystone.getWaystoneUid());
+                    message.waystoneUid);
+            return;
+        }
+        final var waystone = selectedWaystone.get().isTransient()
+                ? TwinboundFeatherTargets.findTarget(player, message.waystoneUid).orElse(null)
+                : new WaystoneProxy(player.level().getServer(), message.waystoneUid);
+        if (waystone == null) {
+            Waystones.logger.warn("{} tried to teleport to transient waystone {} that is no longer available.",
+                    player.getName().getString(),
+                    message.waystoneUid);
             return;
         }
 

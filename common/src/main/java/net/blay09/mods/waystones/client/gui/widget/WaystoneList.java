@@ -36,7 +36,7 @@ public class WaystoneList extends AbstractWaystoneList<WaystoneList.WaystoneEntr
                     .setFromWaystone(waystoneFrom)
                     .setWarpItem(menu.getWarpItem())
                     .addFlags(menu.getFlags());
-            final var requirements = WaystonesAPI.resolveRequirements(context);
+            final var requirements = context.setRequirements(WaystonesAPI.resolveRequirements(context)).getRequirements();
             waystoneButton = new WaystoneButton(0,
                     0,
                     getRowWidth(),

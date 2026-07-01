@@ -124,6 +124,14 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy("has_deepslate", has(Items.DEEPSLATE))
                 .save(exporter);
 
+        shapeless(RecipeCategory.TOOLS, ModItems.twinboundFeather)
+                .requires(Items.FEATHER)
+                .requires(Items.AMETHYST_SHARD)
+                .requires(Items.GOLD_NUGGET)
+                .requires(Items.INK_SAC)
+                .unlockedBy("has_feather", has(Items.FEATHER))
+                .save(exporter);
+
         shaped(RecipeCategory.DECORATIONS, ModItems.portalScroll, 3)
                 .pattern("SIS")
                 .pattern("SES")

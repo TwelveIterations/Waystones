@@ -10,7 +10,10 @@ import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.comparator.WaystoneComparators;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.TwinboundFeatherTargets;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
+import net.blay09.mods.waystones.item.ModItems;
+import net.blay09.mods.waystones.item.TwinboundFeatherItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -23,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.world.item.ItemStack;
 
 import static net.minecraft.commands.Commands.argument;
 
@@ -37,6 +41,7 @@ public class ModCommands {
     private static final ResourceLocation PERMISSION_WAYSTONES_PLACE = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.place");
     private static final ResourceLocation PERMISSION_WAYSTONES_GUI = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.gui");
     private static final ResourceLocation PERMISSION_WAYSTONES_COOLDOWN = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.cooldown");
+    private static final ResourceLocation PERMISSION_WAYSTONES_TWINBOUND = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "command.waystones.twinbound");
 
     public static void initialize(BalmCommands commands) {
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_ACTIVATE, 2);
@@ -46,8 +51,9 @@ public class ModCommands {
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_LIST, 2);
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_GUI, 2);
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_COOLDOWN, 2);
+        BalmCommands.registerPermission(PERMISSION_WAYSTONES_TWINBOUND, 2);
         commands.register(dispatcher -> dispatcher.register(Commands.literal("waystones")
-                .requires(BalmCommands.requireAnyPermission(PERMISSION_WAYSTONES_ACTIVATE, PERMISSION_WAYSTONES_FORGET, PERMISSION_WAYSTONES_COUNT, PERMISSION_WAYSTONES_LIST, PERMISSION_WAYSTONES_GUI, PERMISSION_WAYSTONES_PLACE, PERMISSION_WAYSTONES_COOLDOWN))
+                .requires(BalmCommands.requireAnyPermission(PERMISSION_WAYSTONES_ACTIVATE, PERMISSION_WAYSTONES_FORGET, PERMISSION_WAYSTONES_COUNT, PERMISSION_WAYSTONES_LIST, PERMISSION_WAYSTONES_GUI, PERMISSION_WAYSTONES_PLACE, PERMISSION_WAYSTONES_COOLDOWN, PERMISSION_WAYSTONES_TWINBOUND))
                 .then(Commands.literal("activate")
                         .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_ACTIVATE))
                         .then(argument("targets", EntityArgument.players())
@@ -201,6 +207,44 @@ public class ModCommands {
                 .then(Commands.literal("gui")
                         .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_GUI))
                         .then(argument("player", EntityArgument.player()).executes(new OpenPlayerWaystonesGuiCommand())))
+                .then(Commands.literal("twinbound")
+                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_TWINBOUND))
+                        .then(argument("first", EntityArgument.player())
+                                .then(argument("second", EntityArgument.player())
+                                        .executes(context -> {
+                                            final var first = EntityArgument.getPlayer(context, "first");
+                                            final var second = EntityArgument.getPlayer(context, "second");
+                                            if (first == second) {
+                                                context.getSource().sendFailure(Component.translatable("commands.waystones.twinbound.same_player"));
+                                                return 0;
+                                            }
+
+                                            final var firstFeather = TwinboundFeatherTargets.findCarriedTwinboundFeather(first);
+                                            final var secondFeather = TwinboundFeatherTargets.findCarriedTwinboundFeather(second);
+                                            if (firstFeather.isEmpty() && first.getInventory().getFreeSlot() == -1) {
+                                                context.getSource().sendFailure(Component.translatable("commands.waystones.twinbound.no_space", first.getDisplayName()));
+                                                return 0;
+                                            }
+                                            if (secondFeather.isEmpty() && second.getInventory().getFreeSlot() == -1) {
+                                                context.getSource().sendFailure(Component.translatable("commands.waystones.twinbound.no_space", second.getDisplayName()));
+                                                return 0;
+                                            }
+
+                                            final var firstFeatherStack = firstFeather.orElseGet(() -> createTwinboundFeather(first));
+                                            final var secondFeatherStack = secondFeather.orElseGet(() -> createTwinboundFeather(second));
+                                            final var linked = TwinboundFeatherItem.becomeBesties(firstFeatherStack, secondFeatherStack);
+                                            first.getInventory().setChanged();
+                                            second.getInventory().setChanged();
+
+                                            if (linked) {
+                                                context.getSource().sendSuccess(() -> Component.translatable("commands.waystones.twinbound.success",
+                                                        first.getDisplayName(), second.getDisplayName()), true);
+                                            } else {
+                                                context.getSource().sendSuccess(() -> Component.translatable("commands.waystones.twinbound.already_linked",
+                                                        first.getDisplayName(), second.getDisplayName()), false);
+                                            }
+                                            return linked ? 1 : 0;
+                                        }))))
                 .then(Commands.literal("cooldown")
                         .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_COOLDOWN))
                         .then(argument("targets", EntityArgument.players())
@@ -260,6 +304,14 @@ public class ModCommands {
                                                     return targets.size();
                                                 })))))
         ));
+    }
+
+    private static ItemStack createTwinboundFeather(ServerPlayer player) {
+        final var inventory = player.getInventory();
+        final var itemStack = new ItemStack(ModItems.twinboundFeather);
+        final var freeSlot = inventory.getFreeSlot();
+        inventory.setItem(freeSlot, itemStack);
+        return inventory.getItem(freeSlot);
     }
 
     private static Component componentForWaystoneList(ServerPlayer caller, ServerPlayer target, Waystone waystone) {

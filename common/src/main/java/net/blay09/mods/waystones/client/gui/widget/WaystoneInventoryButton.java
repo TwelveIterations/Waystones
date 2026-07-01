@@ -42,7 +42,8 @@ public class WaystoneInventoryButton extends Button {
         this.iconItemHovered = new ItemStack(ModItems.warpScroll);
 
         final var player = Minecraft.getInstance().player;
-        warpRequirement = WaystonesAPI.resolveRequirements(WaystonesAPI.createUnboundTeleportContext(player).addFlag(TeleportFlags.INVENTORY_BUTTON));
+        final var context = WaystonesAPI.createUnboundTeleportContext(player).addFlag(TeleportFlags.INVENTORY_BUTTON);
+        warpRequirement = context.setRequirements(WaystonesAPI.resolveRequirements(context)).getRequirements();
     }
 
     @Override

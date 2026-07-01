@@ -30,6 +30,7 @@ public class ModItems {
     public static Item attunedShard;
     public static Item deepslateShard;
     public static Item crumblingAttunedShard;
+    public static Item twinboundFeather;
 
     public static void initialize(BalmItems items) {
         items.registerItem(() -> returnScroll = new ReturnScrollItem(items.itemProperties()), id("return_scroll"));
@@ -43,6 +44,7 @@ public class ModItems {
         items.registerItem(() -> attunedShard = new AttunedShardItem(items.itemProperties()), id("attuned_shard"), null);
         items.registerItem(() -> deepslateShard = new ShardItem(items.itemProperties()), id("deepslate_shard"), null);
         items.registerItem(() -> crumblingAttunedShard = new CrumblingAttunedShardItem(items.itemProperties()), id("crumbling_attuned_shard"), null);
+        items.registerItem(() -> twinboundFeather = new TwinboundFeatherItem(items.itemProperties()), id("twinbound_feather"));
 
         creativeModeTab = items.registerCreativeModeTab(() -> new ItemStack(ModBlocks.waystone), id("waystones"));
 
@@ -59,6 +61,7 @@ public class ModItems {
                     "warp_stone",
                     "warp_dust",
                     "dormant_shard",
+                    "twinbound_feather",
                     "deepslate_shard",
                     ".+_waystone",
                     ".+_sharestone",
