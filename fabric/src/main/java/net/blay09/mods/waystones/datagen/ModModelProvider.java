@@ -11,9 +11,7 @@ import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
-import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.*;
@@ -95,11 +93,12 @@ public class ModModelProvider extends FabricModelProvider {
     private void createFleetingMemorial(BlockModelGenerators blockStateModelGenerator) {
         final var block = ModBlocks.fleetingMemorial.asBlock();
         final var model = id("block/fleeting_memorial");
-        blockStateModelGenerator.blockStateOutput.accept(MultiPartGenerator.multiPart(block)
-                .with(condition(WaystoneBlockBase.FACING, Direction.NORTH), plainVariant(model))
-                .with(condition(WaystoneBlockBase.FACING, Direction.EAST), plainVariant(model).with(Y_ROT_90))
-                .with(condition(WaystoneBlockBase.FACING, Direction.SOUTH), plainVariant(model).with(Y_ROT_180))
-                .with(condition(WaystoneBlockBase.FACING, Direction.WEST), plainVariant(model).with(Y_ROT_270)));
+        blockStateModelGenerator.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
+                .with(PropertyDispatch.initial(WaystoneBlockBase.FACING)
+                        .select(Direction.NORTH, plainVariant(model))
+                        .select(Direction.EAST, plainVariant(model).with(Y_ROT_90))
+                        .select(Direction.SOUTH, plainVariant(model).with(Y_ROT_180))
+                        .select(Direction.WEST, plainVariant(model).with(Y_ROT_270))));
     }
 
     private void createDoubleBlockWaystone(BlockModelGenerators blockStateModelGenerator, BuiltinWaystoneType type, Block block) {

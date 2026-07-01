@@ -1,39 +1,19 @@
 {
-  "multipart": [
-    {
-      "apply": {
-        "model": "waystones:block/fleeting_memorial"
-      },
-      "when": {
-        "facing": "north"
-      }
+  "variants": {
+    "facing=east": {
+      "model": "waystones:block/fleeting_memorial",
+      "y": 90
     },
-    {
-      "apply": {
-        "model": "waystones:block/fleeting_memorial",
-        "y": 90
-      },
-      "when": {
-        "facing": "east"
-      }
+    "facing=north": {
+      "model": "waystones:block/fleeting_memorial"
     },
-    {
-      "apply": {
-        "model": "waystones:block/fleeting_memorial",
-        "y": 180
-      },
-      "when": {
-        "facing": "south"
-      }
+    "facing=south": {
+      "model": "waystones:block/fleeting_memorial",
+      "y": 180
     },
-    {
-      "apply": {
-        "model": "waystones:block/fleeting_memorial",
-        "y": 270
-      },
-      "when": {
-        "facing": "west"
-      }
+    "facing=west": {
+      "model": "waystones:block/fleeting_memorial",
+      "y": 270
     }
-  ]
+  }
 }
