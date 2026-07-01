@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "E": "minecraft:ender_pearl",
     "I": "minecraft:ink_sac",
