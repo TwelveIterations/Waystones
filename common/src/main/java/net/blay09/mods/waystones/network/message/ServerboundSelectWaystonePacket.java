@@ -46,6 +46,9 @@ public record ServerboundSelectWaystonePacket(UUID waystoneUid) implements Custo
             Waystones.logger.warn("{} tried to teleport to transient waystone {} that is no longer available.",
                     player.getName().getString(),
                     message.waystoneUid);
+            final var error = new WaystoneTeleportError.TeleportNoLongerValid();
+            player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED));
+            player.closeContainer();
             return;
         }
 
