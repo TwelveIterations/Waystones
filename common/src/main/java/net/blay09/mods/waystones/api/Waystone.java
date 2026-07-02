@@ -49,6 +49,11 @@ public interface Waystone {
     @Nullable
     UUID getOwnerUid();
 
+    @Nullable
+    default String getOwnerUsername() {
+        return null;
+    }
+
     ResourceLocation getWaystoneType();
 
     default boolean hasName() {

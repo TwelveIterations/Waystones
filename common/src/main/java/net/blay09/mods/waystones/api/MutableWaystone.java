@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -17,6 +18,8 @@ public interface MutableWaystone {
     void setPos(BlockPos pos);
 
     void setOwnerUid(UUID ownerUid);
+
+    void setOwnerUsername(@Nullable String username);
 
     void setTransient(boolean isTransient);
 }

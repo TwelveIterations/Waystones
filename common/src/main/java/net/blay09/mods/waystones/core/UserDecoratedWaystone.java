@@ -107,6 +107,12 @@ public class UserDecoratedWaystone implements Waystone {
         return backingWaystone.getOwnerUid();
     }
 
+    @Nullable
+    @Override
+    public String getOwnerUsername() {
+        return backingWaystone.getOwnerUsername();
+    }
+
     @Override
     public ResourceLocation getWaystoneType() {
         return backingWaystone.getWaystoneType();

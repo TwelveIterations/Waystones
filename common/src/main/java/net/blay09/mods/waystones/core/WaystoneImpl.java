@@ -40,14 +40,20 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     private WaystoneVisibility visibility;
 
     private UUID ownerUid;
+    private @Nullable String ownerUsername;
 
     public WaystoneImpl(ResourceLocation waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @Nullable UUID ownerUid) {
+        this(waystoneType, waystoneUid, dimension, pos, origin, ownerUid, null);
+    }
+
+    public WaystoneImpl(ResourceLocation waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @Nullable UUID ownerUid, @Nullable String ownerUsername) {
         this.waystoneType = waystoneType;
         this.waystoneUid = waystoneUid;
         this.dimension = dimension;
         this.pos = pos;
         this.origin = origin;
         this.ownerUid = ownerUid;
+        this.ownerUsername = ownerUsername;
         this.visibility = WaystoneVisibility.fromWaystoneType(waystoneType);
     }
 
@@ -97,6 +103,11 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     }
 
     @Override
+    public void setOwnerUsername(@Nullable String username) {
+        this.ownerUsername = username;
+    }
+
+    @Override
     public BlockPos getPos() {
         return pos;
     }
@@ -109,6 +120,12 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     @Override
     public UUID getOwnerUid() {
         return ownerUid;
+    }
+
+    @Nullable
+    @Override
+    public String getOwnerUsername() {
+        return ownerUsername;
     }
 
     public void setDimension(ResourceKey<Level> dimension) {
@@ -185,9 +202,10 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
             }
         }
         final var ownerUid = compound.contains("OwnerUid") ? NbtUtils.loadUUID(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
+        final var ownerUsername = compound.contains("OwnerUsername") ? compound.getString("OwnerUsername") : null;
         final var waystoneType = compound.contains("Type") ? ResourceLocation.parse(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
         final var isTransient = compound.contains("Transient") && compound.getBoolean("Transient");
-        final var waystone = new WaystoneImpl(waystoneType, waystoneUid, dimensionType, pos, origin, ownerUid);
+        final var waystone = new WaystoneImpl(waystoneType, waystoneUid, dimensionType, pos, origin, ownerUid, ownerUsername);
         waystone.setName(name);
         waystone.setTransient(isTransient);
         if (compound.contains("Visibility")) {
@@ -225,6 +243,9 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         compound.putString("Origin", waystone.getOrigin().name());
         if (waystone.getOwnerUid() != null) {
             compound.put("OwnerUid", NbtUtils.createUUID(waystone.getOwnerUid()));
+        }
+        if (waystone.getOwnerUsername() != null) {
+            compound.putString("OwnerUsername", waystone.getOwnerUsername());
         }
         compound.putString("Visibility", waystone.getVisibility().name());
         return compound;

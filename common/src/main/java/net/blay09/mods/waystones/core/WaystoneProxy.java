@@ -52,6 +52,12 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
         return getBackingWaystone().getOwnerUid();
     }
 
+    @Nullable
+    @Override
+    public String getOwnerUsername() {
+        return getBackingWaystone().getOwnerUsername();
+    }
+
     @Override
     public UUID getWaystoneUid() {
         return waystoneUid;
@@ -121,6 +127,14 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
         Waystone backingWaystone = getBackingWaystone();
         if (backingWaystone instanceof MutableWaystone) {
             ((MutableWaystone) backingWaystone).setOwnerUid(ownerUid);
+        }
+    }
+
+    @Override
+    public void setOwnerUsername(@Nullable String username) {
+        Waystone backingWaystone = getBackingWaystone();
+        if (backingWaystone instanceof MutableWaystone) {
+            ((MutableWaystone) backingWaystone).setOwnerUsername(username);
         }
     }
 

@@ -204,7 +204,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
                     world.getLevel().dimension(),
                     worldPosition,
                     origin,
-                    player != null ? player.getUUID() : null);
+                    player != null ? player.getUUID() : null,
+                    player instanceof Player owner ? owner.getGameProfile().getName() : null);
             WaystoneManagerImpl.get(world.getServer()).addWaystone(waystone);
             this.waystone = waystone;
             setChanged();
