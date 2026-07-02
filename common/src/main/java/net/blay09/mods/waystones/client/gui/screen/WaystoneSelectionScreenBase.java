@@ -62,6 +62,8 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
     public WaystoneSelectionScreenBase(WaystoneSelectionMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
+        imageWidth = 270;
+        imageHeight = 200;
         this.playerInventory = playerInventory;
         waystones = container.getWaystones();
         PlayerWaystoneManager.ensureSortingIndex(Minecraft.getInstance().player, waystones);
@@ -70,8 +72,6 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         if (sorting != null) {
             filteredWaystones.sort(getSorting());
         }
-        imageWidth = 270;
-        imageHeight = 200;
     }
 
     @Override
@@ -115,9 +115,9 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     protected AbstractWaystoneList<?> createWaystoneList() {
-        return new WaystoneList(leftPos + (imageWidth - AbstractWaystoneList.ENTRY_WIDTH) / 2,
+        return new WaystoneList(leftPos + (imageWidth - AbstractWaystoneList.ENTRY_WIDTH) / 2 - 3,
                 topPos + HEADER_HEIGHT,
-                AbstractWaystoneList.ENTRY_WIDTH,
+                AbstractWaystoneList.ENTRY_WIDTH + 2,
                 imageHeight - HEADER_HEIGHT - FOOTER_HEIGHT,
                 menu);
     }
