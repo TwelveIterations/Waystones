@@ -100,8 +100,8 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.level()).getWaystones(player).stream()
                 .filter(it -> it.getDimension() == player.level().dimension())
                 .min((first, second) -> {
-                    double firstDist = first.getPos().distToCenterSqr(player.getX(), player.getY(), player.getZ());
-                    double secondDist = second.getPos().distToCenterSqr(player.getX(), player.getY(), player.getZ());
+                    double firstDist = player.distanceToSqr(first.getPos().getCenter());
+                    double secondDist = player.distanceToSqr(second.getPos().getCenter());
                     return (int) Math.round(firstDist) - (int) Math.round(secondDist);
                 });
     }
