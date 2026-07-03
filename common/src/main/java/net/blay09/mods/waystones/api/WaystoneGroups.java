@@ -73,7 +73,7 @@ public final class WaystoneGroups {
 
     public static final WaystoneGroup TEAM = new WaystoneGroupImpl(
             id("team"),
-            Component.translatable("waystones.groups.team"),
+            Component.translatable("waystones.groups.teams"),
             TEAM_ICON,
             GroupColor.AQUA.rgb(),
             true,
