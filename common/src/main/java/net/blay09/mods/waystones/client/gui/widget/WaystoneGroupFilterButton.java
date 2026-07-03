@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import net.blay09.mods.waystones.api.WaystoneGroup;
+import net.blay09.mods.waystones.client.WaystoneGroupIcons;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -23,7 +24,7 @@ public class WaystoneGroupFilterButton extends Button {
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         super.renderWidget(graphics, mouseX, mouseY, partialTicks);
-        graphics.blitSprite(group.icon(), getX() + 2, getY() + 2, 16, 16);
+        graphics.blitSprite(WaystoneGroupIcons.getIcon(group), getX() + 2, getY() + 2, 16, 16);
         if (selected.getAsBoolean()) {
             graphics.renderOutline(getX() + 1, getY() + 1, getWidth() - 2, getHeight() - 2, 0xFFFFFFFF);
         }

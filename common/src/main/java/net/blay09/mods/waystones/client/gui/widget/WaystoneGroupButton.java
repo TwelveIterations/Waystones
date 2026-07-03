@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import net.blay09.mods.waystones.api.WaystoneGroup;
+import net.blay09.mods.waystones.client.WaystoneGroupIcons;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -57,7 +58,7 @@ public class WaystoneGroupButton extends Button {
         final int color = group != null ? groupTextColor(group) : 0xFFFFFF;
 
         if (group != null) {
-            graphics.blitSprite(group.icon(), getX() + 3, getY() + 2, 16, 16);
+            graphics.blitSprite(WaystoneGroupIcons.getIcon(group), getX() + 3, getY() + 2, 16, 16);
         }
 
         graphics.drawString(font, label, labelLeft, getY() + 6, color, true);
