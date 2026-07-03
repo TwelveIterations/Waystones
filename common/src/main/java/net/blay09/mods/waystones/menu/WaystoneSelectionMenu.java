@@ -57,16 +57,22 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
     private final List<UserDecoratedWaystone> waystones;
     private final Map<UUID, Either<List<Object>, List<Object>>> warpRequirements;
     private final Set<Identifier> flags;
+    private final @Nullable Identifier targetKind;
     private Consumer<WaystoneTeleportContext> postTeleportHandler = _ -> {};
     private ItemStack warpItem = ItemStack.EMPTY;
     private @Nullable InteractionHand warpHand;
 
     public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, List<UserDecoratedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements, Set<Identifier> flags) {
+        this(type, fromWaystone, windowId, waystones, warpRequirements, flags, null);
+    }
+
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, List<UserDecoratedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements, Set<Identifier> flags, @Nullable Identifier targetKind) {
         super(type, windowId);
         this.fromWaystone = fromWaystone;
         this.waystones = waystones;
         this.warpRequirements = warpRequirements;
         this.flags = flags;
+        this.targetKind = targetKind;
     }
 
     public WaystoneSelectionMenu withWarpItem(ItemStack warpItem) {
@@ -113,6 +119,10 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
     public Set<Identifier> getFlags() {
         return flags;
+    }
+
+    public @Nullable Identifier getTargetKind() {
+        return targetKind;
     }
 
     public Consumer<WaystoneTeleportContext> getPostTeleportHandler() {

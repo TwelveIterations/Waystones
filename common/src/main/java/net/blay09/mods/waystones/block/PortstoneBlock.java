@@ -39,6 +39,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class PortstoneBlock extends WaystoneBlockBase {
@@ -146,13 +147,13 @@ public class PortstoneBlock extends WaystoneBlockBase {
 
                 @Override
                 public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.value(), null, windowId, waystones, Collections.emptyMap(), Set.of(TeleportFlags.PORTSTONE));
+                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.value(), null, windowId, waystones, Collections.emptyMap(), Set.of(TeleportFlags.PORTSTONE), type.kind());
                 }
 
                 @Override
                 public ModMenus.WaystoneListMenuData getScreenOpeningData(ServerPlayer serverPlayer) {
                     final var warpRequirements = WaystoneSelectionMenu.buildWarpRequirements(serverPlayer, null, waystones, Set.of(TeleportFlags.PORTSTONE));
-                    return new ModMenus.WaystoneListMenuData(waystones, warpRequirements);
+                    return new ModMenus.WaystoneListMenuData(waystones, warpRequirements, Optional.of(type.kind()));
                 }
 
                 @Override
