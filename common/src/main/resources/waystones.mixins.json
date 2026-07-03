@@ -11,6 +11,7 @@
     "StructureTemplatePoolAccessor"
   ],
   "client": [
+    "ItemPropertiesAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
