@@ -7,7 +7,9 @@ import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -15,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,14 +35,20 @@ public class ModMenus {
         );
     }
 
-    public record WaystoneListMenuData(List<UserDecoratedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements) {
+    public record WaystoneListMenuData(List<UserDecoratedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements, Optional<Identifier> waystoneKind) {
         public static final StreamCodec<RegistryFriendlyByteBuf, WaystoneListMenuData> STREAM_CODEC = StreamCodec.composite(
                 UserDecoratedWaystone.LIST_STREAM_CODEC,
                 WaystoneListMenuData::waystones,
                 WaystoneSelectionMenu.WARP_REQUIREMENTS_STREAM_CODEC,
                 WaystoneListMenuData::warpRequirements,
+                ByteBufCodecs.optional(Identifier.STREAM_CODEC),
+                WaystoneListMenuData::waystoneKind,
                 WaystoneListMenuData::new
         );
+
+        public WaystoneListMenuData(List<UserDecoratedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements) {
+            this(waystones, warpRequirements, Optional.empty());
+        }
     }
 
     public static Holder<MenuType<WaystoneSelectionMenu>> waystoneSelection;
@@ -115,7 +124,7 @@ public class ModMenus {
                 new BalmMenuFactory<WaystoneSelectionMenu, WaystoneListMenuData>() {
                     @Override
                     public WaystoneSelectionMenu create(int windowId, Inventory inventory, WaystoneListMenuData data) {
-                        return new WaystoneSelectionMenu(ModMenus.portstoneSelection.value(), null, windowId, data.waystones(), data.warpRequirements(), Set.of(TeleportFlags.PORTSTONE));
+                        return new WaystoneSelectionMenu(ModMenus.portstoneSelection.value(), null, windowId, data.waystones(), data.warpRequirements(), Set.of(TeleportFlags.PORTSTONE), data.waystoneKind().orElse(null));
                     }
 
                     @Override

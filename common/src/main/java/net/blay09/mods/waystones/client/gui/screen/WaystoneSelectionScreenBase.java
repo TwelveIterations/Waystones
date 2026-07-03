@@ -257,6 +257,11 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     private String getNoWaystonesMessageKey() {
+        final var targetKind = menu.getTargetKind();
+        if (targetKind != null && WaystoneKinds.isSharestone(targetKind)) {
+            return "gui.waystones.waystone_selection.no_sharestones_available";
+        }
+
         final var warpItem = menu.getWarpItem();
         if (warpItem.getItem() instanceof WaystoneKindScoped kindScoped && WaystoneKinds.isSharestone(kindScoped.getWaystoneKind())) {
             return "gui.waystones.waystone_selection.no_sharestones_available";
