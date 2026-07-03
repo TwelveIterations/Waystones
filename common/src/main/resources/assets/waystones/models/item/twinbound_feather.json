@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:item/handheld",
+  "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "waystones:item/twinbound_feather"
   },
@@ -19,5 +19,25 @@
       "translation": [ 0, 4, 0 ],
       "scale": [ 0.55, 0.55, 0.55 ]
     }
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "brushing": 0.25
+      },
+      "model": "waystones:item/twinbound_feather_brushing_0"
+    },
+    {
+      "predicate": {
+        "brushing": 0.5
+      },
+      "model": "waystones:item/twinbound_feather_brushing_1"
+    },
+    {
+      "predicate": {
+        "brushing": 0.75
+      },
+      "model": "waystones:item/twinbound_feather_brushing_2"
+    }
+  ]
 }
