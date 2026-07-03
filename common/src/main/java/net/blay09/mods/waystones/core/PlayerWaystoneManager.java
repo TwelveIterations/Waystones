@@ -29,6 +29,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
@@ -100,8 +101,8 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.level()).getWaystones(player).stream()
                 .filter(it -> it.getDimension() == player.level().dimension())
                 .min((first, second) -> {
-                    double firstDist = first.getPos().distToCenterSqr(player.getX(), player.getY(), player.getZ());
-                    double secondDist = second.getPos().distToCenterSqr(player.getX(), player.getY(), player.getZ());
+                    double firstDist = player.distanceToSqr(Vec3.atCenterOf(first.getPos()));
+                    double secondDist = player.distanceToSqr(Vec3.atCenterOf(second.getPos()));
                     return (int) Math.round(firstDist) - (int) Math.round(secondDist);
                 });
     }
