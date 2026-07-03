@@ -39,7 +39,7 @@ public class WaystoneList extends AbstractWaystoneList<WaystoneList.WaystoneEntr
             final var requirements = context.setRequirements(WaystonesAPI.resolveRequirements(context)).getRequirements();
             waystoneButton = new WaystoneButton(0,
                     0,
-                    getRowWidth(),
+                    getRowWidth() - 4,
                     waystone,
                     requirements,
                     button -> Balm.getNetworking().sendToServer(new SelectWaystoneMessage(waystone.getWaystoneUid())));

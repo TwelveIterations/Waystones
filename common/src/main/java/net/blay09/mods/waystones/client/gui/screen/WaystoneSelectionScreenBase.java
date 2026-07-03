@@ -115,9 +115,9 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     protected AbstractWaystoneList<?> createWaystoneList() {
-        return new WaystoneList(leftPos + (imageWidth - AbstractWaystoneList.ENTRY_WIDTH) / 2 - 3,
+        return new WaystoneList(leftPos + (imageWidth - AbstractWaystoneList.ENTRY_WIDTH) / 2,
                 topPos + HEADER_HEIGHT,
-                AbstractWaystoneList.ENTRY_WIDTH + 2,
+                AbstractWaystoneList.ENTRY_WIDTH,
                 imageHeight - HEADER_HEIGHT - FOOTER_HEIGHT,
                 menu);
     }
