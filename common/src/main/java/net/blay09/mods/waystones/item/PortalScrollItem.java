@@ -46,7 +46,7 @@ public class PortalScrollItem extends ScrollItemBase implements IResetUseOnDamag
                 return itemStack;
             }
 
-            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getActivatedWaystones(player));
+            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForPlayer(player));
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
             Balm.networking().openMenu(player, new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
                 @Override
