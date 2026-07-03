@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import net.blay09.mods.waystones.api.WaystoneGroup;
+import net.blay09.mods.waystones.client.WaystoneGroupIcons;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -43,7 +44,7 @@ public class WaystoneGroupButton extends Button.Plain {
         extractDefaultSprite(graphics);
 
         if (group != null) {
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, group.icon(), getX() + 3, getY() + 2, 16, 16);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, WaystoneGroupIcons.getIcon(group), getX() + 3, getY() + 2, 16, 16);
         }
 
         final int labelLeft = getX() + TEXT_MARGIN + (group != null ? 18 : 0);
