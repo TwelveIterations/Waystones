@@ -45,8 +45,8 @@ public class WaystoneSyncManager {
         Balm.getNetworking().sendTo(player, new SortingIndexMessage(sortingIndex));
     }
 
-    public static void ensureDynamicGroups(Player player) {
-        ensureDynamicGroupsFromWaystones(player, PlayerWaystoneManager.getActivatedWaystones(player));
+    public static void ensureDynamicGroups(ServerPlayer player) {
+        ensureDynamicGroupsFromWaystones(player, PlayerWaystoneManager.getTargetsForPlayer(player));
         final var waystoneManager = WaystoneManagerImpl.get(player.level().getServer());
         for (final var sharestone : WaystoneTypes.SHARESTONES) {
             ensureDynamicGroupsFromWaystones(player, waystoneManager.getWaystonesByType(sharestone).collect(Collectors.toList()));
