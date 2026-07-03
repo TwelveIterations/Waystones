@@ -256,6 +256,11 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     protected String getNoWaystonesMessageKey() {
+        final var targetKind = menu.getTargetKind();
+        if (targetKind != null && WaystoneTypes.isSharestone(targetKind)) {
+            return "gui.waystones.waystone_selection.no_sharestones_available";
+        }
+
         if (this instanceof SharestoneSelectionScreen) {
             return "gui.waystones.waystone_selection.no_sharestones_available";
         }

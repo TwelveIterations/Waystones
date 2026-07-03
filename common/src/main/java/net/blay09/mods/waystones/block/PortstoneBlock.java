@@ -44,6 +44,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class PortstoneBlock extends WaystoneBlockBase {
@@ -144,7 +145,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
             final var targetWaystoneType = getTargetWaystoneType();
             final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(serverPlayer, PlayerWaystoneManager.getTargetsForWaystoneType(serverPlayer, targetWaystoneType));
             PlayerWaystoneManager.ensureSortingIndex(serverPlayer, waystones);
-            Balm.getNetworking().openGui(serverPlayer, new BalmMenuProvider<List<UserDecoratedWaystone>>() {
+            Balm.getNetworking().openGui(serverPlayer, new BalmMenuProvider<ModMenus.WaystoneListMenuData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("container.waystones." + color.getSerializedName() + "_portstone");
@@ -152,17 +153,17 @@ public class PortstoneBlock extends WaystoneBlockBase {
 
                 @Override
                 public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.get(), null, windowId, waystones, Set.of(TeleportFlags.PORTSTONE));
+                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.get(), null, windowId, waystones, Set.of(TeleportFlags.PORTSTONE), targetWaystoneType);
                 }
 
                 @Override
-                public List<UserDecoratedWaystone> getScreenOpeningData(ServerPlayer serverPlayer) {
-                    return waystones;
+                public ModMenus.WaystoneListMenuData getScreenOpeningData(ServerPlayer serverPlayer) {
+                    return new ModMenus.WaystoneListMenuData(waystones, Optional.of(targetWaystoneType));
                 }
 
                 @Override
-                public StreamCodec<RegistryFriendlyByteBuf, List<UserDecoratedWaystone>> getScreenStreamCodec() {
-                    return UserDecoratedWaystone.LIST_STREAM_CODEC;
+                public StreamCodec<RegistryFriendlyByteBuf, ModMenus.WaystoneListMenuData> getScreenStreamCodec() {
+                    return ModMenus.WaystoneListMenuData.STREAM_CODEC;
                 }
             });
         }

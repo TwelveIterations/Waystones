@@ -36,12 +36,18 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
     private Consumer<WaystoneTeleportContext> postTeleportHandler = it -> {};
     private ItemStack warpItem = ItemStack.EMPTY;
     private @Nullable InteractionHand warpHand;
+    private final @Nullable ResourceLocation targetKind;
 
     public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<UserDecoratedWaystone> waystones, Set<ResourceLocation> flags) {
+        this(type, fromWaystone, windowId, waystones, flags, null);
+    }
+
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<UserDecoratedWaystone> waystones, Set<ResourceLocation> flags, @Nullable ResourceLocation targetKind) {
         super(type, windowId);
         this.fromWaystone = fromWaystone;
         this.waystones = waystones;
         this.flags = flags;
+        this.targetKind = targetKind;
     }
 
     public WaystoneSelectionMenu withWarpItem(ItemStack warpItem) {
@@ -87,6 +93,10 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
     public Set<ResourceLocation> getFlags() {
         return flags;
+    }
+
+    public @Nullable ResourceLocation getTargetKind() {
+        return targetKind;
     }
 
     public Consumer<WaystoneTeleportContext> getPostTeleportHandler() {

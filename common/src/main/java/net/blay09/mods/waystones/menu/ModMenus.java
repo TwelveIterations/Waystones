@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class ModMenus {
@@ -29,6 +31,20 @@ public class ModMenus {
                 ItemInitiatedWaystoneMenuData::itemStack,
                 ItemInitiatedWaystoneMenuData::new
         );
+    }
+
+    public record WaystoneListMenuData(List<UserDecoratedWaystone> waystones, Optional<ResourceLocation> waystoneKind) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, WaystoneListMenuData> STREAM_CODEC = StreamCodec.composite(
+                UserDecoratedWaystone.LIST_STREAM_CODEC,
+                WaystoneListMenuData::waystones,
+                ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
+                WaystoneListMenuData::waystoneKind,
+                WaystoneListMenuData::new
+        );
+
+        public WaystoneListMenuData(List<UserDecoratedWaystone> waystones) {
+            this(waystones, Optional.empty());
+        }
     }
 
     private static final BalmMenus menus = Balm.getMenus();
@@ -88,15 +104,15 @@ public class ModMenus {
                 }
             });
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> portstoneSelection = menus.registerMenu(id("portstone_selection"),
-            new BalmMenuFactory<WaystoneSelectionMenu, List<UserDecoratedWaystone>>() {
+            new BalmMenuFactory<WaystoneSelectionMenu, WaystoneListMenuData>() {
                 @Override
-                public WaystoneSelectionMenu create(int windowId, Inventory inventory, List<UserDecoratedWaystone> waystones) {
-                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.get(), null, windowId, waystones, Set.of(TeleportFlags.PORTSTONE));
+                public WaystoneSelectionMenu create(int windowId, Inventory inventory, WaystoneListMenuData data) {
+                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.get(), null, windowId, data.waystones(), Set.of(TeleportFlags.PORTSTONE), data.waystoneKind().orElse(null));
                 }
 
                 @Override
-                public StreamCodec<RegistryFriendlyByteBuf, List<UserDecoratedWaystone>> getStreamCodec() {
-                    return UserDecoratedWaystone.LIST_STREAM_CODEC;
+                public StreamCodec<RegistryFriendlyByteBuf, WaystoneListMenuData> getStreamCodec() {
+                    return WaystoneListMenuData.STREAM_CODEC;
                 }
             });
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> inventorySelection = menus.registerMenu(id("inventory_selection"),
