@@ -242,6 +242,10 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             mutableWaystone.setTransient(true);
         }
         waystone = InvalidWaystone.INSTANCE;
+        waystoneUid = null;
+
+        setChanged();
+        sync();
     }
 
     public void uninitializeWaystone() {
