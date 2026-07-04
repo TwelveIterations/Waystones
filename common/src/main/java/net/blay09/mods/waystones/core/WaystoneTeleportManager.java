@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.api.TeleportDestination;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
+import net.blay09.mods.waystones.api.event.WaystoneTeleportEntityEvent;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -175,27 +176,31 @@ public class WaystoneTeleportManager {
         final var mount = entity.getVehicle();
         Entity teleportedMount = null;
         if (mount != null) {
-            teleportedMount = teleportEntity(mount, targetLevel, targetLocation, targetDirection);
-            teleportedEntities.add(teleportedMount);
+            final var teleportedMountOptional = teleportEntity(context, mount, targetLevel, targetLocation, targetDirection);
+            if (teleportedMountOptional.isPresent()) {
+                teleportedMount = teleportedMountOptional.get();
+                teleportedEntities.add(teleportedMount);
+            }
         }
 
         final List<Mob> leashedEntities = context.getLeashedEntities();
         final List<Entity> teleportedLeashedEntities = new ArrayList<>();
         leashedEntities.forEach(leashedEntity -> {
-            Entity teleportedLeashedEntity = teleportEntity(leashedEntity, targetLevel, targetLocation, targetDirection);
-            teleportedEntities.add(teleportedLeashedEntity);
-            teleportedLeashedEntities.add(teleportedLeashedEntity);
+            teleportEntity(context, leashedEntity, targetLevel, targetLocation, targetDirection).ifPresent(teleportedLeashedEntity -> {
+                teleportedEntities.add(teleportedLeashedEntity);
+                teleportedLeashedEntities.add(teleportedLeashedEntity);
+            });
         });
 
-        final var teleportedEntity = teleportEntity(entity, targetLevel, targetLocation, targetDirection);
-        teleportedEntities.add(teleportedEntity);
+        final var teleportedEntityOptional = teleportEntity(context, entity, targetLevel, targetLocation, targetDirection);
+        teleportedEntityOptional.ifPresent(teleportedEntities::add);
 
         // We have to update the leashedToEntity in case the player was cloned during dimensional teleport
-        teleportedLeashedEntities.forEach(teleportedLeashedEntity -> {
+        teleportedEntityOptional.ifPresent(teleportedEntity -> teleportedLeashedEntities.forEach(teleportedLeashedEntity -> {
             if (teleportedLeashedEntity instanceof Mob teleportedLeashedMob) {
                 teleportedLeashedMob.setLeashedTo(teleportedEntity, true);
             }
-        });
+        }));
 
         if (teleportedMount != null) {
             // TODO We do not remount currently. It causes weird sync issues and it seems that Vanilla does not do it either.
@@ -205,11 +210,22 @@ public class WaystoneTeleportManager {
         return teleportedEntities;
     }
 
-    private static Entity teleportEntity(Entity entity, ServerLevel targetWorld, Vec3 targetPos3d, Direction direction) {
+    private static Optional<Entity> teleportEntity(WaystoneTeleportContext context, Entity entity, ServerLevel targetLevel, Vec3 targetPosition, Direction direction) {
+        final var event = new WaystoneTeleportEntityEvent.Pre(context, entity, targetLevel, targetPosition, direction);
+        WaystoneTeleportEntityEvent.Pre.EVENT.invoker().accept(event);
+        if (event.isCanceled()) {
+            return Optional.empty();
+        }
+
+        final var originalEntity = entity;
+        targetLevel = event.getTargetLevel();
+        targetPosition = event.getTargetPosition();
+        direction = event.getDirection();
+
         float yaw = direction.toYRot();
-        double x = targetPos3d.x;
-        double y = targetPos3d.y;
-        double z = targetPos3d.z;
+        double x = targetPosition.x;
+        double y = targetPosition.y;
+        double z = targetPosition.z;
         entity.resetFallDistance();
         if (entity instanceof ServerPlayer) {
             entity.stopRiding();
@@ -217,31 +233,31 @@ public class WaystoneTeleportManager {
                 ((ServerPlayer) entity).stopSleepInBed(true, true);
             }
 
-            if (targetWorld == entity.level()) {
+            if (targetLevel == entity.level()) {
                 ((ServerPlayer) entity).connection.teleport(x, y, z, yaw, entity.getXRot());
             } else {
-                entity.teleportTo(targetWorld, x, y, z, Set.of(), yaw, entity.getXRot(), false);
+                entity.teleportTo(targetLevel, x, y, z, Set.of(), yaw, entity.getXRot(), false);
             }
 
             entity.setYHeadRot(yaw);
         } else {
             float pitch = Mth.clamp(entity.getXRot(), -90.0F, 90.0F);
-            if (targetWorld == entity.level()) {
+            if (targetLevel == entity.level()) {
                 entity.snapTo(x, y, z, yaw, pitch);
                 entity.setYHeadRot(yaw);
             } else {
                 entity.unRide();
                 Entity oldEntity = entity;
-                entity = entity.getType().create(targetWorld, EntitySpawnReason.DIMENSION_TRAVEL);
+                entity = entity.getType().create(targetLevel, EntitySpawnReason.DIMENSION_TRAVEL);
                 if (entity == null) {
-                    return oldEntity;
+                    return Optional.of(oldEntity);
                 }
 
                 entity.restoreFrom(oldEntity);
                 entity.snapTo(x, y, z, yaw, pitch);
                 entity.setYHeadRot(yaw);
                 oldEntity.setRemoved(Entity.RemovalReason.CHANGED_DIMENSION);
-                targetWorld.addDuringTeleport(entity);
+                targetLevel.addDuringTeleport(entity);
             }
         }
 
@@ -256,7 +272,9 @@ public class WaystoneTeleportManager {
 
         sendHackySyncPacketsAfterTeleport(entity);
 
-        return entity;
+        WaystoneTeleportEntityEvent.Post.EVENT.invoker().accept(new WaystoneTeleportEntityEvent.Post(context, originalEntity, entity, targetLevel, targetPosition, direction));
+
+        return Optional.of(entity);
     }
 
     private static Either<TeleportDestination, WaystoneTeleportError> resolveDestination(MinecraftServer server, Waystone waystone) {
