@@ -121,7 +121,7 @@ public abstract class WaystoneTeleportEntityEvent {
             return teleportedEntity;
         }
 
-        public EntityTeleportResult getResult() {
+        public EntityTeleportResult getTeleportResult() {
             return result;
         }
     }
