@@ -232,6 +232,11 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
         BalmBlockEntityUtils.sync(this);
     }
 
+    @SuppressWarnings("unused") // for WaystonesSable and others
+    public void detachWaystone() {
+        waystone = InvalidWaystone.INSTANCE;
+    }
+
     public void uninitializeWaystone() {
         if (level instanceof ServerLevel serverLevel) {
             if (waystone.isValid()) {
@@ -371,7 +376,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
         if (baseContainer != null) {
             for (int i = 0; i < baseContainer.getContainerSize(); i++) {
                 ItemStack itemStack = baseContainer.getItem(i);
-                if(itemStack.is(ModItemTags.WARP_MODIFIERS)) {
+                if (itemStack.is(ModItemTags.WARP_MODIFIERS)) {
                     modifiers++;
                 }
             }
@@ -387,14 +392,16 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
         if (level instanceof ServerLevel serverLevel) {
             final var waystone = getWaystone();
-            final var wasNotSilkTouched = !canSilkTouch() || !isSilkTouched();
-            WaystoneSyncManager.sendWaystoneRemovalToAll(serverLevel.getServer(), waystone, wasNotSilkTouched);
-            if (wasNotSilkTouched) {
-                SavedDataWaystonesStore.get(serverLevel.getServer()).removeWaystone(waystone);
-                PlayerWaystoneManager.removeKnownWaystone(serverLevel.getServer(), waystone);
-            } else if (waystone instanceof MutableWaystone mutableWaystone) {
-                mutableWaystone.setTransient(true);
-                SavedDataWaystonesStore.get(serverLevel.getServer()).updateWaystone(waystone);
+            if (waystone.isValid()) {
+                final var wasNotSilkTouched = !canSilkTouch() || !isSilkTouched();
+                WaystoneSyncManager.sendWaystoneRemovalToAll(serverLevel.getServer(), waystone, wasNotSilkTouched);
+                if (wasNotSilkTouched) {
+                    SavedDataWaystonesStore.get(serverLevel.getServer()).removeWaystone(waystone);
+                    PlayerWaystoneManager.removeKnownWaystone(serverLevel.getServer(), waystone);
+                } else if (waystone instanceof MutableWaystone mutableWaystone) {
+                    mutableWaystone.setTransient(true);
+                    SavedDataWaystonesStore.get(serverLevel.getServer()).updateWaystone(waystone);
+                }
             }
         }
     }
