@@ -15,6 +15,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Collections;
@@ -22,8 +23,12 @@ import java.util.Optional;
 
 public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
 
+    public WaystoneBlockEntity(BlockEntityType<WaystoneBlockEntity> type, BlockPos blockPos, BlockState blockState) {
+        super(type, blockPos, blockState);
+    }
+
     public WaystoneBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(ModBlockEntities.waystone.value(), blockPos, blockState);
+        this(ModBlockEntities.waystone.value(), blockPos, blockState);
     }
 
     @Override
