@@ -4,6 +4,7 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneGroups;
 import net.blay09.mods.waystones.api.WaystoneKinds;
+import net.blay09.mods.waystones.api.event.CollectDefaultWaystoneGroupsEvent;
 import net.blay09.mods.waystones.network.message.*;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 import net.minecraft.resources.Identifier;
@@ -12,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -45,11 +47,13 @@ public class WaystoneSyncManager {
     }
 
     public static void ensureDefaultGroups(Player player) {
-        PlayerWaystoneManager.ensureWaystoneGroups(player, List.of(
+        final var groups = new ArrayList<>(List.of(
                 WaystoneGroups.FAVORITES,
                 WaystoneGroups.PLAYERS,
                 WaystoneGroups.GLOBAL,
                 WaystoneGroups.TEAM));
+        CollectDefaultWaystoneGroupsEvent.EVENT.invoker().accept(new CollectDefaultWaystoneGroupsEvent(player, groups));
+        PlayerWaystoneManager.ensureWaystoneGroups(player, groups);
     }
 
     public static void ensureDynamicGroups(ServerPlayer player) {

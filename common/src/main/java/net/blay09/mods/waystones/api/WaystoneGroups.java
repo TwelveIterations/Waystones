@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.api;
 import net.blay09.mods.waystones.client.gui.widget.GroupColor;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneGroupImpl;
+import net.blay09.mods.waystones.api.event.CollectDynamicWaystoneGroupsEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -181,6 +182,7 @@ public final class WaystoneGroups {
             groups.add(TEAM);
         }
         groups.add(dimension(waystone.getDimension()));
+        CollectDynamicWaystoneGroupsEvent.EVENT.invoker().accept(new CollectDynamicWaystoneGroupsEvent(waystone, groups));
         return List.copyOf(groups);
     }
 }
