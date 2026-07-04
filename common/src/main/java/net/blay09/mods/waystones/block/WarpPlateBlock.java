@@ -5,13 +5,10 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
-import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.WaystoneProxy;
-import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -23,7 +20,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -108,15 +104,9 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     @Override
-    public void entityInside(BlockState blockState, Level world, BlockPos pos, Entity entity) {
-        if (entity.getX() >= pos.getX() && entity.getX() < pos.getX() + 1
-                && entity.getY() >= pos.getY() && entity.getY() < pos.getY() + 1
-                && entity.getZ() >= pos.getZ() && entity.getZ() < pos.getZ() + 1
-                && !world.isClientSide) {
-            BlockEntity tileEntity = world.getBlockEntity(pos);
-            if (tileEntity instanceof WarpPlateBlockEntity) {
-                ((WarpPlateBlockEntity) tileEntity).onEntityCollision(entity);
-            }
+    public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
+        if (!level.isClientSide && level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
+            warpPlate.onEntityCollision(entity);
         }
     }
 
