@@ -229,6 +229,11 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         sync();
     }
 
+    @SuppressWarnings("unused") // for WaystonesSable and others
+    public void detachWaystone() {
+        waystone = InvalidWaystone.INSTANCE;
+    }
+
     public void uninitializeWaystone() {
         if (waystone.isValid()) {
             WaystoneManagerImpl.get(level.getServer()).removeWaystone(waystone);

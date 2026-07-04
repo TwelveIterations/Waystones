@@ -25,7 +25,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.*;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -216,14 +219,16 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             final var blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
                 final var waystone = waystoneBlockEntity.getWaystone();
-                final var wasNotSilkTouched = !canSilkTouch() || !waystoneBlockEntity.isSilkTouched();
-                WaystoneSyncManager.sendWaystoneRemovalToAll(world.getServer(), waystone, wasNotSilkTouched);
-                if (wasNotSilkTouched) {
-                    WaystoneManagerImpl.get(world.getServer()).removeWaystone(waystone);
-                    PlayerWaystoneManager.removeKnownWaystone(world.getServer(), waystone);
-                } else if (waystone instanceof MutableWaystone mutableWaystone) {
-                    mutableWaystone.setTransient(true);
-                    WaystoneManagerImpl.get(world.getServer()).updateWaystone(waystone);
+                if (waystone.isValid()) {
+                    final var wasNotSilkTouched = !canSilkTouch() || !waystoneBlockEntity.isSilkTouched();
+                    WaystoneSyncManager.sendWaystoneRemovalToAll(world.getServer(), waystone, wasNotSilkTouched);
+                    if (wasNotSilkTouched) {
+                        WaystoneManagerImpl.get(world.getServer()).removeWaystone(waystone);
+                        PlayerWaystoneManager.removeKnownWaystone(world.getServer(), waystone);
+                    } else if (waystone instanceof MutableWaystone mutableWaystone) {
+                        mutableWaystone.setTransient(true);
+                        WaystoneManagerImpl.get(world.getServer()).updateWaystone(waystone);
+                    }
                 }
             }
         }
