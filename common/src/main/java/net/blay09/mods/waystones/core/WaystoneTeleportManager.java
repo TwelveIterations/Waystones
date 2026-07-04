@@ -167,14 +167,10 @@ public class WaystoneTeleportManager {
     private static List<Entity> teleportEntityAndAttached(Entity entity, WaystoneTeleportContext context, TeleportDestination destination) {
         final var teleportedEntities = new ArrayList<Entity>();
 
-        final var targetLevel = (ServerLevel) destination.level();
-        final var targetLocation = destination.location();
-        final var targetDirection = destination.direction();
-
         final var mount = entity.getVehicle();
         Entity teleportedMount = null;
         if (mount != null) {
-            final var teleportedMountOptional = teleportEntity(context, mount, targetLevel, targetLocation, targetDirection);
+            final var teleportedMountOptional = teleportEntity(context, mount, destination);
             if (teleportedMountOptional.isPresent()) {
                 teleportedMount = teleportedMountOptional.get();
                 teleportedEntities.add(teleportedMount);
@@ -184,13 +180,13 @@ public class WaystoneTeleportManager {
         final List<Mob> leashedEntities = context.getLeashedEntities();
         final List<Entity> teleportedLeashedEntities = new ArrayList<>();
         leashedEntities.forEach(leashedEntity -> {
-            teleportEntity(context, leashedEntity, targetLevel, targetLocation, targetDirection).ifPresent(teleportedLeashedEntity -> {
+            teleportEntity(context, leashedEntity, destination).ifPresent(teleportedLeashedEntity -> {
                 teleportedEntities.add(teleportedLeashedEntity);
                 teleportedLeashedEntities.add(teleportedLeashedEntity);
             });
         });
 
-        final var teleportedEntityOptional = teleportEntity(context, entity, targetLevel, targetLocation, targetDirection);
+        final var teleportedEntityOptional = teleportEntity(context, entity, destination);
         teleportedEntityOptional.ifPresent(teleportedEntities::add);
 
         // We have to update the leashedToEntity in case the player was cloned during dimensional teleport
@@ -208,8 +204,11 @@ public class WaystoneTeleportManager {
         return teleportedEntities;
     }
 
-    private static Optional<Entity> teleportEntity(WaystoneTeleportContext context, Entity entity, ServerLevel targetLevel, Vec3 targetPosition, Direction direction) {
-        final var event = new WaystoneTeleportEntityEvent.Pre(context, entity, targetLevel, targetPosition, direction);
+    private static Optional<Entity> teleportEntity(WaystoneTeleportContext context, Entity entity, TeleportDestination destination) {
+        ServerLevel targetLevel = (ServerLevel) destination.level();
+        Vec3 targetPosition = destination.location();
+        Direction direction = destination.direction();
+        final var event = new WaystoneTeleportEntityEvent.Pre(context, entity, destination, targetLevel, targetPosition, direction);
         Balm.getEvents().fireEvent(event);
         if (event.isCanceled()) {
             return Optional.empty();
@@ -271,7 +270,7 @@ public class WaystoneTeleportManager {
 
         sendHackySyncPacketsAfterTeleport(entity);
 
-        Balm.getEvents().fireEvent(new WaystoneTeleportEntityEvent.Post(context, originalEntity, entity, targetLevel, targetPosition, direction));
+        Balm.getEvents().fireEvent(new WaystoneTeleportEntityEvent.Post(context, originalEntity, entity, destination, targetLevel, targetPosition, direction));
 
         return Optional.of(entity);
     }

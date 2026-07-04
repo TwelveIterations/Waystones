@@ -1,23 +1,29 @@
 package net.blay09.mods.waystones.api.event;
 
 import net.blay09.mods.balm.api.event.BalmEvent;
+import net.blay09.mods.waystones.api.TeleportDestination;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
+/**
+ * Fired for each individual entity that is teleported by Waystones.
+ */
 public abstract class WaystoneTeleportEntityEvent extends BalmEvent {
 
     private final WaystoneTeleportContext context;
     private final Entity entity;
+    private final TeleportDestination originalDestination;
     private ServerLevel targetLevel;
     private Vec3 targetPosition;
     private Direction direction;
 
-    public WaystoneTeleportEntityEvent(WaystoneTeleportContext context, Entity entity, ServerLevel targetLevel, Vec3 targetPosition, Direction direction) {
+    public WaystoneTeleportEntityEvent(WaystoneTeleportContext context, Entity entity, TeleportDestination originalDestination, ServerLevel targetLevel, Vec3 targetPosition, Direction direction) {
         this.context = context;
         this.entity = entity;
+        this.originalDestination = originalDestination;
         this.targetLevel = targetLevel;
         this.targetPosition = targetPosition;
         this.direction = direction;
@@ -29,6 +35,10 @@ public abstract class WaystoneTeleportEntityEvent extends BalmEvent {
 
     public Entity getEntity() {
         return entity;
+    }
+
+    public TeleportDestination getOriginalDestination() {
+        return originalDestination;
     }
 
     public ServerLevel getTargetLevel() {
@@ -56,16 +66,16 @@ public abstract class WaystoneTeleportEntityEvent extends BalmEvent {
     }
 
     public static class Pre extends WaystoneTeleportEntityEvent {
-        public Pre(WaystoneTeleportContext context, Entity entity, ServerLevel targetLevel, Vec3 targetPosition, Direction direction) {
-            super(context, entity, targetLevel, targetPosition, direction);
+        public Pre(WaystoneTeleportContext context, Entity entity, TeleportDestination originalDestination, ServerLevel targetLevel, Vec3 targetPosition, Direction direction) {
+            super(context, entity, originalDestination, targetLevel, targetPosition, direction);
         }
     }
 
     public static class Post extends WaystoneTeleportEntityEvent {
         private final Entity teleportedEntity;
 
-        public Post(WaystoneTeleportContext context, Entity entity, Entity teleportedEntity, ServerLevel targetLevel, Vec3 targetPosition, Direction direction) {
-            super(context, entity, targetLevel, targetPosition, direction);
+        public Post(WaystoneTeleportContext context, Entity entity, Entity teleportedEntity, TeleportDestination originalDestination, ServerLevel targetLevel, Vec3 targetPosition, Direction direction) {
+            super(context, entity, originalDestination, targetLevel, targetPosition, direction);
             this.teleportedEntity = teleportedEntity;
         }
 
