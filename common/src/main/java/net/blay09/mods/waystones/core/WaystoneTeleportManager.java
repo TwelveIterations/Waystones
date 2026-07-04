@@ -82,18 +82,19 @@ public class WaystoneTeleportManager {
             return CompletableFuture.completedFuture(Either.right(new WaystoneTeleportError.NotOnServer()));
         }
 
-        return loadDestinationChunksAsync(server, context.getTargetWaystone())
+        return loadDestinationChunksAsync(server, context)
                 .thenApply(loadResult -> loadResult.flatMap(ignored -> forced ? success() : validatePendingTeleport(context, sourceLevel, server)))
                 .thenApply(validationResult -> validationResult.flatMap(ignored -> resolveDestination(server, context.getTargetWaystone())));
     }
 
-    private static CompletableFuture<Either<Void, WaystoneTeleportError>> loadDestinationChunksAsync(MinecraftServer server, Waystone targetWaystone) {
+    private static CompletableFuture<Either<Void, WaystoneTeleportError>> loadDestinationChunksAsync(MinecraftServer server, WaystoneTeleportContext context) {
+        final var targetWaystone = context.getTargetWaystone();
         final var targetLevel = server.getLevel(targetWaystone.getDimension());
         if (targetLevel == null) {
             return CompletableFuture.completedFuture(Either.right(new WaystoneTeleportError.InvalidDimension(targetWaystone.getDimension())));
         }
 
-        return loadDestinationChunks(server, targetLevel, targetWaystone);
+        return loadDestinationChunks(server, targetLevel, context);
     }
 
     private static Either<Void, WaystoneTeleportError> validatePendingTeleport(WaystoneTeleportContext context, Level sourceLevel, MinecraftServer server) {
@@ -369,32 +370,46 @@ public class WaystoneTeleportManager {
         return Either.right(new WaystoneTeleportError.TeleportFailed());
     }
 
-    private static CompletableFuture<Either<Void, WaystoneTeleportError>> loadDestinationChunks(MinecraftServer server, ServerLevel targetLevel, Waystone targetWaystone) {
+    private static CompletableFuture<Either<Void, WaystoneTeleportError>> loadDestinationChunks(MinecraftServer server, ServerLevel targetLevel, WaystoneTeleportContext context) {
+        final var targetWaystone = context.getTargetWaystone();
         final var chunkPositions = getDestinationChunkPositions(targetWaystone);
-        final var result = new CompletableFuture<Either<Void, WaystoneTeleportError>>();
-        final var remaining = new int[]{chunkPositions.size()};
+        final var chunkLoadFuture = new CompletableFuture<Either<Void, WaystoneTeleportError>>();
+        final var event = new WaystoneTeleportEvent.Prepare(context, chunkPositions);
+        Balm.getEvents().fireEvent(event);
+        var effectiveFuture = chunkLoadFuture;
+        for (final var preparationTask : event.getPreparationTasks()) {
+            effectiveFuture = effectiveFuture.thenCompose(preparationTask);
+        }
 
-        for (final var chunkPos : chunkPositions) {
+        final var chunkPositionsToLoad = new LinkedHashSet<>(event.getChunkPositions());
+        if (chunkPositionsToLoad.isEmpty()) {
+            chunkLoadFuture.complete(success());
+            return effectiveFuture;
+        }
+
+        final var remaining = new int[]{chunkPositionsToLoad.size()};
+
+        for (final var chunkPos : chunkPositionsToLoad) {
             targetLevel.getChunkSource().getChunkFuture(chunkPos.x, chunkPos.z, ChunkStatus.FULL, true)
                     .whenComplete((chunkResult, throwable) -> server.execute(() -> {
-                        if (result.isDone()) {
+                        if (chunkLoadFuture.isDone()) {
                             return;
                         }
 
                         if (throwable != null) {
                             Waystones.logger.warn("Failed to load destination chunk {} for waystone teleport in {}.", chunkPos, targetWaystone.getDimension(), throwable);
-                            result.complete(Either.right(new WaystoneTeleportError.DestinationChunkLoadFailed(targetWaystone.getDimension(), chunkPos, throwable.getMessage())));
+                            chunkLoadFuture.complete(Either.right(new WaystoneTeleportError.DestinationChunkLoadFailed(targetWaystone.getDimension(), chunkPos, throwable.getMessage())));
                         } else if (!chunkResult.isSuccess()) {
                             final var reason = chunkResult.getError();
                             Waystones.logger.warn("Failed to load destination chunk {} for waystone teleport in {}: {}", chunkPos, targetWaystone.getDimension(), reason);
-                            result.complete(Either.right(new WaystoneTeleportError.DestinationChunkLoadFailed(targetWaystone.getDimension(), chunkPos, reason)));
+                            chunkLoadFuture.complete(Either.right(new WaystoneTeleportError.DestinationChunkLoadFailed(targetWaystone.getDimension(), chunkPos, reason)));
                         } else if (--remaining[0] == 0) {
-                            result.complete(success());
+                            chunkLoadFuture.complete(success());
                         }
                     }));
         }
 
-        return result;
+        return effectiveFuture;
     }
 
     private static Set<ChunkPos> getDestinationChunkPositions(Waystone targetWaystone) {
