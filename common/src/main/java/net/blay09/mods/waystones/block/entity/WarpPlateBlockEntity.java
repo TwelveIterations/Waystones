@@ -27,6 +27,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -112,23 +113,20 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
             return;
         }
 
-        final var ticksPassed = ticksPassedPerEntity.putIfAbsent(entity, 0);
-        if ((ticksPassed == null || ticksPassed != -1) && hasPotentialWarpTarget()) {
-            final var targetWaystone = getTargetWaystone().orElse(InvalidWaystone.INSTANCE);
-            final var status = targetWaystone.isValid() ? WarpPlateBlock.WarpPlateStatus.WARPING : WarpPlateBlock.WarpPlateStatus.WARPING_INVALID;
-            final var canAfford = WaystonesAPI.createUncheckedDefaultTeleportContext(entity, targetWaystone, it -> it.setFromWaystone(getWaystone()))
-                    .mapLeft(WaystoneTeleportContext::getRequirements)
-                    .mapLeft(it -> it.left().isPresent())
-                    .left().orElse(true);
-            level.setBlock(worldPosition, getBlockState()
-                    .setValue(WarpPlateBlock.STATUS, canAfford ? status : WarpPlateBlock.WarpPlateStatus.WARPING_INVALID), 3);
+        final var blockState = getBlockState();
+        final var previousStatus = blockState.getValue(WarpPlateBlock.STATUS);
+        if (previousStatus == WarpPlateBlock.WarpPlateStatus.IDLE) {
+            final var ticksPassed = ticksPassedPerEntity.putIfAbsent(entity, 0);
+            if ((ticksPassed == null || ticksPassed != -1) && hasPotentialWarpTarget()) {
+                final var targetWaystone = getTargetWaystone().orElse(InvalidWaystone.INSTANCE);
+                final var canAfford = WaystonesAPI.createUncheckedDefaultTeleportContext(entity, targetWaystone, it -> it.setFromWaystone(getWaystone()))
+                        .mapLeft(WaystoneTeleportContext::getRequirements)
+                        .mapLeft(it -> it.left().isPresent())
+                        .left().orElse(true);
+                final var status = targetWaystone.isValid() && canAfford ? WarpPlateBlock.WarpPlateStatus.WARPING : WarpPlateBlock.WarpPlateStatus.WARPING_INVALID;
+                level.setBlock(worldPosition, blockState.setValue(WarpPlateBlock.STATUS, status), Block.UPDATE_ALL);
+            }
         }
-    }
-
-    private boolean isEntityOnWarpPlate(Entity entity) {
-        return entity.getX() >= worldPosition.getX() && entity.getX() < worldPosition.getX() + 1
-                && entity.getY() >= worldPosition.getY() && entity.getY() < worldPosition.getY() + 1
-                && entity.getZ() >= worldPosition.getZ() && entity.getZ() < worldPosition.getZ() + 1;
     }
 
     public BlockState getIdleState() {
@@ -141,20 +139,26 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
         return getBlockState().setValue(WarpPlateBlock.STATUS, WarpPlateBlock.WarpPlateStatus.IDLE);
     }
 
+    public List<Entity> getEntitiesOnTop() {
+        final var boundsAbove = new AABB(worldPosition.getX(),
+                worldPosition.getY(),
+                worldPosition.getZ(),
+                worldPosition.getX() + 1,
+                worldPosition.getY() + 1,
+                worldPosition.getZ() + 1);
+        return level.getEntities((Entity) null, boundsAbove, EntitySelector.ENTITY_STILL_ALIVE);
+    }
+
     public void serverTick() {
         attuneShard();
 
+        List<Entity> entitiesOnTop = null;
         final var status = getBlockState().getValue(WarpPlateBlock.STATUS);
-        if (status == WarpPlateBlock.WarpPlateStatus.WARPING || status == WarpPlateBlock.WarpPlateStatus.WARPING_INVALID) {
-            AABB boundsAbove = new AABB(worldPosition.getX(),
-                    worldPosition.getY(),
-                    worldPosition.getZ(),
-                    worldPosition.getX() + 1,
-                    worldPosition.getY() + 1,
-                    worldPosition.getZ() + 1);
-            List<Entity> entities = level.getEntities((Entity) null, boundsAbove, EntitySelector.ENTITY_STILL_ALIVE);
-            if (entities.isEmpty()) {
-                level.setBlock(worldPosition, getIdleState(), 3);
+        if (status == WarpPlateBlock.WarpPlateStatus.WARPING
+                || status == WarpPlateBlock.WarpPlateStatus.WARPING_INVALID) {
+            entitiesOnTop = getEntitiesOnTop();
+            if (entitiesOnTop.isEmpty()) {
+                level.setBlock(worldPosition, getIdleState(), Block.UPDATE_ALL);
                 ticksPassedPerEntity.clear();
             }
         }
@@ -165,8 +169,11 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
             while (iterator.hasNext()) {
                 Map.Entry<Entity, Integer> entry = iterator.next();
                 Entity entity = entry.getKey();
-                int ticksPassed = entry.getValue();
-                if (!entity.isAlive() || !isEntityOnWarpPlate(entity)) {
+                Integer ticksPassed = entry.getValue();
+                if (entitiesOnTop == null) {
+                    entitiesOnTop = getEntitiesOnTop();
+                }
+                if (!entity.isAlive() || !entitiesOnTop.contains(entity)) {
                     iterator.remove();
                 } else if (ticksPassed > useTime) {
                     ItemStack targetAttunementStack = getTargetAttunementStack();
