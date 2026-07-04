@@ -182,6 +182,12 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
             if (waystone.isValid()) {
                 waystoneUid = waystone.getWaystoneUid();
+                if (waystone instanceof MutableWaystone mutableWaystone) {
+                    mutableWaystone.setDimension(level.dimension());
+                    mutableWaystone.setPos(worldPosition);
+                    mutableWaystone.setTransient(false);
+                }
+                SavedDataWaystonesStore.get(level.getServer()).updateWaystone(waystone);
                 setChanged();
             }
         }
@@ -234,6 +240,9 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
     @SuppressWarnings("unused") // for WaystonesSable and others
     public void detachWaystone() {
+        if (waystone instanceof MutableWaystone mutableWaystone) {
+            mutableWaystone.setTransient(true);
+        }
         waystone = InvalidWaystone.INSTANCE;
     }
 
