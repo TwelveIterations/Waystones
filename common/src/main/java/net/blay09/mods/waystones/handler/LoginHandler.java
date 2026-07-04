@@ -10,6 +10,7 @@ public class LoginHandler {
     public static void register() {
         ServerPlayerCallback.Join.EVENT.register(player -> {
             WaystoneSyncManager.sendSortingIndex(player);
+            WaystoneSyncManager.ensureDefaultGroups(player);
             WaystoneSyncManager.ensureDynamicGroups(player);
             WaystoneSyncManager.sendWaystoneGroups(player);
             WaystoneSyncManager.sendActivatedWaystones(player);
