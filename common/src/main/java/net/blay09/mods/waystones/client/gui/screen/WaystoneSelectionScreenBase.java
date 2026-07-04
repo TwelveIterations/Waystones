@@ -249,25 +249,25 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
         if (waystones.isEmpty()) {
             guiGraphics.centeredText(font,
-                    ChatFormatting.RED + I18n.get(getNoWaystonesMessageKey()),
+                    getNoWaystonesMessage(),
                     imageWidth / 2,
                     imageHeight / 2 - 20,
                     0xFFFFFFFF);
         }
     }
 
-    private String getNoWaystonesMessageKey() {
+    private Component getNoWaystonesMessage() {
         final var targetKind = menu.getTargetKind();
         if (targetKind != null && WaystoneKinds.isSharestone(targetKind)) {
-            return "gui.waystones.waystone_selection.no_sharestones_available";
+            return Component.translatable("gui.waystones.waystone_selection.no_sharestones_available").withStyle(ChatFormatting.RED);
         }
 
         final var warpItem = menu.getWarpItem();
         if (warpItem.getItem() instanceof WaystoneKindScoped kindScoped && WaystoneKinds.isSharestone(kindScoped.getWaystoneKind())) {
-            return "gui.waystones.waystone_selection.no_sharestones_available";
+            return Component.translatable("gui.waystones.waystone_selection.no_sharestones_available").withStyle(ChatFormatting.RED);
         }
 
-        return "gui.waystones.waystone_selection.no_waystones_activated";
+        return Component.translatable("gui.waystones.waystone_selection.no_waystones_activated").withStyle(ChatFormatting.RED);
     }
 
     private void drawLocationHeader(GuiGraphicsExtractor guiGraphics, Waystone waystone, int mouseX, int mouseY, int x, int y) {
