@@ -109,7 +109,7 @@ public abstract class WaystoneTeleportEntityEvent extends BalmEvent {
             return teleportedEntity;
         }
 
-        public EntityTeleportResult getResult() {
+        public EntityTeleportResult getTeleportResult() {
             return result;
         }
     }
