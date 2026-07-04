@@ -24,6 +24,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -258,6 +259,6 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
         }
 
         final var pos = menu.getWaystone().getPos();
-        return player.distanceToSqr(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) <= 64;
+        return player.distanceToSqr(Vec3.atCenterOf(pos)) <= 64;
     }
 }
