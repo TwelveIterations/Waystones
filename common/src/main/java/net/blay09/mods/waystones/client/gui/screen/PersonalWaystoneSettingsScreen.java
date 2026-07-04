@@ -258,6 +258,6 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Pers
         }
 
         final var pos = menu.getWaystone().getPos();
-        return player.distanceToSqr(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) <= 64;
+        return player.distanceToSqr(pos.getCenter()) <= 64;
     }
 }
