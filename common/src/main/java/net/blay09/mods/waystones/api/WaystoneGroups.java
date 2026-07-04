@@ -1,8 +1,10 @@
 package net.blay09.mods.waystones.api;
 
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.client.gui.widget.GroupColor;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneGroupImpl;
+import net.blay09.mods.waystones.api.event.CollectDynamicWaystoneGroupsEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -181,6 +183,7 @@ public final class WaystoneGroups {
             groups.add(TEAM);
         }
         groups.add(dimension(waystone.getDimension()));
+        Balm.getEvents().fireEvent(new CollectDynamicWaystoneGroupsEvent(waystone, groups));
         return List.copyOf(groups);
     }
 }
