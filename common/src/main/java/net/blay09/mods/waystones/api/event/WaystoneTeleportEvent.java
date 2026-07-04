@@ -2,17 +2,15 @@ package net.blay09.mods.waystones.api.event;
 
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.event.BalmEvent;
+import net.blay09.mods.waystones.api.EntityTeleportResult;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -100,6 +98,56 @@ public abstract class WaystoneTeleportEvent extends BalmEvent {
 
         public List<Entity> getTeleportedEntities() {
             return teleportedEntities;
+        }
+    }
+
+    public static class Complete extends WaystoneTeleportEvent {
+        private final WaystoneTeleportContext context;
+        private final @Nullable EntityTeleportResult primaryResult;
+        private final List<EntityTeleportResult> additionalResults;
+        private final @Nullable WaystoneTeleportError teleportError;
+
+        public Complete(WaystoneTeleportContext context, @Nullable EntityTeleportResult primaryResult, List<EntityTeleportResult> additionalResults, @Nullable WaystoneTeleportError teleportError) {
+            this.context = context;
+            this.primaryResult = primaryResult;
+            this.additionalResults = additionalResults;
+            this.teleportError = teleportError;
+        }
+
+        /**
+         * The context that was used for this teleport. Changes made at this point are ignored.
+         */
+        public WaystoneTeleportContext getContext() {
+            return context;
+        }
+
+        public Optional<EntityTeleportResult> getPrimaryResult() {
+            return Optional.ofNullable(primaryResult);
+        }
+
+        public List<EntityTeleportResult> getAdditionalResults() {
+            return additionalResults;
+        }
+
+        public List<EntityTeleportResult> getResults() {
+            final var results = new ArrayList<EntityTeleportResult>(additionalResults.size() + 1);
+            if (primaryResult != null) {
+                results.add(primaryResult);
+            }
+
+            results.addAll(additionalResults);
+            return results;
+        }
+
+        public List<Entity> getTeleportedEntities() {
+            return getResults().stream()
+                    .filter(EntityTeleportResult::isSuccessful)
+                    .map(EntityTeleportResult::entity)
+                    .toList();
+        }
+
+        public Optional<WaystoneTeleportError> getTeleportError() {
+            return Optional.ofNullable(teleportError);
         }
     }
 

@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -94,4 +95,6 @@ public interface InternalMethods {
     Stream<Waystone> getWaystonesByType(MinecraftServer server, ResourceLocation type);
 
     void removeWaystoneFromDatabase(MinecraftServer server, Waystone waystone);
+
+    Optional<TeleportDestination> resolveDefaultDestination(ServerLevel level, Waystone waystone);
 }

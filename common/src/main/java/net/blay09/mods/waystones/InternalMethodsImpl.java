@@ -91,7 +91,7 @@ public class InternalMethodsImpl implements InternalMethods {
 
         MinecraftServer server = entity.getServer();
         if (server == null) {
-            return Either.right(new WaystoneTeleportError.NotOnServer());
+            throw new IllegalStateException("must only be called with a server-side entity");
         }
 
         ServerLevel targetLevel = server.getLevel(waystone.getDimension());
@@ -114,22 +114,28 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context) {
-        return WaystoneTeleportManager.tryTeleport(context);
+        return toLegacyTeleportResult(WaystoneTeleportManager.tryTeleport(context));
     }
 
     @Override
     public Either<List<Entity>, WaystoneTeleportError> forceTeleport(WaystoneTeleportContext context) {
-        return WaystoneTeleportManager.doTeleport(context);
+        return toLegacyTeleportResult(WaystoneTeleportManager.teleport(context));
     }
 
     @Override
     public CompletableFuture<Either<List<Entity>, WaystoneTeleportError>> tryTeleportAsync(WaystoneTeleportContext context) {
-        return WaystoneTeleportManager.tryTeleportAsync(context);
+        return WaystoneTeleportManager.tryTeleportAsync(context).thenApply(this::toLegacyTeleportResult);
     }
 
     @Override
     public CompletableFuture<Either<List<Entity>, WaystoneTeleportError>> forceTeleportAsync(WaystoneTeleportContext context) {
-        return WaystoneTeleportManager.forceTeleportAsync(context);
+        return WaystoneTeleportManager.forceTeleportAsync(context).thenApply(this::toLegacyTeleportResult);
+    }
+
+    private Either<List<Entity>, WaystoneTeleportError> toLegacyTeleportResult(WaystoneTeleportResult result) {
+        return result.error()
+                .<Either<List<Entity>, WaystoneTeleportError>>map(Either::right)
+                .orElseGet(() -> Either.left(result.teleportedEntities()));
     }
 
     @Override
@@ -318,5 +324,10 @@ public class InternalMethodsImpl implements InternalMethods {
     public void removeWaystoneFromDatabase(MinecraftServer server, Waystone waystone) {
         WaystoneManagerImpl.get(server).removeWaystone(waystone);
         PlayerWaystoneManager.removeKnownWaystone(server, waystone);
+    }
+
+    @Override
+    public Optional<TeleportDestination> resolveDefaultDestination(ServerLevel level, Waystone waystone) {
+        return WaystoneTeleportManager.resolveDefaultDestination(level, waystone);
     }
 }
