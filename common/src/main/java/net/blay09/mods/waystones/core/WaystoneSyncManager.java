@@ -44,6 +44,14 @@ public class WaystoneSyncManager {
         Balm.networking().sendTo(player, new ClientboundSortingIndexPacket(sortingIndex));
     }
 
+    public static void ensureDefaultGroups(Player player) {
+        PlayerWaystoneManager.ensureWaystoneGroups(player, List.of(
+                WaystoneGroups.FAVORITES,
+                WaystoneGroups.PLAYERS,
+                WaystoneGroups.GLOBAL,
+                WaystoneGroups.TEAM));
+    }
+
     public static void ensureDynamicGroups(ServerPlayer player) {
         ensureDynamicGroupsFromWaystones(player, PlayerWaystoneManager.getTargetsForPlayer(player));
         final var waystonesStore = SavedDataWaystonesStore.get(player.level().getServer());
