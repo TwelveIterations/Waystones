@@ -7,6 +7,7 @@ import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.balm.api.container.DefaultContainer;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.balm.common.BalmBlockEntity;
+import net.blay09.mods.waystones.api.MutableWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystonesAPI;
@@ -184,6 +185,12 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
             if (waystone.isValid()) {
                 waystoneUid = waystone.getWaystoneUid();
+                if (waystone instanceof MutableWaystone mutableWaystone) {
+                    mutableWaystone.setDimension(level.dimension());
+                    mutableWaystone.setPos(worldPosition);
+                    mutableWaystone.setTransient(false);
+                }
+                WaystoneManagerImpl.get(level.getServer()).updateWaystone(waystone);
                 setChanged();
             }
         }
@@ -231,6 +238,9 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @SuppressWarnings("unused") // for WaystonesSable and others
     public void detachWaystone() {
+        if (waystone instanceof MutableWaystone mutableWaystone) {
+            mutableWaystone.setTransient(true);
+        }
         waystone = InvalidWaystone.INSTANCE;
     }
 
