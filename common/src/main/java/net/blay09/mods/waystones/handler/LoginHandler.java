@@ -11,6 +11,7 @@ public class LoginHandler {
     public static void onPlayerLogin(PlayerLoginEvent event) {
         ServerPlayer player = event.getPlayer();
         WaystoneSyncManager.sendSortingIndex(player);
+        WaystoneSyncManager.ensureDefaultGroups(player);
         WaystoneSyncManager.ensureDynamicGroups(player);
         WaystoneSyncManager.sendWaystoneGroups(player);
         WaystoneSyncManager.sendActivatedWaystones(player);
