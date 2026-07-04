@@ -22,7 +22,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -248,24 +247,24 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
         if (waystones.isEmpty()) {
             guiGraphics.drawCenteredString(font,
-                    ChatFormatting.RED + I18n.get(getNoWaystonesMessageKey()),
+                    getNoWaystonesMessage(),
                     imageWidth / 2,
                     imageHeight / 2 - 20,
                     0xFFFFFFFF);
         }
     }
 
-    protected String getNoWaystonesMessageKey() {
+    protected Component getNoWaystonesMessage() {
         final var targetKind = menu.getTargetKind();
         if (targetKind != null && WaystoneTypes.isSharestone(targetKind)) {
-            return "gui.waystones.waystone_selection.no_sharestones_available";
+            return Component.translatable("gui.waystones.waystone_selection.no_sharestones_available").withStyle(ChatFormatting.RED);
         }
 
         if (this instanceof SharestoneSelectionScreen) {
-            return "gui.waystones.waystone_selection.no_sharestones_available";
+            return Component.translatable("gui.waystones.waystone_selection.no_sharestones_available").withStyle(ChatFormatting.RED);
         }
 
-        return "gui.waystones.waystone_selection.no_waystones_activated";
+        return Component.translatable("gui.waystones.waystone_selection.no_waystones_activated").withStyle(ChatFormatting.RED);
     }
 
     private void drawLocationHeader(GuiGraphics guiGraphics, Waystone waystone, int mouseX, int mouseY, int x, int y) {
