@@ -100,14 +100,8 @@ public class WarpPlateBlock extends WaystoneBlockBase {
 
     @Override
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean wat) {
-        if (entity.getX() >= pos.getX() && entity.getX() < pos.getX() + 1
-                && entity.getY() >= pos.getY() && entity.getY() < pos.getY() + 1
-                && entity.getZ() >= pos.getZ() && entity.getZ() < pos.getZ() + 1
-                && !level.isClientSide()) {
-            BlockEntity tileEntity = level.getBlockEntity(pos);
-            if (tileEntity instanceof WarpPlateBlockEntity) {
-                ((WarpPlateBlockEntity) tileEntity).onEntityCollision(entity);
-            }
+        if (!level.isClientSide() && level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
+            warpPlate.onEntityCollision(entity);
         }
     }
 
