@@ -8,7 +8,6 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.event.BuildWaystoneSelectionMenuEvent;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -134,15 +133,12 @@ public class WaystoneSelectionListBuilder {
         return this;
     }
 
-    public List<UserDecoratedWaystone> build() {
+    public List<MutablePersonalizedWaystone> build() {
         Balm.getEvents().fireEvent(new BuildWaystoneSelectionMenuEvent(player, sourceWaystone, waystones, flags, targetKind, warpItem));
-        final var builtWaystones = waystones.stream()
-                .map(WaystoneSelectionListBuilder::toUserDecoratedWaystone)
-                .toList();
         if (updateSortingIndex) {
-            PlayerWaystoneManager.ensureSortingIndex(player, builtWaystones);
+            PlayerWaystoneManager.ensureSortingIndex(player, waystones);
         }
-        return builtWaystones;
+        return List.copyOf(waystones);
     }
 
     public BalmMenuProvider<?> buildMenuProvider(MenuType<WaystoneSelectionMenu> menuType, Component displayName) {
@@ -163,7 +159,7 @@ public class WaystoneSelectionListBuilder {
 
             @Override
             public WaystoneSelectionMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                return new WaystoneSelectionMenu.Data(toUserDecoratedWaystone(sourceWaystone), builtWaystones, warpItem, targetKind);
+                return new WaystoneSelectionMenu.Data(sourceWaystone, builtWaystones, warpItem, targetKind);
             }
 
             @Override
@@ -173,9 +169,4 @@ public class WaystoneSelectionListBuilder {
         };
     }
 
-    private static UserDecoratedWaystone toUserDecoratedWaystone(PersonalizedWaystone waystone) {
-        return waystone instanceof UserDecoratedWaystone userDecoratedWaystone
-                ? userDecoratedWaystone
-                : new UserDecoratedWaystone(waystone.getBackingWaystone(), waystone.getAlias().orElse(null), waystone.getConfiguredGroups());
-    }
 }

@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.menu;
 
+import net.blay09.mods.waystones.api.MutablePersonalizedWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.core.UserDecoratedWaystone;
@@ -14,6 +15,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -22,16 +24,16 @@ import java.util.function.Consumer;
 
 public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
-    public record Data(Optional<UserDecoratedWaystone> fromWaystone, List<UserDecoratedWaystone> waystones, ItemStack warpItem, Optional<ResourceLocation> targetKind) {
-        public Data(@Nullable UserDecoratedWaystone fromWaystone, List<UserDecoratedWaystone> waystones, ItemStack warpItem, @Nullable ResourceLocation targetKind) {
+    public record Data(Optional<MutablePersonalizedWaystone> fromWaystone, List<MutablePersonalizedWaystone> waystones, ItemStack warpItem, Optional<ResourceLocation> targetKind) {
+        public Data(@Nullable MutablePersonalizedWaystone fromWaystone, List<MutablePersonalizedWaystone> waystones, ItemStack warpItem, @Nullable ResourceLocation targetKind) {
             this(Optional.ofNullable(fromWaystone), waystones, warpItem, Optional.ofNullable(targetKind));
         }
     }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.optional(UserDecoratedWaystone.STREAM_CODEC),
+            ByteBufCodecs.optional(UserDecoratedWaystone.DOWNGRADED_STREAM_CODEC),
             Data::fromWaystone,
-            UserDecoratedWaystone.LIST_STREAM_CODEC,
+            ByteBufCodecs.collection(ArrayList::new, UserDecoratedWaystone.DOWNGRADED_STREAM_CODEC),
             Data::waystones,
             ItemStack.OPTIONAL_STREAM_CODEC,
             Data::warpItem,
@@ -40,21 +42,21 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
             Data::new);
 
     private final @Nullable Waystone fromWaystone;
-    private final Collection<UserDecoratedWaystone> waystones;
+    private final Collection<MutablePersonalizedWaystone> waystones;
     private final Set<ResourceLocation> flags;
     private Consumer<WaystoneTeleportContext> postTeleportHandler = it -> {};
     private ItemStack warpItem = ItemStack.EMPTY;
     private @Nullable InteractionHand warpHand;
     private final @Nullable ResourceLocation targetKind;
 
-    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<UserDecoratedWaystone> waystones, Set<ResourceLocation> flags) {
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<? extends MutablePersonalizedWaystone> waystones, Set<ResourceLocation> flags) {
         this(type, fromWaystone, windowId, waystones, flags, null);
     }
 
-    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<UserDecoratedWaystone> waystones, Set<ResourceLocation> flags, @Nullable ResourceLocation targetKind) {
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<? extends MutablePersonalizedWaystone> waystones, Set<ResourceLocation> flags, @Nullable ResourceLocation targetKind) {
         super(type, windowId);
         this.fromWaystone = fromWaystone;
-        this.waystones = waystones;
+        this.waystones = List.copyOf(waystones);
         this.flags = flags;
         this.targetKind = targetKind;
     }
@@ -96,7 +98,7 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
         return warpHand;
     }
 
-    public Collection<UserDecoratedWaystone> getWaystones() {
+    public Collection<MutablePersonalizedWaystone> getWaystones() {
         return waystones;
     }
 
