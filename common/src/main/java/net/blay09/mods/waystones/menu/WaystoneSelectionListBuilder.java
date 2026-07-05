@@ -2,6 +2,8 @@ package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.waystones.api.MutablePersonalizedWaystone;
+import net.blay09.mods.waystones.api.PersonalizedWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.event.BuildWaystoneSelectionMenuEvent;
@@ -30,8 +32,8 @@ import java.util.function.Consumer;
 
 public class WaystoneSelectionListBuilder {
     private final ServerPlayer player;
-    private final List<UserDecoratedWaystone> waystones = new ArrayList<>();
-    private @Nullable UserDecoratedWaystone sourceWaystone;
+    private final List<MutablePersonalizedWaystone> waystones = new ArrayList<>();
+    private @Nullable MutablePersonalizedWaystone sourceWaystone;
     private Set<ResourceLocation> flags = Collections.emptySet();
     private @Nullable ResourceLocation targetKind;
     private ItemStack warpItem = ItemStack.EMPTY;
@@ -83,7 +85,7 @@ public class WaystoneSelectionListBuilder {
         return this;
     }
 
-    public WaystoneSelectionListBuilder withDecoratedWaystones(Collection<UserDecoratedWaystone> waystones) {
+    public WaystoneSelectionListBuilder withPersonalizedWaystones(Collection<MutablePersonalizedWaystone> waystones) {
         this.waystones.addAll(waystones);
         return this;
     }
@@ -93,7 +95,7 @@ public class WaystoneSelectionListBuilder {
         return this;
     }
 
-    public @Nullable UserDecoratedWaystone getSourceWaystone() {
+    public @Nullable MutablePersonalizedWaystone getSourceWaystone() {
         return sourceWaystone;
     }
 
@@ -122,7 +124,7 @@ public class WaystoneSelectionListBuilder {
         return this;
     }
 
-    public WaystoneSelectionListBuilder sorted(Comparator<? super UserDecoratedWaystone> comparator) {
+    public WaystoneSelectionListBuilder sorted(Comparator<? super PersonalizedWaystone> comparator) {
         waystones.sort(comparator);
         return this;
     }
@@ -134,10 +136,13 @@ public class WaystoneSelectionListBuilder {
 
     public List<UserDecoratedWaystone> build() {
         Balm.getEvents().fireEvent(new BuildWaystoneSelectionMenuEvent(player, sourceWaystone, waystones, flags, targetKind, warpItem));
+        final var builtWaystones = waystones.stream()
+                .map(WaystoneSelectionListBuilder::toUserDecoratedWaystone)
+                .toList();
         if (updateSortingIndex) {
-            PlayerWaystoneManager.ensureSortingIndex(player, waystones);
+            PlayerWaystoneManager.ensureSortingIndex(player, builtWaystones);
         }
-        return waystones;
+        return builtWaystones;
     }
 
     public BalmMenuProvider<?> buildMenuProvider(MenuType<WaystoneSelectionMenu> menuType, Component displayName) {
@@ -150,12 +155,15 @@ public class WaystoneSelectionListBuilder {
 
             @Override
             public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-                return createWaystoneSelectionMenu(menuType, windowId, builtWaystones);
+                return new WaystoneSelectionMenu(menuType, sourceWaystone, windowId, builtWaystones, flags, targetKind)
+                        .withWarpItem(warpItem)
+                        .withHand(warpHand)
+                        .setPostTeleportHandler(postTeleportHandler);
             }
 
             @Override
             public WaystoneSelectionMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                return new WaystoneSelectionMenu.Data(sourceWaystone, builtWaystones, warpItem, targetKind);
+                return new WaystoneSelectionMenu.Data(toUserDecoratedWaystone(sourceWaystone), builtWaystones, warpItem, targetKind);
             }
 
             @Override
@@ -165,10 +173,9 @@ public class WaystoneSelectionListBuilder {
         };
     }
 
-    private WaystoneSelectionMenu createWaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> menuType, int windowId, List<UserDecoratedWaystone> builtWaystones) {
-        return new WaystoneSelectionMenu(menuType, sourceWaystone, windowId, builtWaystones, flags, targetKind)
-                .withWarpItem(warpItem)
-                .withHand(warpHand)
-                .setPostTeleportHandler(postTeleportHandler);
+    private static UserDecoratedWaystone toUserDecoratedWaystone(PersonalizedWaystone waystone) {
+        return waystone instanceof UserDecoratedWaystone userDecoratedWaystone
+                ? userDecoratedWaystone
+                : new UserDecoratedWaystone(waystone.getBackingWaystone(), waystone.getAlias().orElse(null), waystone.getConfiguredGroups());
     }
 }
