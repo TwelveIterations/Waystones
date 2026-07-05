@@ -3,27 +3,19 @@ package net.blay09.mods.waystones.block;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.TeleportFlags;
-import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.blay09.mods.waystones.menu.ModMenus;
-import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
+import net.blay09.mods.waystones.menu.WaystoneSelectionListBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -44,7 +36,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public class PortstoneBlock extends WaystoneBlockBase {
@@ -143,29 +134,10 @@ public class PortstoneBlock extends WaystoneBlockBase {
     public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult blockHitResult) {
         if (player instanceof ServerPlayer serverPlayer) {
             final var targetWaystoneType = getTargetWaystoneType();
-            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(serverPlayer, PlayerWaystoneManager.getTargetsForWaystoneType(serverPlayer, targetWaystoneType));
-            PlayerWaystoneManager.ensureSortingIndex(serverPlayer, waystones);
-            Balm.getNetworking().openGui(serverPlayer, new BalmMenuProvider<ModMenus.WaystoneListMenuData>() {
-                @Override
-                public Component getDisplayName() {
-                    return Component.translatable("container.waystones." + color.getSerializedName() + "_portstone");
-                }
-
-                @Override
-                public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.get(), null, windowId, waystones, Set.of(TeleportFlags.PORTSTONE), targetWaystoneType);
-                }
-
-                @Override
-                public ModMenus.WaystoneListMenuData getScreenOpeningData(ServerPlayer serverPlayer) {
-                    return new ModMenus.WaystoneListMenuData(waystones, Optional.of(targetWaystoneType));
-                }
-
-                @Override
-                public StreamCodec<RegistryFriendlyByteBuf, ModMenus.WaystoneListMenuData> getScreenStreamCodec() {
-                    return ModMenus.WaystoneListMenuData.STREAM_CODEC;
-                }
-            });
+            Balm.getNetworking().openGui(serverPlayer, new WaystoneSelectionListBuilder(serverPlayer)
+                    .withTargetsForWaystoneType(targetWaystoneType)
+                    .withFlags(Set.of(TeleportFlags.PORTSTONE))
+                    .buildMenuProvider(ModMenus.portstoneSelection.get(), Component.translatable("container.waystones." + color.getSerializedName() + "_portstone")));
         }
         return InteractionResult.SUCCESS;
     }

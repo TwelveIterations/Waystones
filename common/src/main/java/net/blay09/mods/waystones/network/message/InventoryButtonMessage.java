@@ -1,30 +1,21 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.menu.ModMenus;
-import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.UserDecoratedWaystone;
+import net.blay09.mods.waystones.menu.ModMenus;
+import net.blay09.mods.waystones.menu.WaystoneSelectionListBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import java.util.List;
 import java.util.Set;
 
 public class InventoryButtonMessage implements CustomPacketPayload {
@@ -61,30 +52,11 @@ public class InventoryButtonMessage implements CustomPacketPayload {
                             .thenAccept(result -> result.ifRight(error -> player.displayClientMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED), true))))
                     .ifRight(error -> player.displayClientMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED), true));
         } else if (inventoryButtonMode.isReturnToAny()) {
-            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForInventoryButton(player));
-            PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            final var containerProvider = new BalmMenuProvider<List<UserDecoratedWaystone>>() {
-                @Override
-                public Component getDisplayName() {
-                    return Component.translatable("container.waystones.waystone_selection");
-                }
-
-                @Override
-                public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
-                    return new WaystoneSelectionMenu(ModMenus.inventorySelection.get(), null, windowId, waystones, Set.of(TeleportFlags.INVENTORY_BUTTON));
-                }
-
-                @Override
-                public List<UserDecoratedWaystone> getScreenOpeningData(ServerPlayer serverPlayer) {
-                    return waystones;
-                }
-
-                @Override
-                public StreamCodec<RegistryFriendlyByteBuf, List<UserDecoratedWaystone>> getScreenStreamCodec() {
-                    return UserDecoratedWaystone.LIST_STREAM_CODEC;
-                }
-            };
-            Balm.getNetworking().openGui(player, containerProvider);
+            final var menuProvider = new WaystoneSelectionListBuilder(player)
+                    .withInventoryButtonTargets()
+                    .withFlags(Set.of(TeleportFlags.INVENTORY_BUTTON))
+                    .buildMenuProvider(ModMenus.inventorySelection.get(), Component.translatable("container.waystones.waystone_selection"));
+            Balm.networking().openMenu(player, menuProvider);
         }
     }
 

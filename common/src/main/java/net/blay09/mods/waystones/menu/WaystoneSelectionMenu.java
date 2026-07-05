@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -15,19 +16,27 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
 public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
-    public record Data(UserDecoratedWaystone fromWaystone, List<UserDecoratedWaystone> waystones) {
+    public record Data(Optional<UserDecoratedWaystone> fromWaystone, List<UserDecoratedWaystone> waystones, ItemStack warpItem, Optional<ResourceLocation> targetKind) {
+        public Data(@Nullable UserDecoratedWaystone fromWaystone, List<UserDecoratedWaystone> waystones, ItemStack warpItem, @Nullable ResourceLocation targetKind) {
+            this(Optional.ofNullable(fromWaystone), waystones, warpItem, Optional.ofNullable(targetKind));
+        }
     }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-            UserDecoratedWaystone.STREAM_CODEC,
+            ByteBufCodecs.optional(UserDecoratedWaystone.STREAM_CODEC),
             Data::fromWaystone,
             UserDecoratedWaystone.LIST_STREAM_CODEC,
             Data::waystones,
+            ItemStack.OPTIONAL_STREAM_CODEC,
+            Data::warpItem,
+            ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
+            Data::targetKind,
             Data::new);
 
     private final @Nullable Waystone fromWaystone;

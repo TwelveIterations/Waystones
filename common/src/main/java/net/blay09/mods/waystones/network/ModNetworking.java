@@ -2,12 +2,15 @@ package net.blay09.mods.waystones.network;
 
 import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.network.SyncConfigMessage;
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.network.message.*;
 
 public class ModNetworking {
 
     public static void initialize(BalmNetworking networking) {
+        networking.defineNetworkVersion(Waystones.MOD_ID, "2");
+
         networking.registerServerboundPacket(InventoryButtonMessage.TYPE, InventoryButtonMessage.class, InventoryButtonMessage::encode, InventoryButtonMessage::decode, InventoryButtonMessage::handle);
         networking.registerServerboundPacket(EditWaystoneMessage.TYPE, EditWaystoneMessage.class, EditWaystoneMessage::encode, EditWaystoneMessage::decode, EditWaystoneMessage::handle);
         networking.registerServerboundPacket(ServerboundEditWaystoneGroupPacket.TYPE, ServerboundEditWaystoneGroupPacket.class, ServerboundEditWaystoneGroupPacket::encode, ServerboundEditWaystoneGroupPacket::decode, ServerboundEditWaystoneGroupPacket::handle);
