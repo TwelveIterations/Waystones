@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.core;
 
+import net.blay09.mods.waystones.api.MutablePersonalizedWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
@@ -18,7 +19,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
-public class UserDecoratedWaystone implements Waystone {
+public class UserDecoratedWaystone implements MutablePersonalizedWaystone {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, UserDecoratedWaystone> STREAM_CODEC = StreamCodec.composite(
             WaystoneImpl.STREAM_CODEC,
@@ -32,8 +33,8 @@ public class UserDecoratedWaystone implements Waystone {
     public static final StreamCodec<RegistryFriendlyByteBuf, List<UserDecoratedWaystone>> LIST_STREAM_CODEC = ByteBufCodecs.collection(ArrayList::new, STREAM_CODEC);
 
     private final Waystone backingWaystone;
-    private final @Nullable Component alias;
-    private final Set<Identifier> configuredGroups;
+    private @Nullable Component alias;
+    private Set<Identifier> configuredGroups;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private UserDecoratedWaystone(Waystone backingWaystone, Optional<Component> alias, Collection<Identifier> configuredGroups) {
@@ -58,8 +59,18 @@ public class UserDecoratedWaystone implements Waystone {
         return Optional.ofNullable(alias);
     }
 
+    @Override
+    public void setAlias(@Nullable Component alias) {
+        this.alias = alias;
+    }
+
     public Set<Identifier> getConfiguredGroups() {
         return configuredGroups;
+    }
+
+    @Override
+    public void setConfiguredGroups(Collection<Identifier> configuredGroups) {
+        this.configuredGroups = Set.copyOf(configuredGroups);
     }
 
     @Override
