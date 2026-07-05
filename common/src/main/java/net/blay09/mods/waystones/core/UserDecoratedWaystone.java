@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.MutablePersonalizedWaystone;
+import net.blay09.mods.waystones.api.PersonalizedWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
@@ -30,6 +31,10 @@ public class UserDecoratedWaystone implements MutablePersonalizedWaystone {
             UserDecoratedWaystone::getConfiguredGroups,
             UserDecoratedWaystone::new
     );
+    public static final StreamCodec<RegistryFriendlyByteBuf, MutablePersonalizedWaystone> DOWNGRADED_STREAM_CODEC = StreamCodec.of(
+            (buf, waystone) -> STREAM_CODEC.encode(buf, from(waystone)),
+            STREAM_CODEC::decode
+    );
     public static final StreamCodec<RegistryFriendlyByteBuf, List<UserDecoratedWaystone>> LIST_STREAM_CODEC = ByteBufCodecs.collection(ArrayList::new, STREAM_CODEC);
 
     private final Waystone backingWaystone;
@@ -49,6 +54,12 @@ public class UserDecoratedWaystone implements MutablePersonalizedWaystone {
         this.backingWaystone = backingWaystone;
         this.alias = alias;
         this.configuredGroups = Set.copyOf(configuredGroups);
+    }
+
+    public static UserDecoratedWaystone from(PersonalizedWaystone waystone) {
+        return waystone instanceof UserDecoratedWaystone userDecoratedWaystone
+                ? userDecoratedWaystone
+                : new UserDecoratedWaystone(waystone.getBackingWaystone(), waystone.getAlias().orElse(null), waystone.getConfiguredGroups());
     }
 
     public Waystone getBackingWaystone() {

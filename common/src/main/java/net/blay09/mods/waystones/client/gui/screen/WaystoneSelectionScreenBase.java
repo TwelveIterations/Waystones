@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.balm.Balm;
+import net.blay09.mods.waystones.api.MutablePersonalizedWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneGroup;
 import net.blay09.mods.waystones.api.WaystoneKinds;
@@ -14,7 +15,6 @@ import net.blay09.mods.waystones.comparator.DistanceToPlayerComparator;
 import net.blay09.mods.waystones.comparator.PreferSameDimensionComparator;
 import net.blay09.mods.waystones.comparator.UserSortingComparator;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.UserDecoratedWaystone;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.network.message.ServerboundRequestEditWaystonePacket;
 import net.minecraft.ChatFormatting;
@@ -26,7 +26,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -44,7 +43,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
     private static final Identifier EDIT_ICON = id("widgets/edit");
 
-    protected final Collection<UserDecoratedWaystone> waystones;
+    protected final Collection<MutablePersonalizedWaystone> waystones;
     private final Inventory playerInventory;
     protected List<Waystone> filteredWaystones;
 

@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.menu;
 
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.shogi.network.ShogiStreamCodecs;
+import net.blay09.mods.waystones.api.MutablePersonalizedWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.WaystonesAPI;
@@ -22,17 +23,15 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
-    public record Data(UserDecoratedWaystone fromWaystone, List<UserDecoratedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements) {
+    public record Data(Optional<MutablePersonalizedWaystone> fromWaystone, List<MutablePersonalizedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements) {
+        public Data(@Nullable MutablePersonalizedWaystone fromWaystone, List<MutablePersonalizedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements) {
+            this(Optional.ofNullable(fromWaystone), waystones, warpRequirements);
+        }
     }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Either<List<Object>, List<Object>>> WARP_REQUIREMENT_STREAM_CODEC = ByteBufCodecs.either(
@@ -45,16 +44,16 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
             WARP_REQUIREMENT_STREAM_CODEC
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-            UserDecoratedWaystone.STREAM_CODEC,
+            ByteBufCodecs.optional(UserDecoratedWaystone.DOWNGRADED_STREAM_CODEC),
             Data::fromWaystone,
-            UserDecoratedWaystone.LIST_STREAM_CODEC,
+            ByteBufCodecs.collection(ArrayList::new, UserDecoratedWaystone.DOWNGRADED_STREAM_CODEC),
             Data::waystones,
             WARP_REQUIREMENTS_STREAM_CODEC,
             Data::warpRequirements,
             Data::new);
 
     private final @Nullable Waystone fromWaystone;
-    private final List<UserDecoratedWaystone> waystones;
+    private final Collection<MutablePersonalizedWaystone> waystones;
     private final Map<UUID, Either<List<Object>, List<Object>>> warpRequirements;
     private final Set<Identifier> flags;
     private final @Nullable Identifier targetKind;
@@ -62,14 +61,14 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
     private ItemStack warpItem = ItemStack.EMPTY;
     private @Nullable InteractionHand warpHand;
 
-    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, List<UserDecoratedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements, Set<Identifier> flags) {
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<? extends MutablePersonalizedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements, Set<Identifier> flags) {
         this(type, fromWaystone, windowId, waystones, warpRequirements, flags, null);
     }
 
-    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, List<UserDecoratedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements, Set<Identifier> flags, @Nullable Identifier targetKind) {
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<? extends MutablePersonalizedWaystone> waystones, Map<UUID, Either<List<Object>, List<Object>>> warpRequirements, Set<Identifier> flags, @Nullable Identifier targetKind) {
         super(type, windowId);
         this.fromWaystone = fromWaystone;
-        this.waystones = waystones;
+        this.waystones = List.copyOf(waystones);
         this.warpRequirements = warpRequirements;
         this.flags = flags;
         this.targetKind = targetKind;
@@ -113,7 +112,7 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
         return warpHand;
     }
 
-    public Collection<UserDecoratedWaystone> getWaystones() {
+    public Collection<MutablePersonalizedWaystone> getWaystones() {
         return waystones;
     }
 
