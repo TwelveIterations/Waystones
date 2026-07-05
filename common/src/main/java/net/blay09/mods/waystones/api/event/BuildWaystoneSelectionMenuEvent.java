@@ -2,8 +2,7 @@ package net.blay09.mods.waystones.api.event;
 
 import net.blay09.mods.balm.Balmstrap;
 import net.blay09.mods.balm.platform.event.BidirectionalEventMapper;
-import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.core.UserDecoratedWaystone;
+import net.blay09.mods.waystones.api.MutablePersonalizedWaystone;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -24,13 +23,13 @@ public class BuildWaystoneSelectionMenuEvent {
     public static final BidirectionalEventMapper<Consumer<BuildWaystoneSelectionMenuEvent>> EVENT = Balmstrap.createBoundCustomEvent(BuildWaystoneSelectionMenuEvent.class);
 
     private final Player player;
-    private final @Nullable Waystone sourceWaystone;
-    private final List<UserDecoratedWaystone> waystones;
+    private final @Nullable MutablePersonalizedWaystone sourceWaystone;
+    private final List<MutablePersonalizedWaystone> waystones;
     private final Set<Identifier> flags;
     private final @Nullable Identifier targetKind;
     private final ItemStack warpItem;
 
-    public BuildWaystoneSelectionMenuEvent(Player player, @Nullable Waystone sourceWaystone, List<UserDecoratedWaystone> waystones, Set<Identifier> flags, @Nullable Identifier targetKind, ItemStack warpItem) {
+    public BuildWaystoneSelectionMenuEvent(Player player, @Nullable MutablePersonalizedWaystone sourceWaystone, List<MutablePersonalizedWaystone> waystones, Set<Identifier> flags, @Nullable Identifier targetKind, ItemStack warpItem) {
         this.player = player;
         this.sourceWaystone = sourceWaystone;
         this.waystones = waystones;
@@ -43,15 +42,15 @@ public class BuildWaystoneSelectionMenuEvent {
         return player;
     }
 
-    public @Nullable Waystone getSourceWaystone() {
+    public @Nullable MutablePersonalizedWaystone getSourceWaystone() {
         return sourceWaystone;
     }
 
-    public List<UserDecoratedWaystone> getWaystones() {
+    public List<MutablePersonalizedWaystone> getWaystones() {
         return waystones;
     }
 
-    public void addWaystone(UserDecoratedWaystone waystone) {
+    public void addWaystone(MutablePersonalizedWaystone waystone) {
         waystones.add(Objects.requireNonNull(waystone));
     }
 

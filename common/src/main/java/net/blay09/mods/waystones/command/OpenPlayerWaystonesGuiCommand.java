@@ -23,7 +23,7 @@ public class OpenPlayerWaystonesGuiCommand implements Command<CommandSourceStack
         ServerPlayer op = ctx.getSource().getPlayerOrException();
         final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(target, PlayerWaystoneManager.getActivatedWaystones(target));
         final var menuProvider = new WaystoneSelectionListBuilder(op)
-                .withDecoratedWaystones(waystones)
+                .withPersonalizedWaystones(waystones)
                 .withFlags(Set.of(TeleportFlags.ADMIN))
                 .sorted(WaystoneComparators.forAdminInspection(op, target))
                 .skipSortingIndexUpdate()
