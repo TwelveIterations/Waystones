@@ -131,7 +131,7 @@ publishing {
             var releasesRepoUrl = "https://maven.twelveiterations.com/repository/maven-releases/"
             var snapshotsRepoUrl = "https://maven.twelveiterations.com/repository/maven-snapshots/"
             url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
-            name = "twelveIterationsNexus"
+            name = "maven"
             credentials(PasswordCredentials)
         }
     }
