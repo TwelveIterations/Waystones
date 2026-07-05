@@ -82,7 +82,7 @@ public class ModMenus {
                     @Override
                     public WaystoneSelectionMenu create(int windowId, Inventory inventory, WaystoneSelectionMenu.Data data) {
                         return new WaystoneSelectionMenu(menuType.get().value(),
-                                data.fromWaystone(),
+                                data.fromWaystone().orElse(null),
                                 windowId,
                                 data.waystones(),
                                 data.warpRequirements(),
