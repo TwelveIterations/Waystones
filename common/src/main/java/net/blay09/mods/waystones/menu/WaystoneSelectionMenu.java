@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.menu;
 import net.blay09.mods.waystones.api.MutablePersonalizedWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
-import net.blay09.mods.waystones.core.UserDecoratedWaystone;
+import net.blay09.mods.waystones.core.PersonalizedWaystoneImpl;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -31,9 +31,9 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
     }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.optional(UserDecoratedWaystone.DOWNGRADED_STREAM_CODEC),
+            ByteBufCodecs.optional(PersonalizedWaystoneImpl.DOWNGRADED_STREAM_CODEC),
             Data::fromWaystone,
-            ByteBufCodecs.collection(ArrayList::new, UserDecoratedWaystone.DOWNGRADED_STREAM_CODEC),
+            ByteBufCodecs.collection(ArrayList::new, PersonalizedWaystoneImpl.DOWNGRADED_STREAM_CODEC),
             Data::waystones,
             ItemStack.OPTIONAL_STREAM_CODEC,
             Data::warpItem,

@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.UserDecoratedWaystone;
+import net.blay09.mods.waystones.core.PersonalizedWaystoneImpl;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -61,7 +61,7 @@ public class ServerboundPersonalWaystoneSettingsPacket implements CustomPacketPa
         PlayerWaystoneManager.setConfiguredWaystoneGroups(player, resolvedWaystone.getWaystoneUid(), message.groupIds);
         WaystoneSyncManager.sendActivatedWaystones(player);
         if (resolvedWaystone.isTransient()) {
-            Balm.getNetworking().sendTo(player, new UpdateWaystoneMessage(new UserDecoratedWaystone(resolvedWaystone, message.alias.orElse(null), message.groupIds)));
+            Balm.getNetworking().sendTo(player, new UpdateWaystoneMessage(new PersonalizedWaystoneImpl(resolvedWaystone, message.alias.orElse(null), message.groupIds)));
         }
     }
 

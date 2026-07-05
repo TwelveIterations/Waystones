@@ -22,9 +22,9 @@ public class KnownWaystonesMessage implements CustomPacketPayload {
             "known_waystones"));
 
     private final ResourceLocation type;
-    private final Collection<UserDecoratedWaystone> waystones;
+    private final Collection<PersonalizedWaystoneImpl> waystones;
 
-    public KnownWaystonesMessage(ResourceLocation type, Collection<UserDecoratedWaystone> waystones) {
+    public KnownWaystonesMessage(ResourceLocation type, Collection<PersonalizedWaystoneImpl> waystones) {
         this.type = type;
         this.waystones = waystones;
     }
@@ -32,17 +32,17 @@ public class KnownWaystonesMessage implements CustomPacketPayload {
     public static void encode(RegistryFriendlyByteBuf buf, KnownWaystonesMessage message) {
         buf.writeResourceLocation(message.type);
         buf.writeShort(message.waystones.size());
-        for (UserDecoratedWaystone waystone : message.waystones) {
-            UserDecoratedWaystone.STREAM_CODEC.encode(buf, waystone);
+        for (PersonalizedWaystoneImpl waystone : message.waystones) {
+            PersonalizedWaystoneImpl.STREAM_CODEC.encode(buf, waystone);
         }
     }
 
     public static KnownWaystonesMessage decode(RegistryFriendlyByteBuf buf) {
         ResourceLocation type = buf.readResourceLocation();
         int waystoneCount = buf.readShort();
-        List<UserDecoratedWaystone> waystones = new ArrayList<>();
+        List<PersonalizedWaystoneImpl> waystones = new ArrayList<>();
         for (int i = 0; i < waystoneCount; i++) {
-            waystones.add(UserDecoratedWaystone.STREAM_CODEC.decode(buf));
+            waystones.add(PersonalizedWaystoneImpl.STREAM_CODEC.decode(buf));
         }
         return new KnownWaystonesMessage(type, waystones);
     }

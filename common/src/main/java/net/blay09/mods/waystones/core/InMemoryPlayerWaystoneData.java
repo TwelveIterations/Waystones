@@ -191,9 +191,9 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
         waystoneToConfiguredGroups.clear();
         for (final var waystone : waystones) {
             this.waystones.put(waystone.getWaystoneUid(), waystone);
-            if (waystone instanceof UserDecoratedWaystone userDecoratedWaystone) {
-                userDecoratedWaystone.getAlias().ifPresent(alias -> setWaystoneAlias(player, waystone.getWaystoneUid(), alias));
-                setConfiguredWaystoneGroups(player, userDecoratedWaystone.getWaystoneUid(), userDecoratedWaystone.getConfiguredGroups());
+            if (waystone instanceof PersonalizedWaystoneImpl personalizedWaystone) {
+                personalizedWaystone.getAlias().ifPresent(alias -> setWaystoneAlias(player, waystone.getWaystoneUid(), alias));
+                setConfiguredWaystoneGroups(player, personalizedWaystone.getWaystoneUid(), personalizedWaystone.getConfiguredGroups());
             }
         }
     }

@@ -20,46 +20,46 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class UserDecoratedWaystone implements MutablePersonalizedWaystone {
+public class PersonalizedWaystoneImpl implements MutablePersonalizedWaystone {
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, UserDecoratedWaystone> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, PersonalizedWaystoneImpl> STREAM_CODEC = StreamCodec.composite(
             WaystoneImpl.STREAM_CODEC,
-            UserDecoratedWaystone::getBackingWaystone,
+            PersonalizedWaystoneImpl::getBackingWaystone,
             ComponentSerialization.OPTIONAL_STREAM_CODEC,
-            UserDecoratedWaystone::getAlias,
+            PersonalizedWaystoneImpl::getAlias,
             ByteBufCodecs.collection(ArrayList::new, ResourceLocation.STREAM_CODEC),
-            UserDecoratedWaystone::getConfiguredGroups,
-            UserDecoratedWaystone::new
+            PersonalizedWaystoneImpl::getConfiguredGroups,
+            PersonalizedWaystoneImpl::new
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, MutablePersonalizedWaystone> DOWNGRADED_STREAM_CODEC = StreamCodec.of(
             (buf, waystone) -> STREAM_CODEC.encode(buf, from(waystone)),
             STREAM_CODEC::decode
     );
-    public static final StreamCodec<RegistryFriendlyByteBuf, List<UserDecoratedWaystone>> LIST_STREAM_CODEC = ByteBufCodecs.collection(ArrayList::new, STREAM_CODEC);
+    public static final StreamCodec<RegistryFriendlyByteBuf, List<PersonalizedWaystoneImpl>> LIST_STREAM_CODEC = ByteBufCodecs.collection(ArrayList::new, STREAM_CODEC);
 
     private final Waystone backingWaystone;
     private @Nullable Component alias;
     private Set<ResourceLocation> configuredGroups;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private UserDecoratedWaystone(Waystone backingWaystone, Optional<Component> alias, Collection<ResourceLocation> configuredGroups) {
+    private PersonalizedWaystoneImpl(Waystone backingWaystone, Optional<Component> alias, Collection<ResourceLocation> configuredGroups) {
         this(backingWaystone, alias.orElse(null), configuredGroups);
     }
 
-    public UserDecoratedWaystone(Waystone backingWaystone, @Nullable Component alias) {
+    public PersonalizedWaystoneImpl(Waystone backingWaystone, @Nullable Component alias) {
         this(backingWaystone, alias, List.of());
     }
 
-    public UserDecoratedWaystone(Waystone backingWaystone, @Nullable Component alias, Collection<ResourceLocation> configuredGroups) {
+    public PersonalizedWaystoneImpl(Waystone backingWaystone, @Nullable Component alias, Collection<ResourceLocation> configuredGroups) {
         this.backingWaystone = backingWaystone;
         this.alias = alias;
         this.configuredGroups = Set.copyOf(configuredGroups);
     }
 
-    public static UserDecoratedWaystone from(PersonalizedWaystone waystone) {
-        return waystone instanceof UserDecoratedWaystone userDecoratedWaystone
-                ? userDecoratedWaystone
-                : new UserDecoratedWaystone(waystone.getBackingWaystone(), waystone.getAlias().orElse(null), waystone.getConfiguredGroups());
+    public static PersonalizedWaystoneImpl from(PersonalizedWaystone waystone) {
+        return waystone instanceof PersonalizedWaystoneImpl personalizedWaystone
+                ? personalizedWaystone
+                : new PersonalizedWaystoneImpl(waystone.getBackingWaystone(), waystone.getAlias().orElse(null), waystone.getConfiguredGroups());
     }
 
     public Waystone getBackingWaystone() {

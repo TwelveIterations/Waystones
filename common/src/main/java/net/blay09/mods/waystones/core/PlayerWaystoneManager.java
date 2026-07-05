@@ -169,14 +169,14 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.level()).getWaystoneGroupRegistry(player);
     }
 
-    public static UserDecoratedWaystone getPlayerDecoratedWaystone(Player player, Waystone waystone) {
-        final var backingWaystone = waystone instanceof UserDecoratedWaystone userDecoratedWaystone ? userDecoratedWaystone.getBackingWaystone() : waystone;
+    public static PersonalizedWaystoneImpl getPlayerDecoratedWaystone(Player player, Waystone waystone) {
+        final var backingWaystone = waystone instanceof PersonalizedWaystoneImpl personalizedWaystone ? personalizedWaystone.getBackingWaystone() : waystone;
         final var alias = getWaystoneAlias(player, backingWaystone.getWaystoneUid());
         final var configuredWaystoneGroups = getConfiguredWaystoneGroups(player, backingWaystone.getWaystoneUid());
-        return new UserDecoratedWaystone(backingWaystone, alias.orElse(null), configuredWaystoneGroups);
+        return new PersonalizedWaystoneImpl(backingWaystone, alias.orElse(null), configuredWaystoneGroups);
     }
 
-    public static List<UserDecoratedWaystone> getPlayerDecoratedWaystones(Player player, Collection<Waystone> waystones) {
+    public static List<PersonalizedWaystoneImpl> getPlayerDecoratedWaystones(Player player, Collection<Waystone> waystones) {
         return waystones.stream()
                 .map(waystone -> getPlayerDecoratedWaystone(player, waystone))
                 .toList();

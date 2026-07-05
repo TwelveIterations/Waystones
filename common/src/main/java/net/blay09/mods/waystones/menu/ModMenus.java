@@ -6,7 +6,7 @@ import net.blay09.mods.balm.api.menu.BalmMenuFactory;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.TeleportFlags;
-import net.blay09.mods.waystones.core.UserDecoratedWaystone;
+import net.blay09.mods.waystones.core.PersonalizedWaystoneImpl;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -29,15 +29,15 @@ public class ModMenus {
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> adminSelection = registerWaystoneSelectionMenu("admin_selection", () -> ModMenus.adminSelection.get(), Set.of(TeleportFlags.ADMIN));
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> sharestoneSelection = registerWaystoneSelectionMenu("sharestone_selection", () -> ModMenus.sharestoneSelection.get(), Set.of());
     public static DeferredObject<MenuType<WaystoneModifierMenu>> waystoneModifiers = menus.registerMenu(id("waystone_modifiers"),
-            new BalmMenuFactory<WaystoneModifierMenu, UserDecoratedWaystone>() {
+            new BalmMenuFactory<WaystoneModifierMenu, PersonalizedWaystoneImpl>() {
                 @Override
-                public WaystoneModifierMenu create(int windowId, Inventory inventory, UserDecoratedWaystone waystone) {
+                public WaystoneModifierMenu create(int windowId, Inventory inventory, PersonalizedWaystoneImpl waystone) {
                     return new WaystoneModifierMenu(windowId, inventory, waystone);
                 }
 
                 @Override
-                public StreamCodec<RegistryFriendlyByteBuf, UserDecoratedWaystone> getStreamCodec() {
-                    return UserDecoratedWaystone.STREAM_CODEC;
+                public StreamCodec<RegistryFriendlyByteBuf, PersonalizedWaystoneImpl> getStreamCodec() {
+                    return PersonalizedWaystoneImpl.STREAM_CODEC;
                 }
             });
 
@@ -75,15 +75,15 @@ public class ModMenus {
                 }
             });
     public static DeferredObject<MenuType<PersonalWaystoneSettingsMenu>> personalWaystoneSettings = menus.registerMenu(id("personal_waystone_settings"),
-            new BalmMenuFactory<PersonalWaystoneSettingsMenu, UserDecoratedWaystone>() {
+            new BalmMenuFactory<PersonalWaystoneSettingsMenu, PersonalizedWaystoneImpl>() {
                 @Override
-                public PersonalWaystoneSettingsMenu create(int windowId, Inventory inventory, UserDecoratedWaystone waystone) {
+                public PersonalWaystoneSettingsMenu create(int windowId, Inventory inventory, PersonalizedWaystoneImpl waystone) {
                     return new PersonalWaystoneSettingsMenu(windowId, waystone);
                 }
 
                 @Override
-                public StreamCodec<RegistryFriendlyByteBuf, UserDecoratedWaystone> getStreamCodec() {
-                    return UserDecoratedWaystone.STREAM_CODEC;
+                public StreamCodec<RegistryFriendlyByteBuf, PersonalizedWaystoneImpl> getStreamCodec() {
+                    return PersonalizedWaystoneImpl.STREAM_CODEC;
                 }
             });
 
