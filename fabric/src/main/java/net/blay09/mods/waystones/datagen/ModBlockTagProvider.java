@@ -26,6 +26,10 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.deepslateWaystone,
                 ModBlocks.blackstoneWaystone,
                 ModBlocks.endStoneWaystone,
+                ModBlocks.redNetherBricksWaystone,
+                ModBlocks.purpurWaystone,
+                ModBlocks.prismarineWaystone,
+                ModBlocks.mudBricksWaystone,
                 ModBlocks.warpPlate,
                 ModBlocks.fleetingMemorial);
         for (final var portstone : ModBlocks.portstones) {
@@ -43,6 +47,10 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.deepslateWaystone,
                 ModBlocks.blackstoneWaystone,
                 ModBlocks.endStoneWaystone,
+                ModBlocks.redNetherBricksWaystone,
+                ModBlocks.purpurWaystone,
+                ModBlocks.prismarineWaystone,
+                ModBlocks.mudBricksWaystone,
                 ModBlocks.warpPlate,
                 ModBlocks.fleetingMemorial);
         for (final var portstone : ModBlocks.portstones) {
@@ -61,6 +69,10 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.deepslateWaystone,
                 ModBlocks.blackstoneWaystone,
                 ModBlocks.endStoneWaystone,
+                ModBlocks.redNetherBricksWaystone,
+                ModBlocks.purpurWaystone,
+                ModBlocks.prismarineWaystone,
+                ModBlocks.mudBricksWaystone,
                 ModBlocks.warpPlate);
         for (final var portstone : ModBlocks.portstones) {
             isTeleportTargetBuilder.add(portstone);
@@ -74,7 +86,11 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.mossyWaystone,
                 ModBlocks.deepslateWaystone,
                 ModBlocks.blackstoneWaystone,
-                ModBlocks.endStoneWaystone);
+                ModBlocks.endStoneWaystone,
+                ModBlocks.redNetherBricksWaystone,
+                ModBlocks.purpurWaystone,
+                ModBlocks.prismarineWaystone,
+                ModBlocks.mudBricksWaystone);
 
         final var sharestonesBuilder = getOrCreateTagBuilder(ModBlockTags.SHARESTONES);
         for (final var sharestone : ModBlocks.sharestones) {

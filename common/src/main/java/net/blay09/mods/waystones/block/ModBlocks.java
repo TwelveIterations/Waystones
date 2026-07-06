@@ -56,6 +56,10 @@ public class ModBlocks {
     public static Block deepslateWaystone;
     public static Block blackstoneWaystone;
     public static Block endStoneWaystone;
+    public static Block redNetherBricksWaystone;
+    public static Block purpurWaystone;
+    public static Block prismarineWaystone;
+    public static Block mudBricksWaystone;
     public static Block warpPlate;
     public static Block warpPortal;
     public static Block fleetingMemorial;
@@ -71,6 +75,14 @@ public class ModBlocks {
                 id("deepslate_waystone"));
         blocks.register(() -> blackstoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(blackstoneWaystone), id("blackstone_waystone"));
         blocks.register(() -> endStoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(endStoneWaystone), id("end_stone_waystone"));
+        blocks.register(() -> redNetherBricksWaystone = new WaystoneBlock(defaultProperties().sound(SoundType.NETHER_BRICKS)),
+                () -> itemBlock(redNetherBricksWaystone),
+                id("red_nether_bricks_waystone"));
+        blocks.register(() -> purpurWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(purpurWaystone), id("purpur_waystone"));
+        blocks.register(() -> prismarineWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(prismarineWaystone), id("prismarine_waystone"));
+        blocks.register(() -> mudBricksWaystone = new WaystoneBlock(defaultProperties().sound(SoundType.MUD_BRICKS)),
+                () -> itemBlock(mudBricksWaystone),
+                id("mud_bricks_waystone"));
         blocks.register(() -> warpPlate = new WarpPlateBlock(defaultProperties()), () -> itemBlock(warpPlate), id("warp_plate"));
         blocks.registerBlock(() -> warpPortal = new WarpPortalBlock(defaultProperties().noLootTable().lightLevel(state -> 10).strength(-1f, 3600000f)), id("warp_portal"));
         blocks.registerBlock(() -> fleetingMemorial = new FleetingMemorialBlock(defaultProperties().noLootTable().strength(2f, 6f).lightLevel(state -> 6)), id("fleeting_memorial"));

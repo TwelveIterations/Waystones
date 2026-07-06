@@ -1,0 +1,7 @@
+{
+    "parent": "waystones:item/waystone",
+    "textures": {
+        "particle": "minecraft:block/purpur_block",
+        "texture": "waystones:block/purpur_waystone"
+    }
+}

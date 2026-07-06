@@ -48,6 +48,10 @@ public class ModModelProvider extends FabricModelProvider {
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.deepslateWaystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.blackstoneWaystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.endStoneWaystone);
+        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.redNetherBricksWaystone);
+        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.purpurWaystone);
+        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.prismarineWaystone);
+        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.mudBricksWaystone);
         for (final var portstone : ModBlocks.portstones) {
             createPortstone(blockStateModelGenerator, portstone);
         }

@@ -90,6 +90,46 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                 .save(exporter);
 
+        shaped(RecipeCategory.DECORATIONS, ModBlocks.redNetherBricksWaystone)
+                .pattern(" S ")
+                .pattern("SWS")
+                .pattern("OOO")
+                .define('S', Blocks.RED_NETHER_BRICKS)
+                .define('W', ModItems.warpStone)
+                .define('O', Blocks.OBSIDIAN)
+                .unlockedBy("has_warp_stone", has(ModItems.warpStone))
+                .save(exporter);
+
+        shaped(RecipeCategory.DECORATIONS, ModBlocks.purpurWaystone)
+                .pattern(" S ")
+                .pattern("SWS")
+                .pattern("OOO")
+                .define('S', Blocks.PURPUR_BLOCK)
+                .define('W', ModItems.warpStone)
+                .define('O', Blocks.OBSIDIAN)
+                .unlockedBy("has_warp_stone", has(ModItems.warpStone))
+                .save(exporter);
+
+        shaped(RecipeCategory.DECORATIONS, ModBlocks.prismarineWaystone)
+                .pattern(" S ")
+                .pattern("SWS")
+                .pattern("OOO")
+                .define('S', Blocks.PRISMARINE)
+                .define('W', ModItems.warpStone)
+                .define('O', Blocks.OBSIDIAN)
+                .unlockedBy("has_warp_stone", has(ModItems.warpStone))
+                .save(exporter);
+
+        shaped(RecipeCategory.DECORATIONS, ModBlocks.mudBricksWaystone)
+                .pattern(" S ")
+                .pattern("SWS")
+                .pattern("OOO")
+                .define('S', Blocks.MUD_BRICKS)
+                .define('W', ModItems.warpStone)
+                .define('O', Blocks.OBSIDIAN)
+                .unlockedBy("has_warp_stone", has(ModItems.warpStone))
+                .save(exporter);
+
         shapeless(RecipeCategory.DECORATIONS, ModBlocks.mossyWaystone)
                 .requires(ModBlocks.waystone)
                 .requires(Blocks.VINE, 3)

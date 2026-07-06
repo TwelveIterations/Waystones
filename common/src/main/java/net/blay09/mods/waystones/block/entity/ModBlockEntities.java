@@ -13,7 +13,17 @@ public class ModBlockEntities {
     private static final BalmBlockEntities blockEntities = Balm.getBlockEntities();
     public static DeferredObject<BlockEntityType<WaystoneBlockEntity>> waystone = blockEntities.registerBlockEntity(id("waystone"),
             WaystoneBlockEntity::new,
-            () -> new Block[]{ModBlocks.waystone, ModBlocks.mossyWaystone, ModBlocks.sandyWaystone, ModBlocks.deepslateWaystone, ModBlocks.blackstoneWaystone, ModBlocks.endStoneWaystone});
+            () -> new Block[]{
+                    ModBlocks.waystone,
+                    ModBlocks.mossyWaystone,
+                    ModBlocks.sandyWaystone,
+                    ModBlocks.deepslateWaystone,
+                    ModBlocks.blackstoneWaystone,
+                    ModBlocks.endStoneWaystone,
+                    ModBlocks.redNetherBricksWaystone,
+                    ModBlocks.purpurWaystone,
+                    ModBlocks.prismarineWaystone,
+                    ModBlocks.mudBricksWaystone});
     public static DeferredObject<BlockEntityType<SharestoneBlockEntity>> sharestone = blockEntities.registerBlockEntity(id("sharestone"),
             SharestoneBlockEntity::new,
             () -> ModBlocks.sharestones);

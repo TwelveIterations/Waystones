@@ -19,6 +19,10 @@ public class WaystoneStyles {
     public static WaystoneStyle BLACKSTONE = register(new WaystoneStyle(ResourceLocation.fromNamespaceAndPath("waystones", "blackstone_waystone")).withRuneColor(0xFF993333));
     public static WaystoneStyle DEEPSLATE = register(new WaystoneStyle(ResourceLocation.fromNamespaceAndPath("waystones", "deepslate_waystone")));
     public static WaystoneStyle END_STONE = register(new WaystoneStyle(ResourceLocation.fromNamespaceAndPath("waystones", "end_stone_waystone")).withRuneColor(0xFF7200FF));
+    public static WaystoneStyle RED_NETHER_BRICKS = register(new WaystoneStyle(ResourceLocation.fromNamespaceAndPath("waystones", "red_nether_bricks_waystone")));
+    public static WaystoneStyle PURPUR = register(new WaystoneStyle(ResourceLocation.fromNamespaceAndPath("waystones", "purpur_waystone")));
+    public static WaystoneStyle PRISMARINE = register(new WaystoneStyle(ResourceLocation.fromNamespaceAndPath("waystones", "prismarine_waystone")));
+    public static WaystoneStyle MUD_BRICKS = register(new WaystoneStyle(ResourceLocation.fromNamespaceAndPath("waystones", "mud_bricks_waystone")));
 
     public static WaystoneStyle register(WaystoneStyle style) {
         styles.put(style.getBlockRegistryName(), style);
