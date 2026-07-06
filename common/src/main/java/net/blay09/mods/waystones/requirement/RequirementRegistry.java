@@ -301,7 +301,7 @@ public class RequirementRegistry {
         for (final var sharestoneType : WaystoneTypes.SHARESTONES) {
             registerConditionResolver("source_is_" + sharestoneType.getPath(),
                     NoParameter.class,
-                    (context, parameters) -> sharestoneType.equals(context.getTargetWaystone().getWaystoneType()));
+                    (context, parameters) -> context.getFromWaystone().map(waystone -> sharestoneType.equals(waystone.getWaystoneType())).orElse(false));
         }
         registerConditionResolver("source_is_inventory_button",
                 NoParameter.class,
