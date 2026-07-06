@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.requirement;
 
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.TeleportFlags;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -310,6 +312,7 @@ public class RequirementRegistry {
         registerConditionResolver("source_is_bound_scroll", NoParameter.class, (context, parameters) -> context.getWarpItem().is(ModItemTags.BOUND_SCROLLS));
         registerConditionResolver("source_is_return_scroll", NoParameter.class, (context, parameters) -> context.getWarpItem().is(ModItemTags.RETURN_SCROLLS));
         registerConditionResolver("source_is_warp_scroll", NoParameter.class, (context, parameters) -> context.getWarpItem().is(ModItemTags.WARP_SCROLLS));
+        registerConditionResolver("source_is_portal_scroll", NoParameter.class, (context, parameters) -> context.getWarpItem().is(ModItemTags.PORTAL_SCROLLS));
         registerConditionResolver("source_is_warp_stone", NoParameter.class, (context, parameters) -> context.getWarpItem().is(ModItemTags.WARP_STONES));
         registerBoundConditionResolver("target_name_equals",
                 StringParameter.class,
@@ -320,6 +323,15 @@ public class RequirementRegistry {
         registerBoundConditionResolver("target_is_warp_plate",
                 NoParameter.class,
                 (context, parameters) -> context.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.WARP_PLATE));
+        registerBoundConditionResolver("target_is_warp_portal",
+                NoParameter.class,
+                (context, parameters) -> context.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.WARP_PORTAL));
+        registerBoundConditionResolver("target_is_fleeting_memorial",
+                NoParameter.class,
+                (context, parameters) -> context.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.FLEETING_MEMORIAL));
+        registerBoundConditionResolver("target_is_player",
+                NoParameter.class,
+                (context, parameters) -> context.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.TWINBOUND_FEATHER));
         registerBoundConditionResolver("target_is_global",
                 NoParameter.class,
                 (context, parameters) -> context.getTargetWaystone().getVisibility() == WaystoneVisibility.GLOBAL);
