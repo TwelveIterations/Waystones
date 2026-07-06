@@ -30,22 +30,6 @@ public final class WaystoneGroups {
     public static final ResourceLocation PLAYERS_ICON = id("groups/players");
     public static final ResourceLocation TEAM_ICON = id("groups/teams");
 
-    // TODO Would be nice to expose an API for this and getDimensionIcon
-    public static final List<ResourceLocation> PRESET_ICONS = List.of(
-            COMMUNITY_HUBS_ICON,
-            DUNGEONS_ICON,
-            FAVORITES_ICON,
-            PLAYER_HOMES_ICON,
-            RESOURCE_SITES_ICON,
-            OVERWORLD_ICON,
-            THE_NETHER_ICON,
-            THE_END_ICON,
-            DIMENSION_ICON,
-            VILLAGES_ICON,
-            GLOBAL_ICON,
-            PLAYERS_ICON,
-            TEAM_ICON);
-
     public static final WaystoneGroup FAVORITES = new WaystoneGroupImpl(
             id("favorites"),
             Component.translatable("waystones.groups.favorites"),

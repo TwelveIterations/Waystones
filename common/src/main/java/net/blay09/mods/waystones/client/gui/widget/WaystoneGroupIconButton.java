@@ -1,17 +1,13 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
-import net.blay09.mods.waystones.api.WaystoneGroups;
+import net.blay09.mods.waystones.client.WaystoneGroupIcons;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.List;
-
 public class WaystoneGroupIconButton extends Button {
-
-    private static final List<ResourceLocation> PRESET_ICONS = WaystoneGroups.PRESET_ICONS;
 
     private ResourceLocation icon;
 
@@ -26,14 +22,16 @@ public class WaystoneGroupIconButton extends Button {
     }
 
     private void cycleIcon() {
-        final var currentIndex = PRESET_ICONS.indexOf(icon);
-        icon = PRESET_ICONS.get((currentIndex + 1) % PRESET_ICONS.size());
+        final var presetIcons = WaystoneGroupIcons.getPresetIcons();
+        final var currentIndex = presetIcons.indexOf(icon);
+        icon = presetIcons.get((currentIndex + 1) % presetIcons.size());
         updateTooltip();
     }
 
     private void cycleIconBackwards() {
-        final var currentIndex = PRESET_ICONS.indexOf(icon);
-        icon = PRESET_ICONS.get(currentIndex <= 0 ? PRESET_ICONS.size() - 1 : currentIndex - 1);
+        final var presetIcons = WaystoneGroupIcons.getPresetIcons();
+        final var currentIndex = presetIcons.indexOf(icon);
+        icon = presetIcons.get(currentIndex <= 0 ? presetIcons.size() - 1 : currentIndex - 1);
         updateTooltip();
     }
 
