@@ -56,13 +56,18 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     private static final int HEADER_WIDTH = AbstractWaystoneList.ENTRY_WIDTH;
     protected static final int HEADER_HEIGHT = 64;
     protected static final int FOOTER_HEIGHT = 25;
+    private static final int BASE_IMAGE_HEIGHT = 200;
+    private static final int SCREEN_VERTICAL_MARGIN = 40;
+    private static final int BASE_GROUP_FILTER_COUNT = 5;
+    private static final int LIST_SCROLL_PADDING = 4;
+    private static final int SIDE_BUTTON_HEIGHT = 20;
     private static final int SORT_BUTTON_WIDTH = 20;
     private static final int MARGIN = 2;
 
     public WaystoneSelectionScreenBase(WaystoneSelectionMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
         imageWidth = 270;
-        imageHeight = 200;
+        imageHeight = BASE_IMAGE_HEIGHT;
         this.playerInventory = playerInventory;
         waystones = container.getWaystones();
         PlayerWaystoneManager.ensureSortingIndex(Minecraft.getInstance().player, waystones);
@@ -75,6 +80,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
     @Override
     public void init() {
+        imageHeight = getLayoutImageHeight();
         super.init();
 
         waystoneList = createWaystoneList();
@@ -119,6 +125,35 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                 AbstractWaystoneList.ENTRY_WIDTH,
                 imageHeight - HEADER_HEIGHT - FOOTER_HEIGHT,
                 menu);
+    }
+
+    protected int getLayoutImageHeight() {
+        final int maxImageHeight = Math.max(BASE_IMAGE_HEIGHT, height - SCREEN_VERTICAL_MARGIN);
+        final int neededImageHeight = Math.max(getNeededListImageHeight(), getNeededGroupFilterImageHeight());
+        return Math.min(maxImageHeight, neededImageHeight);
+    }
+
+    private int getNeededListImageHeight() {
+        final int baseRows = (BASE_IMAGE_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT) / AbstractWaystoneList.ENTRY_HEIGHT;
+        final int neededRows = Math.max(baseRows, getLayoutWaystoneCount());
+        return BASE_IMAGE_HEIGHT + LIST_SCROLL_PADDING + (neededRows - baseRows) * AbstractWaystoneList.ENTRY_HEIGHT;
+    }
+
+    protected int getLayoutWaystoneCount() {
+        int count = 0;
+        for (final var waystone : waystones) {
+            if (shouldShowWaystone(waystone)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private int getNeededGroupFilterImageHeight() {
+        final int filterCount = getAvailableGroupFilterCount();
+        final int extraFilters = Math.max(0, filterCount - BASE_GROUP_FILTER_COUNT);
+        return BASE_IMAGE_HEIGHT + extraFilters * (SIDE_BUTTON_HEIGHT + MARGIN);
     }
 
     protected void initSideButtons() {
@@ -198,23 +233,59 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     private List<WaystoneGroup> getShownGroupFilters() {
-        final var nonEmptyGroups = new HashSet<ResourceLocation>();
-        for (final var waystone : waystones) {
-            nonEmptyGroups.addAll(waystone.getWaystoneGroups());
-        }
-
+        final int maxShownGroups = getMaxShownGroupFilters();
         final var shownGroups = new ArrayList<WaystoneGroup>();
+        final var nonEmptyGroups = getNonEmptyGroups();
         final var groupRegistry = PlayerWaystoneManager.getWaystoneGroupRegistry(playerInventory.player);
         for (final var group : groupRegistry) {
             if (!group.hidden() && nonEmptyGroups.contains(group.identifier())) {
                 shownGroups.add(group);
-                if (shownGroups.size() >= 5) {
+                if (shownGroups.size() >= maxShownGroups) {
                     break;
                 }
             }
         }
 
         return shownGroups;
+    }
+
+    private int getAvailableGroupFilterCount() {
+        int count = 0;
+        final var nonEmptyGroups = getNonEmptyGroups();
+        final var groupRegistry = PlayerWaystoneManager.getWaystoneGroupRegistry(playerInventory.player);
+        for (final var group : groupRegistry) {
+            if (!group.hidden() && nonEmptyGroups.contains(group.identifier())) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private HashSet<ResourceLocation> getNonEmptyGroups() {
+        final var nonEmptyGroups = new HashSet<ResourceLocation>();
+        for (final var waystone : waystones) {
+            if (shouldShowWaystone(waystone)) {
+                nonEmptyGroups.addAll(waystone.getWaystoneGroups());
+            }
+        }
+
+        return nonEmptyGroups;
+    }
+
+    private int getMaxShownGroupFilters() {
+        final int availableFilters = Math.max(0, (imageHeight - FOOTER_HEIGHT - getGroupFilterStartY() + MARGIN) / (SIDE_BUTTON_HEIGHT + MARGIN));
+        final int extraFilters = Math.max(0, (imageHeight - BASE_IMAGE_HEIGHT) / AbstractWaystoneList.ENTRY_HEIGHT);
+        return Math.min(availableFilters, BASE_GROUP_FILTER_COUNT + extraFilters);
+    }
+
+    private int getGroupFilterStartY() {
+        int y = HEADER_HEIGHT - 24;
+        if (allowReordering() || allowDeletion()) {
+            y += SIDE_BUTTON_HEIGHT + MARGIN;
+        }
+
+        return y + 5;
     }
 
     @Override
