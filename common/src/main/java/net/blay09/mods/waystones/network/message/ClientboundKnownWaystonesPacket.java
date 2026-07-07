@@ -17,13 +17,13 @@ import java.util.List;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record ClientboundKnownWaystonesPacket(Identifier waystoneType, List<UserDecoratedWaystone> waystones) implements CustomPacketPayload {
+public record ClientboundKnownWaystonesPacket(Identifier waystoneType, List<PersonalizedWaystoneImpl> waystones) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<ClientboundKnownWaystonesPacket> TYPE = new CustomPacketPayload.Type<>(id("known_waystones"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundKnownWaystonesPacket> STREAM_CODEC = StreamCodec.composite(
             Identifier.STREAM_CODEC,
             ClientboundKnownWaystonesPacket::waystoneType,
-            UserDecoratedWaystone.LIST_STREAM_CODEC,
+            PersonalizedWaystoneImpl.LIST_STREAM_CODEC,
             ClientboundKnownWaystonesPacket::waystones,
             ClientboundKnownWaystonesPacket::new
     );
