@@ -33,9 +33,9 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
 
     @Override
     protected AbstractWaystoneList<?> createWaystoneList() {
-        return new ManageWaystonesList(leftPos + (imageWidth - AbstractWaystoneList.ENTRY_WIDTH) / 2,
+        return new ManageWaystonesList(leftPos,
                 topPos + HEADER_HEIGHT,
-                AbstractWaystoneList.ENTRY_WIDTH,
+                imageWidth,
                 imageHeight - HEADER_HEIGHT - FOOTER_HEIGHT,
                 this);
     }

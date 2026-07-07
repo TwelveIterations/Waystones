@@ -120,9 +120,9 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     protected AbstractWaystoneList<?> createWaystoneList() {
-        return new WaystoneList(leftPos + (imageWidth - AbstractWaystoneList.ENTRY_WIDTH) / 2,
+        return new WaystoneList(leftPos,
                 topPos + HEADER_HEIGHT,
-                AbstractWaystoneList.ENTRY_WIDTH,
+                imageWidth,
                 imageHeight - HEADER_HEIGHT - FOOTER_HEIGHT,
                 menu);
     }
@@ -296,6 +296,11 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double x, double y, int button, double dragX, double dragY) {
+        return this.getFocused() != null && this.isDragging() && button == 0 && this.getFocused().mouseDragged(x, y, button, dragX, dragY);
     }
 
     @Override
