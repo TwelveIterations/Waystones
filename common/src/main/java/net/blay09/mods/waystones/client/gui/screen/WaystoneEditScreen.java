@@ -9,7 +9,6 @@ import net.blay09.mods.waystones.network.message.ServerboundRequestManageWayston
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -21,7 +20,7 @@ import java.util.Locale;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu> {
+public class WaystoneEditScreen extends WaystoneContainerScreen<WaystoneEditMenu> {
 
     private final Inventory playerInventory;
     private @Nullable EditBox nameField;
@@ -71,7 +70,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
                 _ -> {
                     saveWaystoneSettings();
                     final var personalizedWaystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(playerInventory.player, menu.getWaystone());
-                    Minecraft.getInstance().setScreen(new PersonalWaystoneSettingsScreen(menu, playerInventory, personalizedWaystone, this));
+                    openSiblingScreen(new PersonalWaystoneSettingsScreen(menu, playerInventory, personalizedWaystone, this));
                 },
                 aliasButtonLabel);
         aliasButton.setPosition(leftPos + 155, y);

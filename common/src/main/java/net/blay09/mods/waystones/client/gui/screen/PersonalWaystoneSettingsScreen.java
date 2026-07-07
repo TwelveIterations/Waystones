@@ -19,7 +19,6 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -36,7 +35,7 @@ import java.util.Set;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<AbstractContainerMenu> {
+public class PersonalWaystoneSettingsScreen extends WaystoneContainerScreen<AbstractContainerMenu> {
 
     private static final int MARGIN = 2;
     private static final int MANAGE_GROUPS_BUTTON_WIDTH = 20;
@@ -178,7 +177,7 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Abst
     @Override
     public void onClose() {
         savePersonalWaystoneSettings();
-        Minecraft.getInstance().setScreen(parent);
+        openSiblingScreen(parent);
     }
 
     private void savePersonalWaystoneSettings() {
@@ -242,7 +241,7 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Abst
 
     private void openManageGroupsScreen() {
         savePersonalWaystoneSettings();
-        Minecraft.getInstance().gui.setScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, this));
+        openSiblingScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, this));
     }
 
     private @Nullable WaystoneGroup getStillAvailableGroup(@Nullable WaystoneGroup group) {

@@ -22,7 +22,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -39,7 +38,7 @@ import java.util.List;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public abstract class WaystoneSelectionScreenBase extends AbstractContainerScreen<WaystoneSelectionMenu> {
+public abstract class WaystoneSelectionScreenBase extends WaystoneContainerScreen<WaystoneSelectionMenu> {
 
     private static final Identifier EDIT_ICON = id("widgets/edit");
 
@@ -191,7 +190,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     private void openManageScreen() {
-        Minecraft.getInstance().gui.setScreen(new ManageWaystonesScreen(menu, playerInventory, this));
+        openSiblingScreen(new ManageWaystonesScreen(menu, playerInventory, this));
     }
 
     protected void updateList() {
