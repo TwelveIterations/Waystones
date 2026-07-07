@@ -152,6 +152,11 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Abstract
     }
 
     @Override
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+        return this.getFocused() != null && this.isDragging() && event.button() == 0 && this.getFocused().mouseDragged(event, dragX, dragY);
+    }
+
+    @Override
     protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         Waystone fromWaystone = getWaystoneFrom();
         final int locationHeaderY = 20;
