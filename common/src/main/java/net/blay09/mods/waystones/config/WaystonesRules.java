@@ -207,6 +207,9 @@ public class WaystonesRules {
         it.registerSimpleEffect(id("is_warp_scroll"), context
                 -> context.itemStack().is(ModItemTags.WARP_SCROLLS));
 
+        it.registerSimpleEffect(id("is_portal_scroll"), context
+                -> context.itemStack().is(ModItemTags.PORTAL_SCROLLS));
+
         it.registerSimpleEffect(id("is_warp_stone"), context
                 -> context.itemStack().is(ModItemTags.WARP_STONES));
 
@@ -236,6 +239,21 @@ public class WaystonesRules {
 
         it.registerSimpleEffect(id("is_with_leashed"), context
                 -> !WaystoneTeleportManager.findLeashedAnimals(context.entity()).isEmpty());
+
+        it.registerSimpleEffect(id("is_warp_portal"), context
+                -> WaystoneRuleContext.getEffectiveWaystone(context)
+                .filter(waystone -> waystone.getWaystoneKind().equals(WaystoneKinds.WARP_PORTAL))
+                .isPresent());
+
+        it.registerSimpleEffect(id("is_fleeting_memorial"), context
+                -> WaystoneRuleContext.getEffectiveWaystone(context)
+                .filter(waystone -> waystone.getWaystoneKind().equals(WaystoneKinds.FLEETING_MEMORIAL))
+                .isPresent());
+
+        it.registerSimpleEffect(id("is_player"), context
+                -> WaystoneRuleContext.getEffectiveWaystone(context)
+                .filter(waystone -> waystone.getWaystoneKind().equals(WaystoneKinds.TWINBOUND_FEATHER))
+                .isPresent());
 
         for (final var sharestoneType : WaystoneKinds.SHARESTONES) {
             final Identifier sharestoneIdentifier = id("is_" + sharestoneType.getPath());
