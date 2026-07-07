@@ -15,10 +15,12 @@ public abstract class AbstractWaystoneList<E extends AbstractWaystoneList.Entry<
 
     public static final int ENTRY_WIDTH = 220;
     public static final int ENTRY_HEIGHT = 22;
+    private static final int SCROLLBAR_PADDING = 8;
+    private static final int SCROLLBAR_WIDTH = 6;
 
     protected AbstractWaystoneList(int x, int y, int width, int height) {
-        super(Minecraft.getInstance(), width, height, y, ENTRY_HEIGHT);
-        setX(x);
+        super(Minecraft.getInstance(), ENTRY_WIDTH + SCROLLBAR_PADDING + SCROLLBAR_WIDTH, height, y, ENTRY_HEIGHT);
+        setX(x + (width - ENTRY_WIDTH) / 2);
     }
 
     public void setWaystones(List<? extends Waystone> waystones) {
@@ -34,6 +36,11 @@ public abstract class AbstractWaystoneList<E extends AbstractWaystoneList.Entry<
     @Override
     public int getRowWidth() {
         return ENTRY_WIDTH;
+    }
+
+    @Override
+    public int getRowLeft() {
+        return getX();
     }
 
     @Override
