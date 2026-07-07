@@ -1,26 +1,17 @@
 package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.balm.Balm;
-import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
 import net.blay09.mods.waystones.config.WaystonesRules;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpPortalManager;
 import net.blay09.mods.waystones.menu.ModMenus;
-import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
+import net.blay09.mods.waystones.menu.WaystoneSelectionListBuilder;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
-import java.util.Collections;
 
 public class PortalScrollItem extends ScrollItemBase implements IResetUseOnDamage {
 
@@ -46,37 +37,17 @@ public class PortalScrollItem extends ScrollItemBase implements IResetUseOnDamag
                 return itemStack;
             }
 
-            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForPlayer(player));
-            PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            Balm.networking().openMenu(player, new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
-                @Override
-                public Component getDisplayName() {
-                    return Component.translatable("container.waystones.waystone_selection");
-                }
-
-                @Override
-                public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-                    return new WaystoneSelectionMenu(ModMenus.portalScrollSelection.value(), null, windowId, waystones, Collections.emptyMap(), Collections.emptySet())
-                            .withWarpItem(itemStack)
-                            .setPostTeleportHandler(context -> {
-                                if (WarpPortalManager.spawnPortal((ServerPlayer) inventory.player, context.getTargetWaystone())) {
-                                    itemStack.consume(1, inventory.player);
-                                } else {
-                                    inventory.player.sendSystemMessage(Component.translatable("chat.waystones.warp_portal_no_space").withStyle(ChatFormatting.DARK_RED));
-                                }
-                            });
-                }
-
-                @Override
-                public ModMenus.ItemInitiatedWaystoneMenuData getScreenOpeningData(ServerPlayer serverPlayer) {
-                    return new ModMenus.ItemInitiatedWaystoneMenuData(waystones, itemStack, Collections.emptyMap());
-                }
-
-                @Override
-                public StreamCodec<RegistryFriendlyByteBuf, ModMenus.ItemInitiatedWaystoneMenuData> getScreenStreamCodec() {
-                    return ModMenus.ItemInitiatedWaystoneMenuData.STREAM_CODEC;
-                }
-            });
+            Balm.networking().openMenu(player, new WaystoneSelectionListBuilder(player)
+                    .withTargetsForPlayer()
+                    .withWarpItem(itemStack)
+                    .withPostTeleportHandler(context -> {
+                        if (WarpPortalManager.spawnPortal(player, context.getTargetWaystone())) {
+                            itemStack.consume(1, player);
+                        } else {
+                            player.sendSystemMessage(Component.translatable("chat.waystones.warp_portal_no_space").withStyle(ChatFormatting.DARK_RED));
+                        }
+                    })
+                    .buildMenuProvider(ModMenus.portalScrollSelection.value(), Component.translatable("container.waystones.waystone_selection")));
         }
 
         return itemStack;

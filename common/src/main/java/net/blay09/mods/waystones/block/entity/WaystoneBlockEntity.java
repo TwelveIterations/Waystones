@@ -1,24 +1,16 @@
 package net.blay09.mods.waystones.block.entity;
 
-import net.blay09.mods.balm.world.BalmMenuProvider;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.menu.ModMenus;
-import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.api.WaystoneKinds;
+import net.blay09.mods.waystones.menu.ModMenus;
+import net.blay09.mods.waystones.menu.WaystoneSelectionListBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.Collections;
 import java.util.Optional;
 
 public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
@@ -43,31 +35,9 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
 
     @Override
     public Optional<MenuProvider> getSelectionMenuProvider(ServerPlayer player) {
-        final var fromWaystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone());
-        final var waystones =  PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone()));
-        PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-        return Optional.of(new BalmMenuProvider<WaystoneSelectionMenu.Data>() {
-            @Override
-            public Component getDisplayName() {
-                return Component.translatable("container.waystones.waystone_selection");
-            }
-
-            @Override
-            public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.value(), fromWaystone, windowId, waystones, Collections.emptyMap(), Collections.emptySet());
-            }
-
-            @Override
-            public WaystoneSelectionMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                final var warpRequirements = WaystoneSelectionMenu.buildWarpRequirements(serverPlayer, fromWaystone, waystones, Collections.emptySet());
-                return new WaystoneSelectionMenu.Data(fromWaystone, waystones, warpRequirements);
-            }
-
-            @Override
-            public StreamCodec<RegistryFriendlyByteBuf, WaystoneSelectionMenu.Data> getScreenStreamCodec() {
-                return WaystoneSelectionMenu.STREAM_CODEC;
-            }
-        });
+        return Optional.of(new WaystoneSelectionListBuilder(player)
+                .withTargetsForWaystone(getWaystone())
+                .buildMenuProvider(ModMenus.waystoneSelection.value(), Component.translatable("container.waystones.waystone_selection")));
     }
 
     @Override
