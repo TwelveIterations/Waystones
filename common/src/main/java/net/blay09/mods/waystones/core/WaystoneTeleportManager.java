@@ -18,6 +18,7 @@ import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.network.message.ClientboundTeleportEffectPacket;
+import net.blay09.mods.waystones.requirement.RequirementComponentResolvers;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -412,9 +413,10 @@ public class WaystoneTeleportManager {
                         contextImpl.invalidateRequirements();
                     }
 
-                    if (context.getRequirements().right().isPresent()) {
-                        Waystones.logger.info("Failed to teleport due to missing requirements: {}", context.getRequirements().right().get());
-                        return WaystoneTeleportResult.failed(new WaystoneTeleportError.RequirementsNotMet());
+                    final var missingRequirements = context.getRequirements().right();
+                    if (missingRequirements.isPresent()) {
+                        Waystones.logger.info("Failed to teleport due to missing requirements: {}", missingRequirements.get());
+                        return WaystoneTeleportResult.failed(requirementsNotMet(missingRequirements.get()));
                     }
 
                     if (context.executor() instanceof DeferredEffectExecutor executor) {
@@ -537,12 +539,17 @@ public class WaystoneTeleportManager {
             }
         }
 
-        if (context.getRequirements().right().isPresent()) {
-            Waystones.logger.info("Failed to teleport due to missing requirements: {}", context.getRequirements().right().get());
-            return Either.right(new WaystoneTeleportError.RequirementsNotMet());
+        final var missingRequirements = context.getRequirements().right();
+        if (missingRequirements.isPresent()) {
+            Waystones.logger.info("Failed to teleport due to missing requirements: {}", missingRequirements.get());
+            return Either.right(requirementsNotMet(missingRequirements.get()));
         }
 
         return Either.left(null);
+    }
+
+    private static WaystoneTeleportError.RequirementsNotMet requirementsNotMet(List<Object> missingRequirements) {
+        return new WaystoneTeleportError.RequirementsNotMet(RequirementComponentResolvers.resolveOrDefault(missingRequirements));
     }
 
     private static boolean isPendingEntityStillValid(Entity entity, Level expectedLevel) {
