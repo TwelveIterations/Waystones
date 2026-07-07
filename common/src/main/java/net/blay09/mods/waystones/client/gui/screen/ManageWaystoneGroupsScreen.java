@@ -22,7 +22,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -37,7 +36,7 @@ import java.util.*;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<AbstractContainerMenu> {
+public class ManageWaystoneGroupsScreen extends WaystoneContainerScreen<AbstractContainerMenu> {
 
     private static final Identifier EDIT_ICON = id("widgets/edit");
 
@@ -224,17 +223,17 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Abstract
     }
 
     private void returnToManageWaystones() {
-        Minecraft.getInstance().setScreen(parent);
+        openSiblingScreen(parent);
     }
 
     private void createGroup() {
         final var initialName = searchText;
         final var groupId = id("user/" + UUID.randomUUID());
-        Minecraft.getInstance().setScreen(new WaystoneGroupEditScreen(menu, playerInventory, this, groupId, initialName));
+        openSiblingScreen(new WaystoneGroupEditScreen(menu, playerInventory, this, groupId, initialName));
     }
 
     public void editGroup(WaystoneGroup group) {
-        Minecraft.getInstance().setScreen(new WaystoneGroupEditScreen(menu, playerInventory, this, group.identifier(), group.name().getString()));
+        openSiblingScreen(new WaystoneGroupEditScreen(menu, playerInventory, this, group.identifier(), group.name().getString()));
     }
 
     public void deleteGroup(WaystoneGroup group) {
@@ -313,7 +312,7 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Abstract
     }
 
     void returnFromEdit() {
-        Minecraft.getInstance().setScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, parent));
+        openSiblingScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, parent));
     }
 
     private @Nullable Waystone getWaystoneFrom() {

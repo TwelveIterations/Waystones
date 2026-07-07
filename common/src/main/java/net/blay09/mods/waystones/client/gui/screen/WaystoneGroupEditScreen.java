@@ -14,7 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -25,7 +24,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 
-public class WaystoneGroupEditScreen extends AbstractContainerScreen<AbstractContainerMenu> {
+public class WaystoneGroupEditScreen extends WaystoneContainerScreen<AbstractContainerMenu> {
 
     private final ManageWaystoneGroupsScreen parent;
     private final Inventory playerInventory;
@@ -125,6 +124,7 @@ public class WaystoneGroupEditScreen extends AbstractContainerScreen<AbstractCon
     @Override
     public void onClose() {
         saveGroup();
+        suppressNextContainerClose();
         parent.returnFromEdit();
     }
 

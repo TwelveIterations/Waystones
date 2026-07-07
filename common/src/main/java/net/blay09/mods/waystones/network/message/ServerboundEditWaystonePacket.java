@@ -66,8 +66,6 @@ public record ServerboundEditWaystonePacket(UUID waystoneUid, String name, Wayst
         WaystoneIndexManager.visibilityChanged(server, backingWaystone, previousVisibility);
         SavedDataWaystonesStore.get(server).setDirty();
         WaystoneSyncManager.sendWaystoneUpdateToAll(server, backingWaystone);
-
-        player.closeContainer();
     }
 
     private static Component makeNameLegal(MinecraftServer server, String input) {
