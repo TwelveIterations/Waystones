@@ -24,7 +24,8 @@ public class TwinboundFeatherWaystone extends WaystoneImpl {
 
     @Override
     public boolean isValidInLevel(ServerLevel level) {
-        return true;
+        final var targetPlayer = level.getServer().getPlayerList().getPlayer(getWaystoneUid());
+        return targetPlayer != null && targetPlayer.isAlive() && !targetPlayer.isRemoved() && targetPlayer.level() == level;
     }
 
     @Override
