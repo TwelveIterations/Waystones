@@ -1,25 +1,15 @@
 package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.balm.Balm;
-import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
 import net.blay09.mods.waystones.config.WaystonesRules;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
-import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.blay09.mods.waystones.menu.WaystoneSelectionListBuilder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage {
 
@@ -36,34 +26,11 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
     public ItemStack finishUsingItem(ItemStack itemStack, Level world, LivingEntity entity) {
         if (!world.isClientSide() && entity instanceof ServerPlayer player) {
             final var hand = player.getUsedItemHand();
-            final var waystones = PlayerWaystoneManager.getPlayerDecoratedWaystones(player, PlayerWaystoneManager.getTargetsForItem(player, itemStack));
-            PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            Balm.networking().openMenu(player, new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
-                @Override
-                public Component getDisplayName() {
-                    return Component.translatable("container.waystones.waystone_selection");
-                }
-
-                @Override
-                public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-                    return new WaystoneSelectionMenu(ModMenus.warpScrollSelection.value(), null, windowId, waystones, Collections.emptyMap(), Collections.emptySet())
-                            .withWarpItem(itemStack)
-                            .withHand(hand)
-                            .setPostTeleportHandler(context -> itemStack.consume(1, inventory.player));
-                }
-
-
-                @Override
-                public ModMenus.ItemInitiatedWaystoneMenuData getScreenOpeningData(ServerPlayer serverPlayer) {
-                    final var warpRequirements = WaystoneSelectionMenu.buildWarpRequirements(serverPlayer, null, waystones, Collections.emptySet(), itemStack, hand);
-                    return new ModMenus.ItemInitiatedWaystoneMenuData(waystones, itemStack, warpRequirements);
-                }
-
-                @Override
-                public StreamCodec<RegistryFriendlyByteBuf, ModMenus.ItemInitiatedWaystoneMenuData> getScreenStreamCodec() {
-                    return ModMenus.ItemInitiatedWaystoneMenuData.STREAM_CODEC;
-                }
-            });
+            Balm.networking().openMenu(player, new WaystoneSelectionListBuilder(player)
+                    .withTargetsForItem(itemStack)
+                    .withHand(hand)
+                    .withPostTeleportHandler(context -> itemStack.consume(1, player))
+                    .buildMenuProvider(ModMenus.warpScrollSelection.value(), Component.translatable("container.waystones.waystone_selection")));
         }
         return itemStack;
     }
