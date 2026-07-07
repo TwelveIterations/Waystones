@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.component.BoundScrollComponent;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.core.WaystoneProxy;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -44,7 +45,10 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
                         it.setWarpHand(hand);
                     })
                     .ifLeft(context -> WaystonesAPI.tryTeleportAsync(context)
-                            .thenAccept(result -> result.ifLeft(_ -> stack.consume(1, player))))
+                            .thenAccept(result -> result
+                                    .ifLeft(_ -> stack.consume(1, player))
+                                    .ifRight(error -> player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED)))))
+                    .ifRight(error -> player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED)))
             );
         }
 
