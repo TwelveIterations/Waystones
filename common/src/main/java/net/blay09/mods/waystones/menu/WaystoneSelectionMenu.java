@@ -7,7 +7,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.config.rules.WaystonesEffectExecutors;
-import net.blay09.mods.waystones.core.UserDecoratedWaystone;
+import net.blay09.mods.waystones.core.PersonalizedWaystoneImpl;
 import net.blay09.mods.waystones.core.WaystoneTeleportContextImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
@@ -44,9 +44,9 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
             WARP_REQUIREMENT_STREAM_CODEC
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.optional(UserDecoratedWaystone.DOWNGRADED_STREAM_CODEC),
+            ByteBufCodecs.optional(PersonalizedWaystoneImpl.DOWNGRADED_STREAM_CODEC),
             Data::fromWaystone,
-            ByteBufCodecs.collection(ArrayList::new, UserDecoratedWaystone.DOWNGRADED_STREAM_CODEC),
+            ByteBufCodecs.collection(ArrayList::new, PersonalizedWaystoneImpl.DOWNGRADED_STREAM_CODEC),
             Data::waystones,
             WARP_REQUIREMENTS_STREAM_CODEC,
             Data::warpRequirements,

@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.UserDecoratedWaystone;
+import net.blay09.mods.waystones.core.PersonalizedWaystoneImpl;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -48,7 +48,7 @@ public record ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, Option
         PlayerWaystoneManager.setConfiguredWaystoneGroups(player, resolvedWaystone.getWaystoneUid(), message.groupIds);
         WaystoneSyncManager.sendActivatedWaystones(player);
         if (resolvedWaystone.isTransient()) {
-            Balm.networking().sendTo(player, new ClientboundUpdateWaystonePacket(new UserDecoratedWaystone(resolvedWaystone, message.alias.orElse(null), message.groupIds)));
+            Balm.networking().sendTo(player, new ClientboundUpdateWaystonePacket(new PersonalizedWaystoneImpl(resolvedWaystone, message.alias.orElse(null), message.groupIds)));
         }
     }
 

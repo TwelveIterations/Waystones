@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.menu;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.UserDecoratedWaystone;
+import net.blay09.mods.waystones.core.PersonalizedWaystoneImpl;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -20,16 +20,16 @@ import java.util.Set;
 
 public class PersonalWaystoneSettingsMenu extends AbstractContainerMenu {
 
-    private final UserDecoratedWaystone waystone;
+    private final PersonalizedWaystoneImpl waystone;
 
-    public PersonalWaystoneSettingsMenu(int windowId, UserDecoratedWaystone waystone) {
+    public PersonalWaystoneSettingsMenu(int windowId, PersonalizedWaystoneImpl waystone) {
         super(ModMenus.personalWaystoneSettings.value(), windowId);
         this.waystone = waystone;
     }
 
     public static MenuProvider getProvider(Player player, Waystone waystone) {
         final var decoratedWaystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, waystone);
-        return new BalmMenuProvider<UserDecoratedWaystone>() {
+        return new BalmMenuProvider<PersonalizedWaystoneImpl>() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable("container.waystones.personal_waystone_settings", waystone.getName());
@@ -41,13 +41,13 @@ public class PersonalWaystoneSettingsMenu extends AbstractContainerMenu {
             }
 
             @Override
-            public UserDecoratedWaystone getScreenOpeningData(ServerPlayer serverPlayer) {
+            public PersonalizedWaystoneImpl getScreenOpeningData(ServerPlayer serverPlayer) {
                 return decoratedWaystone;
             }
 
             @Override
-            public StreamCodec<RegistryFriendlyByteBuf, UserDecoratedWaystone> getScreenStreamCodec() {
-                return UserDecoratedWaystone.STREAM_CODEC;
+            public StreamCodec<RegistryFriendlyByteBuf, PersonalizedWaystoneImpl> getScreenStreamCodec() {
+                return PersonalizedWaystoneImpl.STREAM_CODEC;
             }
         };
     }

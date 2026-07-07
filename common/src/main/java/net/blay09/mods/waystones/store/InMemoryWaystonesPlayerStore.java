@@ -5,7 +5,7 @@ import com.google.common.collect.SetMultimap;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneGroup;
 import net.blay09.mods.waystones.api.WaystoneGroups;
-import net.blay09.mods.waystones.core.UserDecoratedWaystone;
+import net.blay09.mods.waystones.core.PersonalizedWaystoneImpl;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -171,9 +171,9 @@ public class InMemoryWaystonesPlayerStore implements WaystonesPlayerStore {
         waystoneToConfiguredGroups.clear();
         for (final var waystone : waystones) {
             this.waystones.put(waystone.getWaystoneUid(), waystone);
-            if (waystone instanceof UserDecoratedWaystone userDecoratedWaystone) {
-                userDecoratedWaystone.getAlias().ifPresent(alias -> setWaystoneAlias(player, waystone.getWaystoneUid(), alias));
-                setConfiguredWaystoneGroups(player, userDecoratedWaystone.getWaystoneUid(), userDecoratedWaystone.getConfiguredGroups());
+            if (waystone instanceof PersonalizedWaystoneImpl personalizedWaystone) {
+                personalizedWaystone.getAlias().ifPresent(alias -> setWaystoneAlias(player, waystone.getWaystoneUid(), alias));
+                setConfiguredWaystoneGroups(player, personalizedWaystone.getWaystoneUid(), personalizedWaystone.getConfiguredGroups());
             }
         }
     }

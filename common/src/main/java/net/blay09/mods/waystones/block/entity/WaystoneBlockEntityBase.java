@@ -334,7 +334,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
     public Optional<MenuProvider> getModifierMenuProvider(ServerPlayer player) {
         final var waystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone());
-        return Optional.of(new BalmMenuProvider<UserDecoratedWaystone>() {
+        return Optional.of(new BalmMenuProvider<PersonalizedWaystoneImpl>() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable("container.waystones.waystone_modifiers");
@@ -346,13 +346,13 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
             }
 
             @Override
-            public UserDecoratedWaystone getScreenOpeningData(ServerPlayer serverPlayer) {
+            public PersonalizedWaystoneImpl getScreenOpeningData(ServerPlayer serverPlayer) {
                 return waystone;
             }
 
             @Override
-            public StreamCodec<RegistryFriendlyByteBuf, UserDecoratedWaystone> getScreenStreamCodec() {
-                return UserDecoratedWaystone.STREAM_CODEC;
+            public StreamCodec<RegistryFriendlyByteBuf, PersonalizedWaystoneImpl> getScreenStreamCodec() {
+                return PersonalizedWaystoneImpl.STREAM_CODEC;
             }
         });
     }
