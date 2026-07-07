@@ -39,6 +39,14 @@ public class ConfigMigration {
             "is_warp_stone -> damage_item(80)",
             "is_inventory_button -> cooldown_cost('inventory_button', '300s')");
 
+    private static final List<String> PRE_WARP_SETTINGS_DEFAULT = List.of(
+            "$uses_xp #= any(source(is_waystone), source(is_warp_stone))",
+            "$uses_xp -> $xp_points_cost = $distance * 0.01",
+            "$uses_xp + is_interdimensional -> $xp_points_cost = 27",
+            "$uses_xp -> $xp_points_cost = clamp($xp_points_cost, 0, 27)",
+            "is_warp_stone -> damage_item(80)",
+            "is_inventory_button -> cooldown_cost('inventory_button', '300s')");
+
     public static boolean migrateWarpRequirementsDefault(WaystonesConfig config) {
         if (needsWarpRequirementsDefaultMigration(config)) {
             config.rules.warpRequirements = WaystonesConfig.DEFAULT_WARP_REQUIREMENTS;
@@ -52,6 +60,7 @@ public class ConfigMigration {
         return LEGACY_WARP_REQUIREMENTS_DEFAULT.equals(config.rules.warpRequirements)
                 || INITIAL_SHOGI_WARP_REQUIREMENTS_DEFAULT.equals(config.rules.warpRequirements)
                 || CONTEXTUAL_SHOGI_WARP_REQUIREMENTS_DEFAULT.equals(config.rules.warpRequirements)
-                || SIMPLE_WARP_REQUIREMENTS_DEFAULT.equals(config.rules.warpRequirements);
+                || SIMPLE_WARP_REQUIREMENTS_DEFAULT.equals(config.rules.warpRequirements)
+                || PRE_WARP_SETTINGS_DEFAULT.equals(config.rules.warpRequirements);
     }
 }
