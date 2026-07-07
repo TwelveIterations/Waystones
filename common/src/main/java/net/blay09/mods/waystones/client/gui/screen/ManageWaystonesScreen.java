@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.api.MutablePersonalizedWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
@@ -86,7 +85,7 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
 
     public void openPersonalWaystoneSettings(Waystone waystone) {
         final var personalizedWaystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(playerInventory.player, waystone);
-        Minecraft.getInstance().setScreen(new PersonalWaystoneSettingsScreen(menu, playerInventory, personalizedWaystone, this));
+        openSiblingScreen(new PersonalWaystoneSettingsScreen(menu, playerInventory, personalizedWaystone, this));
     }
 
     public void reorderWaystone(Waystone waystone, Waystone otherWaystone) {
@@ -141,7 +140,7 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
 
         final var manageGroupsButton = new ManageWaystoneGroupsButton(leftPos - 8,
                 topPos + HEADER_HEIGHT,
-                button -> Minecraft.getInstance().setScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, this)));
+                button -> openSiblingScreen(new ManageWaystoneGroupsScreen(menu, playerInventory, this)));
         addRenderableWidget(manageGroupsButton);
     }
 
@@ -156,6 +155,6 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
     }
 
     private void returnToSelection() {
-        Minecraft.getInstance().setScreen(parent);
+        openSiblingScreen(parent);
     }
 }

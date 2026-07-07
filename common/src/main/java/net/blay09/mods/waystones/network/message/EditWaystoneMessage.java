@@ -79,8 +79,6 @@ public class EditWaystoneMessage implements CustomPacketPayload {
 
         WaystoneManagerImpl.get(player.server).setDirty();
         WaystoneSyncManager.sendWaystoneUpdateToAll(player.server, backingWaystone);
-
-        player.closeContainer();
     }
 
     private static Component makeNameLegal(MinecraftServer server, String input) {

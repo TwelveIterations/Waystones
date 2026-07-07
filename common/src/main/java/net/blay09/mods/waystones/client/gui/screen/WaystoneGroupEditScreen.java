@@ -13,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,7 +22,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 
-public class WaystoneGroupEditScreen extends AbstractContainerScreen<AbstractContainerMenu> {
+public class WaystoneGroupEditScreen extends WaystoneContainerScreen<AbstractContainerMenu> {
 
     private final ManageWaystoneGroupsScreen parent;
     private final Inventory playerInventory;
@@ -129,6 +128,7 @@ public class WaystoneGroupEditScreen extends AbstractContainerScreen<AbstractCon
     @Override
     public void onClose() {
         saveGroup();
+        suppressNextContainerClose();
         parent.returnFromEdit();
     }
 
