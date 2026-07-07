@@ -413,6 +413,7 @@ public class WaystoneTeleportManager {
                     }
 
                     if (context.getRequirements().right().isPresent()) {
+                        Waystones.logger.info("Failed to teleport due to missing requirements: {}", context.getRequirements().right().get());
                         return WaystoneTeleportResult.failed(new WaystoneTeleportError.RequirementsNotMet());
                     }
 
@@ -537,6 +538,7 @@ public class WaystoneTeleportManager {
         }
 
         if (context.getRequirements().right().isPresent()) {
+            Waystones.logger.info("Failed to teleport due to missing requirements: {}", context.getRequirements().right().get());
             return Either.right(new WaystoneTeleportError.RequirementsNotMet());
         }
 
