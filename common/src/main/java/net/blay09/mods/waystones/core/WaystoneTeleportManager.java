@@ -4,12 +4,16 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.shogi.context.executor.DeferredEffectExecutor;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.EntityTeleportResult;
 import net.blay09.mods.waystones.api.TeleportDestination;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
+import net.blay09.mods.waystones.api.WaystoneTeleportResult;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEntityEvent;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
+import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesRules;
@@ -36,7 +40,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 public class WaystoneTeleportManager {
 
@@ -57,23 +60,32 @@ public class WaystoneTeleportManager {
         );
     }
 
-    public static Either<List<Entity>, WaystoneTeleportError> doTeleport(WaystoneTeleportContext context) {
+    public static WaystoneTeleportResult teleport(WaystoneTeleportContext context) {
         final var server = context.getEntity().level().getServer();
         if (server == null) {
-            return Either.right(new WaystoneTeleportError.NotOnServer());
+            throw new IllegalStateException("must only be called with a server-side entity");
         }
 
-        return resolveDestination(server, context.getTargetWaystone()).flatMap(it -> doTeleport(context, it));
+        final var result = resolveDestination(server, context.getTargetWaystone())
+                .map(destination -> performTeleport(context, destination), WaystoneTeleportResult::failed);
+        WaystoneTeleportEvent.Complete.EVENT.invoker().accept(new WaystoneTeleportEvent.Complete(context,
+                result.primaryResult().orElse(null),
+                result.additionalResults(),
+                result.teleportError().orElse(null)));
+        return result;
     }
 
-    public static CompletableFuture<Either<List<Entity>, WaystoneTeleportError>> forceTeleportAsync(WaystoneTeleportContext context) {
-        try {
-            return prepareTeleport(context, true)
-                    .thenApply(result -> result.flatMap(destination -> doTeleport(context, destination)))
-                    .exceptionally(WaystoneTeleportManager::handleUnexpectedAsyncFailure);
-        } catch (Exception e) {
-            return CompletableFuture.completedFuture(unexpectedFailure(e));
-        }
+    public static CompletableFuture<WaystoneTeleportResult> forceTeleportAsync(WaystoneTeleportContext context) {
+        return prepareTeleport(context, true)
+                .thenApply(result -> result.map(destination -> performTeleport(context, destination), WaystoneTeleportResult::failed))
+                .thenApply(result -> {
+                    WaystoneTeleportEvent.Complete.EVENT.invoker().accept(new WaystoneTeleportEvent.Complete(context,
+                            result.primaryResult().orElse(null),
+                            result.additionalResults(),
+                            result.teleportError().orElse(null)));
+                    return result;
+                })
+                .whenComplete((result, throwable) -> crashOnUnexpectedAsyncFailure(context, throwable));
     }
 
     private static CompletableFuture<Either<TeleportDestination, WaystoneTeleportError>> prepareTeleport(WaystoneTeleportContext context, boolean forced) {
@@ -81,7 +93,7 @@ public class WaystoneTeleportManager {
         final var sourceLevel = entity.level();
         final var server = sourceLevel.getServer();
         if (server == null) {
-            return CompletableFuture.completedFuture(Either.right(new WaystoneTeleportError.NotOnServer()));
+            throw new IllegalStateException("must only be called with a server-side entity");
         }
 
         return loadDestinationChunksAsync(server, context)
@@ -134,12 +146,14 @@ public class WaystoneTeleportManager {
         return Either.left(null);
     }
 
-    public static Either<List<Entity>, WaystoneTeleportError> doTeleport(WaystoneTeleportContext context, TeleportDestination destination) {
+    private static WaystoneTeleportResult performTeleport(WaystoneTeleportContext context, TeleportDestination destination) {
+        final var result = new WaystoneTeleportResult(new ArrayList<>());
         final var sourceLevel = (ServerLevel) context.getEntity().level();
-        List<Entity> teleportedEntities = teleportEntityAndAttached(context.getEntity(), context, destination);
+        teleportEntityAndAttached(context.getEntity(), context, destination, result);
         context.getAdditionalEntities()
-                .forEach(additionalEntity -> teleportedEntities.addAll(teleportEntityAndAttached(additionalEntity, context, destination)));
+                .forEach(additionalEntity -> teleportEntityAndAttached(additionalEntity, context, destination, result));
 
+        final var teleportedEntities = result.teleportedEntities();
         final var sourcePos = context.getEntity().blockPosition();
         final var targetLevel = (ServerLevel) destination.level();
         final var targetPos = BlockPos.containing(destination.location());
@@ -164,57 +178,68 @@ public class WaystoneTeleportManager {
             WaystonesRules.afterWarpEffects.getOrDefault(nestedContext);
         });
 
-        return Either.left(teleportedEntities);
+        return result;
     }
 
-    private static List<Entity> teleportEntityAndAttached(Entity entity, WaystoneTeleportContext context, TeleportDestination destination) {
-        final var teleportedEntities = new ArrayList<Entity>();
-
+    private static void teleportEntityAndAttached(Entity entity, WaystoneTeleportContext context, TeleportDestination destination, WaystoneTeleportResult result) {
         final var mount = entity.getVehicle();
         Entity teleportedMount = null;
         if (mount != null) {
-            final var teleportedMountOptional = teleportEntity(context, mount, destination);
-            if (teleportedMountOptional.isPresent()) {
-                teleportedMount = teleportedMountOptional.get();
-                teleportedEntities.add(teleportedMount);
+            final var teleportedMountResult = teleportEntity(context, mount, destination);
+            if (teleportedMountResult.isSuccessful()) {
+                teleportedMount = teleportedMountResult.entity();
             }
+            result.addAdditionalResult(teleportedMountResult);
         }
 
         final List<Mob> leashedEntities = context.getLeashedEntities();
         final List<Entity> teleportedLeashedEntities = new ArrayList<>();
         leashedEntities.forEach(leashedEntity -> {
-            teleportEntity(context, leashedEntity, destination).ifPresent(teleportedLeashedEntity -> {
-                teleportedEntities.add(teleportedLeashedEntity);
-                teleportedLeashedEntities.add(teleportedLeashedEntity);
-            });
+            final var teleportedLeashedEntity = teleportEntity(context, leashedEntity, destination);
+            result.addAdditionalResult(teleportedLeashedEntity);
+            if (teleportedLeashedEntity.isSuccessful()) {
+                teleportedLeashedEntities.add(teleportedLeashedEntity.entity());
+            }
         });
 
-        final var teleportedEntityOptional = teleportEntity(context, entity, destination);
-        teleportedEntityOptional.ifPresent(teleportedEntities::add);
+        final var teleportedEntity = teleportEntity(context, entity, destination);
+        if (entity == context.getEntity()) {
+            result.setPrimaryResult(teleportedEntity);
+        } else {
+            result.addAdditionalResult(teleportedEntity);
+        }
 
         // We have to update the leashedToEntity in case the player was cloned during dimensional teleport
-        teleportedEntityOptional.ifPresent(teleportedEntity -> teleportedLeashedEntities.forEach(teleportedLeashedEntity -> {
-            if (teleportedLeashedEntity instanceof Mob teleportedLeashedMob) {
-                teleportedLeashedMob.setLeashedTo(teleportedEntity, true);
-            }
-        }));
+        if (teleportedEntity.isSuccessful()) {
+            teleportedLeashedEntities.forEach(teleportedLeashedEntity -> {
+                if (teleportedLeashedEntity instanceof Mob teleportedLeashedMob) {
+                    teleportedLeashedMob.setLeashedTo(teleportedEntity.entity(), true);
+                }
+            });
+        }
 
         if (teleportedMount != null) {
             // TODO We do not remount currently. It causes weird sync issues and it seems that Vanilla does not do it either.
             //      Would have to look further at what point it's safe to remount without triggering movement correction.
         }
-
-        return teleportedEntities;
     }
 
-    private static Optional<Entity> teleportEntity(WaystoneTeleportContext context, Entity entity, TeleportDestination destination) {
+    private static EntityTeleportResult teleportEntity(WaystoneTeleportContext context, Entity entity, TeleportDestination destination) {
         ServerLevel targetLevel = (ServerLevel) destination.level();
         Vec3 targetPosition = destination.location();
         Direction direction = destination.direction();
         final var event = new WaystoneTeleportEntityEvent.Pre(context, entity, destination, targetLevel, targetPosition, direction);
         WaystoneTeleportEntityEvent.Pre.EVENT.invoker().accept(event);
+        final var result = event.getOverrideResult();
+        if (result.isPresent()) {
+            WaystoneTeleportEntityEvent.Post.EVENT.invoker().accept(new WaystoneTeleportEntityEvent.Post(context, entity, result.get(), destination, event.getTargetLevel(), event.getTargetPosition(), event.getDirection()));
+            return result.get();
+        }
+
         if (event.isCanceled()) {
-            return Optional.empty();
+            final var cancelResult = EntityTeleportResult.failed(entity, destination, new WaystoneTeleportError.CancelledByEvent());
+            WaystoneTeleportEntityEvent.Post.EVENT.invoker().accept(new WaystoneTeleportEntityEvent.Post(context, entity, cancelResult, destination, event.getTargetLevel(), event.getTargetPosition(), event.getDirection()));
+            return cancelResult;
         }
 
         final var originalEntity = entity;
@@ -250,7 +275,9 @@ public class WaystoneTeleportManager {
                 Entity oldEntity = entity;
                 entity = entity.getType().create(targetLevel, EntitySpawnReason.DIMENSION_TRAVEL);
                 if (entity == null) {
-                    return Optional.of(oldEntity);
+                    final var failedResult = EntityTeleportResult.failed(oldEntity, destination, new WaystoneTeleportError.TeleportFailed());
+                    WaystoneTeleportEntityEvent.Post.EVENT.invoker().accept(new WaystoneTeleportEntityEvent.Post(context, originalEntity, failedResult, destination, targetLevel, targetPosition, direction));
+                    return failedResult;
                 }
 
                 entity.restoreFrom(oldEntity);
@@ -272,9 +299,50 @@ public class WaystoneTeleportManager {
 
         sendHackySyncPacketsAfterTeleport(entity);
 
-        WaystoneTeleportEntityEvent.Post.EVENT.invoker().accept(new WaystoneTeleportEntityEvent.Post(context, originalEntity, entity, destination, targetLevel, targetPosition, direction));
+        final var teleportResult = EntityTeleportResult.success(entity, destination, new TeleportDestination(targetLevel, targetPosition, direction));
+        WaystoneTeleportEntityEvent.Post.EVENT.invoker().accept(new WaystoneTeleportEntityEvent.Post(context, originalEntity, teleportResult, destination, targetLevel, targetPosition, direction));
+        return teleportResult;
+    }
 
-        return Optional.of(entity);
+    private static boolean shouldTeleportOffsetByFacing(Waystone waystone) {
+        return !(waystone.getWaystoneKind().equals(WaystoneKinds.WARP_PLATE));
+    }
+
+    private static boolean hasSpaceToTeleport(Level level, BlockPos pos) {
+        final var posAbove = pos.above();
+        return !level.getBlockState(pos).isSuffocating(level, pos) && !level.getBlockState(posAbove).isSuffocating(level, posAbove);
+    }
+
+    private static boolean isValidTeleportOffset(Level level, BlockPos pos, Direction direction, BlockPos neighborPos) {
+        return true;
+    }
+
+    private static Optional<Direction> findTeleportOffsetDirection(Level level, BlockPos pos, Waystone waystone, Direction preferred) {
+        if (!shouldTeleportOffsetByFacing(waystone)) {
+            return Optional.empty();
+        }
+
+        // Use a list to keep order intact - it might check one direction twice, but no one cares
+        final var directionCandidates = List.of(preferred, Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH);
+        for (final var candidate : directionCandidates) {
+            final var offsetPos = pos.relative(candidate);
+            if (hasSpaceToTeleport(level, offsetPos) && isValidTeleportOffset(level, pos, candidate, offsetPos)) {
+                return Optional.of(candidate);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    public static Optional<TeleportDestination> resolveDefaultDestination(ServerLevel level, Waystone waystone) {
+        final var pos = waystone.getPos();
+        final var state = level.getBlockState(pos);
+        final var direction = state.hasProperty(WaystoneBlock.FACING) ? state.getValue(WaystoneBlock.FACING) : Direction.NORTH;
+        final var offsetDirection = findTeleportOffsetDirection(level, pos, waystone, direction);
+
+        final var targetPos = offsetDirection.map(pos::relative).orElse(pos);
+        final var location = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
+        return Optional.of(new TeleportDestination(level, location, offsetDirection.orElse(direction)));
     }
 
     private static Either<TeleportDestination, WaystoneTeleportError> resolveDestination(MinecraftServer server, Waystone waystone) {
@@ -295,58 +363,90 @@ public class WaystoneTeleportManager {
         }
     }
 
-    public static Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context) {
+    public static WaystoneTeleportResult tryTeleport(WaystoneTeleportContext context) {
+        final WaystoneTeleportResult result;
         final var validationResult = validateTeleportStart(context);
         if (validationResult.right().isPresent()) {
-            return Either.right(validationResult.right().orElseThrow());
-        }
+            result = WaystoneTeleportResult.failed(validationResult.right().orElseThrow());
+        } else {
+            final var server = context.getEntity().level().getServer();
+            if (server == null) {
+                throw new IllegalStateException("Cannot perform a waystone teleport without a server");
+            } else {
+                result = resolveDestination(server, context.getTargetWaystone())
+                        .map(destination -> {
+                            if (context.executor() instanceof DeferredEffectExecutor executor) {
+                                executor.execute();
+                            }
 
-        if (context.executor() instanceof DeferredEffectExecutor executor) {
-            executor.execute();
-        }
-
-        return doTeleport(context)
-                .ifLeft(teleportedEntities -> WaystoneTeleportEvent.After.EVENT.invoker().accept(new WaystoneTeleportEvent.After(context, teleportedEntities)));
-    }
-
-    public static CompletableFuture<Either<List<Entity>, WaystoneTeleportError>> tryTeleportAsync(WaystoneTeleportContext context) {
-        try {
-            final var validationResult = validateTeleportStart(context);
-            if (validationResult.right().isPresent()) {
-                return CompletableFuture.completedFuture(Either.right(validationResult.right().orElseThrow()));
+                            final var teleportResult = performTeleport(context, destination);
+                            if (teleportResult.isSuccessful()) {
+                                WaystoneTeleportEvent.After.EVENT.invoker().accept(new WaystoneTeleportEvent.After(context, teleportResult.teleportedEntities()));
+                            }
+                            return teleportResult;
+                        }, WaystoneTeleportResult::failed);
             }
-
-            return prepareTeleport(context, false)
-                    .thenApply(result -> result.flatMap(destination -> {
-                        if (context instanceof WaystoneTeleportContextImpl contextImpl) {
-                            contextImpl.invalidateRequirements();
-                        }
-
-                        if (context.getRequirements().right().isPresent()) {
-                            return Either.right(new WaystoneTeleportError.RequirementsNotMet());
-                        }
-
-                        if (context.executor() instanceof DeferredEffectExecutor executor) {
-                            executor.execute();
-                        }
-
-                        return doTeleport(context, destination)
-                                .ifLeft(teleportedEntities -> WaystoneTeleportEvent.After.EVENT.invoker().accept(new WaystoneTeleportEvent.After(context, teleportedEntities)));
-                    }))
-                    .exceptionally(WaystoneTeleportManager::handleUnexpectedAsyncFailure);
-        } catch (Exception e) {
-            return CompletableFuture.completedFuture(unexpectedFailure(e));
         }
+
+        WaystoneTeleportEvent.Complete.EVENT.invoker().accept(new WaystoneTeleportEvent.Complete(context,
+                result.primaryResult().orElse(null),
+                result.additionalResults(),
+                result.teleportError().orElse(null)));
+        return result;
     }
 
-    private static Either<List<Entity>, WaystoneTeleportError> handleUnexpectedAsyncFailure(Throwable throwable) {
-        final var cause = throwable instanceof CompletionException && throwable.getCause() != null ? throwable.getCause() : throwable;
-        return unexpectedFailure(cause);
+    public static CompletableFuture<WaystoneTeleportResult> tryTeleportAsync(WaystoneTeleportContext context) {
+        final var validationResult = validateTeleportStart(context);
+        if (validationResult.right().isPresent()) {
+            final var result = WaystoneTeleportResult.failed(validationResult.right().orElseThrow());
+            WaystoneTeleportEvent.Complete.EVENT.invoker().accept(new WaystoneTeleportEvent.Complete(context,
+                    result.primaryResult().orElse(null),
+                    result.additionalResults(),
+                    result.teleportError().orElse(null)));
+            return CompletableFuture.completedFuture(result);
+        }
+
+        return prepareTeleport(context, false)
+                .thenApply(result -> result.map(destination -> {
+                    if (context instanceof WaystoneTeleportContextImpl contextImpl) {
+                        contextImpl.invalidateRequirements();
+                    }
+
+                    if (context.getRequirements().right().isPresent()) {
+                        return WaystoneTeleportResult.failed(new WaystoneTeleportError.RequirementsNotMet());
+                    }
+
+                    if (context.executor() instanceof DeferredEffectExecutor executor) {
+                        executor.execute();
+                    }
+
+                    final var teleportResult = performTeleport(context, destination);
+                    if (teleportResult.isSuccessful()) {
+                        WaystoneTeleportEvent.After.EVENT.invoker().accept(new WaystoneTeleportEvent.After(context, teleportResult.teleportedEntities()));
+                    }
+                    return teleportResult;
+                }, WaystoneTeleportResult::failed))
+                .thenApply(result -> {
+                    WaystoneTeleportEvent.Complete.EVENT.invoker().accept(new WaystoneTeleportEvent.Complete(context,
+                            result.primaryResult().orElse(null),
+                            result.additionalResults(),
+                            result.teleportError().orElse(null)));
+                    return result;
+                })
+                .whenComplete((result, throwable) -> crashOnUnexpectedAsyncFailure(context, throwable));
     }
 
-    private static Either<List<Entity>, WaystoneTeleportError> unexpectedFailure(Throwable throwable) {
-        Waystones.logger.error("Unexpected error while processing async waystone teleport.", throwable);
-        return Either.right(new WaystoneTeleportError.TeleportFailed());
+    private static void crashOnUnexpectedAsyncFailure(WaystoneTeleportContext context, Throwable throwable) {
+        if (throwable == null) {
+            return;
+        }
+
+        final var server = context.getEntity().level().getServer();
+        if (server != null) {
+            server.execute(() -> {
+                throw new RuntimeException("Unexpected error while processing waystone teleport.", throwable);
+            });
+        }
     }
 
     private static CompletableFuture<Either<@Nullable Void, WaystoneTeleportError>> loadDestinationChunks(MinecraftServer server, ServerLevel targetLevel, WaystoneTeleportContext context) {

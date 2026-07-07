@@ -3,10 +3,10 @@ package net.blay09.mods.waystones.api;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -77,4 +77,6 @@ public interface InternalMethods {
     Collection<Waystone> getWaystonesByType(MinecraftServer server, Identifier type);
 
     void removeWaystoneFromDatabase(MinecraftServer server, Waystone waystone);
+
+    Optional<TeleportDestination> resolveDefaultDestination(ServerLevel level, Waystone waystone);
 }

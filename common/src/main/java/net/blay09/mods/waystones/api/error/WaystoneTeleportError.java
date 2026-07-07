@@ -23,6 +23,10 @@ public class WaystoneTeleportError {
         return component;
     }
 
+    /**
+     * @deprecated This is more of an unexpected state error caused by bad code than an actual logical runtime error. No longer used by Waystones.
+     */
+    @Deprecated
     public static class NotOnServer extends WaystoneTeleportError {
     }
 
