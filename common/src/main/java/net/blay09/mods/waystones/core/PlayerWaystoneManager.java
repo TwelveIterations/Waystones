@@ -10,8 +10,8 @@ import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -170,6 +170,10 @@ public class PlayerWaystoneManager {
     }
 
     public static PersonalizedWaystoneImpl getPlayerDecoratedWaystone(Player player, Waystone waystone) {
+        if (waystone instanceof PersonalizedWaystoneImpl personalizedWaystone) {
+            return personalizedWaystone;
+        }
+
         final var backingWaystone = waystone instanceof PersonalizedWaystoneImpl personalizedWaystone ? personalizedWaystone.getBackingWaystone() : waystone;
         final var alias = getWaystoneAlias(player, backingWaystone.getWaystoneUid());
         final var configuredWaystoneGroups = getConfiguredWaystoneGroups(player, backingWaystone.getWaystoneUid());

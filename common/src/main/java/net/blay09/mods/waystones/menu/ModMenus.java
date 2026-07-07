@@ -74,18 +74,6 @@ public class ModMenus {
                     return WaystoneEditMenu.STREAM_CODEC;
                 }
             });
-    public static DeferredObject<MenuType<PersonalWaystoneSettingsMenu>> personalWaystoneSettings = menus.registerMenu(id("personal_waystone_settings"),
-            new BalmMenuFactory<PersonalWaystoneSettingsMenu, PersonalizedWaystoneImpl>() {
-                @Override
-                public PersonalWaystoneSettingsMenu create(int windowId, Inventory inventory, PersonalizedWaystoneImpl waystone) {
-                    return new PersonalWaystoneSettingsMenu(windowId, waystone);
-                }
-
-                @Override
-                public StreamCodec<RegistryFriendlyByteBuf, PersonalizedWaystoneImpl> getStreamCodec() {
-                    return PersonalizedWaystoneImpl.STREAM_CODEC;
-                }
-            });
 
     public static void initialize() {
     }

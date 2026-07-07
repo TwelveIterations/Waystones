@@ -9,7 +9,7 @@ import net.blay09.mods.waystones.network.message.*;
 public class ModNetworking {
 
     public static void initialize(BalmNetworking networking) {
-        networking.defineNetworkVersion(Waystones.MOD_ID, "2");
+        networking.defineNetworkVersion(Waystones.MOD_ID, "3");
 
         networking.registerServerboundPacket(InventoryButtonMessage.TYPE, InventoryButtonMessage.class, InventoryButtonMessage::encode, InventoryButtonMessage::decode, InventoryButtonMessage::handle);
         networking.registerServerboundPacket(EditWaystoneMessage.TYPE, EditWaystoneMessage.class, EditWaystoneMessage::encode, EditWaystoneMessage::decode, EditWaystoneMessage::handle);
@@ -22,7 +22,6 @@ public class ModNetworking {
         networking.registerServerboundPacket(ServerboundRemoveWaystoneGroupPacket.TYPE, ServerboundRemoveWaystoneGroupPacket.class, ServerboundRemoveWaystoneGroupPacket::encode, ServerboundRemoveWaystoneGroupPacket::decode, ServerboundRemoveWaystoneGroupPacket::handle);
         networking.registerServerboundPacket(RequestEditWaystoneMessage.TYPE, RequestEditWaystoneMessage.class, RequestEditWaystoneMessage::encode, RequestEditWaystoneMessage::decode, RequestEditWaystoneMessage::handle);
         networking.registerServerboundPacket(RequestManageWaystoneModifiersMessage.TYPE, RequestManageWaystoneModifiersMessage.class, RequestManageWaystoneModifiersMessage::encode, RequestManageWaystoneModifiersMessage::decode, RequestManageWaystoneModifiersMessage::handle);
-        networking.registerServerboundPacket(RequestPersonalWaystoneSettingsMessage.TYPE, RequestPersonalWaystoneSettingsMessage.class, RequestPersonalWaystoneSettingsMessage::encode, RequestPersonalWaystoneSettingsMessage::decode, RequestPersonalWaystoneSettingsMessage::handle);
 
         networking.registerClientboundPacket(UpdateWaystoneMessage.TYPE, UpdateWaystoneMessage.class, UpdateWaystoneMessage::encode, UpdateWaystoneMessage::decode, UpdateWaystoneMessage::handle);
         networking.registerClientboundPacket(WaystoneRemovedMessage.TYPE, WaystoneRemovedMessage.class, WaystoneRemovedMessage::encode, WaystoneRemovedMessage::decode, WaystoneRemovedMessage::handle);

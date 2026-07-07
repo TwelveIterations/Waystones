@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.waystones.api.MutablePersonalizedWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
@@ -10,7 +11,6 @@ import net.blay09.mods.waystones.client.gui.widget.ManageWaystoneGroupsButton;
 import net.blay09.mods.waystones.client.gui.widget.ManageWaystonesList;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
-import net.blay09.mods.waystones.network.message.RequestPersonalWaystoneSettingsMessage;
 import net.blay09.mods.waystones.network.message.RemoveWaystoneMessage;
 import net.blay09.mods.waystones.network.message.SortWaystoneMessage;
 import net.minecraft.client.Minecraft;
@@ -85,7 +85,8 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
     }
 
     public void openPersonalWaystoneSettings(Waystone waystone) {
-        Balm.getNetworking().sendToServer(new RequestPersonalWaystoneSettingsMessage(waystone.getWaystoneUid()));
+        final var personalizedWaystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(playerInventory.player, waystone);
+        Minecraft.getInstance().setScreen(new PersonalWaystoneSettingsScreen(menu, playerInventory, personalizedWaystone, this));
     }
 
     public void reorderWaystone(Waystone waystone, Waystone otherWaystone) {
