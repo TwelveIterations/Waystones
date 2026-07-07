@@ -179,4 +179,11 @@ public class WaystonesAPI {
     public static Set<Identifier> getDynamicWaystoneGroups(Waystone waystone) {
         return WaystoneGroups.getDynamicGroups(waystone);
     }
+
+    /**
+     * Resolves the default teleport destination for the given waystone.
+     */
+    public static Optional<TeleportDestination> resolveDefaultDestination(ServerLevel level, Waystone waystone) {
+        return __internalMethods.resolveDefaultDestination(level, waystone);
+    }
 }
