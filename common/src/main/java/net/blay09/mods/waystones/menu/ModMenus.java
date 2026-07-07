@@ -27,7 +27,6 @@ public class ModMenus {
     public static Holder<MenuType<WaystoneSelectionMenu>> sharestoneSelection;
     public static Holder<MenuType<WaystoneModifierMenu>> waystoneModifiers;
     public static Holder<MenuType<WaystoneEditMenu>> waystoneSettings;
-    public static Holder<MenuType<PersonalWaystoneSettingsMenu>> personalWaystoneSettings;
 
     public static void initialize(BalmMenuTypeRegistrar menus) {
         waystoneSelection = registerWaystoneSelectionMenu(menus, "waystone_selection", () -> ModMenus.waystoneSelection, Collections.emptySet());
@@ -60,18 +59,6 @@ public class ModMenus {
                     @Override
                     public StreamCodec<RegistryFriendlyByteBuf, WaystoneEditMenu.Data> getStreamCodec() {
                         return WaystoneEditMenu.STREAM_CODEC;
-                    }
-                }).asHolder();
-        personalWaystoneSettings = menus.register("personal_waystone_settings",
-                new BalmMenuFactory<PersonalWaystoneSettingsMenu, PersonalizedWaystoneImpl>() {
-                    @Override
-                    public PersonalWaystoneSettingsMenu create(int windowId, Inventory inventory, PersonalizedWaystoneImpl waystone) {
-                        return new PersonalWaystoneSettingsMenu(windowId, waystone);
-                    }
-
-                    @Override
-                    public StreamCodec<RegistryFriendlyByteBuf, PersonalizedWaystoneImpl> getStreamCodec() {
-                        return PersonalizedWaystoneImpl.STREAM_CODEC;
                     }
                 }).asHolder();
     }

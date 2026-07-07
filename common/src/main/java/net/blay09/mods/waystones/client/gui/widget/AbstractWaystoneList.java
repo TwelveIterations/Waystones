@@ -21,7 +21,7 @@ public abstract class AbstractWaystoneList<E extends AbstractWaystoneList.Entry<
         setX(x);
     }
 
-    public void setWaystones(List<Waystone> waystones) {
+    public void setWaystones(List<? extends Waystone> waystones) {
         clearEntries();
         for (int i = 0; i < waystones.size(); i++) {
             addEntry(createEntry(waystones.get(i), i, waystones.size()));

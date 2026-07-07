@@ -18,7 +18,6 @@ public class ModNetworking {
         networking.registerServerboundPacket(ServerboundRequestEditWaystonePacket.TYPE, ServerboundRequestEditWaystonePacket.class, ServerboundRequestEditWaystonePacket.STREAM_CODEC, ServerboundRequestEditWaystonePacket::handle);
         networking.registerServerboundPacket(ServerboundRequestInventoryButtonPacket.TYPE, ServerboundRequestInventoryButtonPacket.class, ServerboundRequestInventoryButtonPacket.STREAM_CODEC, ServerboundRequestInventoryButtonPacket::handle);
         networking.registerServerboundPacket(ServerboundRequestManageWaystoneModifiersPacket.TYPE, ServerboundRequestManageWaystoneModifiersPacket.class, ServerboundRequestManageWaystoneModifiersPacket.STREAM_CODEC, ServerboundRequestManageWaystoneModifiersPacket::handle);
-        networking.registerServerboundPacket(ServerboundRequestPersonalWaystoneSettingsPacket.TYPE, ServerboundRequestPersonalWaystoneSettingsPacket.class, ServerboundRequestPersonalWaystoneSettingsPacket.STREAM_CODEC, ServerboundRequestPersonalWaystoneSettingsPacket::handle);
 
         networking.registerClientboundPacket(ClientboundUpdateWaystonePacket.TYPE, ClientboundUpdateWaystonePacket.class, ClientboundUpdateWaystonePacket.STREAM_CODEC, ClientboundUpdateWaystonePacket::handle);
         networking.registerClientboundPacket(ClientboundWaystoneRemovedPacket.TYPE, ClientboundWaystoneRemovedPacket.class, ClientboundWaystoneRemovedPacket.STREAM_CODEC, ClientboundWaystoneRemovedPacket::handle);

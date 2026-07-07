@@ -15,7 +15,6 @@ public class ModScreens {
         screens.register(ModMenus.sharestoneSelection, SharestoneSelectionScreen::new);
         screens.register(ModMenus.waystoneModifiers, WaystoneModifierScreen::new);
         screens.register(ModMenus.waystoneSettings, WaystoneEditScreen::new);
-        screens.register(ModMenus.personalWaystoneSettings, PersonalWaystoneSettingsScreen::new);
         screens.register(ModMenus.adminSelection, AdminSelectionScreen::new);
     }
 }
