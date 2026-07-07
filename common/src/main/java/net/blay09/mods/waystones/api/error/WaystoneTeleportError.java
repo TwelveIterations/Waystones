@@ -105,6 +105,10 @@ public class WaystoneTeleportError {
         public RequirementsNotMet() {
             super(Component.translatable("chat.waystones.requirements_not_met"));
         }
+
+        public RequirementsNotMet(Component component) {
+            super(component);
+        }
     }
 
     public static class TeleportNoLongerValid extends WaystoneTeleportError {

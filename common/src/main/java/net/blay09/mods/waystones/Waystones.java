@@ -33,6 +33,7 @@ import net.blay09.mods.waystones.migration.ConfigMigration;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.network.ModNetworking;
 import net.blay09.mods.waystones.requirement.EpitaphRequirement;
+import net.blay09.mods.waystones.requirement.RequirementComponentResolvers;
 import net.blay09.mods.waystones.requirement.TwinboundFeatherRequirement;
 import net.blay09.mods.waystones.resources.ForceSpawnInVillagesCondition;
 import net.blay09.mods.waystones.stats.ModStats;
@@ -151,6 +152,7 @@ public class Waystones implements BalmModule {
         ModEventHandlers.initialize();
         ShogiStreamCodecs.register(id("epitaph"), EpitaphRequirement.class, EpitaphRequirement.STREAM_CODEC);
         ShogiStreamCodecs.register(id("twinbound_feather"), TwinboundFeatherRequirement.class, TwinboundFeatherRequirement.STREAM_CODEC);
+        RequirementComponentResolvers.registerDefaults();
         WaystonesRules.initialize();
 
         final var hudInfo = Balm.modSupport().hudInfo();
