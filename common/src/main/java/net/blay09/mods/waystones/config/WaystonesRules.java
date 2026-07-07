@@ -264,7 +264,7 @@ public class WaystonesRules {
         }
     });
 
-    private static final CachedShogiRule cachedWarpRequirements = CachedShogiRule.ofRules(scope, () -> WaystonesConfig.getActive().rules.warpRequirements);
+    private static final CachedShogiRule cachedWarpRequirements = CachedShogiRule.ofRules(scope, WaystonesRules::getWarpRequirementsWithSettings);
 
     public static void initialize() {
         ConfigCallback.Reloaded.EVENT.register(schema -> {
@@ -276,5 +276,15 @@ public class WaystonesRules {
 
     private static Either<?, ?> resolveWarpRequirements(WaystoneTeleportContext context) {
         return cachedWarpRequirements.get(context).apply(context);
+    }
+
+    private static List<String> getWarpRequirementsWithSettings() {
+        final var rules = WaystonesConfig.getActive().rules;
+        final var warpSettings = rules.warpSettings;
+        final var warpRequirements = rules.warpRequirements;
+        final var result = new ArrayList<String>(warpSettings.size() + warpRequirements.size());
+        result.addAll(warpSettings);
+        result.addAll(warpRequirements);
+        return result;
     }
 }

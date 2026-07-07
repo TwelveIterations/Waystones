@@ -246,6 +246,8 @@
   "waystones.configuration.rules.enableDurability.tooltip": "Set to false to simply disable all durability costs. See warpRequirements for more fine-grained control.",
   "waystones.configuration.rules.enableCooldowns": "Enable Cooldowns",
   "waystones.configuration.rules.enableCooldowns.tooltip": "Set to false to simply disable all cooldowns. See warpRequirements for more fine-grained control.",
+  "waystones.configuration.rules.warpSettings": "Warp Settings",
+  "waystones.configuration.rules.warpSettings.tooltip": "List of variables used in the warpRequirements configuration.",
   "waystones.configuration.rules.warpRequirements": "Warp Requirements",
   "waystones.configuration.rules.warpRequirements.tooltip": "List of warp requirements in Shogi format.",
   "waystones.configuration.rules.transportPets": "Transport Pets",
