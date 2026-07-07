@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.WaystonesAPI;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.ChatFormatting;
@@ -49,21 +48,9 @@ public class SelectWaystoneMessage implements CustomPacketPayload {
                     message.waystoneUid);
             return;
         }
-        final var waystone = PlayerWaystoneManager.findWaystone(player, message.waystoneUid).orElse(null);
-        if (waystone == null) {
-            Waystones.logger.warn("{} tried to teleport to transient waystone {} that is no longer available.",
-                    player.getName().getString(),
-                    message.waystoneUid);
-            final var error = new WaystoneTeleportError.TeleportNoLongerValid();
-            player.displayClientMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED), true);
-            player.closeContainer();
-            return;
-        }
-
+        final var waystone = selectedWaystone.get();
         if (selectionMenu.getType() == ModMenus.portalScrollSelection.get()) {
-            WaystonesAPI.createUncheckedDefaultTeleportContext(player, waystone, it -> {
-                        it.setWarpItem(selectionMenu.getWarpItem());
-                    })
+            WaystonesAPI.createUncheckedDefaultTeleportContext(player, waystone, it -> it.setWarpItem(selectionMenu.getWarpItem()))
                     .ifLeft(selectionMenu.getPostTeleportHandler())
                     .ifRight(error -> player.displayClientMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED), true));
             player.closeContainer();
