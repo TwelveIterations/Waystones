@@ -8,6 +8,8 @@ import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.menu.WaystoneEditMenu;
+import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
 import net.minecraft.network.chat.Component;
@@ -114,13 +116,41 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.level()).getWaystones(player);
     }
 
-    public static Optional<Waystone> findWaystone(ServerPlayer player, UUID waystoneUid) {
+    public static Optional<? extends Waystone> findWaystone(ServerPlayer player, UUID waystoneUid) {
+        final var menuWaystone = findWaystoneInMenu(player, waystoneUid);
+        if (menuWaystone.isPresent()) {
+            return menuWaystone;
+        }
+
         final var waystone = new WaystoneProxy(player.level().getServer(), waystoneUid);
         if (waystone.isValid()) {
             return Optional.of(waystone);
         }
 
         return TwinboundFeatherTargets.findTarget(player, waystoneUid);
+    }
+
+    private static Optional<? extends Waystone> findWaystoneInMenu(ServerPlayer player, UUID waystoneUid) {
+        if (player.containerMenu instanceof WaystoneSelectionMenu selectionMenu) {
+            final var fromWaystone = selectionMenu.getWaystoneFrom();
+            if (fromWaystone != null && fromWaystone.getWaystoneUid().equals(waystoneUid)) {
+                return Optional.of(fromWaystone);
+            }
+
+            return selectionMenu.getWaystones().stream()
+                    .filter(it -> it.getWaystoneUid().equals(waystoneUid))
+                    .findFirst()
+                    .map(it -> (Waystone) it);
+        }
+
+        if (player.containerMenu instanceof WaystoneEditMenu editMenu) {
+            final var editWaystone = editMenu.getWaystone();
+            if (editWaystone.getWaystoneUid().equals(waystoneUid)) {
+                return Optional.of(editWaystone);
+            }
+        }
+
+        return Optional.empty();
     }
 
     public static Optional<String> getOwnerUsername(Waystone waystone, @Nullable MinecraftServer server) {
