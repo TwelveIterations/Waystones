@@ -95,11 +95,10 @@ public class WaystonesConfig {
         @NestedType(String.class)
         @Comment("List of warp requirements in Shogi format.")
         public List<String> warpRequirements = List.of(
-                "$xp_points_cost = $distance * 0.01",
-                "is_interdimensional -> $xp_points_cost = 27",
-                "source(is_warp_plate()) -> $xp_points_cost = 0",
-                "target(is_global()) -> $xp_points_cost = 0",
-                "$xp_points_cost = clamp($xp_points_cost, 0, 27)",
+                "$uses_xp #= any(source(is_waystone), source(is_warp_stone))",
+                "$uses_xp -> $xp_points_cost = $distance * 0.01",
+                "$uses_xp + is_interdimensional -> $xp_points_cost = 27",
+                "$uses_xp -> $xp_points_cost = clamp($xp_points_cost, 0, 27)",
                 "is_warp_stone -> damage_item(80)",
                 "is_inventory_button -> cooldown_cost('inventory_button', '300s')");
 
