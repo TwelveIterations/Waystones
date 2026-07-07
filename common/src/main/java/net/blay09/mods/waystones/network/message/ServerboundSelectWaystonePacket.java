@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.WaystonesAPI;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.ChatFormatting;
@@ -41,17 +40,7 @@ public record ServerboundSelectWaystonePacket(UUID waystoneUid) implements Custo
                     message.waystoneUid);
             return;
         }
-        final var waystone = PlayerWaystoneManager.findWaystone(player, message.waystoneUid).orElse(null);
-        if (waystone == null) {
-            Waystones.logger.warn("{} tried to teleport to transient waystone {} that is no longer available.",
-                    player.getName().getString(),
-                    message.waystoneUid);
-            final var error = new WaystoneTeleportError.TeleportNoLongerValid();
-            player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED));
-            player.closeContainer();
-            return;
-        }
-
+        final var waystone = selectedWaystone.get();
         if (selectionMenu.getType() == ModMenus.portalScrollSelection.value()) {
             WaystonesAPI.createUncheckedDefaultTeleportContext(player, waystone, it -> {
                         it.setWarpItem(selectionMenu.getWarpItem());
