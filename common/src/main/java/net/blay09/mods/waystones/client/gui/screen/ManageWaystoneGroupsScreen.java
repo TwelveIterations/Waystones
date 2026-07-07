@@ -144,7 +144,7 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Abstract
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         final var fromWaystone = getWaystoneFrom();
         if (isLocationHeaderHovered && fromWaystone != null) {
-            Balm.networking().sendToServer(new ServerboundRequestEditWaystonePacket(fromWaystone.getPos()));
+            Balm.networking().sendToServer(new ServerboundRequestEditWaystonePacket(fromWaystone.getWaystoneUid()));
             return true;
         }
 

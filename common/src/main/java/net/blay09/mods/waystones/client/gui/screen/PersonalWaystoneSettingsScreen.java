@@ -94,7 +94,7 @@ public class PersonalWaystoneSettingsScreen extends AbstractContainerScreen<Abst
                     editButtonSprites,
                     _ -> {
                         savePersonalWaystoneSettings();
-                        Balm.networking().sendToServer(new ServerboundRequestEditWaystonePacket(waystone.getPos()));
+                        Balm.networking().sendToServer(new ServerboundRequestEditWaystonePacket(waystone.getWaystoneUid()));
                     },
                     editButtonLabel);
             editButton.setPosition(leftPos + 155, y);
