@@ -44,6 +44,9 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Abstract
     private static final int HEADER_WIDTH = AbstractWaystoneList.ENTRY_WIDTH;
     private static final int HEADER_HEIGHT = 64;
     private static final int FOOTER_HEIGHT = 25;
+    private static final int BASE_IMAGE_HEIGHT = 200;
+    private static final int SCREEN_VERTICAL_MARGIN = 40;
+    private static final int LIST_SCROLL_PADDING = 4;
     private static final int CREATE_BUTTON_WIDTH = 20;
     private static final int MARGIN = 2;
 
@@ -56,6 +59,7 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Abstract
     private @Nullable ManageWaystoneGroupsList groupList;
     private @Nullable EditBox searchBox;
     private boolean isLocationHeaderHovered;
+    private int layoutImageHeight = BASE_IMAGE_HEIGHT;
 
     public ManageWaystoneGroupsScreen(AbstractContainerMenu menu, Inventory playerInventory, Screen parent) {
         super(menu, playerInventory, Component.translatable("container.waystones.manage_groups"), 270, 200);
@@ -69,11 +73,13 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Abstract
     @Override
     public void init() {
         super.init();
+        layoutImageHeight = getLayoutImageHeight();
+        topPos = (height - layoutImageHeight) / 2;
 
         groupList = new ManageWaystoneGroupsList(leftPos,
                 topPos + HEADER_HEIGHT,
                 imageWidth,
-                imageHeight - HEADER_HEIGHT - FOOTER_HEIGHT,
+                layoutImageHeight - HEADER_HEIGHT - FOOTER_HEIGHT,
                 this);
         addRenderableWidget(groupList);
 
@@ -103,6 +109,14 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Abstract
         addRenderableWidget(backButton);
 
         updateList();
+    }
+
+    private int getLayoutImageHeight() {
+        final int maxImageHeight = Math.max(BASE_IMAGE_HEIGHT, height - SCREEN_VERTICAL_MARGIN);
+        final int baseRows = (BASE_IMAGE_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT) / AbstractWaystoneList.ENTRY_HEIGHT;
+        final int neededRows = Math.max(baseRows, groups.size());
+        final int neededImageHeight = BASE_IMAGE_HEIGHT + LIST_SCROLL_PADDING + (neededRows - baseRows) * AbstractWaystoneList.ENTRY_HEIGHT;
+        return Math.min(maxImageHeight, neededImageHeight);
     }
 
     private void updateList() {
@@ -150,7 +164,7 @@ public class ManageWaystoneGroupsScreen extends AbstractContainerScreen<Abstract
             guiGraphics.centeredText(font,
                     ChatFormatting.RED + I18n.get("gui.waystones.manage_groups.no_groups"),
                     imageWidth / 2,
-                    imageHeight / 2 - 20,
+                    layoutImageHeight / 2 - 20,
                     0xFFFFFFFF);
         }
     }
