@@ -2,10 +2,10 @@ package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.network.message.ServerboundEditWaystonePacket;
 import net.blay09.mods.waystones.network.message.ServerboundRequestManageWaystoneModifiersPacket;
-import net.blay09.mods.waystones.network.message.ServerboundRequestPersonalWaystoneSettingsPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
@@ -23,12 +23,14 @@ import static net.blay09.mods.waystones.Waystones.id;
 
 public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu> {
 
+    private final Inventory playerInventory;
     private @Nullable EditBox nameField;
     private @Nullable WaystoneVisbilityButton visibilityButton;
     private @Nullable ImageButton modifierButton;
 
     public WaystoneEditScreen(WaystoneEditMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title, 176, 210);
+        this.playerInventory = playerInventory;
         titleLabelY = 44;
     }
 
@@ -68,7 +70,8 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
                 aliasButtonSprites,
                 _ -> {
                     saveWaystoneSettings();
-                    Balm.networking().sendToServer(new ServerboundRequestPersonalWaystoneSettingsPacket(menu.getWaystone().getWaystoneUid()));
+                    final var personalizedWaystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(playerInventory.player, menu.getWaystone());
+                    Minecraft.getInstance().setScreen(new PersonalWaystoneSettingsScreen(menu, playerInventory, personalizedWaystone, this));
                 },
                 aliasButtonLabel);
         aliasButton.setPosition(leftPos + 155, y);

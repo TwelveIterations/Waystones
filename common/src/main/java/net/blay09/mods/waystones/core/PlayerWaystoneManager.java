@@ -167,6 +167,10 @@ public class PlayerWaystoneManager {
     }
 
     public static PersonalizedWaystoneImpl getPlayerDecoratedWaystone(Player player, Waystone waystone) {
+        if (waystone instanceof PersonalizedWaystoneImpl personalizedWaystone) {
+            return personalizedWaystone;
+        }
+
         final var backingWaystone = waystone instanceof PersonalizedWaystoneImpl personalizedWaystone ? personalizedWaystone.getBackingWaystone() : waystone;
         final var alias = getWaystoneAlias(player, backingWaystone.getWaystoneUid());
         final var configuredWaystoneGroups = getConfiguredWaystoneGroups(player, backingWaystone.getWaystoneUid());
