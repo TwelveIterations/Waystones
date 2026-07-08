@@ -4,12 +4,7 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.shogi.context.executor.DeferredEffectExecutor;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.EntityTeleportResult;
-import net.blay09.mods.waystones.api.TeleportDestination;
-import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneKinds;
-import net.blay09.mods.waystones.api.WaystoneTeleportContext;
-import net.blay09.mods.waystones.api.WaystoneTeleportResult;
+import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEntityEvent;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
@@ -153,6 +148,7 @@ public class WaystoneTeleportManager {
         final var sourceLevel = (ServerLevel) context.getEntity().level();
         teleportEntityAndAttached(context.getEntity(), context, destination, result);
         context.getAdditionalEntities()
+                .stream().filter(entity -> isPendingEntityStillValid(entity, sourceLevel))
                 .forEach(additionalEntity -> teleportEntityAndAttached(additionalEntity, context, destination, result));
 
         final var teleportedEntities = result.teleportedEntities();
@@ -475,20 +471,20 @@ public class WaystoneTeleportManager {
         for (final var chunkPos : chunkPositionsToLoad) {
             targetLevel.getChunkSource().getChunkFuture(chunkPos.x(), chunkPos.z(), ChunkStatus.FULL, true)
                     .whenComplete((chunkResult, throwable) -> server.execute(() -> {
-                            if (chunkLoadFuture.isDone()) {
-                                return;
-                            }
+                        if (chunkLoadFuture.isDone()) {
+                            return;
+                        }
 
-                            if (throwable != null) {
-                                Waystones.logger.warn("Failed to load destination chunk {} for waystone teleport in {}.", chunkPos, targetWaystone.getDimension(), throwable);
-                                chunkLoadFuture.complete(Either.right(new WaystoneTeleportError.DestinationChunkLoadFailed(targetWaystone.getDimension(), chunkPos, throwable.getMessage())));
-                            } else if (!chunkResult.isSuccess()) {
-                                Waystones.logger.warn("Failed to load destination chunk {} for waystone teleport in {}: {}", chunkPos, targetWaystone.getDimension(), chunkResult.getError());
-                                chunkLoadFuture.complete(Either.right(new WaystoneTeleportError.DestinationChunkLoadFailed(targetWaystone.getDimension(), chunkPos, chunkResult.getError())));
-                            } else if (--remaining[0] == 0) {
-                                chunkLoadFuture.complete(Either.left(null));
-                            }
-                        }));
+                        if (throwable != null) {
+                            Waystones.logger.warn("Failed to load destination chunk {} for waystone teleport in {}.", chunkPos, targetWaystone.getDimension(), throwable);
+                            chunkLoadFuture.complete(Either.right(new WaystoneTeleportError.DestinationChunkLoadFailed(targetWaystone.getDimension(), chunkPos, throwable.getMessage())));
+                        } else if (!chunkResult.isSuccess()) {
+                            Waystones.logger.warn("Failed to load destination chunk {} for waystone teleport in {}: {}", chunkPos, targetWaystone.getDimension(), chunkResult.getError());
+                            chunkLoadFuture.complete(Either.right(new WaystoneTeleportError.DestinationChunkLoadFailed(targetWaystone.getDimension(), chunkPos, chunkResult.getError())));
+                        } else if (--remaining[0] == 0) {
+                            chunkLoadFuture.complete(Either.left(null));
+                        }
+                    }));
         }
 
         return effectiveFuture;
