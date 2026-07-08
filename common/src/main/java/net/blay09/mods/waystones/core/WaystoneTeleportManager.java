@@ -113,7 +113,7 @@ public class WaystoneTeleportManager {
     }
 
     private static Either<@Nullable Void, WaystoneTeleportError> validatePendingTeleport(WaystoneTeleportContext context, Level sourceLevel, MinecraftServer server) {
-        if (!arePendingEntitiesStillValid(context, sourceLevel)) {
+        if (!isPendingEntityStillValid(context.getEntity(), sourceLevel)) {
             Waystones.logger.debug("Discarding pending waystone teleport because one or more transported entities are no longer valid.");
             return Either.right(new WaystoneTeleportError.TeleportNoLongerValid());
         }
@@ -131,6 +131,7 @@ public class WaystoneTeleportManager {
         final var targetWaystone = context.getTargetWaystone();
         final var targetLevel = server.getLevel(targetWaystone.getDimension());
         if (targetLevel == null) {
+            Waystones.logger.debug("Discarding pending waystone teleport because the target dimension is not available.");
             return Either.right(new WaystoneTeleportError.InvalidDimension(targetWaystone.getDimension()));
         }
 
@@ -507,34 +508,41 @@ public class WaystoneTeleportManager {
         WaystoneTeleportEvent.Before event = new WaystoneTeleportEvent.Before(context);
         WaystoneTeleportEvent.Before.EVENT.invoker().accept(event);
         if (event.isCanceled()) {
+            Waystones.logger.debug("Failed to teleport because it was canceled by an event.");
             return Either.right(new WaystoneTeleportError.CancelledByEvent());
         }
 
         final var entity = context.getEntity();
         if (!isPendingEntityStillValid(entity, entity.level())) {
+            Waystones.logger.debug("Failed to teleport because the source entity is no longer valid.");
             return Either.right(new WaystoneTeleportError.TeleportNoLongerValid());
         }
 
         if (!isSourceWaystoneInRange(context)) {
+            Waystones.logger.debug("Failed to teleport because the source waystone is out of range.");
             return Either.right(new WaystoneTeleportError.SourceWaystoneOutOfRange());
         }
 
         if (!isWarpItemStillPresent(context)) {
+            Waystones.logger.debug("Failed to teleport because the source item is missing.");
             return Either.right(new WaystoneTeleportError.SourceItemMissing());
         }
 
         if (!context.getLeashedEntities().isEmpty()) {
             if (WaystonesConfig.getActive().rules.transportLeashed == WaystonesConfig.TransportMobs.DISABLED) {
+                Waystones.logger.debug("Failed to teleport because leashed entities are not allowed.");
                 return Either.right(new WaystoneTeleportError.LeashedWarpDenied());
             }
 
             for (final var leashedEntity : context.getLeashedEntities()) {
                 if (WaystonePermissionManager.isEntityDeniedTeleports(leashedEntity)) {
+                    Waystones.logger.debug("Failed to teleport because leashed entity is not allowed: {}", leashedEntity);
                     return Either.right(new WaystoneTeleportError.SpecificLeashedWarpDenied(leashedEntity));
                 }
             }
 
             if (context.isDimensionalTeleport() && WaystonesConfig.getActive().rules.transportLeashed == WaystonesConfig.TransportMobs.SAME_DIMENSION) {
+                Waystones.logger.debug("Failed to teleport because leashed entites are not allowed inter-dimensionally");
                 return Either.right(new WaystoneTeleportError.LeashedDimensionalWarpDenied());
             }
         }
@@ -557,26 +565,6 @@ public class WaystoneTeleportManager {
                 && !entity.isRemoved()
                 && entity.level() == expectedLevel
                 && (!(entity instanceof ServerPlayer player) || !player.hasDisconnected());
-    }
-
-    private static boolean arePendingEntitiesStillValid(WaystoneTeleportContext context, Level expectedLevel) {
-        if (!isPendingEntityStillValid(context.getEntity(), expectedLevel)) {
-            return false;
-        }
-
-        for (final var additionalEntity : context.getAdditionalEntities()) {
-            if (!isPendingEntityStillValid(additionalEntity, expectedLevel)) {
-                return false;
-            }
-        }
-
-        for (final var leashedEntity : context.getLeashedEntities()) {
-            if (!isPendingEntityStillValid(leashedEntity, expectedLevel)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private static boolean isSourceWaystoneInRange(WaystoneTeleportContext context) {
