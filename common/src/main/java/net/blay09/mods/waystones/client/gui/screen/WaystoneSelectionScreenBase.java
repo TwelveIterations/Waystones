@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.waystones.WaystoneSortMode;
 import net.blay09.mods.waystones.api.MutablePersonalizedWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneGroup;
@@ -16,6 +17,7 @@ import net.blay09.mods.waystones.comparator.UserSortingComparator;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.network.message.RequestEditWaystoneMessage;
+import net.blay09.mods.waystones.network.message.ServerboundSetPreferencesPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -47,7 +49,7 @@ public abstract class WaystoneSelectionScreenBase extends WaystoneContainerScree
 
     private @Nullable AbstractWaystoneList<?> waystoneList;
     private @Nullable EditBox searchBox;
-    private SortWaystonesButton.Mode sortMode = SortWaystonesButton.Mode.MANUAL;
+    private WaystoneSortMode sortMode;
     private @Nullable ResourceLocation activeGroupFilter;
     private int headerY;
     private boolean isLocationHeaderHovered;
@@ -69,6 +71,7 @@ public abstract class WaystoneSelectionScreenBase extends WaystoneContainerScree
         imageHeight = BASE_IMAGE_HEIGHT;
         this.playerInventory = playerInventory;
         waystones = container.getWaystones();
+        sortMode = PlayerWaystoneManager.getWaystoneSortMode(playerInventory.player);
         PlayerWaystoneManager.ensureSortingIndex(Minecraft.getInstance().player, waystones);
         filteredWaystones = new ArrayList<>(waystones);
         final var sorting = getSorting();
@@ -110,6 +113,8 @@ public abstract class WaystoneSelectionScreenBase extends WaystoneContainerScree
                     sortMode,
                     mode -> {
                         sortMode = mode;
+                        PlayerWaystoneManager.setWaystoneSortMode(playerInventory.player, mode);
+                        Balm.networking().sendToServer(new ServerboundSetPreferencesPacket(mode));
                         waystoneList.setScrollAmount(0);
                         updateList();
                     });

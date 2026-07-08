@@ -15,6 +15,7 @@ public class ModNetworking {
         networking.registerServerboundPacket(EditWaystoneMessage.TYPE, EditWaystoneMessage.class, EditWaystoneMessage::encode, EditWaystoneMessage::decode, EditWaystoneMessage::handle);
         networking.registerServerboundPacket(ServerboundEditWaystoneGroupPacket.TYPE, ServerboundEditWaystoneGroupPacket.class, ServerboundEditWaystoneGroupPacket::encode, ServerboundEditWaystoneGroupPacket::decode, ServerboundEditWaystoneGroupPacket::handle);
         networking.registerServerboundPacket(ServerboundPersonalWaystoneSettingsPacket.TYPE, ServerboundPersonalWaystoneSettingsPacket.class, ServerboundPersonalWaystoneSettingsPacket::encode, ServerboundPersonalWaystoneSettingsPacket::decode, ServerboundPersonalWaystoneSettingsPacket::handle);
+        networking.registerServerboundPacket(ServerboundSetPreferencesPacket.TYPE, ServerboundSetPreferencesPacket.class, ServerboundSetPreferencesPacket::encode, ServerboundSetPreferencesPacket::decode, ServerboundSetPreferencesPacket::handle);
         networking.registerServerboundPacket(SelectWaystoneMessage.TYPE, SelectWaystoneMessage.class, SelectWaystoneMessage::encode, SelectWaystoneMessage::decode, SelectWaystoneMessage::handle);
         networking.registerServerboundPacket(SortWaystoneMessage.TYPE, SortWaystoneMessage.class, SortWaystoneMessage::encode, SortWaystoneMessage::decode, SortWaystoneMessage::handle);
         networking.registerServerboundPacket(ServerboundSortWaystoneGroupPacket.TYPE, ServerboundSortWaystoneGroupPacket.class, ServerboundSortWaystoneGroupPacket::encode, ServerboundSortWaystoneGroupPacket::decode, ServerboundSortWaystoneGroupPacket::handle);
@@ -24,6 +25,7 @@ public class ModNetworking {
         networking.registerServerboundPacket(RequestManageWaystoneModifiersMessage.TYPE, RequestManageWaystoneModifiersMessage.class, RequestManageWaystoneModifiersMessage::encode, RequestManageWaystoneModifiersMessage::decode, RequestManageWaystoneModifiersMessage::handle);
 
         networking.registerClientboundPacket(UpdateWaystoneMessage.TYPE, UpdateWaystoneMessage.class, UpdateWaystoneMessage::encode, UpdateWaystoneMessage::decode, UpdateWaystoneMessage::handle);
+        networking.registerClientboundPacket(ClientboundSetPreferencesPacket.TYPE, ClientboundSetPreferencesPacket.class, ClientboundSetPreferencesPacket::encode, ClientboundSetPreferencesPacket::decode, ClientboundSetPreferencesPacket::handle);
         networking.registerClientboundPacket(WaystoneRemovedMessage.TYPE, WaystoneRemovedMessage.class, WaystoneRemovedMessage::encode, WaystoneRemovedMessage::decode, WaystoneRemovedMessage::handle);
         networking.registerClientboundPacket(ClientboundWaystoneGroupsPacket.TYPE, ClientboundWaystoneGroupsPacket.class, ClientboundWaystoneGroupsPacket::encode, ClientboundWaystoneGroupsPacket::decode, ClientboundWaystoneGroupsPacket::handle);
         networking.registerClientboundPacket(KnownWaystonesMessage.TYPE, KnownWaystonesMessage.class, KnownWaystonesMessage::encode, KnownWaystonesMessage::decode, KnownWaystonesMessage::handle);

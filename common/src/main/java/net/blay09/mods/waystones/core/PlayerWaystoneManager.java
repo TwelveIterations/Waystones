@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.core;
 import com.mojang.authlib.GameProfile;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmEnvironment;
+import net.blay09.mods.waystones.WaystoneSortMode;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
@@ -230,6 +231,14 @@ public class PlayerWaystoneManager {
 
     public static List<UUID> ensureSortingIndex(Player player, Collection<? extends Waystone> waystones) {
         return getPlayerWaystoneData(player.level()).ensureSortingIndex(player, waystones);
+    }
+
+    public static WaystoneSortMode getWaystoneSortMode(Player player) {
+        return getPlayerWaystoneData(player.level()).getWaystoneSortMode(player);
+    }
+
+    public static void setWaystoneSortMode(Player player, WaystoneSortMode sortMode) {
+        getPlayerWaystoneData(player.level()).setWaystoneSortMode(player, sortMode);
     }
 
     public static void sortWaystoneAsFirst(Player player, UUID waystoneUid) {

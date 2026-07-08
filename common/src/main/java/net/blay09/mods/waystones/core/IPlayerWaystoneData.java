@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.core;
 
+import net.blay09.mods.waystones.WaystoneSortMode;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneGroup;
 import net.minecraft.network.chat.Component;
@@ -18,6 +19,8 @@ public interface IPlayerWaystoneData {
     List<UUID> getSortingIndex(Player player);
     List<UUID> ensureSortingIndex(Player player, Collection<? extends Waystone> waystones);
     void setSortingIndex(Player player, List<UUID> sortingIndex);
+    WaystoneSortMode getWaystoneSortMode(Player player);
+    void setWaystoneSortMode(Player player, WaystoneSortMode sortMode);
     Collection<Waystone> getWaystones(Player player);
     Optional<Component> getWaystoneAlias(Player player, UUID waystoneUid);
     void setWaystoneAlias(Player player, UUID waystoneUid, @Nullable Component alias);

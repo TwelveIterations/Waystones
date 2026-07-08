@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.core;
 
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
+import net.blay09.mods.waystones.WaystoneSortMode;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneGroup;
 import net.blay09.mods.waystones.api.WaystoneGroups;
@@ -19,6 +20,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     private final Map<UUID, Component> aliases = new HashMap<>();
     private final SetMultimap<UUID, ResourceLocation> waystoneToConfiguredGroups = MultimapBuilder.hashKeys().hashSetValues().build();
     private final Map<ResourceLocation, WaystoneGroup> groupRegistry = new LinkedHashMap<>();
+    private WaystoneSortMode waystoneSortMode = WaystoneSortMode.MANUAL;
 
     @Override
     public void activateWaystone(Player player, Waystone waystone) {
@@ -183,6 +185,16 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     public void setSortingIndex(Player player, List<UUID> sortingIndex) {
         this.sortingIndex.clear();
         this.sortingIndex.addAll(sortingIndex);
+    }
+
+    @Override
+    public WaystoneSortMode getWaystoneSortMode(Player player) {
+        return waystoneSortMode;
+    }
+
+    @Override
+    public void setWaystoneSortMode(Player player, WaystoneSortMode sortMode) {
+        waystoneSortMode = sortMode;
     }
 
     public void setWaystones(Player player, Collection<? extends Waystone> waystones) {

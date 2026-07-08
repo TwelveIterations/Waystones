@@ -2,6 +2,7 @@
 package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.waystones.WaystoneSortMode;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneGroup;
 import net.blay09.mods.waystones.api.WaystoneGroups;
@@ -18,6 +19,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     private static final String TAG_NAME = "WaystonesData";
     private static final String ACTIVATED_WAYSTONES = "Waystones";
     private static final String SORTING_INDEX = "SortingIndex";
+    private static final String WAYSTONE_SORT_MODE = "WaystoneSortMode";
     private static final String COOLDOWNS = "Cooldowns";
     private static final String ALIASES = "Aliases";
     private static final String GROUPS = "Groups";
@@ -232,6 +234,19 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
         for (final var waystoneUid : sortingIndex) {
             sortingIndexData.add(StringTag.valueOf(waystoneUid.toString()));
         }
+    }
+
+    @Override
+    public WaystoneSortMode getWaystoneSortMode(Player player) {
+        final var waystonesData = getWaystonesData(player);
+        return waystonesData.contains(WAYSTONE_SORT_MODE)
+                ? WaystoneSortMode.byName(waystonesData.getString(WAYSTONE_SORT_MODE))
+                : WaystoneSortMode.MANUAL;
+    }
+
+    @Override
+    public void setWaystoneSortMode(Player player, WaystoneSortMode sortMode) {
+        getWaystonesData(player).putString(WAYSTONE_SORT_MODE, sortMode.getSerializedName());
     }
 
     @Override
