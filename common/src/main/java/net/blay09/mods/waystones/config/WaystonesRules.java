@@ -250,7 +250,7 @@ public class WaystonesRules {
                 .filter(waystone -> waystone.getWaystoneKind().equals(WaystoneKinds.FLEETING_MEMORIAL))
                 .isPresent());
 
-        it.registerSimpleEffect(id("is_player"), context
+        it.registerSimpleEffect(id("is_twinbound"), context
                 -> WaystoneRuleContext.getEffectiveWaystone(context)
                 .filter(waystone -> waystone.getWaystoneKind().equals(WaystoneKinds.TWINBOUND_FEATHER))
                 .isPresent());
