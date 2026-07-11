@@ -70,7 +70,7 @@ public abstract class WaystoneSelectionScreenBase extends WaystoneContainerScree
     public WaystoneSelectionScreenBase(WaystoneSelectionMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title, 270, 200);
         this.playerInventory = playerInventory;
-        waystones = container.getWaystones();
+        waystones = new ArrayList<>(container.getWaystones());
         PlayerWaystoneManager.ensureSortingIndex(playerInventory.player, waystones);
         filteredWaystones = new ArrayList<>(waystones);
         final var sorting = getSorting();
@@ -219,6 +219,13 @@ public abstract class WaystoneSelectionScreenBase extends WaystoneContainerScree
         if (waystoneList != null) {
             waystoneList.setWaystones(filteredWaystones);
         }
+    }
+
+    protected void removeWaystoneLocally(Waystone waystone) {
+        final var waystoneUid = waystone.getWaystoneUid();
+        waystones.removeIf(it -> it.getWaystoneUid().equals(waystoneUid));
+        filteredWaystones.removeIf(it -> it.getWaystoneUid().equals(waystoneUid));
+        updateList();
     }
 
     protected boolean shouldShowWaystone(Waystone waystone) {
