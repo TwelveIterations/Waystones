@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.requirement;
 
+import net.blay09.mods.shogi.coercion.ComponentHolder;
 import net.blay09.mods.shogi.common.effect.cost.ExperienceLevelCostInformation;
 import net.blay09.mods.shogi.common.effect.cost.ExperiencePointsCostInformation;
 import net.blay09.mods.shogi.common.effect.cost.ItemCostInformation;
@@ -41,8 +42,17 @@ public class RequirementComponentResolvers {
 
     public static Component resolveOrDefault(List<Object> requirements) {
         return resolve(requirements)
+                .or(() -> requirements.stream().findFirst().map(RequirementComponentResolvers::getFallbackReason))
                 .map(reason -> Component.translatable("chat.waystones.requirements_not_met.specific", reason))
                 .orElseGet(() -> Component.translatable("chat.waystones.requirements_not_met"));
+    }
+
+    public static Component getFallbackReason(Object requirement) {
+        if (requirement instanceof ComponentHolder componentHolder) {
+            return componentHolder.component();
+        }
+
+        return Component.literal(requirement.toString());
     }
 
     public static void registerDefaults() {
