@@ -15,6 +15,7 @@ public class RequirementClientRegistry {
     private final static Map<Class<?>, RequirementRenderer<?>> renderers = new HashMap<>();
     private final static Map<Class<?>, RequirementMerger<?>> mergers = new HashMap<>();
     private final static CombinedRequirementRenderer LIST_RENDERER = new CombinedRequirementRenderer();
+    private final static FallbackRequirementRenderer FALLBACK_RENDERER = new FallbackRequirementRenderer();
 
     public static <T> void registerRenderer(Class<? extends T> displayClass, RequirementRenderer<T> renderer) {
         renderers.put(displayClass, renderer);
@@ -31,7 +32,7 @@ public class RequirementClientRegistry {
 
     @SuppressWarnings("unchecked")
     public static <T> RequirementRenderer<T> getRenderer(T requirement) {
-        return (RequirementRenderer<T>) renderers.get(requirement.getClass());
+        return (RequirementRenderer<T>) renderers.getOrDefault(requirement.getClass(), FALLBACK_RENDERER);
     }
 
     @SuppressWarnings("unchecked")
