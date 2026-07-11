@@ -78,9 +78,9 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
     public void deleteWaystone(Waystone waystone) {
         final var player = Objects.requireNonNull(Minecraft.getInstance().player);
         PlayerWaystoneManager.deactivateWaystone(player, waystone);
-        waystones.remove(waystone);
+        removeWaystoneLocally(waystone);
+        parent.removeWaystoneLocally(waystone);
         Balm.networking().sendToServer(new ServerboundRemoveWaystonePacket(waystone.getWaystoneUid()));
-        updateList();
     }
 
     public void openPersonalWaystoneSettings(Waystone waystone) {
