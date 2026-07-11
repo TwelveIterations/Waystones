@@ -70,7 +70,7 @@ public abstract class WaystoneSelectionScreenBase extends WaystoneContainerScree
         imageWidth = 270;
         imageHeight = BASE_IMAGE_HEIGHT;
         this.playerInventory = playerInventory;
-        waystones = container.getWaystones();
+        waystones = new ArrayList<>(container.getWaystones());
         sortMode = PlayerWaystoneManager.getWaystoneSortMode(playerInventory.player);
         PlayerWaystoneManager.ensureSortingIndex(Minecraft.getInstance().player, waystones);
         filteredWaystones = new ArrayList<>(waystones);
@@ -221,6 +221,13 @@ public abstract class WaystoneSelectionScreenBase extends WaystoneContainerScree
         if (waystoneList != null) {
             waystoneList.setWaystones(filteredWaystones);
         }
+    }
+
+    protected void removeWaystoneLocally(Waystone waystone) {
+        final var waystoneUid = waystone.getWaystoneUid();
+        waystones.removeIf(it -> it.getWaystoneUid().equals(waystoneUid));
+        filteredWaystones.removeIf(it -> it.getWaystoneUid().equals(waystoneUid));
+        updateList();
     }
 
     protected boolean shouldShowWaystone(Waystone waystone) {
