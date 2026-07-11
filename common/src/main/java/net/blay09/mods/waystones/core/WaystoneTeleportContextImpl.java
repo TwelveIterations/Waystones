@@ -2,15 +2,11 @@ package net.blay09.mods.waystones.core;
 
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.shogi.coercion.Coercion;
-import net.blay09.mods.shogi.common.effect.cost.DamageItem;
-import net.blay09.mods.shogi.common.effect.cost.ExperienceLevelCost;
-import net.blay09.mods.shogi.common.effect.cost.ExperiencePointsCost;
-import net.blay09.mods.shogi.common.effect.server.cooldown.CooldownCost;
+import net.blay09.mods.shogi.context.executor.DeferredEffectExecutor;
 import net.blay09.mods.shogi.context.executor.EffectExecutor;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
-import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.config.rules.WaystoneRuleContext;
 import net.blay09.mods.waystones.config.rules.WaystonesEffectExecutors;
@@ -91,7 +87,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public WaystoneTeleportContext setFromWaystone(@Nullable Waystone fromWaystone) {
         this.fromWaystone = fromWaystone;
-        this.requirementsDirty = true;
+        invalidateRequirements();
         return this;
     }
 
@@ -103,7 +99,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public WaystoneTeleportContext setWarpItem(ItemStack warpItem) {
         this.warpItem = warpItem;
-        this.requirementsDirty = true;
+        invalidateRequirements();
         return this;
     }
 
@@ -115,7 +111,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public WaystoneTeleportContext setWarpHand(InteractionHand warpHand) {
         this.warpHand = warpHand;
-        this.requirementsDirty = true;
+        invalidateRequirements();
         return this;
     }
 
@@ -154,7 +150,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public WaystoneTeleportContext addFlag(Identifier flag) {
         if (flags.add(flag)) {
-            requirementsDirty = true;
+            invalidateRequirements();
         }
         return this;
     }
@@ -162,7 +158,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public WaystoneTeleportContext removeFlag(Identifier flag) {
         if (flags.remove(flag)) {
-            requirementsDirty = true;
+            invalidateRequirements();
         }
         return this;
     }
@@ -170,6 +166,9 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public Either<List<Object>, List<Object>> getRequirements() {
         if (requirementsDirty) {
+            if (executor instanceof DeferredEffectExecutor) {
+                executor = WaystonesEffectExecutors.deferred();
+            }
             //noinspection unchecked
             requirements = (Either<List<Object>, List<Object>>) (Either<?, ?>) WaystonesRules.warpRequirements.get(this)
                     .mapLeft(Coercion.LIST)
