@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -31,6 +32,9 @@ public class RequestManageWaystoneModifiersMessage implements CustomPacketPayloa
     }
 
     public static void handle(ServerPlayer player, RequestManageWaystoneModifiersMessage message) {
+        if (!WaystonesConfig.getActive().teleports.enableModifiers) {
+            return;
+        }
         final var level = player.level();
         final var blockEntity = level.isLoaded(message.pos) ? level.getBlockEntity(message.pos) : null;
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {

@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
@@ -83,21 +84,25 @@ public class WaystoneEditScreen extends WaystoneContainerScreen<WaystoneEditMenu
         addRenderableWidget(visibilityButton);
         y += 24;
 
-        final var modifierSprites = new WidgetSprites(
-                id("edit_waystone/modifier_button"),
-                id("edit_waystone/modifier_button_highlighted"));
-        modifierButton = new ImageButton(20,
-                20,
-                modifierSprites,
-                button -> {
-                    saveWaystoneSettings();
-                    Balm.getNetworking().sendToServer(new RequestManageWaystoneModifiersMessage(menu.getWaystone().getPos()));
-                },
-                Component.translatable("gui.waystones.waystone_settings.manage_modifiers"));
-        modifierButton.setPosition(leftPos, y);
-        modifierButton.active = menu.canEdit();
-        addRenderableWidget(modifierButton);
-        y += 24;
+        if (WaystonesConfig.getActive().teleports.enableModifiers) {
+            final var modifierSprites = new WidgetSprites(
+                    id("edit_waystone/modifier_button"),
+                    id("edit_waystone/modifier_button_highlighted"));
+            modifierButton = new ImageButton(20,
+                    20,
+                    modifierSprites,
+                    button -> {
+                        saveWaystoneSettings();
+                        Balm.getNetworking().sendToServer(new RequestManageWaystoneModifiersMessage(menu.getWaystone().getPos()));
+                    },
+                    Component.translatable("gui.waystones.waystone_settings.manage_modifiers"));
+            modifierButton.setPosition(leftPos, y);
+            modifierButton.active = menu.canEdit();
+            addRenderableWidget(modifierButton);
+            y += 24;
+        } else {
+            modifierButton = null;
+        }
 
         final var saveButton = Button.builder(
                         Component.translatable(menu.canEdit() ? "gui.waystones.waystone_settings.save" : "gui.waystones.waystone_settings.close"),

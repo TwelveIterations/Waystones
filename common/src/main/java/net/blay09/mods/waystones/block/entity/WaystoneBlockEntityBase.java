@@ -15,6 +15,7 @@ import net.blay09.mods.waystones.api.error.WaystoneEditError;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.component.ModComponents;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
@@ -322,6 +323,9 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     }
 
     public Optional<MenuProvider> getModifierMenuProvider(ServerPlayer player) {
+        if (!WaystonesConfig.getActive().teleports.enableModifiers) {
+            return Optional.empty();
+        }
         final var waystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, getWaystone());
         return Optional.of(new BalmMenuProvider<PersonalizedWaystoneImpl>() {
             @Override
