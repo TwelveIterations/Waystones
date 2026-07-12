@@ -37,127 +37,6 @@ import static net.blay09.mods.waystones.Waystones.id;
 
 public class WaystonesRules {
 
-    public static final ShogiValue<WaystoneTeleportContext, List<?>> warpRequirements = Shogi.maybe(id("warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST);
-    public static final ShogiValue<WaystoneTeleportContext, List<?>> inventoryButtonWarpRequirements = Shogi.maybe(id("inventory_button_warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST).networked();
-    public static final ShogiValue<ShogiContext, List<?>> afterWarpEffects = Shogi.maybe(id("after_warp_effects"), (ShogiContext context) -> {
-        if (!WaystonesConfig.getActive().rules.enableModifiers) {
-            return Either.left(Collections.emptyList());
-        }
-
-        if (!(context.entity() instanceof LivingEntity livingEntity)) {
-            return Either.left(Collections.emptyList());
-        }
-
-        if (!(context.blockEntity() instanceof BlockEntity blockEntity)) {
-            return Either.left(Collections.emptyList());
-        }
-
-        final var container = Balm.capabilities().getCapability(blockEntity, CommonCapabilities.CONTAINER);
-
-        int fireSeconds = 0;
-        int poisonSeconds = 0;
-        int blindSeconds = 0;
-        int featherFallSeconds = 0;
-        int fireResistanceSeconds = 0;
-        int witherSeconds = 0;
-        int potency = 1;
-        List<ItemStack> curativeItems = new ArrayList<>();
-        if (container != null) {
-            for (int i = 0; i < container.getContainerSize(); i++) {
-                ItemStack itemStack = container.getItem(i);
-                if (itemStack.is(ModItemTags.WARP_MODIFIERS_SETS_ON_FIRE)) {
-                    fireSeconds += itemStack.getCount();
-                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_POISONS)) {
-                    poisonSeconds += itemStack.getCount();
-                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_BLINDS)) {
-                    blindSeconds += itemStack.getCount();
-                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_CURES)) {
-                    curativeItems.add(itemStack);
-                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_AMPLIFIES)) {
-                    potency = Math.min(4, potency + itemStack.getCount());
-                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_FEATHER_FALLS)) {
-                    featherFallSeconds = Math.min(8, featherFallSeconds + itemStack.getCount());
-                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_RESISTS_FIRE)) {
-                    fireResistanceSeconds = Math.min(8, fireResistanceSeconds + itemStack.getCount());
-                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_WITHERS)) {
-                    witherSeconds += itemStack.getCount();
-                }
-            }
-        }
-
-        if (fireSeconds > 0) {
-            livingEntity.setRemainingFireTicks(fireSeconds * 20);
-        }
-        if (poisonSeconds > 0) {
-            livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, poisonSeconds * 20, potency));
-        }
-        if (blindSeconds > 0) {
-            livingEntity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, blindSeconds * 20, potency));
-        }
-        if (featherFallSeconds > 0) {
-            livingEntity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, featherFallSeconds * 20, potency));
-        }
-        if (fireResistanceSeconds > 0) {
-            livingEntity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, fireResistanceSeconds * 20, potency));
-        }
-        if (witherSeconds > 0) {
-            livingEntity.addEffect(new MobEffectInstance(MobEffects.WITHER, witherSeconds * 20, potency));
-        }
-        if (!curativeItems.isEmpty()) {
-            livingEntity.removeAllEffects();
-        }
-        return Either.left(Collections.emptyList());
-    }).coerce(Coercion.LIST);
-    public static final ShogiValue<Entity, Integer> warpStoneUseTime = Shogi.intValue(id("warp_stone_use_time"), _ -> 32);
-    public static final ShogiValue<WarpPlateBlockEntity, Float> warpPlateUseTimeMultiplier = Shogi.floatValue(id("warp_plate_use_time_multiplier"), (WarpPlateBlockEntity context) -> {
-        final var container = context.getContainer();
-        float useTimeMultiplier = 1f;
-        if (container != null) {
-            for (int i = 0; i < container.getContainerSize(); i++) {
-                ItemStack itemStack = container.getItem(i);
-                if (itemStack.is(ModItemTags.WARP_MODIFIERS_SPEEDS_UP_WARP_PLATE)) {
-                    useTimeMultiplier -= 0.016f * itemStack.getCount();
-                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_SLOWS_DOWN_WARP_PLATE)) {
-                    useTimeMultiplier += 0.016f * itemStack.getCount();
-                }
-            }
-        }
-        return useTimeMultiplier;
-    }).coerce(Coercion.FLOAT);
-
-    public static final ShogiValue<WarpPlateBlockEntity, Integer> warpPlateUseTime = Shogi.intValue(id("warp_plate_use_time"), context -> (int) (Mth.clamp(15 * warpPlateUseTimeMultiplier.getOrDefault(context), 1, 30)));
-    public static final ShogiValue<Entity, Integer> scrollUseTime = Shogi.intValue(id("scroll_use_time"), _ -> 32);
-
-    public static final ShogiValue<ShogiContext, Boolean> mayManageGlobalWaystones = Shogi.maybe(id("may_manage_global_waystones"), (ShogiContext context) -> {
-        final var player = context.requirePlayer();
-        final var config = WaystonesConfig.getActive();
-        if (config.rules.allowEveryoneToManageGlobalWaystones) {
-            return Either.left(true);
-        }
-        if (config.rules.defaultVisibility == WaystonesConfig.DefaultWaystoneVisibility.GLOBAL) {
-            return Either.left(true);
-        }
-        if (!player.isCreative()) {
-            return Either.right(Component.translatable("chat.waystones.only_creative_can_edit"));
-        }
-        return Either.left(true);
-    }).coerce(Coercion.BOOLEAN);
-
-    public static final ShogiValue<ShogiContext, Boolean> mayEdit = Shogi.maybe(id("may_edit"), (ShogiContext context) -> {
-        final var player = context.requirePlayer();
-        final var waystone = WaystoneRuleContext.getEffectiveWaystone(context).orElseThrow();
-        if (waystone.hasOwner() && !waystone.isOwner(player)) {
-            return Either.right(Component.translatable("chat.waystones.only_owner_can_edit"));
-        }
-        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
-            final var manageGlobalResult = mayManageGlobalWaystones.get(context);
-            if (manageGlobalResult.right().isPresent()) {
-                return manageGlobalResult;
-            }
-        }
-        return Either.left(true);
-    }).coerce(Coercion.BOOLEAN);
-
     public static final ShogiScope scope = Shogi.scope(id("rules"), it -> {
         it.setDefaultNamespaces(List.of("waystones", "shogi"));
 
@@ -263,6 +142,127 @@ public class WaystonesRules {
                     .isPresent());
         }
     });
+
+    public static final ShogiValue<WaystoneTeleportContext, List<?>> warpRequirements = scope.maybe(id("warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST);
+    public static final ShogiValue<WaystoneTeleportContext, List<?>> inventoryButtonWarpRequirements = scope.maybe(id("inventory_button_warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST).networked();
+    public static final ShogiValue<ShogiContext, List<?>> afterWarpEffects = scope.maybe(id("after_warp_effects"), (ShogiContext context) -> {
+        if (!WaystonesConfig.getActive().rules.enableModifiers) {
+            return Either.left(Collections.emptyList());
+        }
+
+        if (!(context.entity() instanceof LivingEntity livingEntity)) {
+            return Either.left(Collections.emptyList());
+        }
+
+        if (!(context.blockEntity() instanceof BlockEntity blockEntity)) {
+            return Either.left(Collections.emptyList());
+        }
+
+        final var container = Balm.capabilities().getCapability(blockEntity, CommonCapabilities.CONTAINER);
+
+        int fireSeconds = 0;
+        int poisonSeconds = 0;
+        int blindSeconds = 0;
+        int featherFallSeconds = 0;
+        int fireResistanceSeconds = 0;
+        int witherSeconds = 0;
+        int potency = 1;
+        List<ItemStack> curativeItems = new ArrayList<>();
+        if (container != null) {
+            for (int i = 0; i < container.getContainerSize(); i++) {
+                ItemStack itemStack = container.getItem(i);
+                if (itemStack.is(ModItemTags.WARP_MODIFIERS_SETS_ON_FIRE)) {
+                    fireSeconds += itemStack.getCount();
+                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_POISONS)) {
+                    poisonSeconds += itemStack.getCount();
+                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_BLINDS)) {
+                    blindSeconds += itemStack.getCount();
+                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_CURES)) {
+                    curativeItems.add(itemStack);
+                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_AMPLIFIES)) {
+                    potency = Math.min(4, potency + itemStack.getCount());
+                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_FEATHER_FALLS)) {
+                    featherFallSeconds = Math.min(8, featherFallSeconds + itemStack.getCount());
+                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_RESISTS_FIRE)) {
+                    fireResistanceSeconds = Math.min(8, fireResistanceSeconds + itemStack.getCount());
+                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_WITHERS)) {
+                    witherSeconds += itemStack.getCount();
+                }
+            }
+        }
+
+        if (fireSeconds > 0) {
+            livingEntity.setRemainingFireTicks(fireSeconds * 20);
+        }
+        if (poisonSeconds > 0) {
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, poisonSeconds * 20, potency));
+        }
+        if (blindSeconds > 0) {
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, blindSeconds * 20, potency));
+        }
+        if (featherFallSeconds > 0) {
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, featherFallSeconds * 20, potency));
+        }
+        if (fireResistanceSeconds > 0) {
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, fireResistanceSeconds * 20, potency));
+        }
+        if (witherSeconds > 0) {
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.WITHER, witherSeconds * 20, potency));
+        }
+        if (!curativeItems.isEmpty()) {
+            livingEntity.removeAllEffects();
+        }
+        return Either.left(Collections.emptyList());
+    }).coerce(Coercion.LIST);
+    public static final ShogiValue<Entity, Integer> warpStoneUseTime = scope.intValue(id("warp_stone_use_time"), _ -> 32);
+    public static final ShogiValue<WarpPlateBlockEntity, Float> warpPlateUseTimeMultiplier = scope.floatValue(id("warp_plate_use_time_multiplier"), (WarpPlateBlockEntity context) -> {
+        final var container = context.getContainer();
+        float useTimeMultiplier = 1f;
+        if (container != null) {
+            for (int i = 0; i < container.getContainerSize(); i++) {
+                ItemStack itemStack = container.getItem(i);
+                if (itemStack.is(ModItemTags.WARP_MODIFIERS_SPEEDS_UP_WARP_PLATE)) {
+                    useTimeMultiplier -= 0.016f * itemStack.getCount();
+                } else if (itemStack.is(ModItemTags.WARP_MODIFIERS_SLOWS_DOWN_WARP_PLATE)) {
+                    useTimeMultiplier += 0.016f * itemStack.getCount();
+                }
+            }
+        }
+        return useTimeMultiplier;
+    }).coerce(Coercion.FLOAT);
+
+    public static final ShogiValue<WarpPlateBlockEntity, Integer> warpPlateUseTime = scope.intValue(id("warp_plate_use_time"), context -> (int) (Mth.clamp(15 * warpPlateUseTimeMultiplier.getOrDefault(context), 1, 30)));
+    public static final ShogiValue<Entity, Integer> scrollUseTime = scope.intValue(id("scroll_use_time"), _ -> 32);
+
+    public static final ShogiValue<ShogiContext, Boolean> mayManageGlobalWaystones = scope.maybe(id("may_manage_global_waystones"), (ShogiContext context) -> {
+        final var player = context.requirePlayer();
+        final var config = WaystonesConfig.getActive();
+        if (config.rules.allowEveryoneToManageGlobalWaystones) {
+            return Either.left(true);
+        }
+        if (config.rules.defaultVisibility == WaystonesConfig.DefaultWaystoneVisibility.GLOBAL) {
+            return Either.left(true);
+        }
+        if (!player.isCreative()) {
+            return Either.right(Component.translatable("chat.waystones.only_creative_can_edit"));
+        }
+        return Either.left(true);
+    }).coerce(Coercion.BOOLEAN);
+
+    public static final ShogiValue<ShogiContext, Boolean> mayEdit = scope.maybe(id("may_edit"), (ShogiContext context) -> {
+        final var player = context.requirePlayer();
+        final var waystone = WaystoneRuleContext.getEffectiveWaystone(context).orElseThrow();
+        if (waystone.hasOwner() && !waystone.isOwner(player)) {
+            return Either.right(Component.translatable("chat.waystones.only_owner_can_edit"));
+        }
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
+            final var manageGlobalResult = mayManageGlobalWaystones.get(context);
+            if (manageGlobalResult.right().isPresent()) {
+                return manageGlobalResult;
+            }
+        }
+        return Either.left(true);
+    }).coerce(Coercion.BOOLEAN);
 
     private static final CachedShogiRule cachedWarpRequirements = CachedShogiRule.ofRules(scope, WaystonesRules::getWarpRequirementsWithSettings);
 
