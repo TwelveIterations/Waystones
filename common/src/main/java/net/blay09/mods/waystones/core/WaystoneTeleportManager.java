@@ -146,10 +146,10 @@ public class WaystoneTeleportManager {
     private static WaystoneTeleportResult performTeleport(WaystoneTeleportContext context, TeleportDestination destination) {
         final var result = new WaystoneTeleportResult(new ArrayList<>());
         final var sourceLevel = (ServerLevel) context.getEntity().level();
-        teleportEntityAndAttached(context.getEntity(), context, destination, result);
-        context.getAdditionalEntities()
-                .stream().filter(entity -> isPendingEntityStillValid(entity, sourceLevel))
-                .forEach(additionalEntity -> teleportEntityAndAttached(additionalEntity, context, destination, result));
+        final var batch = new EntityTeleportBatch(context, destination, result);
+        batch.teleportEntityAndAttached(context.getEntity());
+        context.getAdditionalEntities().forEach(batch::teleportEntityAndAttached);
+        batch.restoreMounts();
 
         final var teleportedEntities = result.teleportedEntities();
         final var sourcePos = context.getEntity().blockPosition();
@@ -179,50 +179,7 @@ public class WaystoneTeleportManager {
         return result;
     }
 
-    private static void teleportEntityAndAttached(Entity entity, WaystoneTeleportContext context, TeleportDestination destination, WaystoneTeleportResult result) {
-        final var mount = entity.getVehicle();
-        Entity teleportedMount = null;
-        if (mount != null) {
-            final var teleportedMountResult = teleportEntity(context, mount, destination);
-            if (teleportedMountResult.isSuccessful()) {
-                teleportedMount = teleportedMountResult.entity();
-            }
-            result.addAdditionalResult(teleportedMountResult);
-        }
-
-        final List<Mob> leashedEntities = context.getLeashedEntities();
-        final List<Entity> teleportedLeashedEntities = new ArrayList<>();
-        leashedEntities.forEach(leashedEntity -> {
-            final var teleportedLeashedEntity = teleportEntity(context, leashedEntity, destination);
-            result.addAdditionalResult(teleportedLeashedEntity);
-            if (teleportedLeashedEntity.isSuccessful()) {
-                teleportedLeashedEntities.add(teleportedLeashedEntity.entity());
-            }
-        });
-
-        final var teleportedEntity = teleportEntity(context, entity, destination);
-        if (entity == context.getEntity()) {
-            result.setPrimaryResult(teleportedEntity);
-        } else {
-            result.addAdditionalResult(teleportedEntity);
-        }
-
-        // We have to update the leashedToEntity in case the player was cloned during dimensional teleport
-        if (teleportedEntity.isSuccessful()) {
-            teleportedLeashedEntities.forEach(teleportedLeashedEntity -> {
-                if (teleportedLeashedEntity instanceof Mob teleportedLeashedMob) {
-                    teleportedLeashedMob.setLeashedTo(teleportedEntity.entity(), true);
-                }
-            });
-        }
-
-        if (teleportedMount != null) {
-            // TODO We do not remount currently. It causes weird sync issues and it seems that Vanilla does not do it either.
-            //      Would have to look further at what point it's safe to remount without triggering movement correction.
-        }
-    }
-
-    private static EntityTeleportResult teleportEntity(WaystoneTeleportContext context, Entity entity, TeleportDestination destination) {
+    public static EntityTeleportResult teleportEntity(WaystoneTeleportContext context, Entity entity, TeleportDestination destination) {
         ServerLevel targetLevel = (ServerLevel) destination.level();
         Vec3 targetPosition = destination.location();
         Direction direction = destination.direction();
@@ -603,7 +560,7 @@ public class WaystoneTeleportManager {
         }
         final var passengers = entity.getPassengers();
         final var result = new ArrayList<>(passengers);
-        final var vehicle = entity.getVehicle();
+        final var vehicle = entity.getControlledVehicle();
         if (vehicle != null) {
             result.addAll(vehicle.getPassengers());
         }
