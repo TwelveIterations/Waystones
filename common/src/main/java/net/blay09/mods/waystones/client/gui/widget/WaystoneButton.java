@@ -70,7 +70,7 @@ public class WaystoneButton extends AbstractWaystoneButton {
         final var font = Minecraft.getInstance().font;
         final var player = Objects.requireNonNull(Minecraft.getInstance().player);
         final var requirement = Either.unwrap(warpRequirements);
-        final var renderer = RequirementClientRegistry.getListRenderer();
+        final var renderer = warpRequirements.right().isPresent() ? RequirementClientRegistry.getErrorListRenderer() : RequirementClientRegistry.getListRenderer();
         renderer.renderWidget(player, requirement, guiGraphics, mouseX, mouseY, partialTicks, getX() + 2, getY() + 2);
 
         if (isHovered && mouseX < getX() + 2 + renderer.getWidth(player, requirement)) {

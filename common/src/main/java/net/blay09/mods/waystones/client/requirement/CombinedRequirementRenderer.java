@@ -9,12 +9,18 @@ import java.util.Comparator;
 import java.util.List;
 
 public class CombinedRequirementRenderer implements RequirementRenderer<List<Object>> {
+    private final boolean renderFallbacks;
+
+    public CombinedRequirementRenderer(boolean renderFallbacks) {
+        this.renderFallbacks = renderFallbacks;
+    }
+
     @Override
     public void renderWidget(Player player, List<Object> requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
         final var mergedRequirements = RequirementClientRegistry.mergeRequirements(requirement);
         final var sortedChildren = mergedRequirements
                 .stream()
-                .map(it -> Pair.of(it, RequirementClientRegistry.getRenderer(it)))
+                .map(it -> Pair.of(it, getRenderer(it)))
                 .sorted(Comparator.comparingInt(it -> it.getSecond() != null ? it.getSecond().getOrder() : 100))
                 .toList();
         var currentX = x;
@@ -31,7 +37,7 @@ public class CombinedRequirementRenderer implements RequirementRenderer<List<Obj
     public int getWidth(Player player, List<Object> requirement) {
         return RequirementClientRegistry.mergeRequirements(requirement)
                 .stream()
-                .map(it -> Pair.of(it, RequirementClientRegistry.getRenderer(it)))
+                .map(it -> Pair.of(it, getRenderer(it)))
                 .filter(it -> it.getSecond() != null)
                 .mapToInt(it -> it.getSecond().getWidth(player, it.getFirst()))
                 .sum();
@@ -41,9 +47,13 @@ public class CombinedRequirementRenderer implements RequirementRenderer<List<Obj
     public void appendHoverText(Player player, List<Object> requirement, List<Component> tooltip) {
         RequirementClientRegistry.mergeRequirements(requirement)
                 .stream()
-                .map(it -> Pair.of(it, RequirementClientRegistry.getRenderer(it)))
+                .map(it -> Pair.of(it, getRenderer(it)))
                 .filter(it -> it.getSecond() != null)
                 .sorted(Comparator.comparingInt(it -> it.getSecond().getOrder()))
                 .forEach(it -> it.getSecond().appendHoverText(player, it.getFirst(), tooltip));
+    }
+
+    private RequirementRenderer<Object> getRenderer(Object requirement) {
+        return renderFallbacks ? RequirementClientRegistry.getErrorRenderer(requirement) : RequirementClientRegistry.getRenderer(requirement);
     }
 }
