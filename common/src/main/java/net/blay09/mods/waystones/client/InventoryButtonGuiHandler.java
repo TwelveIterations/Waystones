@@ -119,7 +119,7 @@ public class InventoryButtonGuiHandler {
                     }
                 }
 
-                requirements.mapRight(Coercion.LIST).ifRight(failures -> RequirementClientRegistry.getListRenderer().appendHoverText(player, (List<Object>) failures, tooltip));
+                requirements.mapRight(Coercion.LIST).ifRight(failures -> RequirementClientRegistry.getErrorListRenderer().appendHoverText(player, (List<Object>) failures, tooltip));
 
                 final var font = Minecraft.getInstance().font;
                 final var visualTooltip = tooltip.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();
