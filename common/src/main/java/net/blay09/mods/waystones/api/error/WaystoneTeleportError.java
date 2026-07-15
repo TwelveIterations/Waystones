@@ -131,6 +131,12 @@ public class WaystoneTeleportError {
         }
     }
 
+    public static class DestinationOutOfBounds extends WaystoneTeleportError {
+        public DestinationOutOfBounds() {
+            super(Component.translatable("chat.waystones.destination_out_of_bounds"));
+        }
+    }
+
     public static class DestinationChunkLoadFailed extends WaystoneTeleportError {
         private final ResourceKey<Level> dimension;
         private final ChunkPos chunkPos;

@@ -20,7 +20,6 @@ import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -196,46 +195,32 @@ public class WaystoneTeleportManager {
         targetPosition = event.getTargetPosition();
         direction = event.getDirection();
 
-        float yaw = direction.toYRot();
+        float yaw = Mth.wrapDegrees(direction.toYRot());
+        float pitch = Mth.wrapDegrees(entity.getXRot());
         double x = targetPosition.x;
         double y = targetPosition.y;
         double z = targetPosition.z;
-        if (entity instanceof ServerPlayer) {
-            ChunkPos chunkPos = new ChunkPos(BlockPos.containing(x, y, z));
-            targetLevel.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkPos, 1, entity.getId());
-            entity.stopRiding();
-            if (((ServerPlayer) entity).isSleeping()) {
-                ((ServerPlayer) entity).stopSleepInBed(true, true);
+        if (!Level.isInSpawnableBounds(BlockPos.containing(x, y, z))) {
+            final var failedResult = EntityTeleportResult.failed(entity, destination, new WaystoneTeleportError.DestinationOutOfBounds());
+            Balm.getEvents().fireEvent(new WaystoneTeleportEntityEvent.Post(context, originalEntity, failedResult, destination, targetLevel, targetPosition, direction));
+            return failedResult;
+        }
+
+        if (!entity.teleportTo(targetLevel, x, y, z, Collections.emptySet(), yaw, pitch)) {
+            final var failedResult = EntityTeleportResult.failed(entity, destination, new WaystoneTeleportError.TeleportFailed());
+            Balm.getEvents().fireEvent(new WaystoneTeleportEntityEvent.Post(context, originalEntity, failedResult, destination, targetLevel, targetPosition, direction));
+            return failedResult;
+        }
+
+        if (entity.isRemoved()) {
+            final var teleportedEntity = targetLevel.getEntity(entity.getUUID());
+            if (teleportedEntity == null) {
+                final var failedResult = EntityTeleportResult.failed(entity, destination, new WaystoneTeleportError.TeleportFailed());
+                Balm.getEvents().fireEvent(new WaystoneTeleportEntityEvent.Post(context, originalEntity, failedResult, destination, targetLevel, targetPosition, direction));
+                return failedResult;
             }
 
-            if (targetLevel == entity.level()) {
-                ((ServerPlayer) entity).connection.teleport(x, y, z, yaw, entity.getXRot(), Collections.emptySet());
-            } else {
-                ((ServerPlayer) entity).teleportTo(targetLevel, x, y, z, yaw, entity.getXRot());
-            }
-
-            entity.setYHeadRot(yaw);
-        } else {
-            float pitch = Mth.clamp(entity.getXRot(), -90.0F, 90.0F);
-            if (targetLevel == entity.level()) {
-                entity.moveTo(x, y, z, yaw, pitch);
-                entity.setYHeadRot(yaw);
-            } else {
-                entity.unRide();
-                Entity oldEntity = entity;
-                entity = entity.getType().create(targetLevel);
-                if (entity == null) {
-                    final var failedResult = EntityTeleportResult.failed(oldEntity, destination, new WaystoneTeleportError.TeleportFailed());
-                    Balm.getEvents().fireEvent(new WaystoneTeleportEntityEvent.Post(context, originalEntity, failedResult, destination, targetLevel, targetPosition, direction));
-                    return failedResult;
-                }
-
-                entity.restoreFrom(oldEntity);
-                entity.moveTo(x, y, z, yaw, pitch);
-                entity.setYHeadRot(yaw);
-                oldEntity.setRemoved(Entity.RemovalReason.CHANGED_DIMENSION);
-                targetLevel.addDuringTeleport(entity);
-            }
+            entity = teleportedEntity;
         }
 
         if (!(entity instanceof LivingEntity) || !((LivingEntity) entity).isFallFlying()) {

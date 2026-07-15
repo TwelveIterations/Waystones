@@ -208,6 +208,7 @@
   "chat.waystones.source_item_missing": "You stopped holding the item to teleport.",
   "chat.waystones.source_waystone_out_of_range": "You moved too far away from the waystone.",
   "chat.waystones.teleport_failed": "The teleport failed.",
+  "chat.waystones.destination_out_of_bounds": "The destination is outside the world bounds.",
   "chat.waystones.destination_chunk_load_failed": "The destination could not be loaded.",
   "tooltip.waystones.cooldown_left": "Cooldown: %d seconds",
   "tooltip.waystones.bound_to": "Bound to: %s",
