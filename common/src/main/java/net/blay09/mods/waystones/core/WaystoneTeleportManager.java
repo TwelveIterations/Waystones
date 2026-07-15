@@ -241,8 +241,6 @@ public class WaystoneTeleportManager {
             ((PathfinderMob) entity).getNavigation().stop();
         }
 
-        sendHackySyncPacketsAfterTeleport(entity);
-
         final var teleportResult = EntityTeleportResult.success(entity, destination, new TeleportDestination(targetLevel, targetPosition, direction));
         WaystoneTeleportEntityEvent.Post.EVENT.invoker().accept(new WaystoneTeleportEntityEvent.Post(context, originalEntity, teleportResult, destination, targetLevel, targetPosition, direction));
         return teleportResult;
@@ -298,13 +296,6 @@ public class WaystoneTeleportManager {
         return waystone.resolveDestination(level)
                 .map(Either::<TeleportDestination, WaystoneTeleportError>left)
                 .orElseGet(() -> Either.right(new WaystoneTeleportError.InvalidWaystone(waystone)));
-    }
-
-    private static void sendHackySyncPacketsAfterTeleport(Entity entity) {
-        if (entity instanceof ServerPlayer player) {
-            // No idea why this is still needed since we're using the same code as /tp. Maybe /tp is broken too for interdimensional travel.
-            player.connection.send(new ClientboundSetExperiencePacket(player.experienceProgress, player.totalExperience, player.experienceLevel));
-        }
     }
 
     public static WaystoneTeleportResult tryTeleport(WaystoneTeleportContext context) {
