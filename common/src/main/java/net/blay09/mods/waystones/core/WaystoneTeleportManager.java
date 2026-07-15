@@ -202,45 +202,34 @@ public class WaystoneTeleportManager {
         targetPosition = event.getTargetPosition();
         direction = event.getDirection();
 
-        float yaw = direction.toYRot();
+        float yaw = Mth.wrapDegrees(direction.toYRot());
+        float pitch = Mth.wrapDegrees(entity.getXRot());
         double x = targetPosition.x;
         double y = targetPosition.y;
         double z = targetPosition.z;
         entity.resetFallDistance();
-        if (entity instanceof ServerPlayer) {
-            entity.stopRiding();
-            if (((ServerPlayer) entity).isSleeping()) {
-                ((ServerPlayer) entity).stopSleepInBed(true, true);
+
+        if (!Level.isInSpawnableBounds(BlockPos.containing(x, y, z))) {
+            final var failedResult = EntityTeleportResult.failed(entity, destination, new WaystoneTeleportError.DestinationOutOfBounds());
+            WaystoneTeleportEntityEvent.Post.EVENT.invoker().accept(new WaystoneTeleportEntityEvent.Post(context, originalEntity, failedResult, destination, targetLevel, targetPosition, direction));
+            return failedResult;
+        }
+
+        if (!entity.teleportTo(targetLevel, x, y, z, Set.of(), yaw, pitch, false)) {
+            final var failedResult = EntityTeleportResult.failed(entity, destination, new WaystoneTeleportError.TeleportFailed());
+            WaystoneTeleportEntityEvent.Post.EVENT.invoker().accept(new WaystoneTeleportEntityEvent.Post(context, originalEntity, failedResult, destination, targetLevel, targetPosition, direction));
+            return failedResult;
+        }
+
+        if (entity.isRemoved()) {
+            final var teleportedEntity = targetLevel.getEntity(entity.getUUID());
+            if (teleportedEntity == null) {
+                final var failedResult = EntityTeleportResult.failed(entity, destination, new WaystoneTeleportError.TeleportFailed());
+                WaystoneTeleportEntityEvent.Post.EVENT.invoker().accept(new WaystoneTeleportEntityEvent.Post(context, originalEntity, failedResult, destination, targetLevel, targetPosition, direction));
+                return failedResult;
             }
 
-            if (targetLevel == entity.level()) {
-                ((ServerPlayer) entity).connection.teleport(x, y, z, yaw, entity.getXRot());
-            } else {
-                entity.teleportTo(targetLevel, x, y, z, Set.of(), yaw, entity.getXRot(), false);
-            }
-
-            entity.setYHeadRot(yaw);
-        } else {
-            float pitch = Mth.clamp(entity.getXRot(), -90.0F, 90.0F);
-            if (targetLevel == entity.level()) {
-                entity.snapTo(x, y, z, yaw, pitch);
-                entity.setYHeadRot(yaw);
-            } else {
-                entity.unRide();
-                Entity oldEntity = entity;
-                entity = entity.getType().create(targetLevel, EntitySpawnReason.DIMENSION_TRAVEL);
-                if (entity == null) {
-                    final var failedResult = EntityTeleportResult.failed(oldEntity, destination, new WaystoneTeleportError.TeleportFailed());
-                    WaystoneTeleportEntityEvent.Post.EVENT.invoker().accept(new WaystoneTeleportEntityEvent.Post(context, originalEntity, failedResult, destination, targetLevel, targetPosition, direction));
-                    return failedResult;
-                }
-
-                entity.restoreFrom(oldEntity);
-                entity.snapTo(x, y, z, yaw, pitch);
-                entity.setYHeadRot(yaw);
-                oldEntity.setRemoved(Entity.RemovalReason.CHANGED_DIMENSION);
-                targetLevel.addDuringTeleport(entity);
-            }
+            entity = teleportedEntity;
         }
 
         if (!(entity instanceof LivingEntity) || !((LivingEntity) entity).isFallFlying()) {
