@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -12,7 +13,6 @@ import net.minecraft.client.gui.components.*;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import org.jspecify.annotations.Nullable;
 
@@ -110,7 +110,7 @@ public class WaystoneEditScreen extends WaystoneContainerScreen<WaystoneEditMenu
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (nameField != null && menu.canEdit() && nameField.isMouseOver(event.x(), event.y()) && event.button() == 1) {
+        if (nameField != null && menu.canEdit() && nameField.isMouseOver(event.x(), event.y()) && event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
             nameField.setValue("");
             return true;
         }

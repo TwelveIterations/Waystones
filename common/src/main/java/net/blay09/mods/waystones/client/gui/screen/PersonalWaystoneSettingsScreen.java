@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.MutablePersonalizedWaystone;
 import net.blay09.mods.waystones.api.WaystoneGroup;
@@ -135,7 +136,7 @@ public class PersonalWaystoneSettingsScreen extends WaystoneContainerScreen<Abst
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (aliasField != null && aliasField.isMouseOver(event.x(), event.y()) && event.button() == 1) {
+        if (aliasField != null && aliasField.isMouseOver(event.x(), event.y()) && event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
             aliasField.setValue("");
             return true;
         }

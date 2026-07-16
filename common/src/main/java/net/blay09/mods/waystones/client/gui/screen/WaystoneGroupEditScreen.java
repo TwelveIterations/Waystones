@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.platform.BalmEnvironment;
 import net.blay09.mods.waystones.api.WaystoneGroup;
@@ -80,7 +81,7 @@ public class WaystoneGroupEditScreen extends WaystoneContainerScreen<AbstractCon
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (nameField != null && nameField.isMouseOver(event.x(), event.y()) && event.button() == 1) {
+        if (nameField != null && nameField.isMouseOver(event.x(), event.y()) && event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
             nameField.setValue("");
             return true;
         }

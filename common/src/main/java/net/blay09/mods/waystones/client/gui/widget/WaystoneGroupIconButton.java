@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.blay09.mods.waystones.client.WaystoneGroupIcons;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -44,7 +45,7 @@ public class WaystoneGroupIconButton extends Button {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (event.button() == 1 && active && visible && isMouseOver(event.x(), event.y())) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT && active && visible && isMouseOver(event.x(), event.y())) {
             cycleIconBackwards();
             return true;
         }

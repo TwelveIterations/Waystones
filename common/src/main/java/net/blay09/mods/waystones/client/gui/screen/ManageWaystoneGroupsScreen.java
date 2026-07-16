@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.platform.BalmEnvironment;
 import net.blay09.mods.waystones.api.Waystone;
@@ -152,7 +153,7 @@ public class ManageWaystoneGroupsScreen extends WaystoneContainerScreen<Abstract
 
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
-        return this.getFocused() != null && this.isDragging() && event.button() == 0 && this.getFocused().mouseDragged(event, dragX, dragY);
+        return this.getFocused() != null && this.isDragging() && event.button() == InputConstants.MOUSE_BUTTON_LEFT && this.getFocused().mouseDragged(event, dragX, dragY);
     }
 
     @Override
