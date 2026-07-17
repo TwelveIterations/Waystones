@@ -28,7 +28,7 @@ public class WaystonesConfig {
     );
 
     public static final List<String> DEFAULT_WARP_REQUIREMENTS = List.of(
-            "$uses_xp #= any(source(is_waystone), source(is_warp_stone))",
+            "$uses_xp #= and(any(source(is_waystone), source(is_warp_stone)), not(target(is_fleeting_memorial)))",
             "$uses_xp -> $xp_points_cost = $distance * $xp_per_block",
             "$uses_xp + is_interdimensional -> $xp_points_cost = $interdimensional_xp_cost",
             "$uses_xp -> $xp_points_cost = clamp($xp_points_cost, 0, $max_xp_cost)",
