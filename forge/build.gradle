@@ -12,7 +12,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'maven-publish'
     id 'idea'
-    id 'net.darkhax.curseforgegradle' version '1.0.14'
+    id 'net.darkhax.curseforgegradle' version '1.3.33'
     id "com.modrinth.minotaur" version "2.+"
 }
 
