@@ -1,22 +1,7 @@
-- Added Red Nether Bricks Waystone, Purpur Waystone, Primsarine Waystone and Mud Bricks Waystone
-- Added `source_is_portal_scroll`, `target_is_warp_portal`, `target_is_fleeting_memorial` and `target_is_player` conditions for warp requirements
-- Added support for dimension-specific group icon overrides, used automatically instead of the generic Dimension icon if available
-- Fixed Waystone Selection, Manage Waystones and Manage Groups screens not growing to fill space on smaller GUI scales
-- Fixed Waystone Selection sort toggle choice not being saved
-- Fixed group icon toggle so it shows all group icon sprites provided by resource packs automatically
-- Fixed waystone registry not being updated with the waystone's actual world postiion on load
-- Fixed personal waystone settings not being properly saved for waystones that aren't backed by the store or a Twinbound Feather
-- Fixed GUI closing when trying to return from the Personal Waystone Settings screen
-- Fixed scrollbar not being draggable by mouse
-- Fixed drag to rearrange not working on the Manage Waystones and Manage Groups screens
-- Fixed `source_is_*_sharestone` condition checking target instead of source
-- Fixed warp stones on portstone item models rendering with invalid texture
-- Fixed some dynamic inbuilt groups only showing up after a relog upon becoming available
-- Fixed missing translation key for Portstones that have no Sharestones to teleport to
-- Fixed locating the nearest waystone to use player-aware distance checks for better Sable compatibility
-- Fixed warp plates to use level-aware distance and bounds checks for better Sable compatibility
-- API: Added `BuildWaystoneSelectionMenuEvent` to allow other mods to modify the list of waystones shown
-- API: Added `CollectDefaultWaystoneGroupsEvent` and `CollectDynamicWaystoneGroupsEvent` to allow other mods to define and assign new waystone groups
-- API: Added `WaystoneTeleportEvent.Prepare` to allow other mods to schedule preparation tasks to run before teleportation
-- API: Added `WaystoneTeleportEvent.Complete` which is fired for every teleport attempt with a list of results and errors
-- API: Added `WaystoneTeleportEntityEvent` which is fired for every entity involved in a teleport
+- Fixed crash when deleting a waystone
+- Fixed teleported entities remaining invisible to players in the target area
+- Fixed mounts and passengers not teleporting correctly
+- Fixed Fleeting Memorial so that it does not require xp
+  - If you have not made changes to your `warpRequirements`, it should update automatically
+  - If you are using custom `warpRequirements`, either reset them to the default and re-apply your changes,
+  - ... or manually add `"[target_is_fleeting_memorial] multiply_xp_cost(0)",`
