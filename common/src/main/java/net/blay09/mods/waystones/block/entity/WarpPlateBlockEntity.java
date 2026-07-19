@@ -109,6 +109,10 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     }
 
     public void onEntityCollision(Entity entity) {
+        if (entity.isPassenger()) {
+            return;
+        }
+
         if (WaystonePermissionManager.isEntityDeniedTeleports(entity)) {
             return;
         }
@@ -173,7 +177,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
                 if (entitiesOnTop == null) {
                     entitiesOnTop = getEntitiesOnTop();
                 }
-                if (!entity.isAlive() || !entitiesOnTop.contains(entity)) {
+                if (entity.isPassenger() || !entity.isAlive() || !entitiesOnTop.contains(entity)) {
                     iterator.remove();
                 } else if (ticksPassed > useTime) {
                     ItemStack targetAttunementStack = getTargetAttunementStack();
