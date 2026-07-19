@@ -5,12 +5,15 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "EntityMixin",
     "JigsawPlacementPlacerMixin",
+    "ServerEntityMixin",
     "ServerScoreboardMixin",
     "SinglePoolElementMixin",
     "StructureTemplatePoolAccessor"
   ],
   "client": [
+    "ClientLevelAccessor",
     "ItemPropertiesAccessor"
   ],
   "injectors": {

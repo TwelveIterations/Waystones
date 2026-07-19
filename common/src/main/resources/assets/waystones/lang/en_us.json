@@ -335,6 +335,8 @@
   "waystones.configuration.compatibility.preferJourneyMapIntegrationMod.tooltip": "If enabled, JourneyMap waypoints will only be created if the mod 'JourneyMap Integration' is not installed.",
   "waystones.configuration.compatibility.dynmap": "Enable Dynmap Support",
   "waystones.configuration.compatibility.dynmap.tooltip": "If enabled, Waystones will add markers for waystones and sharestones to Dynmap.",
+  "waystones.configuration.compatibility.fixVanillaTeleportBug": "Fix Vanilla Teleport Bug",
+  "waystones.configuration.compatibility.fixVanillaTeleportBug.tooltip": "Set to true to apply Waystones' entity teleport packet fix to all entity teleports, including vanilla and other mods.",
   "waystones.configuration.blueMap": "BlueMap",
   "waystones.configuration.blueMap.enabled": "Enable BlueMap Support",
   "waystones.configuration.blueMap.enabled.tooltip": "Controls whether Waystones' BlueMap integration should be loaded",

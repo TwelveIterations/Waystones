@@ -232,6 +232,7 @@ public class WaystoneTeleportManager {
             ((PathfinderMob) entity).getNavigation().stop();
         }
 
+        ((WaystoneTeleportedEntity) entity).waystones$markTeleportedByWaystone();
         sendHackySyncPacketsAfterTeleport(entity);
 
         final var teleportResult = EntityTeleportResult.success(entity, destination, new TeleportDestination(targetLevel, targetPosition, direction));

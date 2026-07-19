@@ -162,6 +162,9 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Comment("If enabled, Waystones will add markers for waystones and sharestones to Dynmap.")
         public boolean dynmap = true;
+
+        @Comment("Set to true to apply Waystones' entity teleport packet fix to all entity teleports, including vanilla and other mods.")
+        public boolean fixVanillaTeleportBug = false;
     }
 
     public static class BlueMap {
