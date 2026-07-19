@@ -14,7 +14,6 @@ public class ClientboundEntityPositionSyncMessage implements CustomPacketPayload
 
     public static final Type<ClientboundEntityPositionSyncMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
             "entity_position_sync"));
-    private static final double SNAP_DISTANCE_SQUARED = 4096.0;
 
     private final int entityId;
     private final Vec3 position;
@@ -38,15 +37,15 @@ public class ClientboundEntityPositionSyncMessage implements CustomPacketPayload
 
     public static void encode(FriendlyByteBuf buf, ClientboundEntityPositionSyncMessage message) {
         buf.writeVarInt(message.entityId);
-        writeVec3(buf, message.position);
-        writeVec3(buf, message.deltaMovement);
+        buf.writeVec3(message.position);
+        buf.writeVec3(message.deltaMovement);
         buf.writeFloat(message.yRot);
         buf.writeFloat(message.xRot);
         buf.writeBoolean(message.onGround);
     }
 
     public static ClientboundEntityPositionSyncMessage decode(FriendlyByteBuf buf) {
-        return new ClientboundEntityPositionSyncMessage(buf.readVarInt(), readVec3(buf), readVec3(buf), buf.readFloat(), buf.readFloat(), buf.readBoolean());
+        return new ClientboundEntityPositionSyncMessage(buf.readVarInt(), buf.readVec3(), buf.readVec3(), buf.readFloat(), buf.readFloat(), buf.readBoolean());
     }
 
     public static void handle(Player player, ClientboundEntityPositionSyncMessage message) {
@@ -59,7 +58,8 @@ public class ClientboundEntityPositionSyncMessage implements CustomPacketPayload
         entity.setDeltaMovement(message.deltaMovement);
 
         if (!entity.isControlledByLocalInstance()) {
-            if (shouldSnap(player, entity, message.position)) {
+            boolean tooBigToInterpolate = entity.position().distanceToSqr(message.position) > 4096;
+            if (tooBigToInterpolate || isTickingEntity(entity)) {
                 entity.moveTo(message.position, message.yRot, message.xRot);
                 if (entity.hasIndirectPassenger(player)) {
                     entity.positionRider(player);
@@ -73,26 +73,12 @@ public class ClientboundEntityPositionSyncMessage implements CustomPacketPayload
         }
     }
 
-    private static boolean shouldSnap(Player player, Entity entity, Vec3 position) {
-        return entity.position().distanceToSqr(position) > SNAP_DISTANCE_SQUARED || !isTicking(player, entity);
-    }
-
-    private static boolean isTicking(Player player, Entity entity) {
-        if (player.level() instanceof ClientLevel clientLevel) {
+    private static boolean isTickingEntity(Entity entity) {
+        if (entity.level() instanceof ClientLevel clientLevel) {
             return ((ClientLevelAccessor) clientLevel).waystones$getTickingEntities().contains(entity);
         }
 
         return true;
-    }
-
-    private static void writeVec3(FriendlyByteBuf buf, Vec3 vec) {
-        buf.writeDouble(vec.x);
-        buf.writeDouble(vec.y);
-        buf.writeDouble(vec.z);
-    }
-
-    private static Vec3 readVec3(FriendlyByteBuf buf) {
-        return new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
     }
 
     @Override
