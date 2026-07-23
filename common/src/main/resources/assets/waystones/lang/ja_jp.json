@@ -296,7 +296,7 @@
   "waystones.configuration.journeyMap.preferJourneyMapIntegrationMod.tooltip": "有効にすると、「JourneyMap Integration」Modが導入されていない場合のみ、この機能によるウェイポイントの自動作成を行います。",
   "waystones.configuration.dynmap": "Dynmap 連携",
   "waystones.configuration.dynmap.enabled": "Dynmap サポートを有効化",
-  "waystones.configuration.dynmap.enabled.tooltip": "有効にすると、Dynmap上に転移ポイントやシェアストーンのマーカーを追加します。",
+  "waystones.configuration.dynmap.enabled.tooltip": "有効にすると、Dynmap上に転移ポイントや共有転移ポイントのマーカーを追加します。",
   "waystones.configuration.blueMap": "BlueMap 連携",
   "waystones.configuration.blueMap.enabled": "BlueMap サポートを有効化",
   "waystones.configuration.blueMap.enabled.tooltip": "WaystonesによるBlueMap連携機能をロードするかどうかを制御します。",
