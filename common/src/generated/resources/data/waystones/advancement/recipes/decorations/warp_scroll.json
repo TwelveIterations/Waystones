@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ender_pearl": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:ender_pearl"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "waystones:warp_scroll"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ender_pearl"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "waystones:warp_scroll"
+    ]
+  }
+}

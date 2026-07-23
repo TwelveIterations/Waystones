@@ -1,0 +1,443 @@
+package net.blay09.mods.waystones.client.gui.screen;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.waystones.api.MutablePersonalizedWaystone;
+import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneGroup;
+import net.blay09.mods.waystones.api.WaystoneKinds;
+import net.blay09.mods.waystones.api.trait.WaystoneKindScoped;
+import net.blay09.mods.waystones.client.gui.widget.AbstractWaystoneList;
+import net.blay09.mods.waystones.client.gui.widget.ManageWaystonesButton;
+import net.blay09.mods.waystones.client.gui.widget.SortWaystonesButton;
+import net.blay09.mods.waystones.client.gui.widget.WaystoneGroupFilterButton;
+import net.blay09.mods.waystones.client.gui.widget.WaystoneList;
+import net.blay09.mods.waystones.comparator.DistanceToPlayerComparator;
+import net.blay09.mods.waystones.comparator.PreferSameDimensionComparator;
+import net.blay09.mods.waystones.comparator.UserSortingComparator;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
+import net.blay09.mods.waystones.network.message.ServerboundRequestEditWaystonePacket;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Inventory;
+import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+
+import static net.blay09.mods.waystones.Waystones.id;
+
+public abstract class WaystoneSelectionScreenBase extends WaystoneContainerScreen<WaystoneSelectionMenu> {
+
+    private static final Identifier EDIT_ICON = id("widgets/edit");
+
+    protected final Collection<MutablePersonalizedWaystone> waystones;
+    private final Inventory playerInventory;
+    protected List<Waystone> filteredWaystones;
+
+    private String searchText = "";
+
+    private @Nullable AbstractWaystoneList<?> waystoneList;
+    private @Nullable EditBox searchBox;
+    private SortWaystonesButton.Mode sortMode = SortWaystonesButton.Mode.MANUAL;
+    private @Nullable Identifier activeGroupFilter;
+    private int headerY;
+    private boolean isLocationHeaderHovered;
+
+    private static final int HEADER_WIDTH = AbstractWaystoneList.ENTRY_WIDTH;
+    protected static final int HEADER_HEIGHT = 64;
+    protected static final int FOOTER_HEIGHT = 25;
+    private static final int BASE_IMAGE_HEIGHT = 200;
+    private static final int SCREEN_VERTICAL_MARGIN = 40;
+    private static final int BASE_GROUP_FILTER_COUNT = 5;
+    private static final int LIST_SCROLL_PADDING = 4;
+    private static final int SIDE_BUTTON_HEIGHT = 20;
+    private static final int SORT_BUTTON_WIDTH = 20;
+    private static final int MARGIN = 2;
+    private int layoutImageHeight = BASE_IMAGE_HEIGHT;
+
+    public WaystoneSelectionScreenBase(WaystoneSelectionMenu container, Inventory playerInventory, Component title) {
+        super(container, playerInventory, title, 270, 200);
+        this.playerInventory = playerInventory;
+        waystones = new ArrayList<>(container.getWaystones());
+        PlayerWaystoneManager.ensureSortingIndex(playerInventory.player, waystones);
+        filteredWaystones = new ArrayList<>(waystones);
+        final var sorting = getSorting();
+        if (sorting != null) {
+            filteredWaystones.sort(getSorting());
+        }
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        layoutImageHeight = getLayoutImageHeight();
+        topPos = (height - layoutImageHeight) / 2;
+
+        waystoneList = createWaystoneList();
+        addRenderableWidget(waystoneList);
+
+        updateList();
+
+        final int searchBoxWidth = allowSorting()
+                ? HEADER_WIDTH - MARGIN - SORT_BUTTON_WIDTH
+                : HEADER_WIDTH;
+        searchBox = new EditBox(font,
+                width / 2 - HEADER_WIDTH / 2,
+                topPos + HEADER_HEIGHT - 24,
+                searchBoxWidth,
+                20,
+                Component.empty());
+        searchBox.setResponder(text -> {
+            searchText = text;
+            waystoneList.setScrollAmount(0);
+            updateList();
+        });
+
+        addRenderableWidget(searchBox);
+        if (allowSorting()) {
+            final var sortButton = new SortWaystonesButton(
+                    searchBox.getX() + searchBox.getWidth() + MARGIN,
+                    searchBox.getY(),
+                    sortMode,
+                    mode -> {
+                        sortMode = mode;
+                        waystoneList.setScrollAmount(0);
+                        updateList();
+                    });
+            addRenderableWidget(sortButton);
+        }
+        initSideButtons();
+    }
+
+    protected AbstractWaystoneList<?> createWaystoneList() {
+        return new WaystoneList(leftPos,
+                topPos + HEADER_HEIGHT,
+                imageWidth,
+                layoutImageHeight - HEADER_HEIGHT - FOOTER_HEIGHT,
+                menu);
+    }
+
+    protected int getLayoutImageHeight() {
+        final int maxImageHeight = Math.max(BASE_IMAGE_HEIGHT, height - SCREEN_VERTICAL_MARGIN);
+        final int neededImageHeight = Math.max(getNeededListImageHeight(), getNeededGroupFilterImageHeight());
+        return Math.min(maxImageHeight, neededImageHeight);
+    }
+
+    private int getNeededListImageHeight() {
+        final int baseRows = (BASE_IMAGE_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT) / AbstractWaystoneList.ENTRY_HEIGHT;
+        final int neededRows = Math.max(baseRows, getLayoutWaystoneCount());
+        return BASE_IMAGE_HEIGHT + LIST_SCROLL_PADDING + (neededRows - baseRows) * AbstractWaystoneList.ENTRY_HEIGHT;
+    }
+
+    protected int getLayoutWaystoneCount() {
+        int count = 0;
+        for (final var waystone : waystones) {
+            if (shouldShowWaystone(waystone)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private int getNeededGroupFilterImageHeight() {
+        final int filterCount = getAvailableGroupFilterCount();
+        final int extraFilters = Math.max(0, filterCount - BASE_GROUP_FILTER_COUNT);
+        return BASE_IMAGE_HEIGHT + extraFilters * (SIDE_BUTTON_HEIGHT + MARGIN);
+    }
+
+    protected void initSideButtons() {
+        int y = searchBox != null ? searchBox.getY() : topPos;
+        if (allowReordering() || allowDeletion()) {
+            final var manageButton = new ManageWaystonesButton(
+                    leftPos - 8,
+                    y,
+                    _ -> openManageScreen());
+            addRenderableWidget(manageButton);
+            y += manageButton.getHeight() + MARGIN;
+        }
+
+        y += 5;
+
+        for (final var group : getShownGroupFilters()) {
+            final var groupId = group.identifier();
+            final var groupButton = new WaystoneGroupFilterButton(leftPos - 8,
+                    y,
+                    group,
+                    () -> groupId.equals(activeGroupFilter),
+                    _ -> {
+                        activeGroupFilter = groupId.equals(activeGroupFilter) ? null : groupId;
+                        if (waystoneList != null) {
+                            waystoneList.setScrollAmount(0);
+                        }
+                        updateList();
+                    });
+            addRenderableWidget(groupButton);
+            y += groupButton.getHeight() + MARGIN;
+        }
+    }
+
+    private void openManageScreen() {
+        openSiblingScreen(new ManageWaystonesScreen(menu, playerInventory, this));
+    }
+
+    protected void updateList() {
+        List<Waystone> list = new ArrayList<>();
+        for (Waystone waystone : waystones) {
+            if (!shouldShowWaystone(waystone)) {
+                continue;
+            }
+
+            if (!ignoresFilters(waystone) && activeGroupFilter != null && !waystone.getWaystoneGroups().contains(activeGroupFilter)) {
+                continue;
+            }
+
+            if (ignoresFilters(waystone) || waystone.getEffectiveName().getString().toLowerCase().contains(searchText.toLowerCase())) {
+                list.add(waystone);
+            }
+        }
+        final var sorting = getSorting();
+        if (sorting != null) {
+            list.sort(sorting);
+        }
+        filteredWaystones = list;
+
+        headerY = 0;
+
+        if (waystoneList != null) {
+            waystoneList.setWaystones(filteredWaystones);
+        }
+    }
+
+    protected void removeWaystoneLocally(Waystone waystone) {
+        final var waystoneUid = waystone.getWaystoneUid();
+        waystones.removeIf(it -> it.getWaystoneUid().equals(waystoneUid));
+        filteredWaystones.removeIf(it -> it.getWaystoneUid().equals(waystoneUid));
+        updateList();
+    }
+
+    protected boolean shouldShowWaystone(Waystone waystone) {
+        return true;
+    }
+
+    protected boolean ignoresFilters(Waystone waystone) {
+        return isPinned(waystone);
+    }
+
+    protected static boolean isPinned(Waystone waystone) {
+        final var waystoneKind = waystone.getWaystoneKind();
+        return WaystoneKinds.WARP_PORTAL.equals(waystoneKind) || WaystoneKinds.FLEETING_MEMORIAL.equals(waystoneKind);
+    }
+
+    private List<WaystoneGroup> getShownGroupFilters() {
+        final int maxShownGroups = getMaxShownGroupFilters();
+        final var shownGroups = new ArrayList<WaystoneGroup>();
+        final var nonEmptyGroups = getNonEmptyGroups();
+        final var groupRegistry = PlayerWaystoneManager.getWaystoneGroupRegistry(playerInventory.player);
+        for (final var group : groupRegistry) {
+            if (!group.hidden() && nonEmptyGroups.contains(group.identifier())) {
+                shownGroups.add(group);
+                if (shownGroups.size() >= maxShownGroups) {
+                    break;
+                }
+            }
+        }
+
+        return shownGroups;
+    }
+
+    private int getAvailableGroupFilterCount() {
+        int count = 0;
+        final var nonEmptyGroups = getNonEmptyGroups();
+        final var groupRegistry = PlayerWaystoneManager.getWaystoneGroupRegistry(playerInventory.player);
+        for (final var group : groupRegistry) {
+            if (!group.hidden() && nonEmptyGroups.contains(group.identifier())) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private HashSet<Identifier> getNonEmptyGroups() {
+        final var nonEmptyGroups = new HashSet<Identifier>();
+        for (final var waystone : waystones) {
+            if (shouldShowWaystone(waystone)) {
+                nonEmptyGroups.addAll(waystone.getWaystoneGroups());
+            }
+        }
+
+        return nonEmptyGroups;
+    }
+
+    private int getMaxShownGroupFilters() {
+        final int availableFilters = Math.max(0, (layoutImageHeight - FOOTER_HEIGHT - getGroupFilterStartY() + MARGIN) / (SIDE_BUTTON_HEIGHT + MARGIN));
+        final int extraFilters = Math.max(0, (layoutImageHeight - BASE_IMAGE_HEIGHT) / AbstractWaystoneList.ENTRY_HEIGHT);
+        return Math.min(availableFilters, BASE_GROUP_FILTER_COUNT + extraFilters);
+    }
+
+    private int getGroupFilterStartY() {
+        int y = HEADER_HEIGHT - 24;
+        if (allowReordering() || allowDeletion()) {
+            y += SIDE_BUTTON_HEIGHT + MARGIN;
+        }
+
+        return y + 5;
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (isLocationHeaderHovered && menu.getWaystoneFrom() != null) {
+            Balm.networking().sendToServer(new ServerboundRequestEditWaystonePacket(menu.getWaystoneFrom().getWaystoneUid()));
+            return true;
+        }
+
+        return super.mouseClicked(event, doubleClick);
+    }
+
+    @Override
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+        return this.getFocused() != null && this.isDragging() && event.button() == InputConstants.MOUSE_BUTTON_LEFT && this.getFocused().mouseDragged(event, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
+        if (waystoneList != null && waystoneList.isMouseOver(x, y)) {
+            return waystoneList.mouseScrolled(x, y, scrollX, scrollY);
+        }
+
+        return super.mouseScrolled(x, y, scrollX, scrollY);
+    }
+
+    @Override
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        Waystone fromWaystone = menu.getWaystoneFrom();
+        final int locationHeaderY = headerY + 20;
+        guiGraphics.centeredText(font, getTitle(), imageWidth / 2, fromWaystone != null ? headerY : locationHeaderY, 0xFFFFFFFF);
+        if (fromWaystone != null) {
+            drawLocationHeader(guiGraphics, fromWaystone, mouseX, mouseY, imageWidth / 2, locationHeaderY);
+        }
+
+        if (waystones.isEmpty()) {
+            guiGraphics.centeredText(font,
+                    getNoWaystonesMessage(),
+                    imageWidth / 2,
+                    layoutImageHeight / 2 - 20,
+                    0xFFFFFFFF);
+        }
+    }
+
+    private Component getNoWaystonesMessage() {
+        final var targetKind = menu.getTargetKind();
+        if (targetKind != null && WaystoneKinds.isSharestone(targetKind)) {
+            return Component.translatable("gui.waystones.waystone_selection.no_sharestones_available").withStyle(ChatFormatting.RED);
+        }
+
+        final var warpItem = menu.getWarpItem();
+        if (warpItem.getItem() instanceof WaystoneKindScoped kindScoped && WaystoneKinds.isSharestone(kindScoped.getWaystoneKind())) {
+            return Component.translatable("gui.waystones.waystone_selection.no_sharestones_available").withStyle(ChatFormatting.RED);
+        }
+
+        return Component.translatable("gui.waystones.waystone_selection.no_waystones_activated").withStyle(ChatFormatting.RED);
+    }
+
+    private void drawLocationHeader(GuiGraphicsExtractor guiGraphics, Waystone waystone, int mouseX, int mouseY, int x, int y) {
+        Font font = Minecraft.getInstance().font;
+
+        int locationPrefixWidth = font.width(Component.translatable("gui.waystones.waystone_selection.current_location", ""));
+
+        var effectiveName = waystone.getEffectiveName().copy();
+        if (effectiveName.getString().isEmpty()) {
+            effectiveName = Component.translatable("gui.waystones.waystone_selection.unnamed_waystone");
+        }
+        int locationWidth = font.width(effectiveName);
+
+        int fullWidth = locationPrefixWidth + locationWidth;
+
+        int startX = leftPos + x - fullWidth / 2 + locationPrefixWidth;
+        int startY = y + topPos;
+        isLocationHeaderHovered = mouseX >= startX && mouseX < startX + locationWidth + 16
+                && mouseY >= startY && mouseY < startY + font.lineHeight;
+
+        if (isLocationHeaderHovered) {
+            effectiveName.withStyle(ChatFormatting.UNDERLINE);
+        }
+
+        final var fullText = Component.translatable("gui.waystones.waystone_selection.current_location",
+                effectiveName.withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.YELLOW);
+        guiGraphics.text(font, fullText, x - fullWidth / 2, y, 0xFFFFFFFF);
+
+        if (isLocationHeaderHovered) {
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, EDIT_ICON, x + fullWidth / 2, y - 4, 16, 16);
+        }
+    }
+
+    protected boolean allowReordering() {
+        return true;
+    }
+
+    protected boolean allowDeletion() {
+        return true;
+    }
+
+    protected boolean allowSorting() {
+        return true;
+    }
+
+    @Override
+    public boolean keyPressed(KeyEvent event) {
+        if (this.searchBox == null) {
+            return super.keyPressed(event);
+        }
+
+        if (!this.searchBox.isFocused() || (event.isEscape() && this.shouldCloseOnEsc())) {
+            return super.keyPressed(event);
+        }
+
+        return this.searchBox.keyPressed(event);
+    }
+
+    public @Nullable Comparator<Waystone> getSorting() {
+        final var player = Minecraft.getInstance().player;
+        final var manualSorting = getManualSorting();
+        final Comparator<Waystone> sorting = switch (sortMode) {
+            case MANUAL -> manualSorting;
+            case NAME -> {
+                final Comparator<Waystone> nameSorting = Comparator.comparing(
+                        waystone -> waystone.getEffectiveName().getString(),
+                        String.CASE_INSENSITIVE_ORDER);
+                yield manualSorting != null ? nameSorting.thenComparing(manualSorting) : nameSorting;
+            }
+            case DISTANCE -> {
+                final Comparator<Waystone> distanceSorting = new PreferSameDimensionComparator(player.level().dimension())
+                        .thenComparing(new DistanceToPlayerComparator(player));
+                yield manualSorting != null ? distanceSorting.thenComparing(manualSorting) : distanceSorting;
+            }
+        };
+        return pinSpecialTargetsFirst(sorting);
+    }
+
+    protected @Nullable Comparator<Waystone> getManualSorting() {
+        final var sortingIndex = PlayerWaystoneManager.getSortingIndex(playerInventory.player);
+        return new UserSortingComparator(sortingIndex);
+    }
+
+    private Comparator<Waystone> pinSpecialTargetsFirst(@Nullable Comparator<Waystone> sorting) {
+        final Comparator<Waystone> specialTargetSorting = Comparator.comparing(WaystoneSelectionScreenBase::isPinned).reversed();
+        return sorting != null ? specialTargetSorting.thenComparing(sorting) : specialTargetSorting;
+    }
+
+}

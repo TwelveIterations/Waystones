@@ -1,0 +1,97 @@
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
+plugins {
+    id 'multiloader-loader'
+    alias libs.plugins.modDevGradle
+    alias libs.plugins.curseForgeGradle
+    alias libs.plugins.modrinthMinotaur
+}
+
+neoForge {
+    version = libs.neoForge.get().version
+    // Automatically enable neoforge AccessTransformers if the file exists
+    def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+
+    parchment.parchmentArtifact = libs.parchment.get().toString()
+
+    runs {
+        configureEach {
+            systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
+            ideName = "NeoForge ${it.name.capitalize()} (${project.path})"
+        }
+
+        client {
+            client()
+        }
+
+        server {
+            server()
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+apply from: rootProject.file('repositories.gradle')
+apply from: 'dependencies.gradle'
+
+tasks.register('curseforge', TaskPublishCurseForge) {
+    dependsOn('build')
+    description = 'Publishes the NeoForge build to CurseForge.'
+    group = 'publishing'
+
+    apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
+
+    def projectId = findProperty("curseforge_project_id")
+    onlyIf {
+        projectId != null
+    }
+    if (projectId) {
+        def mainFile = upload(findProperty("curseforge_project_id"), jar.archiveFile.get().asFile)
+        mainFile.changelog = rootProject.file('CHANGELOG.md').text
+        mainFile.addRequirement("balm")
+        mainFile.addRequirement("shogi")
+        mainFile.addGameVersion(libs.minecraft.get().version)
+        mainFile.releaseType = "release"
+        project.findProperty("curseforge_environments")?.split(",")?.toList()?.each { mainFile.addEnvironment(it) }
+        mainFile.addModLoader("NeoForge")
+    }
+}
+
+modrinth {
+    token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
+    projectId = findProperty("modrinth_project_id")
+    versionType = "release"
+    versionNumber = project.version + "+neoforge-" + libs.minecraft.get().version
+    uploadFile = jar
+    changelog = rootProject.file("CHANGELOG.md").text
+    gameVersions = [libs.minecraft.get().version]
+    loaders = ['neoforge']
+    dependencies {
+        required.project "balm"
+        required.project "shogi"
+    }
+}
+
+def neoForgeSnapshotUrl = findProperty("neoforge_snapshot_url")
+if (neoForgeSnapshotUrl != null && !neoForgeSnapshotUrl.isBlank()) {
+    repositories {
+        maven {
+            name = 'Maven for NeoForge Snapshots'
+            url = neoForgeSnapshotUrl
+            content {
+                includeModule('net.neoforged', 'neoforge')
+                includeModule('net.neoforged', 'testframework')
+            }
+        }
+    }
+}

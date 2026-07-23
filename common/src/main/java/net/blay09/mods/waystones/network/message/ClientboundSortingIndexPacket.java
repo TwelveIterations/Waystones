@@ -1,0 +1,37 @@
+package net.blay09.mods.waystones.network.message;
+
+import net.blay09.mods.balm.platform.BalmEnvironment;
+import net.blay09.mods.waystones.store.InMemoryWaystonesPlayerStore;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.entity.player.Player;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static net.blay09.mods.waystones.Waystones.id;
+
+public record ClientboundSortingIndexPacket(List<UUID> sortingIndex) implements CustomPacketPayload {
+
+    public static final CustomPacketPayload.Type<ClientboundSortingIndexPacket> TYPE = new CustomPacketPayload.Type<>(id("sorting_index"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundSortingIndexPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.collection(ArrayList::new, UUIDUtil.STREAM_CODEC),
+            ClientboundSortingIndexPacket::sortingIndex,
+            ClientboundSortingIndexPacket::new
+    );
+
+    public static void handle(Player player, ClientboundSortingIndexPacket message) {
+        final var playerWaystoneData = (InMemoryWaystonesPlayerStore) PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
+        playerWaystoneData.setSortingIndex(player, message.sortingIndex);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+}

@@ -1,0 +1,11 @@
+{
+  "target_structure": "repurposed_structures:village_badlands",
+  "pieces_spawn_counts": [
+    {
+      "nbt_piece_name": "waystones:village/desert/waystone",
+      "always_spawn_this_many": 1,
+      "never_spawn_more_than_this_many": 1,
+      "condition": "waystones:config"
+    }
+  ]
+}

@@ -1,0 +1,195 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+tasks.register('generateNullMarkedPackageInfos') {
+    group = 'build'
+    description = 'Generates missing package-info.java files with jspecify @NullMarked for each Java package containing sources.'
+
+    def javaSourceDirsProvider = providers.provider {
+        sourceSets.main.java.srcDirs.findAll { it.exists() }
+    }
+
+    inputs.files(javaSourceDirsProvider)
+
+    doLast {
+        def created = []
+
+        javaSourceDirsProvider.get().each { File srcDir ->
+            def packageDirs = new LinkedHashSet<File>()
+            fileTree(srcDir) {
+                include '**/*.java'
+                exclude '**/package-info.java'
+            }.files.each { File javaFile ->
+                packageDirs.add(javaFile.parentFile)
+            }
+
+            packageDirs.each { File pkgDir ->
+                def relPath = srcDir.toPath().relativize(pkgDir.toPath()).toString()
+                if (relPath.isBlank()) {
+                    return
+                }
+
+                def packageName = relPath.replace(File.separatorChar, '.' as char)
+                def pkgInfo = new File(pkgDir, 'package-info.java')
+                if (pkgInfo.exists()) {
+                    return
+                }
+
+                pkgInfo.parentFile.mkdirs()
+                pkgInfo.setText("""@NullMarked
+package ${packageName};
+
+import org.jspecify.annotations.NullMarked;
+""", 'UTF-8')
+                created.add(pkgInfo)
+            }
+        }
+
+        if (!created.isEmpty()) {
+            logger.lifecycle("Generated ${created.size()} package-info.java file(s) with @NullMarked")
+        }
+    }
+}
+
+base {
+    archivesName = "${mod_id}-${project.name}-${libs.minecraft.get().version}"
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+    withSourcesJar()
+    withJavadocJar()
+}
+
+tasks.withType(Javadoc).configureEach {
+    failOnError false
+    options.addStringOption('Xdoclint:-missing', '-quiet')
+}
+
+repositories {
+    mavenCentral()
+    // https://docs.gradle.org/current/userguide/declaring_repositories.html#declaring_content_exclusively_found_in_one_repository
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Sponge'
+                url = 'https://repo.spongepowered.org/repository/maven-public'
+            }
+        }
+        filter { includeGroupAndSubgroups("org.spongepowered") }
+    }
+    exclusiveContent {
+        forRepositories(
+                maven {
+                    name = 'ParchmentMC'
+                    url = 'https://maven.parchmentmc.org/'
+                },
+                maven {
+                    name = 'NeoForge'
+                    url = 'https://maven.neoforged.net/releases'
+                }
+        )
+        filter { includeGroup('org.parchmentmc.data') }
+    }
+}
+
+['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements'].each { variant ->
+    publishing.publications.configureEach {
+        suppressPomMetadataWarningsFor(variant)
+    }
+}
+
+sourcesJar {
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${mod_name}" }
+    }
+}
+
+jar {
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${mod_name}" }
+    }
+
+    manifest {
+        attributes([
+                'Specification-Title'   : mod_name,
+                'Specification-Vendor'  : mod_author,
+                'Specification-Version' : project.jar.archiveVersion,
+                'Implementation-Title'  : project.name,
+                'Implementation-Version': project.jar.archiveVersion,
+                'Implementation-Vendor' : mod_author,
+                'Built-On-Minecraft'    : libs.minecraft.get().version,
+                'MixinConfigs'          : "${mod_id}.mixins.json,${mod_id}.${project.name}.mixins.json",
+        ])
+    }
+}
+
+processResources {
+    def minecraftVersion = libs.minecraft.get().version
+    def minecraftVersionMatch = minecraftVersion =~ /^(\d+)\.(\d+)/
+    assert minecraftVersionMatch.find(): "Unsupported Minecraft version format: ${minecraftVersion}"
+
+    def minecraftMajorMinor = "${minecraftVersionMatch.group(1)}.${minecraftVersionMatch.group(2)}"
+    def nextMinecraftMinor = "${minecraftVersionMatch.group(1)}.${minecraftVersionMatch.group(2).toInteger() + 1}"
+
+    def expandProps = [
+            "version": version,
+            "group": project.group, //Else we target the task's group.
+            "minecraft_version_range": "[${minecraftMajorMinor}-,${nextMinecraftMinor})",
+            "fabric_minecraft_version_range": "~${minecraftMajorMinor}-",
+            "forge_version": libs.forge.get().version,
+            "fabric_api_version": libs.fabricApi.get().version,
+            "fabric_loader_version": libs.fabricLoader.get().version,
+            "mod_name": mod_name,
+            "mod_main": mod_name.split(/\s+/).collect { word -> word.capitalize() }.join(""),
+            "mod_author": mod_author,
+            "mod_id": mod_id,
+            "license": license,
+            "description": project.description,
+            "neoforge_version": libs.neoForge.get().version,
+            "credits": credits,
+            "java_version": java_version,
+            "homepage": homepage,
+            "discord": discord,
+            "issues": issues,
+            "sources": sources,
+            "balm_version": libs.versions.balm.get().split('\\+')[0],
+            "shogi_version": libs.versions.shogi.get().split('\\+')[0],
+    ]
+
+    def jsonExpandProps = expandProps.collectEntries {
+        key, value -> [(key): value instanceof String ? value.replace("\n", "\\\\n") : value]
+    }
+
+    filesMatching(['META-INF/mods.toml', 'META-INF/neoforge.mods.toml']) {
+        expand expandProps
+    }
+
+    filesMatching(['pack.mcmeta', 'fabric.mod.json', '*.mixins.json']) {
+        expand jsonExpandProps
+    }
+
+    inputs.properties(expandProps)
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            version = project.version
+            artifactId = "${mod_id.replace('_', '-')}-${project.name}"
+            from components.java
+        }
+    }
+    repositories {
+        def repoUrl = version.toString().endsWith("SNAPSHOT") ? findProperty("maven_snapshots") : findProperty("maven_releases")
+        if (repoUrl != null) {
+            maven {
+                url = uri(repoUrl)
+                name = "maven"
+                credentials(PasswordCredentials)
+            }
+        }
+    }
+}

@@ -1,0 +1,14 @@
+dependencies {
+    implementation(libs.balmCommon) {
+        changing = libs.versions.balm.get().endsWith("SNAPSHOT")
+    }
+    accessTransformers(libs.balmCommon)
+    implementation(libs.shogiCommon) {
+        changing = libs.versions.shogi.get().contains("SNAPSHOT")
+    }
+    implementation(libs.shogiApi)
+    compileOnly(libs.journeyMapApiCommon)
+    compileOnly(libs.blueMap)
+    compileOnly(libs.dynmap)
+    compileOnly(libs.unbreakablesCommon)
+}

@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=east,half=lower,seen=false": {
+      "model": "waystones:block/mud_bricks_waystone_bottom",
+      "y": 90
+    },
+    "facing=east,half=lower,seen=true": {
+      "model": "waystones:block/mud_bricks_waystone_bottom",
+      "y": 90
+    },
+    "facing=east,half=upper,seen=false": {
+      "model": "waystones:block/mud_bricks_waystone_top",
+      "y": 90
+    },
+    "facing=east,half=upper,seen=true": {
+      "model": "waystones:block/mud_bricks_waystone_top",
+      "y": 90
+    },
+    "facing=north,half=lower,seen=false": {
+      "model": "waystones:block/mud_bricks_waystone_bottom"
+    },
+    "facing=north,half=lower,seen=true": {
+      "model": "waystones:block/mud_bricks_waystone_bottom"
+    },
+    "facing=north,half=upper,seen=false": {
+      "model": "waystones:block/mud_bricks_waystone_top"
+    },
+    "facing=north,half=upper,seen=true": {
+      "model": "waystones:block/mud_bricks_waystone_top"
+    },
+    "facing=south,half=lower,seen=false": {
+      "model": "waystones:block/mud_bricks_waystone_bottom",
+      "y": 180
+    },
+    "facing=south,half=lower,seen=true": {
+      "model": "waystones:block/mud_bricks_waystone_bottom",
+      "y": 180
+    },
+    "facing=south,half=upper,seen=false": {
+      "model": "waystones:block/mud_bricks_waystone_top",
+      "y": 180
+    },
+    "facing=south,half=upper,seen=true": {
+      "model": "waystones:block/mud_bricks_waystone_top",
+      "y": 180
+    },
+    "facing=west,half=lower,seen=false": {
+      "model": "waystones:block/mud_bricks_waystone_bottom",
+      "y": 270
+    },
+    "facing=west,half=lower,seen=true": {
+      "model": "waystones:block/mud_bricks_waystone_bottom",
+      "y": 270
+    },
+    "facing=west,half=upper,seen=false": {
+      "model": "waystones:block/mud_bricks_waystone_top",
+      "y": 270
+    },
+    "facing=west,half=upper,seen=true": {
+      "model": "waystones:block/mud_bricks_waystone_top",
+      "y": 270
+    }
+  }
+}

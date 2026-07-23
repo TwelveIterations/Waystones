@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "waystones:deepslate_waystone"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_warp_stone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "waystones:warp_stone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_warp_stone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "waystones:deepslate_waystone"
+    ]
+  }
+}

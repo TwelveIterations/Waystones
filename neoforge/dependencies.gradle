@@ -1,0 +1,13 @@
+dependencies {
+    implementation(libs.balmNeoForge) {
+        changing = libs.versions.balm.get().contains("SNAPSHOT")
+    }
+    api(libs.shogiApi)
+    implementation(libs.shogiNeoForge) {
+        changing = libs.versions.shogi.get().contains("SNAPSHOT")
+    }
+    compileOnly(libs.journeyMapApiCommon)
+    compileOnly(libs.blueMap)
+    compileOnly(libs.dynmap)
+    compileOnly(libs.unbreakablesCommon)
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "waystones:ruined_sharestone",
+    "minecraft:amethyst_shard",
+    "minecraft:amethyst_shard"
+  ],
+  "result": {
+    "id": "waystones:amethyst_sharestone"
+  }
+}

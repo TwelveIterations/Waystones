@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "E": "minecraft:ender_pearl",
+    "G": "minecraft:gold_ingot"
+  },
+  "pattern": [
+    "AEA",
+    "EGE",
+    "AEA"
+  ],
+  "result": {
+    "id": "waystones:warp_stone"
+  }
+}

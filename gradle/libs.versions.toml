@@ -1,0 +1,44 @@
+[versions]
+balm = "26.2.0.1"
+minecraft = "26.2"
+neoForm = "26.2-1"
+neoForge = "26.2.0.0-beta"
+forge = "63.0.2"
+fabricApi = "0.152.1+26.2"
+fabricLoader = "0.19.3"
+journeyMapApi = "26.2-2.0.0"
+unbreakables = "26.1.0.2"
+shogi = "26.2.0.3-SNAPSHOT"
+
+[libraries]
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+parchment = { module = "org.parchmentmc.data:parchment-1.21.10", version = "2025.10.12" }
+balmCommon = { module = "net.blay09.mods:balm-common", version.ref = "balm" }
+balmNeoForge = { module = "net.blay09.mods:balm-neoforge", version.ref = "balm" }
+balmForge = { module = "net.blay09.mods:balm-forge", version.ref = "balm" }
+balmFabric = { module = "net.blay09.mods:balm-fabric", version.ref = "balm" }
+neoForm = { module = "net.neoforged:neoform", version.ref = "neoForm" }
+neoForge = { module = "net.neoforged:neoforge", version.ref = "neoForge" }
+forge = { module = "net.minecraftforge:forge", version.ref = "forge" }
+fabricApi = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabricApi" }
+fabricLoader = { module = "net.fabricmc:fabric-loader", version.ref = "fabricLoader" }
+shogiApi = { module = "net.blay09.mods:shogi-api", version.ref = "shogi" }
+shogiCommon = { module = "net.blay09.mods:shogi-common", version.ref = "shogi" }
+shogiNeoForge = { module = "net.blay09.mods:shogi-neoforge", version.ref = "shogi" }
+shogiForge = { module = "net.blay09.mods:shogi-forge", version.ref = "shogi" }
+shogiFabric = { module = "net.blay09.mods:shogi-fabric", version.ref = "shogi" }
+
+journeyMapApiCommon = { module = "info.journeymap:journeymap-api-common", version.ref = "journeyMapApi" }
+blueMap = { module = "com.github.BlueMap-Minecraft:BlueMapAPI", version = "v2.5.1" }
+dynmap = { module = "us.dynmap:DynmapCoreAPI", version = "3.7-beta-6" }
+unbreakablesCommon = { module = "net.blay09.mods:unbreakables-common", version.ref = "unbreakables" }
+
+mixin = { module = "org.spongepowered:mixin", version = "0.8.7" }
+
+[plugins]
+fabricLoom = { id = "net.fabricmc.fabric-loom", version = "1.14-SNAPSHOT" }
+modDevGradle = { id = "net.neoforged.moddev", version = "2.0.141" }
+forgeGradle = { id = "net.minecraftforge.gradle", version = "[6.0.25,6.2)" }
+mixin = { id = "org.spongepowered.mixin", version = "0.7-SNAPSHOT" }
+curseForgeGradle = { id = "net.darkhax.curseforgegradle", version = "1.1.26" }
+modrinthMinotaur = { id = "com.modrinth.minotaur", version = "2.+" }

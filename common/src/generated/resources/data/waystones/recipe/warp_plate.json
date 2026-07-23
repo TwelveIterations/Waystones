@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "F": "minecraft:flint",
+    "S": "minecraft:stone_bricks"
+  },
+  "pattern": [
+    "SAS",
+    "AFA",
+    "SAS"
+  ],
+  "result": {
+    "id": "waystones:warp_plate"
+  }
+}

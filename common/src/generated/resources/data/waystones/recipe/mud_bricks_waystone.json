@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "S": "minecraft:mud_bricks",
+    "W": "waystones:warp_stone"
+  },
+  "pattern": [
+    " S ",
+    "SWS",
+    "SSS"
+  ],
+  "result": {
+    "id": "waystones:mud_bricks_waystone"
+  }
+}

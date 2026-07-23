@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "waystones:ruined_sharestone",
+    "minecraft:emerald",
+    "minecraft:emerald"
+  ],
+  "result": {
+    "id": "waystones:emerald_sharestone"
+  }
+}

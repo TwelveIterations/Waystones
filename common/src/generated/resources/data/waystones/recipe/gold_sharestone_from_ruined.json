@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "waystones:ruined_sharestone",
+    "minecraft:gold_ingot",
+    "minecraft:gold_ingot"
+  ],
+  "result": {
+    "id": "waystones:gold_sharestone"
+  }
+}

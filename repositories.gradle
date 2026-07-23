@@ -1,0 +1,124 @@
+repositories {
+    maven {
+        name = 'Twelve Iterations'
+        url = 'https://maven.twelveiterations.com/repository/maven-public/'
+        content {
+            includeGroup 'net.blay09.mods'
+        }
+    }
+
+    maven {
+        name = 'Twelve Iterations Proxy'
+        url = 'https://maven.twelveiterations.com/repository/maven-proxy/'
+        content {
+            includeGroup 'dev.emi'
+        }
+    }
+
+    maven {
+        name = 'CurseMaven'
+        url = 'https://www.cursemaven.com'
+        content {
+            includeGroup 'curse.maven'
+        }
+    }
+
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+
+    maven {
+        name = 'Shedaniel'
+        url = 'https://maven.shedaniel.me/'
+        content {
+            includeGroup "me.shedaniel"
+            includeGroup "me.shedaniel.cloth"
+            includeGroup "dev.architectury"
+        }
+    }
+
+    maven {
+        name = 'BlameJared'
+        url = 'https://maven.blamejared.com'
+        content {
+            includeGroup "mezz.jei"
+            includeGroup "info.journeymap"
+            includeGroup "mysticdrew"
+            includeGroupAndSubgroups "com.blamejared"
+        }
+    }
+
+    maven {
+        name = 'Bai'
+        url = 'https://maven.bai.lol'
+        content {
+            includeGroup "lol.bai"
+            includeGroup "mcp.mobius.waila"
+        }
+    }
+
+    maven {
+        name = 'JitPack'
+        url = 'https://jitpack.io'
+        content {
+            includeGroup "com.github.BlueMap-Minecraft"
+            includeGroup "com.github.mattidragon"
+        }
+    }
+
+    maven {
+        name = 'MikePrimm'
+        url = 'https://repo.mikeprimm.com/'
+        content {
+            includeGroup "us.dynmap"
+        }
+    }
+
+    maven {
+        name = 'LadySnake'
+        url = 'https://maven.ladysnake.org/releases'
+        content {
+            includeGroup "dev.onyxstudios.cardinal-components-api"
+            includeGroup "org.ladysnake.cardinal-components-api"
+        }
+    }
+
+    maven {
+        name = 'Siphalor'
+        url = 'https://maven.siphalor.de/'
+        content {
+            includeGroup "de.siphalor"
+        }
+    }
+
+    maven {
+        name = 'Theillusivec4'
+        url = 'https://maven.theillusivec4.top/'
+        content {
+            includeGroup "top.theillusivec4.curios"
+        }
+    }
+
+    maven {
+        name = 'CloudSmith'
+        url = 'https://dl.cloudsmith.io/public/novamachina-mods/release/maven/'
+        content {
+            includeGroup "novamachina.novacore"
+            includeGroup "novamachina.exnihilosequentia"
+        }
+    }
+
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Minecraft'
+                url = 'https://libraries.minecraft.net/'
+            }
+        }
+        filter { includeGroupAndSubgroups("com.mojang") }
+    }
+}

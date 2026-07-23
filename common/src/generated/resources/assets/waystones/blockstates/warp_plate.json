@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "status=attuning": {
+      "model": "waystones:block/warp_plate"
+    },
+    "status=empty": {
+      "model": "waystones:block/warp_plate_empty"
+    },
+    "status=idle": {
+      "model": "waystones:block/warp_plate"
+    },
+    "status=locked": {
+      "model": "waystones:block/warp_plate_locked"
+    },
+    "status=warping": {
+      "model": "waystones:block/warp_plate"
+    },
+    "status=warping_invalid": {
+      "model": "waystones:block/warp_plate"
+    }
+  }
+}

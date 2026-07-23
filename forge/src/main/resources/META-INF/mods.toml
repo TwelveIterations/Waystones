@@ -1,35 +1,41 @@
 modLoader="javafml"
-loaderVersion="${forge_loader_version_range}"
-license="All rights reserved"
-issueTrackerURL="https://github.com/TwelveIterationMods/Waystones/issues"
-
+loaderVersion="*"
+license="${license}"
+issueTrackerURL="${issues}"
 [[mods]]
 modId="waystones"
-version="${mod_version}"
-displayName="Waystones"
-displayURL="https://mods.twelveiterations.com/mc/waystones"
-logoFile="waystones-icon.png"
-credits="BlayTheNinth"
-authors="BlayTheNinth"
-description='''
-Teleport back to activated waystones. For Survival, Adventure or Servers.
-'''
-
+version="${version}"
+displayName="${mod_name}"
+displayURL="${homepage}"
+logoFile="waystones.png"
+credits="${credits}"
+authors="${mod_author}"
+description='''${description}'''
+[[mixins]]
+config = "waystones.mixins.json"
+[[mixins]]
+config = "waystones.forge.mixins.json"
 [[dependencies.waystones]]
-    modId="forge"
-    mandatory=true
-    versionRange="${forge_version_range}"
-    ordering="NONE"
-    side="BOTH"
+modId="forge"
+mandatory=true
+versionRange="[${forge_version},)"
+ordering="NONE"
+side="BOTH"
 [[dependencies.waystones]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="${minecraft_version_range}"
-    ordering="NONE"
-    side="BOTH"
+modId="minecraft"
+mandatory=true
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"
 [[dependencies.waystones]]
-    modId="balm"
-    mandatory=true
-    versionRange="${balm_version_range}"
-    ordering="NONE"
-    side="BOTH"
+modId="balm"
+mandatory=true
+versionRange="[${balm_version},)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.waystones]]
+modId="shogi"
+mandatory=true
+versionRange="[${shogi_version},)"
+ordering="NONE"
+side="BOTH"

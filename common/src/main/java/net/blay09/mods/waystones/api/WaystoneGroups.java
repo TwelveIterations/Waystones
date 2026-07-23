@@ -1,0 +1,172 @@
+package net.blay09.mods.waystones.api;
+
+import net.blay09.mods.waystones.client.gui.widget.GroupColor;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneGroupImpl;
+import net.blay09.mods.waystones.api.event.CollectDynamicWaystoneGroupsEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+
+import java.util.*;
+
+import static net.blay09.mods.waystones.Waystones.id;
+
+public final class WaystoneGroups {
+    public static final Identifier COMMUNITY_HUBS_ICON = id("groups/community_hubs");
+    public static final Identifier DUNGEONS_ICON = id("groups/dungeons");
+    public static final Identifier FAVORITES_ICON = id("groups/favorites");
+    public static final Identifier PLAYER_HOMES_ICON = id("groups/player_homes");
+    public static final Identifier RESOURCE_SITES_ICON = id("groups/resource_sites");
+    public static final Identifier OVERWORLD_ICON = id("groups/dimension/minecraft/overworld");
+    public static final Identifier THE_NETHER_ICON = id("groups/dimension/minecraft/the_nether");
+    public static final Identifier THE_END_ICON = id("groups/dimension/minecraft/the_end");
+    public static final Identifier DIMENSION_ICON = id("groups/dimension");
+    public static final Identifier VILLAGES_ICON = id("groups/villages");
+    public static final Identifier GLOBAL_ICON = id("groups/global");
+    public static final Identifier PLAYERS_ICON = id("groups/players");
+    public static final Identifier TEAM_ICON = id("groups/teams");
+
+    public static final WaystoneGroup FAVORITES = new WaystoneGroupImpl(
+            id("favorites"),
+            Component.translatable("waystones.groups.favorites"),
+            FAVORITES_ICON,
+            GroupColor.GOLD.rgb(),
+            true,
+            false,
+            -30);
+
+    public static final WaystoneGroup PLAYERS = new WaystoneGroupImpl(
+            id("players"),
+            Component.translatable("waystones.groups.players"),
+            PLAYERS_ICON,
+            GroupColor.GREEN.rgb(),
+            true,
+            false,
+            -20);
+
+    public static final WaystoneGroup GLOBAL = new WaystoneGroupImpl(
+            id("global"),
+            Component.translatable("waystones.groups.global"),
+            GLOBAL_ICON,
+            GroupColor.YELLOW.rgb(),
+            true,
+            false,
+            -10);
+
+    public static final WaystoneGroup TEAM = new WaystoneGroupImpl(
+            id("team"),
+            Component.translatable("waystones.groups.teams"),
+            TEAM_ICON,
+            GroupColor.AQUA.rgb(),
+            true,
+            false,
+            -5);
+
+    private WaystoneGroups() {
+    }
+
+    public static List<WaystoneGroup> sorted(Collection<WaystoneGroup> groups) {
+        return groups.stream()
+                .sorted(Comparator.comparingInt(WaystoneGroup::sortIndex)
+                        .thenComparing(group -> group.name().getString(), String.CASE_INSENSITIVE_ORDER)
+                        .thenComparing(group -> group.identifier().toString()))
+                .toList();
+    }
+
+    public static List<WaystoneGroup> normalizeSortIndices(Collection<WaystoneGroup> groups) {
+        final var result = new ArrayList<WaystoneGroup>();
+        final var existing = new HashSet<Identifier>();
+        for (final var group : groups) {
+            if (existing.add(group.identifier())) {
+                result.add(withSortIndex(group, result.size()));
+            }
+        }
+        return result;
+    }
+
+    public static WaystoneGroup withSortIndex(WaystoneGroup group, int sortIndex) {
+        return new WaystoneGroupImpl(group.identifier(), group.name(), group.icon(), group.color(), group.inbuilt(), group.hidden(), sortIndex);
+    }
+
+    public static Optional<WaystoneGroup> findGroup(Collection<WaystoneGroup> groups, Identifier groupId) {
+        return groups.stream()
+                .filter(group -> group.identifier().equals(groupId))
+                .findFirst();
+    }
+
+    public static int indexOfGroup(List<WaystoneGroup> groups, WaystoneGroup group) {
+        return indexOfGroup(groups, group.identifier());
+    }
+
+    public static int indexOfGroup(List<WaystoneGroup> groups, Identifier groupId) {
+        for (int i = 0; i < groups.size(); i++) {
+            if (groups.get(i).identifier().equals(groupId)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static Optional<WaystoneGroup> removeGroup(List<WaystoneGroup> groups, Identifier groupId) {
+        final int index = indexOfGroup(groups, groupId);
+        return index != -1 ? Optional.of(groups.remove(index)) : Optional.empty();
+    }
+
+    public static Optional<WaystoneGroup> getFirstGroup(Player player, Waystone waystone) {
+        final var groupRegistry = PlayerWaystoneManager.getWaystoneGroupRegistry(player);
+        return getFirstGroup(groupRegistry, waystone);
+    }
+
+    public static Optional<WaystoneGroup> getFirstGroup(Collection<WaystoneGroup> groups, Waystone waystone) {
+        final var waystoneGroups = waystone.getWaystoneGroups();
+        return groups.stream()
+                .filter(group -> waystoneGroups.contains(group.identifier()))
+                .findFirst();
+    }
+
+    public static WaystoneGroup dimension(ResourceKey<Level> dimension) {
+        final var location = dimension.identifier();
+        final var identifier = id("dimension/" + location.getNamespace() + "/" + location.getPath());
+        final var name = Component.translatable("waystones.groups." + identifier.getPath().replace('/', '.'));
+        return new WaystoneGroupImpl(identifier, name, getDimensionIcon(dimension), GroupColor.WHITE.rgb(), true, false, 0);
+    }
+
+    private static Identifier getDimensionIcon(ResourceKey<Level> dimension) {
+        if (dimension == Level.OVERWORLD) {
+            return OVERWORLD_ICON;
+        } else if (dimension == Level.NETHER) {
+            return THE_NETHER_ICON;
+        } else if (dimension == Level.END) {
+            return THE_END_ICON;
+        }
+
+        return DIMENSION_ICON;
+    }
+
+    public static Set<Identifier> getDynamicGroups(Waystone waystone) {
+        final var groups = new LinkedHashSet<Identifier>();
+        for (final var group : getDynamicGroupDefinitions(waystone)) {
+            groups.add(group.identifier());
+        }
+        return Collections.unmodifiableSet(groups);
+    }
+
+    public static List<WaystoneGroup> getDynamicGroupDefinitions(Waystone waystone) {
+        final var groups = new ArrayList<WaystoneGroup>();
+        if (waystone.getWaystoneKind().equals(WaystoneKinds.TWINBOUND_FEATHER)) {
+            groups.add(PLAYERS);
+        }
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
+            groups.add(GLOBAL);
+        }
+        if (waystone.getVisibility() == WaystoneVisibility.TEAM) {
+            groups.add(TEAM);
+        }
+        groups.add(dimension(waystone.getDimension()));
+        CollectDynamicWaystoneGroupsEvent.EVENT.invoker().accept(new CollectDynamicWaystoneGroupsEvent(waystone, groups));
+        return List.copyOf(groups);
+    }
+}

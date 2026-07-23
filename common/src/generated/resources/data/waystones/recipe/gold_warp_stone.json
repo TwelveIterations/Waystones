@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": "minecraft:gold_ingot",
+    "W": "waystones:warp_stone"
+  },
+  "pattern": [
+    " M ",
+    "MWM",
+    " M "
+  ],
+  "result": {
+    "id": "waystones:gold_warp_stone"
+  }
+}

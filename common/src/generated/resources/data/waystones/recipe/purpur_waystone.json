@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "S": "minecraft:purpur_block",
+    "W": "waystones:warp_stone"
+  },
+  "pattern": [
+    " S ",
+    "SWS",
+    "SSS"
+  ],
+  "result": {
+    "id": "waystones:purpur_waystone"
+  }
+}

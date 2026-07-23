@@ -1,6 +1,7 @@
 # eclipse
 bin
 *.launch
+.eclipse
 .settings
 .metadata
 .classpath
@@ -20,7 +21,9 @@ build
 # other
 eclipse
 run
+runs
 runserver
 logs
 
-shared/src/main/generated/.cache
+common/src/generated/resources/.cache
+.minecraft

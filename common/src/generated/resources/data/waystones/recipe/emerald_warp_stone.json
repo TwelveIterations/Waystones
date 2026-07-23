@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": "minecraft:emerald",
+    "W": "waystones:warp_stone"
+  },
+  "pattern": [
+    " M ",
+    "MWM",
+    " M "
+  ],
+  "result": {
+    "id": "waystones:emerald_warp_stone"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "G": "#c:nuggets/gold",
+    "I": "minecraft:ink_sac",
+    "P": "minecraft:paper"
+  },
+  "pattern": [
+    "GIG",
+    "GAG",
+    "PPP"
+  ],
+  "result": {
+    "count": 3,
+    "id": "waystones:warp_scroll"
+  }
+}

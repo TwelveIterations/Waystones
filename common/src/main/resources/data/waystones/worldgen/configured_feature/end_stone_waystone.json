@@ -1,0 +1,8 @@
+{
+  "type": "waystones:waystone",
+  "config": {
+    "state": {
+      "Name": "waystones:end_stone_waystone"
+    }
+  }
+}

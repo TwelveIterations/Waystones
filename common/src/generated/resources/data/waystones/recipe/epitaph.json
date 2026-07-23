@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "D": "minecraft:deepslate",
+    "G": "#c:nuggets/gold"
+  },
+  "pattern": [
+    "GGG",
+    "ADA",
+    "GGG"
+  ],
+  "result": {
+    "id": "waystones:epitaph"
+  }
+}

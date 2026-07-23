@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "waystones:ruined_sharestone",
+    "minecraft:copper_ingot",
+    "minecraft:copper_ingot"
+  ],
+  "result": {
+    "id": "waystones:copper_sharestone"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "feature": "waystones:end_stone_waystone",
+  "placement": [
+    {
+      "type": "waystones:waystone",
+      "heightmap": "OCEAN_FLOOR_WG"
+    }
+  ]
+}

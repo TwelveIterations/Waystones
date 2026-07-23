@@ -1,0 +1,33 @@
+{
+  "values": [
+    "waystones:fleeting_memorial",
+    "waystones:andesite_waystone",
+    "waystones:blackstone_waystone",
+    "waystones:deepslate_waystone",
+    "waystones:end_stone_waystone",
+    "waystones:mossy_andesite_waystone",
+    "waystones:mud_bricks_waystone",
+    "waystones:prismarine_waystone",
+    "waystones:purpur_waystone",
+    "waystones:red_nether_bricks_waystone",
+    "waystones:sandstone_waystone",
+    "waystones:amethyst_portstone",
+    "waystones:copper_portstone",
+    "waystones:diamond_portstone",
+    "waystones:emerald_portstone",
+    "waystones:gold_portstone",
+    "waystones:lapis_portstone",
+    "waystones:prismarine_portstone",
+    "waystones:redstone_portstone",
+    "waystones:portstone",
+    "waystones:amethyst_sharestone",
+    "waystones:copper_sharestone",
+    "waystones:diamond_sharestone",
+    "waystones:emerald_sharestone",
+    "waystones:gold_sharestone",
+    "waystones:lapis_sharestone",
+    "waystones:prismarine_sharestone",
+    "waystones:redstone_sharestone",
+    "waystones:ruined_sharestone"
+  ]
+}

@@ -1,146 +1,89 @@
-plugins {
-	id 'fabric-loom' version '1.2-SNAPSHOT'
-	id 'maven-publish'
-	id 'idea'
-	id 'net.darkhax.curseforgegradle' version '1.0.14'
-	id "com.modrinth.minotaur" version "2.+"
-}
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
-group = mod_group
-archivesBaseName = "${mod_id}-fabric-${minecraft_version}"
-version = mod_version
+plugins {
+    id 'multiloader-loader'
+    alias libs.plugins.fabricLoom
+    alias libs.plugins.curseForgeGradle
+    alias libs.plugins.modrinthMinotaur
+}
 
 dependencies {
-	minecraft "com.mojang:minecraft:${minecraft_version}"
-	mappings loom.officialMojangMappings()
-
-	modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-	implementation project(":shared")
-
-	modImplementation("net.blay09.mods:balm-fabric:${balm_version}") {
-		transitive = false
-		changing = balm_version.endsWith("SNAPSHOT")
-	}
-
-	compileOnly "org.jetbrains:annotations:22.0.0"
-
-	modCompileOnly "mezz.jei:jei-$jei_minecraft_version-fabric-api:$jei_version"
-	if (jei_minecraft_version == minecraft_version) {
-		modRuntimeOnly "mezz.jei:jei-$jei_minecraft_version-fabric:$jei_version"
-	}
-
-	modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$rei_version") {
-		transitive = false
-	}
-
-	modCompileOnly "curse.maven:jade-324717:$jade_forge_version"
-	modCompileOnly "mcp.mobius.waila:wthit-api:mojmap-$wthit_version"
+    minecraft libs.minecraft
+    implementation libs.fabricLoader
+    implementation libs.fabricApi
 }
 
+apply from: rootProject.file('repositories.gradle')
 apply from: 'dependencies.gradle'
 
 loom {
-	runs {
-		client {
-			client()
-			setConfigName("fabric Client")
-			ideConfigGenerated(true)
-			runDir("run")
-		}
-		server {
-			server()
-			setConfigName("fabric Server")
-			ideConfigGenerated(true)
-			runDir("run")
-		}
-		data {
-			inherit client
-			setConfigName("fabric Data")
-			ideConfigGenerated(true)
-			runDir("build/datagen")
+    def aw = project(":common").file("src/main/resources/${mod_id}.classtweaker")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
+    }
 
-			vmArg "-Dfabric-api.datagen"
-			vmArg "-Dfabric-api.datagen.output-dir=${project(":shared").file("src/main/generated")}"
-			vmArg "-Dfabric-api.datagen.modid=${mod_id}"
-		}
-	}
+    runs {
+        client {
+            client()
+            setConfigName("fabric Client")
+            ideConfigGenerated(true)
+            runDir("runs/client")
+        }
+        server {
+            server()
+            setConfigName("fabric Server")
+            ideConfigGenerated(true)
+            runDir("runs/server")
+        }
+        data {
+            inherit client
+            setConfigName("fabric Data")
+            ideConfigGenerated(true)
+            runDir("build/datagen")
+
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${project(":common").file("src/generated/resources")}"
+            vmArg "-Dfabric-api.datagen.modid=${mod_id}"
+        }
+    }
 }
 
-sourceSets {
-	main {
-		resources {
-			srcDirs 'src/generated/resources'
-		}
-	}
-}
 
-processResources {
-	from project(":shared").sourceSets.main.resources
-	inputs.property "version", project.version
+tasks.register('curseforge', TaskPublishCurseForge) {
+    dependsOn('build')
+    description = 'Publishes the Fabric build to CurseForge.'
+    group = 'publishing'
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
-}
+    apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
 
-tasks.withType(JavaCompile) {
-	source(project(":shared").sourceSets.main.allSource)
-}
-
-jar {
-	from(rootProject.file("LICENSE")) {
-		rename { "${it}_${mod_id}" }
-	}
-}
-
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			artifactId = mod_id + "-fabric"
-			version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
-
-			from components.java
-		}
-	}
-
-	repositories {
-		maven {
-			var releasesRepoUrl = "https://maven.twelveiterations.com/repository/maven-releases/"
-			var snapshotsRepoUrl = "https://maven.twelveiterations.com/repository/maven-snapshots/"
-			url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
-			name = "twelveIterationsNexus"
-			credentials(PasswordCredentials)
-		}
-	}
-}
-
-task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
-	dependsOn('build')
-	description = 'Publishes the Fabric build to CurseForge.'
-	group = 'publishing'
-
-	apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
-
-	def mainFile = upload(curseforge_fabric_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
-	mainFile.changelog = rootProject.file('CHANGELOG.md').text
-	mainFile.changelogType = "markdown"
-	mainFile.addRequirement("balm-fabric")
-	project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
-	mainFile.releaseType = release_type
+    def projectId = findProperty("curseforge_project_id")
+    onlyIf {
+        projectId != null
+    }
+    if (projectId) {
+        def mainFile = upload(findProperty("curseforge_project_id"), jar.archiveFile.get().asFile)
+        mainFile.changelog = rootProject.file('CHANGELOG.md').text
+        mainFile.addRequirement("fabric-api")
+        mainFile.addRequirement("balm")
+        mainFile.addRequirement("shogi")
+        mainFile.addGameVersion(libs.minecraft.get().version)
+        mainFile.releaseType = "release"
+        project.findProperty("curseforge_environments")?.split(",")?.toList()?.each { mainFile.addEnvironment(it) }
+    }
 }
 
 modrinth {
-	token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
-	projectId = project.modrinth_fabric_project_id
-	versionType = project.release_type
-	versionNumber = project.version + "+fabric-" + project.minecraft_version
-	uploadFile = remapJar
-	changelog = rootProject.file("CHANGELOG.md").text
-	gameVersions = project.minecraft_versions.split(',').toList()
-	syncBodyFrom = rootProject.file("modrinth.md").text
-	loaders = ['fabric']
-	dependencies {
-		required.project "balm"
-	}
+    token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
+    projectId = findProperty("modrinth_project_id")
+    versionType = "release"
+    versionNumber = project.version + "+fabric-" + libs.minecraft.get().version
+    uploadFile = jar
+    changelog = rootProject.file("CHANGELOG.md").text
+    gameVersions = [libs.minecraft.get().version]
+    loaders = ['fabric']
+    dependencies {
+        required.project "fabric-api"
+        required.project "balm"
+        required.project "shogi"
+    }
 }

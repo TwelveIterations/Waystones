@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": "#c:nuggets/gold",
+    "I": "minecraft:ink_sac",
+    "P": "minecraft:paper"
+  },
+  "pattern": [
+    "GIG",
+    "PPP"
+  ],
+  "result": {
+    "count": 3,
+    "id": "waystones:return_scroll"
+  }
+}

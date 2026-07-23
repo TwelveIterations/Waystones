@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "waystones:item/prismarine_warp_stone"
+  }
+}

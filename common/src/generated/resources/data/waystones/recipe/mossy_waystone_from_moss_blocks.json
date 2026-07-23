@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "waystones:andesite_waystone",
+    "minecraft:moss_block",
+    "minecraft:moss_block",
+    "minecraft:moss_block"
+  ],
+  "result": {
+    "id": "waystones:mossy_andesite_waystone"
+  }
+}

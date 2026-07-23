@@ -1,0 +1,16 @@
+{
+  "target_pool": "repurposed_structures:villages/ocean/houses",
+  "fallback": "repurposed_structures:villages/ocean/terminators",
+  "elements": [
+    {
+      "weight": 3,
+      "element": {
+        "location": "waystones:village/common/waystone_waterlogged",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:legacy_single_pool_element"
+      },
+      "condition": "waystones:config"
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+package net.blay09.mods.waystones.item;
+
+import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystonesAPI;
+import net.blay09.mods.waystones.api.trait.IAttunementItem;
+import net.blay09.mods.waystones.api.trait.IFOVOnUse;
+import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
+import net.blay09.mods.waystones.component.BoundScrollComponent;
+import net.blay09.mods.waystones.component.ModComponents;
+import net.blay09.mods.waystones.config.WaystonesRules;
+import net.blay09.mods.waystones.core.WaystoneProxy;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
+
+import java.util.Optional;
+import java.util.function.Consumer;
+
+public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage, IFOVOnUse, IAttunementItem {
+
+    public BoundScrollItem(Properties properties) {
+        super(properties);
+    }
+
+    @Override
+    public int getUseDuration(ItemStack itemStack, LivingEntity entity) {
+        return WaystonesRules.scrollUseTime.getOrDefault(entity);
+    }
+
+    @Override
+    public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
+        if (!world.isClientSide() && entity instanceof ServerPlayer player) {
+            final var hand = player.getUsedItemHand();
+            final var boundTo = getWaystoneAttunedTo(player.level().getServer(), player, stack);
+            boundTo.ifPresent(targetWaystone -> WaystonesAPI.createUncheckedDefaultTeleportContext(player, targetWaystone, it -> {
+                        it.setWarpItem(stack);
+                        it.setWarpHand(hand);
+                    })
+                    .ifLeft(context -> WaystonesAPI.tryTeleportAsync(context)
+                            .thenAccept(result -> result
+                                    .ifLeft(_ -> stack.consume(1, player))
+                                    .ifRight(error -> player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED)))))
+                    .ifRight(error -> player.sendOverlayMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED)))
+            );
+        }
+
+        return stack;
+    }
+
+    @Override
+    public Optional<Waystone> getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
+        final var boundScroll = itemStack.get(ModComponents.boundScroll.value());
+        if (boundScroll != null) {
+            return Optional.of(new WaystoneProxy(server, boundScroll.waystoneId()));
+        }
+
+        final var legacyAttunement = itemStack.get(ModComponents.attunement.value());
+        if (legacyAttunement != null) {
+            return Optional.of(new WaystoneProxy(server, legacyAttunement));
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public void setWaystoneAttunedTo(ItemStack itemStack, @Nullable Waystone waystone) {
+        if (waystone != null) {
+            itemStack.set(ModComponents.boundScroll.value(), new BoundScrollComponent(waystone.getWaystoneUid(), waystone.getName()));
+        } else {
+            itemStack.remove(ModComponents.boundScroll.value());
+        }
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
+        itemStack.addToTooltip(ModComponents.boundScroll.value(), context, display, list, flag);
+    }
+
+    @Override
+    public boolean isFoil(ItemStack itemStack) {
+        return true;
+    }
+}

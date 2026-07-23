@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:feather",
+    "minecraft:amethyst_shard",
+    "minecraft:gold_nugget",
+    "minecraft:ink_sac"
+  ],
+  "result": {
+    "id": "waystones:twinbound_feather"
+  }
+}

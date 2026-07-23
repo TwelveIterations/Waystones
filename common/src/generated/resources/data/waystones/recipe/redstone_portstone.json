@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "minecraft:stone_bricks",
+    "D": "minecraft:redstone",
+    "S": "minecraft:stone_brick_slab",
+    "W": "waystones:warp_stone"
+  },
+  "pattern": [
+    "DSD",
+    "SWS",
+    "BBB"
+  ],
+  "result": {
+    "id": "waystones:redstone_portstone"
+  }
+}
