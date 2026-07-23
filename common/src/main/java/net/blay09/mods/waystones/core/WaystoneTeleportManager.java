@@ -146,7 +146,6 @@ public class WaystoneTeleportManager {
         batch.restoreMounts();
 
         final var teleportedEntities = result.teleportedEntities();
-        teleportedEntities.forEach(WaystoneTeleportManager::forceEntityTrackingRefresh);
         final var sourcePos = context.getEntity().blockPosition();
         final var targetLevel = (ServerLevel) destination.level();
         final var targetPos = BlockPos.containing(destination.location());
@@ -233,6 +232,7 @@ public class WaystoneTeleportManager {
             ((PathfinderMob) entity).getNavigation().stop();
         }
 
+        ((WaystoneTeleportedEntity) entity).waystones$markTeleportedByWaystone();
         sendHackySyncPacketsAfterTeleport(entity);
 
         final var teleportResult = EntityTeleportResult.success(entity, destination, new TeleportDestination(targetLevel, targetPosition, direction));
@@ -296,23 +296,6 @@ public class WaystoneTeleportManager {
         if (entity instanceof ServerPlayer player) {
             // No idea why this is still needed since we're using the same code as /tp. Maybe /tp is broken too for interdimensional travel.
             player.connection.send(new ClientboundSetExperiencePacket(player.experienceProgress, player.totalExperience, player.experienceLevel));
-        }
-    }
-
-    /**
-     * This is necessary because there seems to be a Vanilla bug that does not properly update entity tracking for players in the target area.
-     * You can reproduce the bug by having two players far from each other, spawning some donkeys, and running `/tp @e[type=donkey] @s` on the other.
-     * The donkeys will teleport, but not be visible for the target player until they relog or re-enter the area.
-     */
-    private static void forceEntityTrackingRefresh(Entity entity) {
-        if (entity.level() instanceof ServerLevel level && !entity.isRemoved()) {
-            final var chunkSource = level.getChunkSource();
-            if (entity instanceof ServerPlayer player) {
-                chunkSource.move(player);
-            } else {
-                chunkSource.removeEntity(entity);
-                chunkSource.addEntity(entity);
-            }
         }
     }
 

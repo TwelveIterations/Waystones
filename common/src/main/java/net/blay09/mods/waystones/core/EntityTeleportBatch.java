@@ -4,6 +4,8 @@ import net.blay09.mods.waystones.api.EntityTeleportResult;
 import net.blay09.mods.waystones.api.TeleportDestination;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.WaystoneTeleportResult;
+import net.minecraft.network.protocol.game.ClientboundMoveVehiclePacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import org.jetbrains.annotations.Nullable;
@@ -114,6 +116,11 @@ public class EntityTeleportBatch {
 
             mount.ejectPassengers();
             desiredPassengers.forEach(passenger -> passenger.startRiding(mount, true));
+
+            // Send a manual update to the controlling player to avoid snapping back to the original position on close-range teleports
+            if (mount.getControllingPassenger() instanceof ServerPlayer player) {
+                player.connection.send(new ClientboundMoveVehiclePacket(mount));
+            }
         });
     }
 
