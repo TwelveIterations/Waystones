@@ -17,7 +17,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.function.Consumer;
 
 public class WarpRequirementRuleEditScreen extends Screen {
-    private static final String HELP_URL = "https://shogi.twelveiterations.com";
+    private static final String HELP_URL = "https://mods.twelveiterations.com/minecraft/waystones/guides/warp-rules";
     private static final Component TITLE = Component.translatable("waystones.configuration.rules.warpRequirements.edit");
     private static final Component PLACEHOLDER = Component.translatable("waystones.configuration.rules.warpRequirements.placeholder");
     private static final Component HELP_LABEL = Component.translatable("waystones.configuration.rules.warpRequirements.help");
