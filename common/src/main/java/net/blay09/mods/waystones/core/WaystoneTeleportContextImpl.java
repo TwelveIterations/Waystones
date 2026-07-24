@@ -19,7 +19,7 @@ import java.util.*;
 
 public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     private final Entity entity;
-    private final Waystone targetWaystone;
+    private Waystone targetWaystone;
 
     private final List<Entity> additionalEntities = new ArrayList<>();
     private final List<Mob> leashedEntities = new ArrayList<>();
@@ -49,6 +49,12 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public Waystone getTargetWaystone() {
         return targetWaystone;
+    }
+
+    @Override
+    public WaystoneTeleportContext setTargetWaystone(Waystone targetWaystone) {
+        this.targetWaystone = targetWaystone;
+        return this;
     }
 
     @Override
@@ -107,22 +113,21 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
 
     @Override
     public WarpRequirement getRequirements() {
+        if (targetWaystone.getWaystoneType().equals(WaystoneTypes.TWINBOUND_FEATHER)) {
+            return warpRequirement.isEmpty()
+                    ? TwinboundFeatherRequirement.INSTANCE
+                    : new CombinedRequirement(List.of(warpRequirement, TwinboundFeatherRequirement.INSTANCE));
+        } else if (targetWaystone.getWaystoneType().equals(WaystoneTypes.FLEETING_MEMORIAL)) {
+            return warpRequirement.isEmpty()
+                    ? EpitaphRequirement.INSTANCE
+                    : new CombinedRequirement(List.of(warpRequirement, EpitaphRequirement.INSTANCE));
+        }
         return warpRequirement;
     }
 
     @Override
     public WaystoneTeleportContext setRequirements(WarpRequirement warpRequirement) {
-        if (targetWaystone.getWaystoneType().equals(WaystoneTypes.TWINBOUND_FEATHER)) {
-            this.warpRequirement = warpRequirement.isEmpty()
-                    ? TwinboundFeatherRequirement.INSTANCE
-                    : new CombinedRequirement(List.of(warpRequirement, TwinboundFeatherRequirement.INSTANCE));
-        } else if (targetWaystone.getWaystoneType().equals(WaystoneTypes.FLEETING_MEMORIAL)) {
-            this.warpRequirement = warpRequirement.isEmpty()
-                    ? EpitaphRequirement.INSTANCE
-                    : new CombinedRequirement(List.of(warpRequirement, EpitaphRequirement.INSTANCE));
-        } else {
-            this.warpRequirement = warpRequirement;
-        }
+        this.warpRequirement = warpRequirement;
         return this;
     }
 
