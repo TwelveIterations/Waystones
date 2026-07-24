@@ -43,11 +43,23 @@ public class WaystonesConfigScreenFactory {
                         property(schema, "rules", "transportLeashed"),
                         property(schema, "rules", "entityDenyList"))))
                 .section(category("inventoryButton"), it -> it.properties(List.of(
-                        property(schema, "inventoryButton", "inventoryButton"),
-                        property(schema, "inventoryButton", "inventoryButtonX"),
-                        property(schema, "inventoryButton", "inventoryButtonY"),
-                        property(schema, "inventoryButton", "creativeInventoryButtonX"),
-                        property(schema, "inventoryButton", "creativeInventoryButtonY"))))
+                                property(schema, "inventoryButton", "inventoryButton")))
+                        .mergedProperties(positionLabel("inventoryButton"), positionTooltip("inventoryButton"), List.of(
+                                        intProperty(schema, "inventoryButton", "inventoryButtonX"),
+                                        intProperty(schema, "inventoryButton", "inventoryButtonY")),
+                                (screen, _, rowState) -> new MergedIntEditBoxes(
+                                        screen,
+                                        rowState,
+                                        intProperty(schema, "inventoryButton", "inventoryButtonX"),
+                                        intProperty(schema, "inventoryButton", "inventoryButtonY")))
+                        .mergedProperties(positionLabel("creativeInventoryButton"), positionTooltip("creativeInventoryButton"), List.of(
+                                        intProperty(schema, "inventoryButton", "creativeInventoryButtonX"),
+                                        intProperty(schema, "inventoryButton", "creativeInventoryButtonY")),
+                                (screen, _, rowState) -> new MergedIntEditBoxes(
+                                        screen,
+                                        rowState,
+                                        intProperty(schema, "inventoryButton", "creativeInventoryButtonX"),
+                                        intProperty(schema, "inventoryButton", "creativeInventoryButtonY"))))
                 .section(category("worldGen"), it -> it.properties(categoryProperties(schema, "worldGen")))
                 .section(category("client"), it -> it.properties(categoryProperties(schema, "client")))
                 .section(section("mapIntegrations"), it -> it
@@ -70,6 +82,11 @@ public class WaystonesConfigScreenFactory {
     }
 
     @SuppressWarnings("unchecked")
+    private static ConfiguredProperty<Integer> intProperty(BalmConfigSchema schema, String category, String property) {
+        return (ConfiguredProperty<Integer>) schema.findProperty(category, property);
+    }
+
+    @SuppressWarnings("unchecked")
     private static ConfiguredProperty<List<String>> stringListProperty(BalmConfigSchema schema, String category, String property) {
         return (ConfiguredProperty<List<String>>) schema.findProperty(category, property);
     }
@@ -81,6 +98,14 @@ public class WaystonesConfigScreenFactory {
 
     private static Component category(String category) {
         return Component.translatable("waystones.configuration." + category);
+    }
+
+    private static Component positionLabel(String property) {
+        return Component.translatable("waystones.configuration.inventoryButton." + property + "Position");
+    }
+
+    private static Component positionTooltip(String property) {
+        return Component.translatable("waystones.configuration.inventoryButton." + property + "Position.tooltip");
     }
 
     private static Component section(String section) {
