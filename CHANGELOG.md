@@ -1,7 +1,7 @@
-- Fixed crash when deleting a waystone
-- Fixed teleported entities remaining invisible to players in the target area
-- Fixed mounts and passengers not teleporting correctly
-- Fixed Fleeting Memorial so that it does not require xp
-  - If you have not made changes to your `warpRequirements`, it should update automatically
-  - If you are using custom `warpRequirements`, either reset them to the default and re-apply your changes,
-  - ... or manually add `"[target_is_fleeting_memorial] multiply_xp_cost(0)",`
+- Added `enableDurability` option (default: `true`) to disable durability loss on warp stones
+- Fixed occasional crash due to corrupt entity tracking
+- Backported a Vanilla bugfix for entity teleportation to hopefully make non-player teleports and mounted teleports more stable
+  - This is a bug that causes entities to not be tracked when teleported from a loaded chunk into another loaded chunk, which has been fixed by Vanilla in 1.21.2+
+  - For Waystone-initiated teleports, this bugfix will be applied automatically
+  - The `enableVanillaBugfix` option (default: `false`) can be used to additionally apply this bugfix to all other entity teleports (like via `/tp` or other mods)
+- Fixed passengers being able to trigger teleports on warp plates independent of their mount
