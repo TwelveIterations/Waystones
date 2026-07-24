@@ -287,6 +287,8 @@
   "waystones.configuration.teleports.enableCosts.tooltip": "Set to false to simply disable all xp costs. See warpRequirements for more fine-grained control.",
   "waystones.configuration.teleports.enableCooldowns": "Enable Cooldowns",
   "waystones.configuration.teleports.enableCooldowns.tooltip": "Set to false to simply disable all cooldowns. See warpRequirements for more fine-grained control.",
+  "waystones.configuration.teleports.enableDurability": "Enable Durability",
+  "waystones.configuration.teleports.enableDurability.tooltip": "Set to false to disable durability loss on warp stones.",
   "waystones.configuration.teleports.enableModifiers": "Enable Modifiers",
   "waystones.configuration.teleports.enableModifiers.tooltip": "Set to true to enable warp modifier items for applying status effects on teleports.",
   "waystones.configuration.teleports.warpRequirements": "Warp Requirements",

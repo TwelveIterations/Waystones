@@ -123,7 +123,11 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
             final var hand = player.getUsedItemHand();
             Balm.getNetworking().openGui(player, new WaystoneSelectionListBuilder(player)
                     .withTargetsForItem(itemStack)
-                    .withPostTeleportHandler(context -> itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand)))
+                    .withPostTeleportHandler(context -> {
+                        if (WaystonesConfig.getActive().teleports.enableDurability) {
+                            itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+                        }
+                    })
                     .buildMenuProvider(ModMenus.warpStoneSelection.get(), Component.translatable("container.waystones.waystone_selection")));
         }
 

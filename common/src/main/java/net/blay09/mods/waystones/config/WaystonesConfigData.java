@@ -82,6 +82,10 @@ public class WaystonesConfigData implements BalmConfigData {
         public boolean enableCooldowns = true;
 
         @Synced
+        @Comment("Set to false to disable durability loss on warp stones.")
+        public boolean enableDurability = true;
+
+        @Synced
         @ExpectedType(String.class)
         @Comment("List of warp requirements with comma-separated parameters in parentheses. Conditions can be defined as comma-separated list in square brackets. Will be applied in order.")
         public List<String> warpRequirements = DEFAULT_WARP_REQUIREMENTS;
