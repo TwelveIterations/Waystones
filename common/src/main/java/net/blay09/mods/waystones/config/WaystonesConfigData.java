@@ -68,6 +68,10 @@ public class WaystonesConfigData implements BalmConfigData {
         public int warpPlateUseTime = 15;
 
         @Synced
+        @Comment("The time in ticks that an entity has to be off of a target warp plate before it can teleport from that same warp plate again.")
+        public int warpPlateCooldownTime = 20;
+
+        @Synced
         @Comment("The time in ticks it takes to use a scroll. This is the charge-up time when holding right-click.")
         public int scrollUseTime = 32;
     }

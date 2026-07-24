@@ -282,6 +282,8 @@
   "waystones.configuration.general.scrollUseTime.tooltip": "The time in ticks it takes to use a scroll. This is the charge-up time when holding right-click.",
   "waystones.configuration.general.warpPlateUseTime": "Warp Plate Use Time",
   "waystones.configuration.general.warpPlateUseTime.tooltip": "The time in ticks that it takes to use a warp plate. This is the time the player has to stand on top for.",
+  "waystones.configuration.general.warpPlateCooldownTime": "Warp Plate Cooldown Time",
+  "waystones.configuration.general.warpPlateCooldownTime.tooltip": "The time in ticks that an entity has to be off of a target warp plate before it can teleport from that same warp plate again.",
   "waystones.configuration.teleports": "Teleports",
   "waystones.configuration.teleports.enableCosts": "Enable Costs",
   "waystones.configuration.teleports.enableCosts.tooltip": "Set to false to simply disable all xp costs. See warpRequirements for more fine-grained control.",
