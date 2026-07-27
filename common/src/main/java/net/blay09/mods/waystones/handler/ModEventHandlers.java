@@ -16,7 +16,7 @@ public class ModEventHandlers {
         Balm.getEvents().onEvent(PlayerLoginEvent.class, LoginHandler::onPlayerLogin);
         Balm.getEvents().onEvent(LivingDamageEvent.class, WarpDamageResetHandler::onDamage);
         Balm.getEvents().onEvent(WaystoneActivatedEvent.class, WaystoneActivationStatHandler::onWaystoneActivated);
-        Balm.getEvents().onEvent(WaystoneTeleportEvent.Post.class, FleetingMemorialManager::handleTeleportAfter);
+        Balm.getEvents().onEvent(WaystoneTeleportEvent.Complete.class, FleetingMemorialManager::handleTeleportComplete);
         Balm.getEvents().onEvent(UseBlockEvent.class, WaystoneDebugHandler::onWaystoneUsed);
         Balm.getEvents().onEvent(ServerStartedEvent.class, event -> WaystoneIndexManager.rebuildIndex(event.getServer()));
     }
