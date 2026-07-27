@@ -14,7 +14,7 @@ public class ModEventHandlers {
         ServerLifecycleCallback.Started.EVENT.register(WaystoneIndexManager::rebuildIndex);
         EpitaphDeathHandler.register();
         WaystoneActivatedEvent.EVENT.register(WaystoneActivationStatHandler::onWaystoneActivated);
-        WaystoneTeleportEvent.After.EVENT.register(FleetingMemorialManager::handleTeleportAfter);
+        WaystoneTeleportEvent.Complete.EVENT.register(FleetingMemorialManager::handleTeleportComplete);
         WaystoneDebugHandler.register();
         WaystoneEditInteractionHandler.register();
     }

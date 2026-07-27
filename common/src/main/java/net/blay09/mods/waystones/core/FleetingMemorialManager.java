@@ -1,9 +1,11 @@
 package net.blay09.mods.waystones.core;
 
+import net.blay09.mods.waystones.api.EntityTeleportResult;
 import net.blay09.mods.waystones.api.MutableWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
+import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
@@ -13,6 +15,7 @@ import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
@@ -75,20 +78,37 @@ public class FleetingMemorialManager {
         final var pos = waystone.getPos();
         if (level.getBlockState(pos).is(ModBlocks.fleetingMemorial.asBlock())) {
             level.destroyBlock(pos, false);
-        } else {
-            SavedDataWaystonesStore.get(server).removeWaystone(waystone);
-            PlayerWaystoneManager.removeKnownWaystone(server, waystone);
-            WaystoneSyncManager.sendWaystoneRemovalToAll(server, waystone, true);
         }
+
+        removeListing(server, waystone);
     }
 
-    public static void handleTeleportAfter(WaystoneTeleportEvent.After event) {
-        if (event.getContext().getEntity().level() instanceof ServerLevel sourceLevel) {
-            final var waystone = event.getContext().getTargetWaystone();
-            if (WaystoneKinds.FLEETING_MEMORIAL.equals(waystone.getWaystoneKind())) {
+    public static void handleTeleportComplete(WaystoneTeleportEvent.Complete event) {
+        final var waystone = event.getContext().getTargetWaystone();
+        if (!WaystoneKinds.FLEETING_MEMORIAL.equals(waystone.getWaystoneKind())) {
+            return;
+        }
+
+        if (event.getTeleportError().isEmpty() && event.getPrimaryResult().map(EntityTeleportResult::isSuccessful).orElse(true)) {
+            if (event.getContext().getEntity().level() instanceof ServerLevel sourceLevel) {
                 removeAfterUse(sourceLevel, waystone);
             }
+            return;
         }
+
+        event.getTeleportError()
+                .filter(WaystoneTeleportError.MissingWaystone.class::isInstance)
+                .ifPresent(ignored -> {
+                    if (event.getContext().getEntity().level() instanceof ServerLevel sourceLevel) {
+                        removeListing(sourceLevel.getServer(), waystone);
+                    }
+                });
+    }
+
+    private static void removeListing(MinecraftServer server, Waystone waystone) {
+        SavedDataWaystonesStore.get(server).removeWaystone(waystone);
+        PlayerWaystoneManager.removeKnownWaystone(server, waystone);
+        WaystoneSyncManager.sendWaystoneRemovalToAll(server, waystone, true);
     }
 
     private static @Nullable BlockPos findMemorialPos(ServerLevel level, BlockPos deathPos) {
