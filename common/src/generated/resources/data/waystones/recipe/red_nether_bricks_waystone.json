@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "S": "minecraft:emerald",
+    "S": "minecraft:red_nether_bricks",
     "W": "waystones:warp_stone"
   },
   "pattern": [
