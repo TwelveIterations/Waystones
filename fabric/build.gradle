@@ -123,7 +123,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 	def mainFile = upload(curseforge_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
 	mainFile.changelog = rootProject.file('CHANGELOG.md').text
 	mainFile.changelogType = "markdown"
-	mainFile.addRequirement("balm-fabric")
+	mainFile.addRequirement("balm")
 	project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
 	mainFile.releaseType = release_type
 }
