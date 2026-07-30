@@ -49,7 +49,7 @@
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
     "fabric-api": "*",
-    "balm-fabric": "*",
+    "balm": "*",
     "minecraft": ">=${minimum_minecraft_version}",
     "java": ">=${java_version}"
   },
