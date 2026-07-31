@@ -1,12 +1,5 @@
-- Fixed crash when deleting a waystone
-- Fixed warp requirements being consumed twice
-- Fixed mounts and passengers not teleporting correctly
-- Fixed invalid warp requirements resulting in buttons staying disabled with no visible reason
-  - They will now show a fallback error pointing out the issue
-- Fixed Fleeting Memorial so that it does not require xp
-  - If you have not made changes to your `warpRequirements`, it should update automatically
-  - If you are using custom `warpRequirements`, either reset them to the default and re-apply your changes,
-  - ... or manually replace the `$uses_xp #= ... ` line with `"$uses_xp #= and(any(source(is_waystone), source(is_warp_stone)), not(target(is_fleeting_memorial)))",`
-- Fixed waystone Shogi rules not using Waystones' rule scope
-  - If you were using a `shogi.rules.json` file for Waystones, it must now be renamed to `waystones.rules.json`
-- Fixed effect naming conflict; `is_player` is now renamed to `is_twinbound` to not conflict with `shogi:is_player`
+- Added a custom config screen
+- Fixed Fleeting Memorial not always being removed from waystone database
+- Fixed Fleeting Memorial not being removed when it is no longer a valid destination
+- Fixed wrong ingredient for Red Nether Bricks Waystone
+- Fixed mount passengers being able to initiate a warp plate teleport
