@@ -103,7 +103,7 @@ public class PlayerWaystoneManager {
                 .min((first, second) -> {
                     double firstDist = player.distanceToSqr(Vec3.atCenterOf(first.getPos()));
                     double secondDist = player.distanceToSqr(Vec3.atCenterOf(second.getPos()));
-                    return (int) Math.round(firstDist) - (int) Math.round(secondDist);
+                    return Double.compare(firstDist, secondDist);
                 });
     }
 
