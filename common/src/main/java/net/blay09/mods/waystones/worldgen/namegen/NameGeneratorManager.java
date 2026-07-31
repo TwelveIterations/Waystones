@@ -66,7 +66,7 @@ public class NameGeneratorManager extends SavedData {
         var name = resolveDuplicate(originalName);
 
         final var event = new GenerateWaystoneNameEvent(waystone, name);
-        GenerateWaystoneNameEvent.EVENT.invoker().accept(new GenerateWaystoneNameEvent(waystone, name));
+        GenerateWaystoneNameEvent.EVENT.invoker().accept(event);
         name = event.getName();
 
         usedNames.add(name.getString());
