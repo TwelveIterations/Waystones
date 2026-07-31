@@ -104,7 +104,7 @@ public class PlayerWaystoneManager {
                 .min((first, second) -> {
                     double firstDist = player.distanceToSqr(first.getPos().getCenter());
                     double secondDist = player.distanceToSqr(second.getPos().getCenter());
-                    return (int) Math.round(firstDist) - (int) Math.round(secondDist);
+                    return Double.compare(firstDist, secondDist);
                 });
     }
 
