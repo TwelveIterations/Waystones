@@ -1,7 +1,4 @@
-- Added `enableDurability` option (default: `true`) to disable durability loss on warp stones
-- Fixed occasional crash due to corrupt entity tracking
-- Backported a Vanilla bugfix for entity teleportation to hopefully make non-player teleports and mounted teleports more stable
-  - This is a bug that causes entities to not be tracked when teleported from a loaded chunk into another loaded chunk, which has been fixed by Vanilla in 1.21.2+
-  - For Waystone-initiated teleports, this bugfix will be applied automatically
-  - The `enableVanillaBugfix` option (default: `false`) can be used to additionally apply this bugfix to all other entity teleports (like via `/tp` or other mods)
-- Fixed passengers being able to trigger teleports on warp plates independent of their mount
+- Fixed Fleeting Memorial not always being removed from waystone database
+- Fixed Fleeting Memorial not being removed when it is no longer a valid destination
+- Added a minimum cooldown of 20 ticks away from the warp plate after a warp plate teleport
+- API: Changed target waystone to be mutable in `WaystoneTeleportContext`
