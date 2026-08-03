@@ -6,6 +6,7 @@ import net.blay09.mods.balm.core.BalmRegistrar;
 import net.blay09.mods.balm.core.component.BalmDataComponentTypeRegistrar;
 import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.balm.platform.config.BalmConfig;
+import net.blay09.mods.balm.platform.event.callback.ServerLifecycleCallback;
 import net.blay09.mods.balm.platform.module.BalmModule;
 import net.blay09.mods.balm.server.packs.resources.BalmResourceConditionRegistrar;
 import net.blay09.mods.balm.stats.BalmCustomStatRegistrar;
@@ -17,6 +18,7 @@ import net.blay09.mods.balm.world.level.block.BalmBlockRegistrar;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityTypeRegistrar;
 import net.blay09.mods.balm.world.level.levelgen.BalmWorldGen;
 import net.blay09.mods.shogi.network.ShogiStreamCodecs;
+import net.blay09.mods.waystones.api.event.WaystonesLoadedEvent;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.client.WaystonesClient;
@@ -163,6 +165,11 @@ public class Waystones implements BalmModule {
         Balm.initializeIfLoaded("bluemap", "net.blay09.mods.waystones.compat.BlueMapIntegration");
         Balm.initializeIfLoaded("dynmap", "net.blay09.mods.waystones.compat.DynmapIntegration");
         Balm.initializeIfLoaded(Compat.UNBREAKABLES, "net.blay09.mods.waystones.compat.UnbreakablesIntegration");
+
+        ServerLifecycleCallback.Started.EVENT.register(server -> {
+            final var waystonesStore = SavedDataWaystonesStore.get(server);
+            WaystonesLoadedEvent.EVENT.invoker().accept(new WaystonesLoadedEvent(waystonesStore));
+        });
     }
 
 }
