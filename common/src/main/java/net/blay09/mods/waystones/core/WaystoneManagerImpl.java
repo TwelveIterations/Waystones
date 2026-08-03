@@ -2,7 +2,10 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneManager;
+import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneRemovedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneUpdatedEvent;
@@ -22,12 +25,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class WaystoneManagerImpl extends SavedData implements WaystoneManager {
+
+    private static final Logger logger = LoggerFactory.getLogger(WaystoneManagerImpl.class);
 
     private static final String DATA_NAME = Waystones.MOD_ID;
     private static final String TAG_WAYSTONES = "Waystones";
@@ -108,7 +115,11 @@ public class WaystoneManagerImpl extends SavedData implements WaystoneManager {
             }
             waystoneManager.waystones.put(waystone.getWaystoneUid(), waystone);
         }
-        Balm.getEvents().fireEvent(new WaystonesLoadedEvent(waystoneManager));
+        try {
+            Balm.getEvents().fireEvent(new WaystonesLoadedEvent(waystoneManager));
+        } catch (Exception e) {
+            logger.error("Error while firing WaystonesLoadedEvent", e);
+        }
         return waystoneManager;
     }
 
