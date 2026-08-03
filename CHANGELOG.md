@@ -1,4 +1,3 @@
-- Fixed Fleeting Memorial not always being removed from waystone database
-- Fixed Fleeting Memorial not being removed when it is no longer a valid destination
-- Added a minimum cooldown of 20 ticks away from the warp plate after a warp plate teleport
-- API: Changed target waystone to be mutable in `WaystoneTeleportContext`
+- Fixed crash with Dynmap integration if it runs before the server instance is captured
+- Fixed waystones being wiped when an event handler throws during loading
+- Fixed integer overflow in distance comparison resulting in wrong results and crashes for large distances
