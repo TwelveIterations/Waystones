@@ -136,8 +136,7 @@ public class WaystoneManagerImpl extends SavedData implements WaystoneManager {
     public static WaystoneManagerImpl get(@Nullable MinecraftServer server) {
         if (server != null) {
             ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(new Factory<>(WaystoneManagerImpl::new, WaystoneManagerImpl::read,
-                    DataFixTypes.SAVED_DATA_MAP_DATA), DATA_NAME); // TODO this is most likely wrong but I don't think Forge has a solution, Fabric allows null
+            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(new Factory<>(WaystoneManagerImpl::new, WaystoneManagerImpl::read, null), DATA_NAME);
         }
 
         return clientStorageCopy;

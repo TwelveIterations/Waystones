@@ -3,8 +3,8 @@ package net.blay09.mods.waystones.worldgen.namegen;
 import com.google.common.collect.Sets;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.event.GenerateWaystoneNameEvent;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.event.GenerateWaystoneNameEvent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -15,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -95,9 +94,7 @@ public class NameGeneratorManager extends SavedData {
     public static NameGeneratorManager get(@Nullable MinecraftServer server) {
         if (server != null) {
             ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(new Factory<>(NameGeneratorManager::new,
-                    NameGeneratorManager::load,
-                    DataFixTypes.SAVED_DATA_MAP_DATA), DATA_NAME); // TODO this is most likely wrong but I don't think Forge has a solution, Fabric allows null
+            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(new Factory<>(NameGeneratorManager::new, NameGeneratorManager::load, null), DATA_NAME);
         }
 
         return clientStorageCopy;
