@@ -1,6 +1,8 @@
 package net.blay09.mods.waystones.compat;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
+import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
@@ -13,6 +15,7 @@ import org.dynmap.DynmapCommonAPI;
 import org.dynmap.DynmapCommonAPIListener;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerSet;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +25,15 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     private final List<Runnable> scheduledJobsWhenReady = new ArrayList<>();
 
     private DynmapCommonAPI api;
-    private MarkerSet waystoneMarkers;
-    private MarkerSet sharestoneMarkers;
+    private @Nullable String overworldLevelName;
+    private @Nullable MarkerSet waystoneMarkers;
+    private @Nullable MarkerSet sharestoneMarkers;
 
     public DynmapIntegration() {
         DynmapCommonAPIListener.register(this);
 
+        Balm.getEvents().onEvent(ServerStartedEvent.class, this::onServerStarted);
+        Balm.getEvents().onEvent(ServerStoppedEvent.class, this::onServerStopped);
         Balm.getEvents().onEvent(WaystonesLoadedEvent.class, this::onWaystonesLoaded);
         Balm.getEvents().onEvent(WaystoneInitializedEvent.class, this::onWaystoneInitialized);
         Balm.getEvents().onEvent(WaystoneUpdatedEvent.class, this::onWaystoneUpdated);
@@ -38,7 +44,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
         return waystone.getWaystoneUid().toString();
     }
 
-    public static Marker createWaystoneMarker(MarkerSet markerSet, Waystone waystone) {
+    private Marker createWaystoneMarker(MarkerSet markerSet, Waystone waystone) {
         return markerSet.createMarker(getMarkerId(waystone),
                 waystone.getEffectiveName().getString(),
                 false,
@@ -50,9 +56,9 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
                 false);
     }
 
-    private static String getDynmapWorldName(ResourceLocation id) {
+    private String getDynmapWorldName(ResourceLocation id) {
         return switch (id.toString()) {
-            case "minecraft:overworld" -> Balm.getHooks().getServer().getWorldData().getLevelName();
+            case "minecraft:overworld" -> overworldLevelName;
             case "minecraft:the_nether" -> "DIM-1";
             case "minecraft:the_end" -> "DIM1";
             default -> id.getNamespace() + "_" + id.getPath();
@@ -115,16 +121,22 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     @Override
     public void apiEnabled(DynmapCommonAPI api) {
         this.api = api;
-
-        for (Runnable scheduledJob : scheduledJobsWhenReady) {
-            scheduledJob.run();
-        }
-        scheduledJobsWhenReady.clear();
+        runScheduledJobsIfReady();
     }
 
     @Override
     public void apiDisabled(DynmapCommonAPI api) {
         this.api = null;
+    }
+
+    private void onServerStarted(ServerStartedEvent event) {
+        overworldLevelName = event.getServer().getWorldData().getLevelName();
+        runScheduledJobsIfReady();
+    }
+
+    private void onServerStopped(ServerStoppedEvent event) {
+        overworldLevelName = null;
+        scheduledJobsWhenReady.clear();
     }
 
     private void onWaystoneInitialized(WaystoneInitializedEvent event) {
@@ -163,10 +175,21 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     }
 
     private void runWhenDynmapIsReady(Runnable runnable) {
-        if (api != null) {
+        if (api != null && overworldLevelName != null) {
             runnable.run();
         } else {
             scheduledJobsWhenReady.add(runnable);
         }
+    }
+
+    private void runScheduledJobsIfReady() {
+        if (api == null || overworldLevelName == null) {
+            return;
+        }
+
+        for (Runnable scheduledJob : scheduledJobsWhenReady) {
+            scheduledJob.run();
+        }
+        scheduledJobsWhenReady.clear();
     }
 }
