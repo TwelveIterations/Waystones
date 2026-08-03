@@ -1,4 +1,4 @@
-- Fixed Fleeting Memorial not always being removed from waystone database
-- Fixed Fleeting Memorial not being removed when it is no longer a valid destination
-- Fixed wrong ingredient for Red Nether Bricks Waystone
-- Fixed mount passengers being able to initiate a warp plate teleport
+- Fixed `WaystonesLoadedEvent` never being fired, resulting in Dynmap and BlueMap integration not populating
+- Fixed crash with Dynmap integration if it runs before the server instance is captured
+- Fixed integer overflow in distance comparison resulting in wrong results and crashes for large distances
+- Fixed `GenerateWaystoneNameEvent` not using new name if an event handler sets one
