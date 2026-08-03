@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.compat;
 
-import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.platform.event.callback.ServerLifecycleCallback;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.api.event.WaystoneUpdatedEvent;
 import net.blay09.mods.waystones.api.event.WaystonesLoadedEvent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
 import org.dynmap.DynmapCommonAPI;
 import org.dynmap.DynmapCommonAPIListener;
 import org.dynmap.markers.Marker;
@@ -17,19 +18,21 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class DynmapIntegration extends DynmapCommonAPIListener {
 
     private final List<Runnable> scheduledJobsWhenReady = new ArrayList<>();
 
     private @Nullable DynmapCommonAPI api;
-    private MarkerSet waystoneMarkers;
-    private MarkerSet sharestoneMarkers;
+    private @Nullable String overworldLevelName;
+    private @Nullable MarkerSet waystoneMarkers;
+    private @Nullable MarkerSet sharestoneMarkers;
 
     public DynmapIntegration() {
         DynmapCommonAPIListener.register(this);
 
+        ServerLifecycleCallback.Started.EVENT.register(this::onServerStarted);
+        ServerLifecycleCallback.Stopped.EVENT.register(this::onServerStopped);
         WaystonesLoadedEvent.EVENT.register(this::onWaystonesLoaded);
         WaystoneInitializedEvent.EVENT.register(this::onWaystoneInitialized);
         WaystoneUpdatedEvent.EVENT.register(this::onWaystoneUpdated);
@@ -40,7 +43,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
         return waystone.getWaystoneUid().toString();
     }
 
-    public static Marker createWaystoneMarker(MarkerSet markerSet, Waystone waystone) {
+    private Marker createWaystoneMarker(MarkerSet markerSet, Waystone waystone) {
         return markerSet.createMarker(getMarkerId(waystone),
                 waystone.getEffectiveName().getString(),
                 false,
@@ -52,9 +55,9 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
                 false);
     }
 
-    private static String getDynmapWorldName(Identifier id) {
+    private String getDynmapWorldName(Identifier id) {
         return switch (id.toString()) {
-            case "minecraft:overworld" -> Objects.requireNonNull(Balm.platform().server()).getWorldData().getLevelName();
+            case "minecraft:overworld" -> overworldLevelName;
             case "minecraft:the_nether" -> "DIM-1";
             case "minecraft:the_end" -> "DIM1";
             default -> id.getNamespace() + "_" + id.getPath();
@@ -117,16 +120,22 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     @Override
     public void apiEnabled(DynmapCommonAPI api) {
         this.api = api;
-
-        for (Runnable scheduledJob : scheduledJobsWhenReady) {
-            scheduledJob.run();
-        }
-        scheduledJobsWhenReady.clear();
+        runScheduledJobsIfReady();
     }
 
     @Override
     public void apiDisabled(DynmapCommonAPI api) {
         this.api = null;
+    }
+
+    private void onServerStarted(MinecraftServer server) {
+        overworldLevelName = server.getWorldData().getLevelName();
+        runScheduledJobsIfReady();
+    }
+
+    private void onServerStopped(MinecraftServer server) {
+        overworldLevelName = null;
+        scheduledJobsWhenReady.clear();
     }
 
     private void onWaystoneInitialized(WaystoneInitializedEvent event) {
@@ -165,10 +174,21 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     }
 
     private void runWhenDynmapIsReady(Runnable runnable) {
-        if (api != null) {
+        if (api != null && overworldLevelName != null) {
             runnable.run();
         } else {
             scheduledJobsWhenReady.add(runnable);
         }
+    }
+
+    private void runScheduledJobsIfReady() {
+        if (api == null || overworldLevelName == null) {
+            return;
+        }
+
+        for (Runnable scheduledJob : scheduledJobsWhenReady) {
+            scheduledJob.run();
+        }
+        scheduledJobsWhenReady.clear();
     }
 }
