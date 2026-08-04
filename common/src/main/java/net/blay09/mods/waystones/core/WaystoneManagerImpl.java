@@ -19,7 +19,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -29,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,7 +40,7 @@ public class WaystoneManagerImpl extends SavedData implements WaystoneManager {
     private static final String TAG_WAYSTONES = "Waystones";
     private static final WaystoneManagerImpl clientStorageCopy = new WaystoneManagerImpl();
 
-    private final Map<UUID, Waystone> waystones = new HashMap<>();
+    private final Map<UUID, Waystone> waystones = new ConcurrentHashMap<>();
 
     public void addWaystone(Waystone waystone) {
         waystones.put(waystone.getWaystoneUid(), waystone);

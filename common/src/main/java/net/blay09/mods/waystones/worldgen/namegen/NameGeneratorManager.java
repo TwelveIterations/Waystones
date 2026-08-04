@@ -29,7 +29,7 @@ public class NameGeneratorManager extends SavedData {
     private static final String USED_NAMES = "UsedNames";
     private static final NameGeneratorManager clientStorageCopy = new NameGeneratorManager();
 
-    private final Set<String> usedNames = Sets.newHashSet();
+    private final Set<String> usedNames = Sets.newConcurrentHashSet();
 
     private NameGenerator getNameGenerator(NameGenerationMode nameGenerationMode) {
         final var randomGenerator = new TemplateNameGenerator(WaystonesConfig.getActive().worldGen.nameGenerationTemplate)
