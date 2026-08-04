@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.store;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import net.blay09.mods.waystones.api.MutableWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
@@ -15,9 +16,9 @@ import java.util.*;
 
 public class InMemoryWaystonesStore implements WaystonesStore {
 
-    private final List<Waystone> waystones = new ArrayList<>();
-    private final Map<UUID, Waystone> waystonesById = new HashMap<>();
-    private final Multimap<Identifier, Waystone> waystonesByType = ArrayListMultimap.create();
+    private final List<Waystone> waystones = Collections.synchronizedList(new ArrayList<>());
+    private final Map<UUID, Waystone> waystonesById = Collections.synchronizedMap(new HashMap<>());
+    private final Multimap<Identifier, Waystone> waystonesByType = Multimaps.synchronizedMultimap(ArrayListMultimap.create());
 
     public InMemoryWaystonesStore(List<Waystone> waystones) {
         this.waystones.addAll(waystones);
@@ -69,22 +70,30 @@ public class InMemoryWaystonesStore implements WaystonesStore {
 
     @Override
     public Optional<Waystone> findWaystoneByName(String name) {
-        return waystones.stream().filter(it -> it.getName().getString().equals(name)).findFirst();
+        synchronized (waystones) {
+            return waystones.stream().filter(it -> it.getName().getString().equals(name)).findFirst();
+        }
     }
 
     @Override
     public List<Waystone> getWaystones() {
-        return waystones;
+        synchronized (waystones) {
+            return List.copyOf(waystones);
+        }
     }
 
     @Override
     public Collection<Waystone> getWaystonesByKind(Identifier kind) {
-        return waystonesByType.get(kind);
+        synchronized (waystonesByType) {
+            return List.copyOf(waystonesByType.get(kind));
+        }
     }
 
     @Override
     public List<Waystone> getGlobalWaystones() {
-        return waystones.stream().filter(it -> it.getVisibility() == WaystoneVisibility.GLOBAL).toList();
+        synchronized (waystones) {
+            return waystones.stream().filter(it -> it.getVisibility() == WaystoneVisibility.GLOBAL).toList();
+        }
     }
 
 }
