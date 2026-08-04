@@ -49,12 +49,12 @@ public class ExperiencePointsRequirement implements WarpRequirement {
     }
 
     private static int calculateLevelMinusExperiencePoints(int currentLevel, int xpLoss) {
-        int currentCumulativeXp = getCumulativeXpNeededForLevel(currentLevel);
+        final var currentCumulativeXp = getCumulativeXpNeededForLevel(currentLevel);
 
-        int remainingXp = currentCumulativeXp - xpLoss;
+        final var remainingXp = currentCumulativeXp - xpLoss;
 
         int newLevel = 0;
-        int newCumulativeXp = 0;
+        long newCumulativeXp = 0;
         for (int level = 0; level <= currentLevel; level++) {
             newCumulativeXp += getXpNeededForNextLevel(level);
             if (remainingXp < newCumulativeXp) {
@@ -66,16 +66,16 @@ public class ExperiencePointsRequirement implements WarpRequirement {
         return newLevel;
     }
 
-    private static int getXpNeededForNextLevel(int level) {
+    private static long getXpNeededForNextLevel(int level) {
         if (level >= 30) {
-            return 112 + (level - 30) * 9;
+            return 112 + (level - 30) * 9L;
         } else {
-            return level >= 15 ? 37 + (level - 15) * 5 : 7 + level * 2;
+            return level >= 15 ? 37 + (level - 15) * 5L : 7 + level * 2L;
         }
     }
 
-    private static int getCumulativeXpNeededForLevel(int targetLevel) {
-        int currentCumulativeXp = 0;
+    private static long getCumulativeXpNeededForLevel(int targetLevel) {
+        long currentCumulativeXp = 0;
         for (int level = 0; level < targetLevel; level++) {
             currentCumulativeXp += getXpNeededForNextLevel(level);
         }
