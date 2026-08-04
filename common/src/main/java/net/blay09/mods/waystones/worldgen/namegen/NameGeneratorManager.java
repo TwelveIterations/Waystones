@@ -34,7 +34,7 @@ public class NameGeneratorManager extends SavedData {
             null
     );
 
-    private final Set<String> usedNames = Sets.newHashSet();
+    private final Set<String> usedNames = Sets.newConcurrentHashSet();
 
     public NameGeneratorManager(List<String> usedNames) {
         this.usedNames.addAll(usedNames);
