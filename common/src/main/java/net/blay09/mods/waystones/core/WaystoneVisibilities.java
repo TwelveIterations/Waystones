@@ -21,7 +21,7 @@ public class WaystoneVisibilities {
             if (!result.contains(WaystoneVisibility.TEAM)) {
                 result.add(WaystoneVisibility.TEAM);
             }
-            if (WaystonePermissionManager.isAllowedVisibility(WaystoneVisibility.GLOBAL) || WaystonePermissionManager.skipsPermissions(player)) {
+            if (WaystonePermissionManager.mayManageGlobalWaystones(player)) {
                 if (!result.contains(WaystoneVisibility.GLOBAL)) {
                     result.add(WaystoneVisibility.GLOBAL);
                 }

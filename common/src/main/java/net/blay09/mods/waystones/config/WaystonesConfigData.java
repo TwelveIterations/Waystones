@@ -56,7 +56,12 @@ public class WaystonesConfigData implements BalmConfigData {
         public DefaultWaystoneVisibility defaultVisibility = DefaultWaystoneVisibility.ACTIVATION;
 
         @Synced
-        @Comment("Add \"GLOBAL\" to allow every player to create global waystones.")
+        @Comment("Set to true to allow everyone to manage global waystones. Always true if defaultVisibility is GLOBAL.")
+        public boolean allowEveryoneToManageGlobalWaystones = false;
+
+        @Deprecated
+        @Synced
+        @Comment("Deprecated - use allowEveryoneToManageGlobalWaystones instead.")
         @ExpectedType(WaystoneVisibility.class)
         public Set<WaystoneVisibility> allowedVisibilities = Set.of();
 

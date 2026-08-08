@@ -48,7 +48,7 @@ public class WaystonePermissionManager {
             return Optional.of(new WaystoneEditError.NotOwner());
         }
 
-        if (!isAllowedVisibility(waystone.getVisibility())) {
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && !mayManageGlobalWaystones(player)) {
             return Optional.of(new WaystoneEditError.RequiresCreative());
         }
 
@@ -56,8 +56,19 @@ public class WaystonePermissionManager {
     }
 
     public static boolean isAllowedVisibility(WaystoneVisibility visibility) {
+        return DEFAULT_VISIBILITIES.contains(visibility) || visibility == WaystoneVisibility.GLOBAL && canEveryoneManageGlobalWaystones();
+    }
+
+    public static boolean mayManageGlobalWaystones(ServerPlayer player) {
+        return canEveryoneManageGlobalWaystones() || skipsPermissions(player);
+    }
+
+    @SuppressWarnings("deprecation")
+    private static boolean canEveryoneManageGlobalWaystones() {
         final var config = WaystonesConfig.getActive();
-        return DEFAULT_VISIBILITIES.contains(visibility) || config.general.allowedVisibilities.contains(visibility) || config.general.defaultVisibility.asWaystoneVisibility() == visibility;
+        return config.general.allowEveryoneToManageGlobalWaystones
+                || config.general.defaultVisibility.asWaystoneVisibility() == WaystoneVisibility.GLOBAL
+                || config.general.allowedVisibilities.contains(WaystoneVisibility.GLOBAL);
     }
 
     public static boolean skipsPermissions(ServerPlayer player) {
