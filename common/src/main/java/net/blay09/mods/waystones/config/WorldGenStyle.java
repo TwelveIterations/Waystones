@@ -9,8 +9,12 @@ public enum WorldGenStyle implements StringRepresentable {
     MOSSY,
     SANDY,
     BLACKSTONE,
+    RED_NETHER_BRICKS,
     DEEPSLATE,
     END_STONE,
+    PURPUR,
+    PRISMARINE,
+    MUD_BRICKS,
     BIOME;
 
     @Override

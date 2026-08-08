@@ -23,8 +23,14 @@ public class ModBiomeTagProvider extends FabricTagsProvider<Biome> {
         tag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE).add(Biomes.DESERT);
         tag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE)
                 .addAll(List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.CRIMSON_FOREST, Biomes.WARPED_FOREST, Biomes.BASALT_DELTAS));
+        tag(ModBiomeTags.HAS_STRUCTURE_RED_NETHER_BRICKS_WAYSTONE);
         tag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE)
                 .addAll(List.of(Biomes.THE_END, Biomes.END_HIGHLANDS, Biomes.END_MIDLANDS, Biomes.SMALL_END_ISLANDS, Biomes.END_BARRENS));
+        tag(ModBiomeTags.HAS_STRUCTURE_PURPUR_WAYSTONE);
+        tag(ModBiomeTags.HAS_STRUCTURE_DEEPSLATE_WAYSTONE)
+                .add(Biomes.DEEP_DARK);
+        tag(ModBiomeTags.HAS_STRUCTURE_PRISMARINE_WAYSTONE);
+        tag(ModBiomeTags.HAS_STRUCTURE_MUD_BRICKS_WAYSTONE);
 
         final var hasWaystones = tag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE);
         hasWaystones.addAll(List.of(

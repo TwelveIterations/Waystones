@@ -44,8 +44,12 @@ public class ModWorldGen {
     private static final Identifier mossyWaystone = Identifier.fromNamespaceAndPath("waystones", "mossy_waystone");
     private static final Identifier sandyWaystone = Identifier.fromNamespaceAndPath("waystones", "sandy_waystone");
     private static final Identifier blackstoneWaystone = Identifier.fromNamespaceAndPath("waystones", "blackstone_waystone");
+    private static final Identifier redNetherBricksWaystone = Identifier.fromNamespaceAndPath("waystones", "red_nether_bricks_waystone");
     private static final Identifier deepslateWaystone = Identifier.fromNamespaceAndPath("waystones", "deepslate_waystone");
     private static final Identifier endStoneWaystone = Identifier.fromNamespaceAndPath("waystones", "end_stone_waystone");
+    private static final Identifier purpurWaystone = Identifier.fromNamespaceAndPath("waystones", "purpur_waystone");
+    private static final Identifier prismarineWaystone = Identifier.fromNamespaceAndPath("waystones", "prismarine_waystone");
+    private static final Identifier mudBricksWaystone = Identifier.fromNamespaceAndPath("waystones", "mud_bricks_waystone");
     private static final Identifier villageWaystoneStructure = Identifier.fromNamespaceAndPath("waystones", "village/common/waystone");
     private static final Identifier desertVillageWaystoneStructure = Identifier.fromNamespaceAndPath("waystones", "village/desert/waystone");
     private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(Registries.PROCESSOR_LIST,
@@ -81,9 +85,29 @@ public class ModWorldGen {
                     matchesTag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE),
                     (biome, builder) -> builder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.BLACKSTONE)));
             worldGen.modifyBiome(
+                    id("add_red_nether_bricks_waystone"),
+                    matchesTag(ModBiomeTags.HAS_STRUCTURE_RED_NETHER_BRICKS_WAYSTONE),
+                    (biome, builder) -> builder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.RED_NETHER_BRICKS)));
+            worldGen.modifyBiome(
                     id("add_end_stone_waystone"),
                     matchesTag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE),
                     (biome, builder) -> builder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.END_STONE)));
+            worldGen.modifyBiome(
+                    id("add_purpur_waystone"),
+                    matchesTag(ModBiomeTags.HAS_STRUCTURE_PURPUR_WAYSTONE),
+                    (biome, builder) -> builder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.PURPUR)));
+            worldGen.modifyBiome(
+                    id("add_deepslate_waystone"),
+                    matchesTag(ModBiomeTags.HAS_STRUCTURE_DEEPSLATE_WAYSTONE),
+                    (biome, builder) -> builder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.DEEPSLATE)));
+            worldGen.modifyBiome(
+                    id("add_prismarine_waystone"),
+                    matchesTag(ModBiomeTags.HAS_STRUCTURE_PRISMARINE_WAYSTONE),
+                    (biome, builder) -> builder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.PRISMARINE)));
+            worldGen.modifyBiome(
+                    id("add_mud_bricks_waystone"),
+                    matchesTag(ModBiomeTags.HAS_STRUCTURE_MUD_BRICKS_WAYSTONE),
+                    (biome, builder) -> builder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MUD_BRICKS)));
             worldGen.modifyBiome(
                     id("add_waystone"),
                     matchesTag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE),
@@ -114,14 +138,22 @@ public class ModWorldGen {
             case MOSSY -> mossyWaystone;
             case SANDY -> sandyWaystone;
             case BLACKSTONE -> blackstoneWaystone;
+            case RED_NETHER_BRICKS -> redNetherBricksWaystone;
             case DEEPSLATE -> deepslateWaystone;
             case END_STONE -> endStoneWaystone;
+            case PURPUR -> purpurWaystone;
+            case PRISMARINE -> prismarineWaystone;
+            case MUD_BRICKS -> mudBricksWaystone;
             case BIOME -> switch (biomeWorldGenStyle) {
                 case SANDY -> sandyWaystone;
                 case MOSSY -> mossyWaystone;
                 case BLACKSTONE -> blackstoneWaystone;
+                case RED_NETHER_BRICKS -> redNetherBricksWaystone;
                 case DEEPSLATE -> deepslateWaystone;
                 case END_STONE -> endStoneWaystone;
+                case PURPUR -> purpurWaystone;
+                case PRISMARINE -> prismarineWaystone;
+                case MUD_BRICKS -> mudBricksWaystone;
                 default -> waystone;
             };
             default -> waystone;
