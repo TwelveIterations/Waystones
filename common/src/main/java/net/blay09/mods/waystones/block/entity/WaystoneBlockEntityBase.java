@@ -10,6 +10,7 @@ import net.blay09.mods.balm.common.BalmBlockEntity;
 import net.blay09.mods.waystones.api.MutableWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
+import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.api.error.WaystoneEditError;
 import net.blay09.mods.waystones.block.WaystoneBlock;
@@ -214,6 +215,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
                     player != null ? player.getUUID() : null,
                     player instanceof Player owner ? owner.getGameProfile().getName() : null);
             WaystoneManagerImpl.get(world.getServer()).addWaystone(waystone);
+            WaystoneIndexManager.visibilityChanged(world.getServer(), waystone, WaystoneVisibility.ACTIVATION);
             this.waystone = waystone;
             setChanged();
             sync();
