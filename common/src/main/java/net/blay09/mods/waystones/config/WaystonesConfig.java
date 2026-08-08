@@ -60,6 +60,7 @@ public class WaystonesConfig {
 
     public enum DefaultWaystoneVisibility implements StringRepresentable {
         ACTIVATION(WaystoneVisibility.ACTIVATION),
+        TEAM(WaystoneVisibility.TEAM),
         GLOBAL(WaystoneVisibility.GLOBAL);
 
         private final WaystoneVisibility visibility;
@@ -89,7 +90,7 @@ public class WaystonesConfig {
     public static class Rules {
 
         @Synced
-        @Comment("Set to \"global\" to have newly placed or found waystones be global by default.")
+        @Comment("Set to \"team\" or \"global\" to have newly placed or found waystones use that visibility by default.")
         public DefaultWaystoneVisibility defaultVisibility = DefaultWaystoneVisibility.ACTIVATION;
 
         @Synced
