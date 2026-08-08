@@ -1,0 +1,9 @@
+{
+  "feature": "waystones:mud_bricks_waystone",
+  "placement": [
+    {
+      "type": "waystones:waystone",
+      "heightmap": "OCEAN_FLOOR_WG"
+    }
+  ]
+}

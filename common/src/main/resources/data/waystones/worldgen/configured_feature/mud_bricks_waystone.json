@@ -1,0 +1,8 @@
+{
+  "type": "waystones:waystone",
+  "config": {
+    "state": {
+      "Name": "waystones:mud_bricks_waystone"
+    }
+  }
+}
