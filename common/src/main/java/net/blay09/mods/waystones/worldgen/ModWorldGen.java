@@ -38,8 +38,12 @@ public class ModWorldGen {
     private static final ResourceLocation mossyWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "mossy_waystone");
     private static final ResourceLocation sandyWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "sandy_waystone");
     private static final ResourceLocation blackstoneWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "blackstone_waystone");
+    private static final ResourceLocation redNetherBricksWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "red_nether_bricks_waystone");
     private static final ResourceLocation deepslateWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "deepslate_waystone");
     private static final ResourceLocation endStoneWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "end_stone_waystone");
+    private static final ResourceLocation purpurWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "purpur_waystone");
+    private static final ResourceLocation prismarineWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "prismarine_waystone");
+    private static final ResourceLocation mudBricksWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "mud_bricks_waystone");
     private static final ResourceLocation villageWaystoneStructure = ResourceLocation.fromNamespaceAndPath("waystones", "village/common/waystone");
     private static final ResourceLocation desertVillageWaystoneStructure = ResourceLocation.fromNamespaceAndPath("waystones", "village/desert/waystone");
     private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(Registries.PROCESSOR_LIST,
@@ -53,8 +57,13 @@ public class ModWorldGen {
         worldGen.registerFeature(sandyWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.sandyWaystone.defaultBlockState()));
         worldGen.registerFeature(blackstoneWaystone,
                 () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.blackstoneWaystone.defaultBlockState()));
+        worldGen.registerFeature(redNetherBricksWaystone,
+                () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.redNetherBricksWaystone.defaultBlockState()));
         worldGen.registerFeature(deepslateWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.deepslateWaystone.defaultBlockState()));
         worldGen.registerFeature(endStoneWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.endStoneWaystone.defaultBlockState()));
+        worldGen.registerFeature(purpurWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.purpurWaystone.defaultBlockState()));
+        worldGen.registerFeature(prismarineWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.prismarineWaystone.defaultBlockState()));
+        worldGen.registerFeature(mudBricksWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.mudBricksWaystone.defaultBlockState()));
 
         waystonePlacement = worldGen.registerPlacementModifier(id("waystone"), () -> () -> WaystonePlacement.CODEC);
 
@@ -69,12 +78,24 @@ public class ModWorldGen {
             worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE),
                     GenerationStep.Decoration.VEGETAL_DECORATION,
                     getWaystoneFeature(WorldGenStyle.BLACKSTONE));
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_RED_NETHER_BRICKS_WAYSTONE),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.RED_NETHER_BRICKS));
             worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE),
                     GenerationStep.Decoration.VEGETAL_DECORATION,
                     getWaystoneFeature(WorldGenStyle.END_STONE));
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_PURPUR_WAYSTONE),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.PURPUR));
             worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_DEEPSLATE_WAYSTONE),
                     GenerationStep.Decoration.VEGETAL_DECORATION,
                     getWaystoneFeature(WorldGenStyle.DEEPSLATE));
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_PRISMARINE_WAYSTONE),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.PRISMARINE));
+            worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_MUD_BRICKS_WAYSTONE),
+                    GenerationStep.Decoration.VEGETAL_DECORATION,
+                    getWaystoneFeature(WorldGenStyle.MUD_BRICKS));
             worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE),
                     GenerationStep.Decoration.VEGETAL_DECORATION,
                     getWaystoneFeature(WorldGenStyle.DEFAULT));
@@ -106,14 +127,22 @@ public class ModWorldGen {
             case MOSSY -> mossyWaystone;
             case SANDY -> sandyWaystone;
             case BLACKSTONE -> blackstoneWaystone;
+            case RED_NETHER_BRICKS -> redNetherBricksWaystone;
             case DEEPSLATE -> deepslateWaystone;
             case END_STONE -> endStoneWaystone;
+            case PURPUR -> purpurWaystone;
+            case PRISMARINE -> prismarineWaystone;
+            case MUD_BRICKS -> mudBricksWaystone;
             case BIOME -> switch (biomeWorldGenStyle) {
                 case SANDY -> sandyWaystone;
                 case MOSSY -> mossyWaystone;
                 case BLACKSTONE -> blackstoneWaystone;
+                case RED_NETHER_BRICKS -> redNetherBricksWaystone;
                 case DEEPSLATE -> deepslateWaystone;
                 case END_STONE -> endStoneWaystone;
+                case PURPUR -> purpurWaystone;
+                case PRISMARINE -> prismarineWaystone;
+                case MUD_BRICKS -> mudBricksWaystone;
                 default -> waystone;
             };
             default -> waystone;

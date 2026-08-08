@@ -1,0 +1,9 @@
+{
+  "feature": "waystones:red_nether_bricks_waystone",
+  "placement": [
+    {
+      "type": "waystones:waystone",
+      "heightmap": "OCEAN_FLOOR_WG"
+    }
+  ]
+}

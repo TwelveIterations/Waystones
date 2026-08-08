@@ -11,6 +11,10 @@ public class ModBiomeTags {
     public static final TagKey<Biome> HAS_STRUCTURE_MOSSY_WAYSTONE = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "has_structure/mossy_waystone"));
     public static final TagKey<Biome> HAS_STRUCTURE_SANDY_WAYSTONE = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "has_structure/sandy_waystone"));
     public static final TagKey<Biome> HAS_STRUCTURE_BLACKSTONE_WAYSTONE = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "has_structure/blackstone_waystone"));
+    public static final TagKey<Biome> HAS_STRUCTURE_RED_NETHER_BRICKS_WAYSTONE = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "has_structure/red_nether_bricks_waystone"));
     public static final TagKey<Biome> HAS_STRUCTURE_END_STONE_WAYSTONE = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "has_structure/end_stone_waystone"));
+    public static final TagKey<Biome> HAS_STRUCTURE_PURPUR_WAYSTONE = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "has_structure/purpur_waystone"));
     public static final TagKey<Biome> HAS_STRUCTURE_DEEPSLATE_WAYSTONE = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "has_structure/deepslate_waystone"));
+    public static final TagKey<Biome> HAS_STRUCTURE_PRISMARINE_WAYSTONE = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "has_structure/prismarine_waystone"));
+    public static final TagKey<Biome> HAS_STRUCTURE_MUD_BRICKS_WAYSTONE = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "has_structure/mud_bricks_waystone"));
 }
