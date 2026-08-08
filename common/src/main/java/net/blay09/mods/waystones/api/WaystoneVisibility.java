@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.api;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
@@ -31,7 +32,7 @@ public enum WaystoneVisibility implements StringRepresentable {
         } else if (kind.equals(WaystoneKinds.WARP_PLATE)) {
             return WaystoneVisibility.SHARD_ONLY;
         } else {
-            return WaystoneVisibility.ACTIVATION;
+            return WaystonesConfig.getActive().rules.defaultVisibility.getVisibility();
         }
     }
 
