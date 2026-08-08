@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.api;
 
 import io.netty.buffer.ByteBuf;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -57,7 +58,7 @@ public enum WaystoneVisibility {
         } else if (waystoneType.equals(WaystoneTypes.WARP_PLATE)) {
             return WaystoneVisibility.SHARD_ONLY;
         } else {
-            return WaystoneVisibility.ACTIVATION;
+            return WaystonesConfig.getActive().general.defaultVisibility;
         }
     }
 

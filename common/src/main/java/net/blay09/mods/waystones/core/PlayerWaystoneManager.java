@@ -44,7 +44,7 @@ public class PlayerWaystoneManager {
             final var previousVisibility = waystone.getVisibility();
             mutableWaystone.setOwnerUid(player.getUUID());
             mutableWaystone.setOwnerUsername(player.getGameProfile().getName());
-            mutableWaystone.setVisibility(WaystonesConfig.getActive().general.defaultVisibility);
+            mutableWaystone.setVisibility(WaystoneVisibility.fromWaystoneType(waystone.getWaystoneType()));
             if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
                 WaystoneIndexManager.visibilityChanged(player.getServer(), waystone, previousVisibility);
             }
