@@ -8,6 +8,7 @@ import net.blay09.mods.balm.world.level.block.entity.OnLoadHandler;
 import net.blay09.mods.waystones.api.MutableWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
+import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
 import net.blay09.mods.waystones.block.WaystoneBlock;
@@ -215,6 +216,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
                     player != null ? player.getUUID() : null,
                     player instanceof Player owner ? owner.getGameProfile().name() : null);
             SavedDataWaystonesStore.get(level.getLevel().getServer()).addWaystone(waystone);
+            WaystoneIndexManager.visibilityChanged(level.getLevel().getServer(), waystone, WaystoneVisibility.ACTIVATION);
             WaystoneInitializedEvent.EVENT.invoker().accept(new WaystoneInitializedEvent(waystone));
             this.waystone = waystone;
             setChanged();
