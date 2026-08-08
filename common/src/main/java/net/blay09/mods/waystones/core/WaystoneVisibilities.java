@@ -11,7 +11,7 @@ import java.util.List;
 public class WaystoneVisibilities {
     public static List<WaystoneVisibility> getVisibilityOptions(ServerPlayer player, Waystone waystone) {
         final var result = new ArrayList<WaystoneVisibility>();
-        final var defaultVisibility = WaystonesConfig.getActive().general.defaultVisibility;
+        final var defaultVisibility = WaystonesConfig.getActive().general.defaultVisibility.asWaystoneVisibility();
         result.add(defaultVisibility);
         final var baseVisibility = WaystoneVisibility.fromWaystoneType(waystone.getWaystoneType());
         if (!result.contains(baseVisibility)) {

@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.config;
 
 import net.blay09.mods.balm.api.config.*;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.DefaultWaystoneVisibility;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
@@ -52,7 +53,7 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Synced
         @Comment("Set to \"GLOBAL\" to have newly placed or found waystones be global by default.")
-        public WaystoneVisibility defaultVisibility = WaystoneVisibility.ACTIVATION;
+        public DefaultWaystoneVisibility defaultVisibility = DefaultWaystoneVisibility.ACTIVATION;
 
         @Synced
         @Comment("Add \"GLOBAL\" to allow every player to create global waystones.")

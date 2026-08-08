@@ -58,7 +58,7 @@ public enum WaystoneVisibility {
         } else if (waystoneType.equals(WaystoneTypes.WARP_PLATE)) {
             return WaystoneVisibility.SHARD_ONLY;
         } else {
-            return WaystonesConfig.getActive().general.defaultVisibility;
+            return WaystonesConfig.getActive().general.defaultVisibility.asWaystoneVisibility();
         }
     }
 
