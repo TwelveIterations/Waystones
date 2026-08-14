@@ -22,4 +22,4 @@ On Minecraft 26.1 and above, it also requires [Shogi](https://www.curseforge.com
 
 ### ![Additional Credits](https://mods.twelveiterations.com/img/credits-header.png)
 
-The Return Scroll and Warp Stone item icons included are by [@JoeCreates](https://twitter.com/JoeCreates) and were publically released under the CC-BY-SA 3.0 license [here](https://opengameart.org/content/roguelikerpg-items).
+The Return Scroll and Warp Stone item icons included are by [@JoeCreates](https://twitter.com/JoeCreates) and were publicly released under the CC-BY-SA 3.0 license [here](https://opengameart.org/content/roguelikerpg-items).
