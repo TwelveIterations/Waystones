@@ -8,7 +8,7 @@ fabricApi = "0.152.1+26.2"
 fabricLoader = "0.19.3"
 journeyMapApi = "26.2-2.0.0"
 unbreakables = "26.1.0.2"
-shogi = "26.2.0.5"
+shogi = "26.2.0.4"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
