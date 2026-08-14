@@ -10,6 +10,7 @@
     "minecraft:quartz",
     "minecraft:spider_eye",
     "minecraft:honey_block",
-    "minecraft:wither_rose"
+    "minecraft:wither_rose",
+    "minecraft:redstone_torch"
   ]
 }

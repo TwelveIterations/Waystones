@@ -12,6 +12,9 @@
     "status=locked": {
       "model": "waystones:block/warp_plate_locked"
     },
+    "status=redstone_disabled": {
+      "model": "waystones:block/warp_plate"
+    },
     "status=warping": {
       "model": "waystones:block/warp_plate"
     },

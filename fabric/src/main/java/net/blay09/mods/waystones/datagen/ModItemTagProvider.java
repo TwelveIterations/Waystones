@@ -49,6 +49,7 @@ public class ModItemTagProvider extends FabricTagsProvider.ItemTagsProvider {
         builder(ModItemTags.WARP_MODIFIERS_SLOWS_DOWN_WARP_PLATE).add(ItemIds.SLIME_BALL);
         builder(ModItemTags.WARP_MODIFIERS_PREFERS_ROUND_ROBIN).add(ItemIds.QUARTZ);
         builder(ModItemTags.WARP_MODIFIERS_PREFERS_SINGLE_USE).add(ItemIds.SPIDER_EYE);
+        builder(ModItemTags.WARP_MODIFIERS_REDSTONE_SENSITIVE).add(BlockItemIds.REDSTONE_TORCH);
         builder(ModItemTags.WARP_MODIFIERS_SETS_ON_FIRE).add(ItemIds.BLAZE_POWDER);
         builder(ModItemTags.WARP_MODIFIERS_POISONS).add(ItemIds.POISONOUS_POTATO);
         builder(ModItemTags.WARP_MODIFIERS_WITHERS).add(BlockItemIds.WITHER_ROSE);
@@ -68,6 +69,6 @@ public class ModItemTagProvider extends FabricTagsProvider.ItemTagsProvider {
                 ItemIds.MAGMA_CREAM,
                 ItemIds.QUARTZ,
                 ItemIds.SPIDER_EYE
-        ).add(BlockItemIds.HONEY_BLOCK, BlockItemIds.WITHER_ROSE);
+        ).add(BlockItemIds.HONEY_BLOCK, BlockItemIds.WITHER_ROSE, BlockItemIds.REDSTONE_TORCH);
     }
 }
