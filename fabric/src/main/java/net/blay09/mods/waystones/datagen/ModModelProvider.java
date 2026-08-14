@@ -48,6 +48,7 @@ public class ModModelProvider extends FabricModelProvider {
                         .select(WarpPlateBlock.WarpPlateStatus.ATTUNING, plainVariant(id("block/warp_plate")))
                         .select(WarpPlateBlock.WarpPlateStatus.WARPING, plainVariant(id("block/warp_plate")))
                         .select(WarpPlateBlock.WarpPlateStatus.WARPING_INVALID, plainVariant(id("block/warp_plate")))
+                        .select(WarpPlateBlock.WarpPlateStatus.REDSTONE_DISABLED, plainVariant(id("block/warp_plate")))
                         .select(WarpPlateBlock.WarpPlateStatus.LOCKED, plainVariant(id("block/warp_plate_locked")))
                 ));
         blockStateModelGenerator.registerSimpleTintedItemModel(ModBlocks.warpPlate.asBlock(), ModelLocationUtils.getModelLocation(ModBlocks.warpPlate.asBlock()), new Constant(0xffc456bd));

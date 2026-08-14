@@ -23,6 +23,7 @@ public class ModItemTags {
     public static final TagKey<Item> WARP_MODIFIERS_SLOWS_DOWN_WARP_PLATE = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "warp_modifiers/slows_down_warp_plate"));
     public static final TagKey<Item> WARP_MODIFIERS_PREFERS_ROUND_ROBIN = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "warp_modifiers/prefers_round_robin"));
     public static final TagKey<Item> WARP_MODIFIERS_PREFERS_SINGLE_USE = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "warp_modifiers/prefers_single_use"));
+    public static final TagKey<Item> WARP_MODIFIERS_REDSTONE_SENSITIVE = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "warp_modifiers/redstone_sensitive"));
     public static final TagKey<Item> WARP_MODIFIERS_SETS_ON_FIRE = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "warp_modifiers/sets_on_fire"));
     public static final TagKey<Item> WARP_MODIFIERS_POISONS = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "warp_modifiers/poisons"));
     public static final TagKey<Item> WARP_MODIFIERS_WITHERS = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "warp_modifiers/withers"));

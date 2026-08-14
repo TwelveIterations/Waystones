@@ -48,6 +48,7 @@ public class ModItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
         tag(ModItemTags.WARP_MODIFIERS_SLOWS_DOWN_WARP_PLATE).add(Items.SLIME_BALL);
         tag(ModItemTags.WARP_MODIFIERS_PREFERS_ROUND_ROBIN).add(Items.QUARTZ);
         tag(ModItemTags.WARP_MODIFIERS_PREFERS_SINGLE_USE).add(Items.SPIDER_EYE);
+        tag(ModItemTags.WARP_MODIFIERS_REDSTONE_SENSITIVE).add(Items.REDSTONE_TORCH);
         tag(ModItemTags.WARP_MODIFIERS_SETS_ON_FIRE).add(Items.BLAZE_POWDER);
         tag(ModItemTags.WARP_MODIFIERS_POISONS).add(Items.POISONOUS_POTATO);
         tag(ModItemTags.WARP_MODIFIERS_WITHERS).add(Items.WITHER_ROSE);
@@ -68,7 +69,8 @@ public class ModItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
                 Items.MAGMA_CREAM,
                 Items.WITHER_ROSE,
                 Items.QUARTZ,
-                Items.SPIDER_EYE
+                Items.SPIDER_EYE,
+                Items.REDSTONE_TORCH
         );
     }
 }
