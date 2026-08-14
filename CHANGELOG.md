@@ -1,4 +1,6 @@
-- Fixed `WaystonesLoadedEvent` never being fired, resulting in Dynmap and BlueMap integration not populating  
-- Fixed crash with Dynmap integration if it runs before the server instance is captured
-- Fixed integer overflow in distance comparison resulting in wrong results and crashes for large distances
-- Fixed `GenerateWaystoneNameEvent` not using new name if an event handler sets one
+- Added Redstone Torch modifier to Warp Plates, which prevents it from teleporting
+- Added world gen tags for new waystone types (empty by default)
+- Fixed typo in `defaultVisibility` option
+- Allow `TEAM` visibility as configured `defaultVisibility` as well
+- Fixed `defaultVisibility` not always being respected
+- Fixed waystones index not being updated with default visibility, which caused global waystones to not show up immediately
