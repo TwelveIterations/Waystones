@@ -1,3 +1,9 @@
-- Fixed crash with Dynmap integration if it runs before the server instance is captured
-- Fixed waystones being wiped when an event handler throws during loading
-- Fixed integer overflow in distance comparison resulting in wrong results and crashes for large distances
+- Added Redstone Torch modifier to Warp Plates, which prevent it from teleporting
+- Added `allowEveryoneToManageGlobalWaystones` as a simpler alternative to now deprecated `allowedVisibilities`
+- Added world gen tags for new waystone types (empty by default)
+- Fixed invalid visibilities being configurable for `defaultVisibility`
+- Fixed typo in default visibility option
+- Fixed `defaultVisibility` not always being respected
+- Fixed waystones index not being updated with default visibility, resulting in global waystones not appearing immediately
+- Fixed crash with chunk multi-threading mods
+- Fixed integer overflow in xp cost marking waystones wrongly unaffordable when the player has too many levels
