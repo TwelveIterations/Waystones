@@ -1,3 +1,5 @@
+- Hotfixed crash when opening teleport screen with xp costs enabled
+
 - Added Redstone Torch modifier to Warp Plates, which prevents it from teleporting
 - Added world gen tags for new waystone types (empty by default)
 - Fixed typo in `defaultVisibility` option
