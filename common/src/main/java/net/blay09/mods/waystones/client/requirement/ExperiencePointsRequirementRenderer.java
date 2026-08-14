@@ -27,8 +27,8 @@ public class ExperiencePointsRequirementRenderer implements RequirementRenderer<
     @Override
     public void renderWidget(Player player, ExperiencePointsCostInformation requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
         final var points = WaystonesConfig.getActive().rules.enableXpCosts ? requirement.required() : 0;
-        final var levels = ExperienceUtils.calculateDisplayedLevelCostFromExperiencePoints(player.experienceLevel, requirement.available(), points);
-        if (levels > 0) {
+        if (points > 0) {
+            final var levels = ExperienceUtils.calculateDisplayedLevelCostFromExperiencePoints(player.experienceLevel, requirement.available(), points);
             final var canAfford = requirement.available() >= points;
             final var spriteIndex = Math.max(0, Math.min(levels, 3) - 1);
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, canAfford ? ENABLED_LEVEL_SPRITES[spriteIndex] : DISABLED_LEVEL_SPRITES[spriteIndex], x, y, 16, 16);
