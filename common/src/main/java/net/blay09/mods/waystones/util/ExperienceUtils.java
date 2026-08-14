@@ -20,7 +20,7 @@ public class ExperienceUtils {
         return level;
     }
 
-    public static int calculateDisplayedLevelCostFromExperiencePoints(int currentLevel, int availableXp, int requiredXp) {
+    public static int calculateDisplayedLevelCostFromExperiencePoints(int currentLevel, long availableXp, int requiredXp) {
         if (requiredXp <= 0) {
             return 0;
         }
