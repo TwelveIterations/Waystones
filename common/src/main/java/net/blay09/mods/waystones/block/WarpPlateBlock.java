@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -63,6 +64,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         ATTUNING,
         WARPING,
         WARPING_INVALID,
+        REDSTONE_DISABLED,
         LOCKED;
 
         @Override
@@ -134,6 +136,14 @@ public class WarpPlateBlock extends WaystoneBlockBase {
             for (int i = 0; i < 10; i++) {
                 world.addParticle(ParticleTypes.SMOKE, pos.getX() + Math.random(), pos.getY(), pos.getZ() + Math.random(), 0f, 0.01f, 0f);
             }
+        } else if (status == WarpPlateStatus.REDSTONE_DISABLED) {
+            world.addParticle(DustParticleOptions.REDSTONE,
+                    pos.getX() + Math.random(),
+                    pos.getY() + 0.1,
+                    pos.getZ() + Math.random(),
+                    0f,
+                    0.01f,
+                    0f);
         } else if (status == WarpPlateStatus.ATTUNING) {
             for (int i = 0; i < 10; i++) {
                 world.addParticle(ParticleTypes.WARPED_SPORE, pos.getX() + Math.random(), pos.getY(), pos.getZ() + Math.random(), 0f, 0f, 0f);

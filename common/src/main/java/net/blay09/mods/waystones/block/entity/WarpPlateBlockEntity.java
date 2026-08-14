@@ -150,6 +150,8 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
             return getBlockState().setValue(WarpPlateBlock.STATUS, WarpPlateBlock.WarpPlateStatus.LOCKED);
         } else if (shardItem.is(ModItems.dormantShard)) {
             return getBlockState().setValue(WarpPlateBlock.STATUS, WarpPlateBlock.WarpPlateStatus.ATTUNING);
+        } else if (isRedstoneDisabled()) {
+            return getBlockState().setValue(WarpPlateBlock.STATUS, WarpPlateBlock.WarpPlateStatus.REDSTONE_DISABLED);
         }
         return getBlockState().setValue(WarpPlateBlock.STATUS, WarpPlateBlock.WarpPlateStatus.IDLE);
     }
@@ -168,8 +170,17 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
         attuneShard();
 
         final var status = getBlockState().getValue(WarpPlateBlock.STATUS);
-        if (status == WarpPlateBlock.WarpPlateStatus.WARPING
-                || status == WarpPlateBlock.WarpPlateStatus.WARPING_INVALID) {
+        if (isRedstoneDisabled()) {
+            for (final var entity : getEntitiesOnTop()) {
+                resetTicksPassedOnWarpPlate((WaystoneTeleportedEntity) entity);
+            }
+            if (status != WarpPlateBlock.WarpPlateStatus.REDSTONE_DISABLED) {
+                level.setBlock(worldPosition, getIdleState(), Block.UPDATE_ALL);
+            }
+            return;
+        } else if (status == WarpPlateBlock.WarpPlateStatus.REDSTONE_DISABLED) {
+            level.setBlock(worldPosition, getIdleState(), Block.UPDATE_ALL);
+        } else if (status == WarpPlateBlock.WarpPlateStatus.WARPING || status == WarpPlateBlock.WarpPlateStatus.WARPING_INVALID) {
             final var entitiesOnTop = getEntitiesOnTop();
             if (entitiesOnTop.isEmpty()) {
                 level.setBlock(worldPosition, getIdleState(), Block.UPDATE_ALL);
@@ -235,6 +246,20 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
 
         int configuredUseTime = WaystonesConfig.getActive().general.warpPlateUseTime;
         return Mth.clamp((int) (configuredUseTime * useTimeMultiplier), 1, configuredUseTime * 2);
+    }
+
+    private boolean isRedstoneDisabled() {
+        return hasRedstoneTorchModifier() && level != null && level.hasNeighborSignal(worldPosition);
+    }
+
+    private boolean hasRedstoneTorchModifier() {
+        for (int i = 1; i < container.getContainerSize(); i++) {
+            if (container.getItem(i).is(ModItemTags.WARP_MODIFIERS_REDSTONE_SENSITIVE)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void teleportToTarget(Entity entity, Waystone targetWaystone, ItemStack targetAttunementStack) {

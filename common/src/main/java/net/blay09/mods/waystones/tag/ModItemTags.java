@@ -17,4 +17,6 @@ public class ModItemTags {
     public static final TagKey<Item> SINGLE_USE_WARP_SHARDS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "single_use_warp_shards"));
     public static final TagKey<Item> WAYSTONES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "waystones"));
     public static final TagKey<Item> SHARESTONES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "sharestones"));
+    public static final TagKey<Item> WARP_MODIFIERS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "warp_modifiers"));
+    public static final TagKey<Item> WARP_MODIFIERS_REDSTONE_SENSITIVE = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "warp_modifiers/redstone_sensitive"));
 }

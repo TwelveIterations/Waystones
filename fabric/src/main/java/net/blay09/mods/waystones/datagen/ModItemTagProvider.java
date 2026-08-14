@@ -10,6 +10,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 
 import java.util.concurrent.CompletableFuture;
@@ -44,5 +45,21 @@ public class ModItemTagProvider extends FabricTagProvider<Item> {
         for (Block sharestone : ModBlocks.sharestones) {
             sharestonesTag.add(sharestone.asItem());
         }
+
+        getOrCreateTagBuilder(ModItemTags.WARP_MODIFIERS_REDSTONE_SENSITIVE).add(Items.REDSTONE_TORCH);
+        getOrCreateTagBuilder(ModItemTags.WARP_MODIFIERS).add(
+                Items.BLAZE_POWDER,
+                Items.POISONOUS_POTATO,
+                Items.INK_SAC,
+                Items.MILK_BUCKET,
+                Items.HONEY_BLOCK,
+                Items.DIAMOND,
+                Items.FEATHER,
+                Items.MAGMA_CREAM,
+                Items.WITHER_ROSE,
+                Items.QUARTZ,
+                Items.SPIDER_EYE,
+                Items.REDSTONE_TORCH
+        );
     }
 }

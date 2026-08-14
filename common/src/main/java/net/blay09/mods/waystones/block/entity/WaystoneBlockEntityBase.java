@@ -442,6 +442,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
                 modifiers += 1;
             } else if (itemStack.getItem() == Items.SPIDER_EYE) {
                 modifiers += 1;
+            } else if (itemStack.getItem() == Items.REDSTONE_TORCH) {
+                modifiers += 1;
             }
         }
         return modifiers;
