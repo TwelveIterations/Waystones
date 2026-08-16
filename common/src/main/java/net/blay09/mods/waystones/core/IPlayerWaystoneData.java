@@ -32,6 +32,8 @@ public interface IPlayerWaystoneData {
     void sortWaystoneGroupSwap(Player player, ResourceLocation groupId, ResourceLocation otherGroupId);
     Set<ResourceLocation> getConfiguredWaystoneGroups(Player player, UUID waystoneUid);
     void setConfiguredWaystoneGroups(Player player, UUID waystoneUid, Set<ResourceLocation> groupIds);
+    boolean isWaystoneHidden(Player player, UUID waystoneUid);
+    void setWaystoneHidden(Player player, UUID waystoneUid, boolean hidden);
     void sortWaystoneAsFirst(Player player, UUID waystoneUid);
     void sortWaystoneAsLast(Player player, UUID waystoneUid);
     void sortWaystoneSwap(Player player, UUID waystoneUid, UUID otherWaystoneUid);

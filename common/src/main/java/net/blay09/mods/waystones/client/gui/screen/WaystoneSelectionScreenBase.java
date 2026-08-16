@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.client.gui.screen;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.WaystoneSortMode;
 import net.blay09.mods.waystones.api.MutablePersonalizedWaystone;
+import net.blay09.mods.waystones.api.PersonalizedWaystone;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneGroup;
 import net.blay09.mods.waystones.api.WaystoneTypes;
@@ -231,7 +232,11 @@ public abstract class WaystoneSelectionScreenBase extends WaystoneContainerScree
     }
 
     protected boolean shouldShowWaystone(Waystone waystone) {
-        return true;
+        return !isUserHidden(waystone);
+    }
+
+    protected boolean isUserHidden(Waystone waystone) {
+        return waystone instanceof PersonalizedWaystone personalizedWaystone && personalizedWaystone.isHidden();
     }
 
     protected boolean ignoresFilters(Waystone waystone) {

@@ -23,6 +23,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     private static final String COOLDOWNS = "Cooldowns";
     private static final String ALIASES = "Aliases";
     private static final String GROUPS = "Groups";
+    private static final String HIDDEN_WAYSTONES = "HiddenWaystones";
     private static final String GROUP_REGISTRY = "GroupRegistry";
     private static final String GROUP_ID = "Id";
     private static final String GROUP_NAME = "Name";
@@ -193,6 +194,22 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     public void setConfiguredWaystoneGroups(Player player, UUID waystoneUid, Set<ResourceLocation> groupIds) {
         final var groupsByWaystone = getGroupsData(getWaystonesData(player));
         writeGroupIds(groupsByWaystone, waystoneUid, groupIds);
+    }
+
+    @Override
+    public boolean isWaystoneHidden(Player player, UUID waystoneUid) {
+        final var hiddenWaystones = getHiddenWaystonesData(getWaystonesData(player));
+        return hiddenWaystones.getBoolean(waystoneUid.toString());
+    }
+
+    @Override
+    public void setWaystoneHidden(Player player, UUID waystoneUid, boolean hidden) {
+        final var hiddenWaystones = getHiddenWaystonesData(getWaystonesData(player));
+        if (hidden) {
+            hiddenWaystones.putBoolean(waystoneUid.toString(), true);
+        } else {
+            hiddenWaystones.remove(waystoneUid.toString());
+        }
     }
 
     private static void writeGroupIds(CompoundTag groupsByWaystone, UUID waystoneUid, Collection<ResourceLocation> groupIds) {
@@ -399,6 +416,12 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
         CompoundTag groups = data.contains(GROUPS, Tag.TAG_COMPOUND) ? data.getCompound(GROUPS) : new CompoundTag();
         data.put(GROUPS, groups);
         return groups;
+    }
+
+    private static CompoundTag getHiddenWaystonesData(CompoundTag data) {
+        CompoundTag hiddenWaystones = data.contains(HIDDEN_WAYSTONES, Tag.TAG_COMPOUND) ? data.getCompound(HIDDEN_WAYSTONES) : new CompoundTag();
+        data.put(HIDDEN_WAYSTONES, hiddenWaystones);
+        return hiddenWaystones;
     }
 
     private static CompoundTag getGroupRegistryData(CompoundTag data) {

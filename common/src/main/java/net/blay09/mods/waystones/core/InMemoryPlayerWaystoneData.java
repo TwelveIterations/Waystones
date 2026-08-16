@@ -18,6 +18,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     private final Map<UUID, Waystone> waystones = new HashMap<>();
     private final Map<ResourceLocation, Long> cooldowns = new HashMap<>();
     private final Map<UUID, Component> aliases = new HashMap<>();
+    private final Set<UUID> hiddenWaystones = new HashSet<>();
     private final SetMultimap<UUID, ResourceLocation> waystoneToConfiguredGroups = MultimapBuilder.hashKeys().hashSetValues().build();
     private final Map<ResourceLocation, WaystoneGroup> groupRegistry = new LinkedHashMap<>();
     private WaystoneSortMode waystoneSortMode = WaystoneSortMode.MANUAL;
@@ -142,6 +143,20 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
+    public boolean isWaystoneHidden(Player player, UUID waystoneUid) {
+        return hiddenWaystones.contains(waystoneUid);
+    }
+
+    @Override
+    public void setWaystoneHidden(Player player, UUID waystoneUid, boolean hidden) {
+        if (hidden) {
+            hiddenWaystones.add(waystoneUid);
+        } else {
+            hiddenWaystones.remove(waystoneUid);
+        }
+    }
+
+    @Override
     public void sortWaystoneAsFirst(Player player, UUID waystoneUid) {
         sortingIndex.remove(waystoneUid);
         sortingIndex.add(0, waystoneUid);
@@ -200,12 +215,14 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     public void setWaystones(Player player, Collection<? extends Waystone> waystones) {
         this.waystones.clear();
         aliases.clear();
+        hiddenWaystones.clear();
         waystoneToConfiguredGroups.clear();
         for (final var waystone : waystones) {
             this.waystones.put(waystone.getWaystoneUid(), waystone);
             if (waystone instanceof PersonalizedWaystoneImpl personalizedWaystone) {
                 personalizedWaystone.getAlias().ifPresent(alias -> setWaystoneAlias(player, waystone.getWaystoneUid(), alias));
                 setConfiguredWaystoneGroups(player, personalizedWaystone.getWaystoneUid(), personalizedWaystone.getConfiguredGroups());
+                setWaystoneHidden(player, personalizedWaystone.getWaystoneUid(), personalizedWaystone.isHidden());
             }
         }
     }

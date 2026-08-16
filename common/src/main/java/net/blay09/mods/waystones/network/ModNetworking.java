@@ -9,7 +9,7 @@ import net.blay09.mods.waystones.network.message.*;
 public class ModNetworking {
 
     public static void initialize(BalmNetworking networking) {
-        networking.defineNetworkVersion(Waystones.MOD_ID, "3");
+        networking.defineNetworkVersion(Waystones.MOD_ID, "4");
 
         networking.registerServerboundPacket(InventoryButtonMessage.TYPE, InventoryButtonMessage.class, InventoryButtonMessage::encode, InventoryButtonMessage::decode, InventoryButtonMessage::handle);
         networking.registerServerboundPacket(EditWaystoneMessage.TYPE, EditWaystoneMessage.class, EditWaystoneMessage::encode, EditWaystoneMessage::decode, EditWaystoneMessage::handle);
