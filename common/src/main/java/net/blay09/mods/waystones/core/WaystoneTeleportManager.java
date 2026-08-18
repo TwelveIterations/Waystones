@@ -156,7 +156,8 @@ public class WaystoneTeleportManager {
         final var targetLevel = (ServerLevel) destination.level();
         final var targetPos = BlockPos.containing(destination.location());
 
-        BlockEntity targetTileEntity = targetLevel.getBlockEntity(targetPos);
+        final var targetWaystone = context.getTargetWaystone();
+        BlockEntity targetTileEntity = targetLevel.getBlockEntity(targetWaystone.getPos());
         if (targetTileEntity instanceof WarpPlateBlockEntity warpPlate) {
             teleportedEntities.forEach(warpPlate::markEntityForCooldown);
         }
