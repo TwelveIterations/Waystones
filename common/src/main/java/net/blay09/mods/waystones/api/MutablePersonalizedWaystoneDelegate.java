@@ -29,4 +29,9 @@ public class MutablePersonalizedWaystoneDelegate extends PersonalizedWaystoneDel
     public void setConfiguredGroups(Collection<ResourceLocation> configuredGroups) {
         delegate.setConfiguredGroups(configuredGroups);
     }
+
+    @Override
+    public void setHidden(boolean hidden) {
+        delegate.setHidden(hidden);
+    }
 }

@@ -34,4 +34,9 @@ public class PersonalizedWaystoneDelegate extends WaystoneDelegate implements Pe
     public Set<ResourceLocation> getConfiguredGroups() {
         return delegate.getConfiguredGroups();
     }
+
+    @Override
+    public boolean isHidden() {
+        return delegate.isHidden();
+    }
 }

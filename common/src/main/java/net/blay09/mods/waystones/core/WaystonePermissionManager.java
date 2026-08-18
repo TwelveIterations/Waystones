@@ -64,7 +64,7 @@ public class WaystonePermissionManager {
     }
 
     @SuppressWarnings("deprecation")
-    private static boolean canEveryoneManageGlobalWaystones() {
+    public static boolean canEveryoneManageGlobalWaystones() {
         final var config = WaystonesConfig.getActive();
         return config.general.allowEveryoneToManageGlobalWaystones
                 || config.general.defaultVisibility.asWaystoneVisibility() == WaystoneVisibility.GLOBAL

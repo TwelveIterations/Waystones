@@ -12,4 +12,8 @@ public interface PersonalizedWaystone extends Waystone {
     Optional<Component> getAlias();
 
     Set<ResourceLocation> getConfiguredGroups();
+
+    default boolean isHidden() {
+        return false;
+    }
 }

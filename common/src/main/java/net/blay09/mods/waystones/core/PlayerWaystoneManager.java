@@ -188,6 +188,14 @@ public class PlayerWaystoneManager {
         getPlayerWaystoneData(player.level()).setConfiguredWaystoneGroups(player, waystoneUid, groupIds);
     }
 
+    public static boolean isWaystoneHidden(Player player, Waystone waystone) {
+        return getPlayerWaystoneData(player.level()).isWaystoneHidden(player, waystone.getWaystoneUid());
+    }
+
+    public static void setWaystoneHidden(Player player, UUID waystoneUid, boolean hidden) {
+        getPlayerWaystoneData(player.level()).setWaystoneHidden(player, waystoneUid, hidden);
+    }
+
     public static void ensureWaystoneGroups(Player player, Waystone waystone) {
         ensureWaystoneGroups(player, WaystoneGroups.getDynamicGroupDefinitions(waystone));
     }
@@ -208,7 +216,8 @@ public class PlayerWaystoneManager {
         final var backingWaystone = waystone instanceof PersonalizedWaystoneImpl personalizedWaystone ? personalizedWaystone.getBackingWaystone() : waystone;
         final var alias = getWaystoneAlias(player, backingWaystone.getWaystoneUid());
         final var configuredWaystoneGroups = getConfiguredWaystoneGroups(player, backingWaystone.getWaystoneUid());
-        return new PersonalizedWaystoneImpl(backingWaystone, alias.orElse(null), configuredWaystoneGroups);
+        final var hidden = getPlayerWaystoneData(player.level()).isWaystoneHidden(player, backingWaystone.getWaystoneUid());
+        return new PersonalizedWaystoneImpl(backingWaystone, alias.orElse(null), configuredWaystoneGroups, hidden);
     }
 
     public static List<PersonalizedWaystoneImpl> getPlayerDecoratedWaystones(Player player, Collection<Waystone> waystones) {
