@@ -210,7 +210,7 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
                         0,
                         ManageWaystonesList.this.getY(),
                         ManageWaystonesList.this.getHeight(),
-                        () -> screen.isWaystoneHidden(waystone),
+                        screen.isWaystoneHidden(waystone),
                         button -> screen.toggleWaystoneHidden(waystone));
                 widgets.add(hiddenButton);
             } else {
