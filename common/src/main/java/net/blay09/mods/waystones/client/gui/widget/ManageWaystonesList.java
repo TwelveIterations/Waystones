@@ -156,6 +156,7 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
         private final @Nullable DragHandleButton dragHandleButton;
         private final @Nullable EditWaystoneButton editButton;
         private final @Nullable RemoveWaystoneButton removeButton;
+        private final @Nullable ToggleWaystoneHiddenButton hiddenButton;
 
         public WaystoneEntry(Waystone waystone) {
             this.waystone = waystone;
@@ -192,6 +193,18 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
                 widgets.add(removeButton);
             } else {
                 removeButton = null;
+            }
+
+            if (screen.canToggleWaystoneHidden(waystone)) {
+                hiddenButton = new ToggleWaystoneHiddenButton(0,
+                        0,
+                        ManageWaystonesList.this.getY(),
+                        ManageWaystonesList.this.getHeight(),
+                        () -> screen.isWaystoneHidden(waystone),
+                        _ -> screen.toggleWaystoneHidden(waystone));
+                widgets.add(hiddenButton);
+            } else {
+                hiddenButton = null;
             }
         }
 
@@ -240,6 +253,9 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
             }
             if (removeButton != null) {
                 removeButton.setPosition(x + BUTTON_LEFT_OFFSET + BUTTON_WIDTH + MARGIN + EDIT_BUTTON_WIDTH + MARGIN, y + 4);
+            }
+            if (hiddenButton != null) {
+                hiddenButton.setPosition(x + BUTTON_LEFT_OFFSET + BUTTON_WIDTH + MARGIN + EDIT_BUTTON_WIDTH + MARGIN, y + 4);
             }
         }
 

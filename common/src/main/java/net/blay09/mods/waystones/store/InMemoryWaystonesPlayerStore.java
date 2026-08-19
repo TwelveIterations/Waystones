@@ -17,6 +17,7 @@ public class InMemoryWaystonesPlayerStore implements WaystonesPlayerStore {
     private final List<UUID> sortingIndex = new ArrayList<>();
     private final Map<UUID, Waystone> waystones = new HashMap<>();
     private final Map<UUID, Component> aliases = new HashMap<>();
+    private final Set<UUID> hiddenWaystones = new HashSet<>();
     private final SetMultimap<UUID, Identifier> waystoneToConfiguredGroups = MultimapBuilder.hashKeys().hashSetValues().build();
     private final Map<Identifier, WaystoneGroup> groupRegistry = new LinkedHashMap<>();
 
@@ -120,6 +121,20 @@ public class InMemoryWaystonesPlayerStore implements WaystonesPlayerStore {
     }
 
     @Override
+    public boolean isWaystoneHidden(Player player, UUID waystoneUid) {
+        return hiddenWaystones.contains(waystoneUid);
+    }
+
+    @Override
+    public void setWaystoneHidden(Player player, UUID waystoneUid, boolean hidden) {
+        if (hidden) {
+            hiddenWaystones.add(waystoneUid);
+        } else {
+            hiddenWaystones.remove(waystoneUid);
+        }
+    }
+
+    @Override
     public void sortWaystoneAsFirst(Player player, UUID waystoneUid) {
         sortingIndex.remove(waystoneUid);
         sortingIndex.addFirst(waystoneUid);
@@ -168,12 +183,14 @@ public class InMemoryWaystonesPlayerStore implements WaystonesPlayerStore {
     public void setWaystones(Player player, Collection<Waystone> waystones) {
         this.waystones.clear();
         aliases.clear();
+        hiddenWaystones.clear();
         waystoneToConfiguredGroups.clear();
         for (final var waystone : waystones) {
             this.waystones.put(waystone.getWaystoneUid(), waystone);
             if (waystone instanceof PersonalizedWaystoneImpl personalizedWaystone) {
                 personalizedWaystone.getAlias().ifPresent(alias -> setWaystoneAlias(player, waystone.getWaystoneUid(), alias));
                 setConfiguredWaystoneGroups(player, personalizedWaystone.getWaystoneUid(), personalizedWaystone.getConfiguredGroups());
+                setWaystoneHidden(player, personalizedWaystone.getWaystoneUid(), personalizedWaystone.isHidden());
             }
         }
     }

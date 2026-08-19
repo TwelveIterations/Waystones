@@ -1,15 +1,15 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.balm.Balm;
-import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneKinds;
-import net.blay09.mods.waystones.api.WaystoneVisibility;
+import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.client.gui.widget.AbstractWaystoneList;
 import net.blay09.mods.waystones.client.gui.widget.BackToWaystoneSelectionButton;
 import net.blay09.mods.waystones.client.gui.widget.ManageWaystoneGroupsButton;
 import net.blay09.mods.waystones.client.gui.widget.ManageWaystonesList;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WaystonePermissionManager;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
+import net.blay09.mods.waystones.network.message.ServerboundPersonalWaystoneSettingsPacket;
 import net.blay09.mods.waystones.network.message.ServerboundRemoveWaystonePacket;
 import net.blay09.mods.waystones.network.message.ServerboundSortWaystonePacket;
 import net.minecraft.client.Minecraft;
@@ -55,13 +55,16 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
 
     public boolean canDeleteWaystone(Waystone waystone) {
         final var player = Objects.requireNonNull(Minecraft.getInstance().player);
-        final var isCreative = player.getAbilities().instabuild;
-        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && !isCreative) {
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL
+                && !WaystonePermissionManager.canManageGlobalWaystones(player)
+                && !player.getAbilities().instabuild) {
+            return false;
+        } else if (waystone.getVisibility() == WaystoneVisibility.TEAM && !PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
             return false;
         }
 
         if (WaystoneKinds.isSharestone(waystone.getWaystoneKind())) {
-            if (!isCreative) {
+            if (!player.getAbilities().instabuild) {
                 return false;
             }
         } else if (!waystone.getWaystoneKind().equals(WaystoneKinds.WAYSTONE)) {
@@ -69,6 +72,20 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
         }
 
         return parent.allowDeletion();
+    }
+
+    public boolean canToggleWaystoneHidden(Waystone waystone) {
+        if (canDeleteWaystone(waystone)) {
+            return false;
+        }
+
+        return WaystoneKinds.isSharestone(waystone.getWaystoneKind())
+                || waystone.getVisibility() == WaystoneVisibility.GLOBAL
+                || waystone.getVisibility() == WaystoneVisibility.TEAM;
+    }
+
+    public boolean isWaystoneHidden(Waystone waystone) {
+        return waystone instanceof PersonalizedWaystone personalizedWaystone && personalizedWaystone.isHidden();
     }
 
     public boolean canEditPersonalWaystoneSettings(Waystone waystone) {
@@ -81,6 +98,23 @@ public class ManageWaystonesScreen extends WaystoneSelectionScreenBase {
         removeWaystoneLocally(waystone);
         parent.removeWaystoneLocally(waystone);
         Balm.networking().sendToServer(new ServerboundRemoveWaystonePacket(waystone.getWaystoneUid()));
+    }
+
+    public void toggleWaystoneHidden(Waystone waystone) {
+        final var player = Objects.requireNonNull(Minecraft.getInstance().player);
+        final var hidden = !isWaystoneHidden(waystone);
+        if (waystone instanceof MutablePersonalizedWaystone personalizedWaystone) {
+            personalizedWaystone.setHidden(hidden);
+        }
+        PlayerWaystoneManager.setWaystoneHidden(player, waystone.getWaystoneUid(), hidden);
+        parent.updateList();
+        updateList();
+        final var personalizedWaystone = PlayerWaystoneManager.getPlayerDecoratedWaystone(player, waystone);
+        Balm.networking().sendToServer(new ServerboundPersonalWaystoneSettingsPacket(
+                waystone.getWaystoneUid(),
+                personalizedWaystone.getAlias(),
+                personalizedWaystone.getConfiguredGroups(),
+                hidden));
     }
 
     public void openPersonalWaystoneSettings(Waystone waystone) {

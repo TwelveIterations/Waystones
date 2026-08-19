@@ -196,7 +196,8 @@ public class PersonalWaystoneSettingsScreen extends WaystoneContainerScreen<Abst
                     .sendToServer(new ServerboundPersonalWaystoneSettingsPacket(
                             waystone.getWaystoneUid(),
                             alias,
-                            selectedGroupIds));
+                            selectedGroupIds,
+                            waystone.isHidden()));
         }
     }
 

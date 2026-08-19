@@ -22,7 +22,7 @@ import java.util.UUID;
 
 import static net.blay09.mods.waystones.Waystones.id;
 
-public record ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, Optional<Component> alias, Set<Identifier> groupIds) implements CustomPacketPayload {
+public record ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, Optional<Component> alias, Set<Identifier> groupIds, boolean hidden) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<ServerboundPersonalWaystoneSettingsPacket> TYPE = new CustomPacketPayload.Type<>(id("personal_waystone_settings"));
 
@@ -33,6 +33,8 @@ public record ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, Option
             ServerboundPersonalWaystoneSettingsPacket::alias,
             ByteBufCodecs.collection(HashSet::new, Identifier.STREAM_CODEC),
             ServerboundPersonalWaystoneSettingsPacket::groupIds,
+            ByteBufCodecs.BOOL,
+            ServerboundPersonalWaystoneSettingsPacket::hidden,
             ServerboundPersonalWaystoneSettingsPacket::new
     );
 
@@ -46,9 +48,10 @@ public record ServerboundPersonalWaystoneSettingsPacket(UUID waystoneUid, Option
         final var resolvedWaystone = waystone.get();
         PlayerWaystoneManager.setWaystoneAlias(player, resolvedWaystone.getWaystoneUid(), message.alias.orElse(null));
         PlayerWaystoneManager.setConfiguredWaystoneGroups(player, resolvedWaystone.getWaystoneUid(), message.groupIds);
+        PlayerWaystoneManager.setWaystoneHidden(player, resolvedWaystone.getWaystoneUid(), message.hidden);
         WaystoneSyncManager.sendActivatedWaystones(player);
         if (resolvedWaystone.isTransient()) {
-            Balm.networking().sendTo(player, new ClientboundUpdateWaystonePacket(new PersonalizedWaystoneImpl(resolvedWaystone, message.alias.orElse(null), message.groupIds)));
+            Balm.networking().sendTo(player, new ClientboundUpdateWaystonePacket(new PersonalizedWaystoneImpl(resolvedWaystone, message.alias.orElse(null), message.groupIds, message.hidden)));
         }
     }
 

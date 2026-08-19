@@ -22,6 +22,7 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
     private static final String SORTING_INDEX = "SortingIndex";
     private static final String ALIASES = "Aliases";
     private static final String GROUPS = "Groups";
+    private static final String HIDDEN_WAYSTONES = "HiddenWaystones";
     private static final String GROUP_REGISTRY = "GroupRegistry";
     private static final String GROUP_ID = "Id";
     private static final String GROUP_NAME = "Name";
@@ -193,6 +194,22 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
         writeGroupIds(groupsByWaystone, waystoneUid, groupIds);
     }
 
+    @Override
+    public boolean isWaystoneHidden(Player player, UUID waystoneUid) {
+        final var hiddenWaystones = getHiddenWaystonesData(getWaystonesData(player));
+        return hiddenWaystones.getBoolean(waystoneUid.toString()).orElse(false);
+    }
+
+    @Override
+    public void setWaystoneHidden(Player player, UUID waystoneUid, boolean hidden) {
+        final var hiddenWaystones = getHiddenWaystonesData(getWaystonesData(player));
+        if (hidden) {
+            hiddenWaystones.putBoolean(waystoneUid.toString(), true);
+        } else {
+            hiddenWaystones.remove(waystoneUid.toString());
+        }
+    }
+
     private static void writeGroupIds(CompoundTag groupsByWaystone, UUID waystoneUid, Collection<Identifier> groupIds) {
         final var normalizedGroupIds = new LinkedHashSet<>(groupIds);
         if (normalizedGroupIds.isEmpty()) {
@@ -356,6 +373,12 @@ public class PersistentWaystonesPlayerStore implements WaystonesPlayerStore {
         CompoundTag groups = data.getCompoundOrEmpty(GROUPS);
         data.put(GROUPS, groups);
         return groups;
+    }
+
+    private static CompoundTag getHiddenWaystonesData(CompoundTag data) {
+        CompoundTag hiddenWaystones = data.getCompoundOrEmpty(HIDDEN_WAYSTONES);
+        data.put(HIDDEN_WAYSTONES, hiddenWaystones);
+        return hiddenWaystones;
     }
 
     private static CompoundTag getGroupRegistryData(CompoundTag data) {

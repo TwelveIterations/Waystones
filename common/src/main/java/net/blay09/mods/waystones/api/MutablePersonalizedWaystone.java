@@ -10,4 +10,7 @@ public interface MutablePersonalizedWaystone extends PersonalizedWaystone {
     void setAlias(@Nullable Component alias);
 
     void setConfiguredGroups(Collection<Identifier> configuredGroups);
+
+    default void setHidden(boolean hidden) {
+    }
 }

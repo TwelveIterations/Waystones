@@ -29,6 +29,8 @@ public class PersonalizedWaystoneImpl implements MutablePersonalizedWaystone {
             PersonalizedWaystoneImpl::getAlias,
             ByteBufCodecs.collection(ArrayList::new, Identifier.STREAM_CODEC),
             PersonalizedWaystoneImpl::getConfiguredGroups,
+            ByteBufCodecs.BOOL,
+            PersonalizedWaystoneImpl::isHidden,
             PersonalizedWaystoneImpl::new
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, MutablePersonalizedWaystone> DOWNGRADED_STREAM_CODEC = StreamCodec.of(
@@ -40,10 +42,11 @@ public class PersonalizedWaystoneImpl implements MutablePersonalizedWaystone {
     private final Waystone backingWaystone;
     private @Nullable Component alias;
     private Set<Identifier> configuredGroups;
+    private boolean hidden;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private PersonalizedWaystoneImpl(Waystone backingWaystone, Optional<Component> alias, Collection<Identifier> configuredGroups) {
-        this(backingWaystone, alias.orElse(null), configuredGroups);
+    private PersonalizedWaystoneImpl(Waystone backingWaystone, Optional<Component> alias, Collection<Identifier> configuredGroups, boolean hidden) {
+        this(backingWaystone, alias.orElse(null), configuredGroups, hidden);
     }
 
     public PersonalizedWaystoneImpl(Waystone backingWaystone, @Nullable Component alias) {
@@ -51,15 +54,20 @@ public class PersonalizedWaystoneImpl implements MutablePersonalizedWaystone {
     }
 
     public PersonalizedWaystoneImpl(Waystone backingWaystone, @Nullable Component alias, Collection<Identifier> configuredGroups) {
+        this(backingWaystone, alias, configuredGroups, false);
+    }
+
+    public PersonalizedWaystoneImpl(Waystone backingWaystone, @Nullable Component alias, Collection<Identifier> configuredGroups, boolean hidden) {
         this.backingWaystone = backingWaystone;
         this.alias = alias;
         this.configuredGroups = Set.copyOf(configuredGroups);
+        this.hidden = hidden;
     }
 
     public static PersonalizedWaystoneImpl from(PersonalizedWaystone waystone) {
         return waystone instanceof PersonalizedWaystoneImpl personalizedWaystone
                 ? personalizedWaystone
-                : new PersonalizedWaystoneImpl(waystone.getBackingWaystone(), waystone.getAlias().orElse(null), waystone.getConfiguredGroups());
+                : new PersonalizedWaystoneImpl(waystone.getBackingWaystone(), waystone.getAlias().orElse(null), waystone.getConfiguredGroups(), waystone.isHidden());
     }
 
     public Waystone getBackingWaystone() {
@@ -82,6 +90,16 @@ public class PersonalizedWaystoneImpl implements MutablePersonalizedWaystone {
     @Override
     public void setConfiguredGroups(Collection<Identifier> configuredGroups) {
         this.configuredGroups = Set.copyOf(configuredGroups);
+    }
+
+    @Override
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    @Override
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 
     @Override
