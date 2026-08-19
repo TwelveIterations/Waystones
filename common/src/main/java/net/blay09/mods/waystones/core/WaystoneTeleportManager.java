@@ -514,8 +514,12 @@ public class WaystoneTeleportManager {
     private static boolean isSourceWaystoneInRange(WaystoneTeleportContext context) {
         return context.getFromWaystone()
                 .map(fromWaystone -> context.getEntity().level().dimension() == fromWaystone.getDimension()
-                        && context.getEntity().distanceToSqr(Vec3.atCenterOf(fromWaystone.getPos())) <= 64)
+                        && canInteractWithWaystone(context.getEntity(), fromWaystone))
                 .orElse(true);
+    }
+
+    private static boolean canInteractWithWaystone(Entity entity, Waystone fromWaystone) {
+        return entity instanceof Player player ? player.canInteractWithBlock(fromWaystone.getPos(), 4f) : entity.distanceToSqr(Vec3.atCenterOf(fromWaystone.getPos())) <= 64;
     }
 
     private static boolean isSourceWaystoneStillInRange(MinecraftServer server, WaystoneTeleportContext context) {
@@ -526,7 +530,7 @@ public class WaystoneTeleportManager {
                             && WaystoneManagerImpl.get(server).getWaystoneById(fromWaystone.getWaystoneUid()).isPresent()
                             && fromWaystone.isValidInLevel(sourceLevel)
                             && context.getEntity().level().dimension() == fromWaystone.getDimension()
-                            && context.getEntity().distanceToSqr(Vec3.atCenterOf(fromWaystone.getPos())) <= 64;
+                            && canInteractWithWaystone(context.getEntity(), fromWaystone);
                 })
                 .orElse(true);
     }

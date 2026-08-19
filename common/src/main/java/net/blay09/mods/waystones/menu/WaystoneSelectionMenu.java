@@ -79,7 +79,7 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player player) {
         if (fromWaystone != null) {
-            return player.distanceToSqr(fromWaystone.getPos().getCenter()) <= 64;
+            return player.canInteractWithBlock(fromWaystone.getPos(), 4);
         }
 
         return true;
