@@ -60,6 +60,8 @@
   "container.waystones.manage_groups": "Manage Groups",
   "container.waystones.edit_group": "Edit Group",
   "gui.waystones.manage_waystones.drag_to_reorder": "Drag to reorder. Double-click to move to top. Shift-double-click to move to bottom.",
+  "gui.waystones.manage_waystones.hide_waystone": "Hide Waystone",
+  "gui.waystones.manage_waystones.show_waystone": "Show Waystone",
   "gui.waystones.manage_groups.no_groups": "There are no groups available.",
   "gui.waystones.manage_groups.create": "Create Group",
   "gui.waystones.manage_groups.hide_group": "Hide Inbuilt Group",

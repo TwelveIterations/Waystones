@@ -27,6 +27,8 @@ public interface WaystonesPlayerStore {
     void sortWaystoneGroupSwap(Player player, Identifier groupId, Identifier otherGroupId);
     Set<Identifier> getConfiguredWaystoneGroups(Player player, UUID waystoneUid);
     void setConfiguredWaystoneGroups(Player player, UUID waystoneUid, Set<Identifier> groupIds);
+    boolean isWaystoneHidden(Player player, UUID waystoneUid);
+    void setWaystoneHidden(Player player, UUID waystoneUid, boolean hidden);
     void sortWaystoneAsFirst(Player player, UUID waystoneUid);
     void sortWaystoneAsLast(Player player, UUID waystoneUid);
     void sortWaystoneSwap(Player player, UUID waystoneUid, UUID otherWaystoneUid);

@@ -10,6 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Optional;
 
@@ -26,6 +27,11 @@ public class WaystonePermissionManager {
         }
 
         return Optional.empty();
+    }
+
+    public static boolean canManageGlobalWaystones(Player player) {
+        final var context = MutableShogiContext.of(player);
+        return WaystonesRules.mayManageGlobalWaystones.getOrElse(context, false);
     }
 
     public static boolean isEntityDeniedTeleports(Entity entity) {
