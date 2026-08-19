@@ -21,7 +21,7 @@ public record ServerboundRequestManageWaystoneModifiersPacket(BlockPos pos) impl
 
     public static void handle(ServerPlayer player, ServerboundRequestManageWaystoneModifiersPacket message) {
         final var pos = message.pos;
-        if (player.distanceToSqr(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) > 64) {
+        if (!player.isWithinBlockInteractionRange(pos, 4)) {
             return;
         }
 
