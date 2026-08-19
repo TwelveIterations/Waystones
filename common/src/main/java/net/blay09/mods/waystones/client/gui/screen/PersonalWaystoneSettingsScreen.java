@@ -272,7 +272,6 @@ public class PersonalWaystoneSettingsScreen extends WaystoneContainerScreen<Abst
             return false;
         }
 
-        final var pos = waystone.getPos();
-        return player.distanceToSqr(Vec3.atCenterOf(pos)) <= 64;
+        return player.isWithinBlockInteractionRange(waystone.getPos(), 4);
     }
 }

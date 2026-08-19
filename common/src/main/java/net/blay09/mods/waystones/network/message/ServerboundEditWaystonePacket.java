@@ -40,7 +40,7 @@ public record ServerboundEditWaystonePacket(UUID waystoneUid, String name, Wayst
         }
 
         final var pos = waystone.getPos();
-        if (player.distanceToSqr(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) > 64) {
+        if (!player.isWithinBlockInteractionRange(pos, 4)) {
             return;
         }
 

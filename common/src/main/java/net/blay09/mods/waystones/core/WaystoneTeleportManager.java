@@ -28,6 +28,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.phys.AABB;
@@ -504,8 +505,12 @@ public class WaystoneTeleportManager {
     private static boolean isSourceWaystoneInRange(WaystoneTeleportContext context) {
         return context.getFromWaystone()
                 .map(fromWaystone -> context.getEntity().level().dimension() == fromWaystone.getDimension()
-                        && context.getEntity().distanceToSqr(Vec3.atCenterOf(fromWaystone.getPos())) <= 64)
+                        && canInteractWithWaystone(context.getEntity(), fromWaystone))
                 .orElse(true);
+    }
+
+    private static boolean canInteractWithWaystone(Entity entity, Waystone fromWaystone) {
+        return entity instanceof Player player ? player.isWithinBlockInteractionRange(fromWaystone.getPos(), 4) : entity.distanceToSqr(Vec3.atCenterOf(fromWaystone.getPos())) <= 64;
     }
 
     private static boolean isSourceWaystoneStillInRange(MinecraftServer server, WaystoneTeleportContext context) {
@@ -516,7 +521,7 @@ public class WaystoneTeleportManager {
                             && SavedDataWaystonesStore.get(server).getWaystoneById(fromWaystone.getWaystoneUid()).isPresent()
                             && fromWaystone.isValidInLevel(sourceLevel)
                             && context.getEntity().level().dimension() == fromWaystone.getDimension()
-                            && context.getEntity().distanceToSqr(Vec3.atCenterOf(fromWaystone.getPos())) <= 64;
+                            && canInteractWithWaystone(context.getEntity(), fromWaystone);
                 })
                 .orElse(true);
     }

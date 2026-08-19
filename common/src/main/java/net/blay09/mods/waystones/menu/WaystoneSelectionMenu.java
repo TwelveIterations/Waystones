@@ -9,7 +9,6 @@ import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.config.rules.WaystonesEffectExecutors;
 import net.blay09.mods.waystones.core.PersonalizedWaystoneImpl;
 import net.blay09.mods.waystones.core.WaystoneTeleportContextImpl;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -92,8 +91,7 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player player) {
         if (fromWaystone != null) {
-            BlockPos pos = fromWaystone.getPos();
-            return player.distanceToSqr((double) pos.getX() + 0.5, (double) pos.getY() + 0.5, (double) pos.getZ() + 0.5) <= 64;
+            return player.isWithinBlockInteractionRange(fromWaystone.getPos(), 4);
         }
 
         return true;
