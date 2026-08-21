@@ -1,9 +1,3 @@
-- Added Redstone Torch modifier to Warp Plates, which prevent it from teleporting
-- Added `allowEveryoneToManageGlobalWaystones` as a simpler alternative to now deprecated `allowedVisibilities`
-- Added world gen tags for new waystone types (empty by default)
-- Fixed invalid visibilities being configurable for `defaultVisibility`
-- Fixed typo in default visibility option
-- Fixed `defaultVisibility` not always being respected
-- Fixed waystones index not being updated with default visibility, resulting in global waystones not appearing immediately
-- Fixed crash with chunk multi-threading mods
-- Fixed integer overflow in xp cost marking waystones wrongly unaffordable when the player has too many levels
+- Added button to hide waystones if they can't be deleted
+- Fixed custom reach distance being ignored in distance validity checks
+- Fixed warp modifiers not being applied to waystones
