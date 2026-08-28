@@ -1,14 +1,36 @@
 package net.blay09.mods.waystones.fabric.gametest;
 
+import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
+import net.blay09.mods.waystones.item.ModItems;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
 public class WarpPlateGameTest {
+
+    @GameTest(maxTicks = 50)
+    public void initialDormantShardIsAttunedAndPoppedOut(GameTestHelper helper) {
+        final var warpPlatePos = new BlockPos(2, 1, 2);
+        WaystonesTestHelper.setWarpPlate(helper, warpPlatePos);
+
+        helper.assertBlockEntityData(warpPlatePos, WarpPlateBlockEntity.class,
+                warpPlate -> warpPlate.getShardItem().is(ModItems.dormantShard),
+                () -> Component.literal("Warp Plate should start with a dormant shard"));
+        helper.assertItemEntityNotPresent(ModItems.attunedShard.value(), warpPlatePos, 1);
+
+        helper.runAtTickTime(35, () -> {
+            helper.assertBlockEntityData(warpPlatePos, WarpPlateBlockEntity.class,
+                    warpPlate -> warpPlate.getShardItem().isEmpty(),
+                    () -> Component.literal("Warp Plate should eject its attuned shard"));
+            helper.assertItemEntityCountIs(ModItems.attunedShard.value(), warpPlatePos, 1, 1);
+            helper.succeed();
+        });
+    }
 
     @GameTest(maxTicks = 100)
     public void itemTeleportsOnceAndRemainsAtTarget(GameTestHelper helper) {
