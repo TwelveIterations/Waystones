@@ -87,4 +87,43 @@ public class WarpPlateGameTest {
         });
     }
 
+    @GameTest(maxTicks = 100)
+    public void mergedItemsTeleportOnceAndRemainAtTarget(GameTestHelper helper) {
+        final var sourcePos = new BlockPos(2, 1, 2);
+        final var sourcePlate = WaystonesTestHelper.setWarpPlate(helper, sourcePos);
+        final var targetPos = new BlockPos(6, 1, 2);
+        final var targetPlate = WaystonesTestHelper.setWarpPlate(helper, targetPos);
+        WaystonesTestHelper.linkWarpPlates(sourcePlate, targetPlate);
+
+        final var firstItemEntity = helper.spawnItem(Items.DIAMOND, Vec3.atCenterOf(sourcePos));
+        firstItemEntity.setDeltaMovement(Vec3.ZERO);
+        firstItemEntity.tickCount = 39;
+        final var secondItemEntity = helper.spawnItem(Items.DIAMOND, Vec3.atCenterOf(sourcePos));
+        secondItemEntity.setDeltaMovement(Vec3.ZERO);
+        secondItemEntity.tickCount = 39;
+
+        helper.assertItemEntityCountIs(Items.DIAMOND, sourcePos, 1, 2);
+        helper.assertEntitiesPresent(EntityType.ITEM, sourcePos, 2, 1);
+        helper.assertItemEntityNotPresent(Items.DIAMOND, targetPos, 1);
+
+        helper.runAtTickTime(1, () -> {
+            helper.assertItemEntityCountIs(Items.DIAMOND, sourcePos, 1, 2);
+            helper.assertEntitiesPresent(EntityType.ITEM, sourcePos, 1, 1);
+            helper.assertEntityData(sourcePos, EntityType.ITEM, itemEntity -> itemEntity.getItem().getCount() == 2);
+        });
+        helper.runAtTickTime(35, () -> {
+            helper.assertItemEntityNotPresent(Items.DIAMOND, sourcePos, 1);
+            helper.assertItemEntityCountIs(Items.DIAMOND, targetPos, 1, 2);
+            helper.assertEntitiesPresent(EntityType.ITEM, targetPos, 1, 1);
+            helper.assertEntityData(targetPos, EntityType.ITEM, itemEntity -> itemEntity.getItem().getCount() == 2);
+        });
+        helper.runAtTickTime(75, () -> {
+            helper.assertItemEntityNotPresent(Items.DIAMOND, sourcePos, 1);
+            helper.assertItemEntityCountIs(Items.DIAMOND, targetPos, 1, 2);
+            helper.assertEntitiesPresent(EntityType.ITEM, targetPos, 1, 1);
+            helper.assertEntityData(targetPos, EntityType.ITEM, itemEntity -> itemEntity.getItem().getCount() == 2);
+            helper.succeed();
+        });
+    }
+
 }
