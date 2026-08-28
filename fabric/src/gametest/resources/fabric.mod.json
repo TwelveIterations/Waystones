@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "waystones-test",
+  "version": "1.0.0",
+  "name": "Waystones",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "net.blay09.mods.waystones.fabric.gametest.WarpPlateGameTest"
+    ]
+  }
+}
