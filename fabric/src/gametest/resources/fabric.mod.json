@@ -8,5 +8,8 @@
     "fabric-gametest": [
       "net.blay09.mods.waystones.fabric.gametest.WarpPlateGameTest"
     ]
-  }
+  },
+  "mixins": [
+    "waystones.test.mixins.json"
+  ]
 }

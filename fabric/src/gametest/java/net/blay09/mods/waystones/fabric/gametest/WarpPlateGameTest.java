@@ -6,9 +6,12 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class WarpPlateGameTest {
@@ -57,6 +60,61 @@ public class WarpPlateGameTest {
             helper.assertEntityInstancePresent(itemEntity, targetPos, 1);
             helper.succeed();
         });
+    }
+
+    @GameTest(environment = "waystones-test:chunk_loading", maxTicks = 200)
+    public void singleItemTeleportsToUnloadedChunk(GameTestHelper helper) {
+        final var sourcePos = new BlockPos(2, 1, 2);
+        final var sourcePlate = WaystonesTestHelper.setWarpPlate(helper, sourcePos);
+
+        final var targetPos = new BlockPos(2008, 1, 2008);
+        final var targetChunk = ChunkPos.containing(helper.absolutePos(targetPos));
+        final var targetPlate = WaystonesTestHelper.setWarpPlate(helper, targetPos);
+        WaystonesTestHelper.linkWarpPlates(sourcePlate, targetPlate);
+        WaystonesTestHelper.unloadChunk(helper, targetChunk);
+
+        final var itemEntity = helper.spawnItem(Items.DIAMOND, Vec3.atCenterOf(sourcePos));
+        itemEntity.setDeltaMovement(Vec3.ZERO);
+        helper.assertItemEntityPresent(Items.DIAMOND, sourcePos, 1);
+
+        helper.succeedWhen(() -> {
+            helper.assertItemEntityNotPresent(Items.DIAMOND, sourcePos, 1);
+            helper.assertEntityInstancePresent(itemEntity, targetPos, 1);
+        });
+    }
+
+    @GameTest(environment = "waystones-test:chunk_loading", maxTicks = 200)
+    public void multipleItemsSpawnedInSeparateTicksTeleportToUnloadedChunk(GameTestHelper helper) {
+        final var sourcePos = new BlockPos(2, 1, 2);
+        final var sourcePlate = WaystonesTestHelper.setWarpPlate(helper, sourcePos);
+
+        final var targetPos = new BlockPos(2008, 1, 2008);
+        final var targetChunk = ChunkPos.containing(helper.absolutePos(targetPos));
+        final var targetPlate = WaystonesTestHelper.setWarpPlate(helper, targetPos);
+        WaystonesTestHelper.linkWarpPlates(sourcePlate, targetPlate);
+        WaystonesTestHelper.unloadChunk(helper, targetChunk);
+
+        final var itemEntities = new Entity[3];
+        itemEntities[0] = helper.spawnItem(Items.DIAMOND, Vec3.atCenterOf(sourcePos));
+        itemEntities[0].setDeltaMovement(Vec3.ZERO);
+
+        helper.runAtTickTime(1, () -> {
+            itemEntities[1] = helper.spawnItem(Items.EMERALD, Vec3.atCenterOf(sourcePos));
+            itemEntities[1].setDeltaMovement(Vec3.ZERO);
+        });
+        helper.runAtTickTime(2, () -> {
+            itemEntities[2] = helper.spawnItem(Items.GOLD_INGOT, Vec3.atCenterOf(sourcePos));
+            itemEntities[2].setDeltaMovement(Vec3.ZERO);
+        });
+
+        helper.runAtTickTime(3, () -> helper.succeedWhen(() -> {
+            helper.assertItemEntityNotPresent(Items.DIAMOND, sourcePos, 1);
+            helper.assertItemEntityNotPresent(Items.EMERALD, sourcePos, 1);
+            helper.assertItemEntityNotPresent(Items.GOLD_INGOT, sourcePos, 1);
+            for (final var itemEntity : itemEntities) {
+                helper.assertEntityInstancePresent(itemEntity, targetPos, 1);
+            }
+        }));
     }
 
     @GameTest(maxTicks = 100)
