@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.blay09.mods.waystones.fabric.gametest.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "ChunkMapAccessor",
+    "ServerChunkCacheAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
