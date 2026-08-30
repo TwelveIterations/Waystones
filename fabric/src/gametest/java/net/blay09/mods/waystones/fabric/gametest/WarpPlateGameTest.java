@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.fabric.gametest;
 
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
+import net.blay09.mods.waystones.core.WaystoneTeleportedEntity;
 import net.blay09.mods.waystones.item.ModItems;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
@@ -80,6 +81,8 @@ public class WarpPlateGameTest {
         helper.succeedWhen(() -> {
             helper.assertItemEntityNotPresent(Items.DIAMOND, sourcePos, 1);
             helper.assertEntityInstancePresent(itemEntity, targetPos, 1);
+            helper.assertTrue(targetPlate.getWaystone().getWaystoneUid().equals(((WaystoneTeleportedEntity) itemEntity).waystones$getLastWarpPlate()),
+                    "Teleported entity should track the target Warp Plate");
         });
     }
 
