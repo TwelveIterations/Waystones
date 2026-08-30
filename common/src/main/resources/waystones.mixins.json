@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "DimensionStorageFileFixMixin",
+    "EntityMixin",
     "JigsawPlacementPlacerMixin",
     "ServerScoreboardMixin",
     "SinglePoolElementMixin",

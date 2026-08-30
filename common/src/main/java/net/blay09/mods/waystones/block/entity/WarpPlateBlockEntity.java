@@ -40,8 +40,6 @@ import java.util.function.Consumer;
 
 public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
 
-    private final WeakHashMap<Entity, Integer> ticksPassedPerEntity = new WeakHashMap<>();
-
     private final Random random = new Random();
 
     private int nextRoundRobinAttunementSlot;
@@ -117,11 +115,16 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
             return;
         }
 
+        final var teleportingEntity = (WaystoneTeleportedEntity) entity;
+        if (isOnWarpPlateCooldown(teleportingEntity)) {
+            return;
+        }
+
         final var blockState = getBlockState();
         final var previousStatus = blockState.getValue(WarpPlateBlock.STATUS);
         if (previousStatus == WarpPlateBlock.WarpPlateStatus.IDLE) {
-            final var ticksPassed = ticksPassedPerEntity.putIfAbsent(entity, 0);
-            if ((ticksPassed == null || ticksPassed != -1) && hasPotentialWarpTarget()) {
+            if (hasPotentialWarpTarget()) {
+                startTrackingEntity(teleportingEntity);
                 final var targetWaystone = getTargetWaystone().orElse(InvalidWaystone.INSTANCE);
                 final var canAfford = WaystonesAPI.createUncheckedDefaultTeleportContext(entity, targetWaystone, it -> it.setFromWaystone(getWaystone()))
                         .mapLeft(WaystoneTeleportContext::getRequirements)
@@ -158,10 +161,11 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     public void serverTick() {
         attuneShard();
 
-        List<Entity> entitiesOnTop = null;
         final var status = getBlockState().getValue(WarpPlateBlock.STATUS);
         if (isRedstoneDisabled()) {
-            ticksPassedPerEntity.entrySet().removeIf(entry -> entry.getValue() != -1);
+            for (final var entity : getEntitiesOnTop()) {
+                resetTicksPassedOnWarpPlate((WaystoneTeleportedEntity) entity);
+            }
             if (status != WarpPlateBlock.WarpPlateStatus.REDSTONE_DISABLED) {
                 level.setBlock(worldPosition, getIdleState(), Block.UPDATE_ALL);
             }
@@ -169,48 +173,53 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
         } else if (status == WarpPlateBlock.WarpPlateStatus.REDSTONE_DISABLED) {
             level.setBlock(worldPosition, getIdleState(), Block.UPDATE_ALL);
         } else if (status == WarpPlateBlock.WarpPlateStatus.WARPING || status == WarpPlateBlock.WarpPlateStatus.WARPING_INVALID) {
-            entitiesOnTop = getEntitiesOnTop();
+            final var entitiesOnTop = getEntitiesOnTop();
             if (entitiesOnTop.isEmpty()) {
                 level.setBlock(worldPosition, getIdleState(), Block.UPDATE_ALL);
-                ticksPassedPerEntity.clear();
-            }
-        }
-
-        if (hasPotentialWarpTarget()) {
-            final var useTime = getWarpPlateUseTime();
-            Iterator<Map.Entry<Entity, Integer>> iterator = ticksPassedPerEntity.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<Entity, Integer> entry = iterator.next();
-                Entity entity = entry.getKey();
-                Integer ticksPassed = entry.getValue();
-                if (entitiesOnTop == null) {
-                    entitiesOnTop = getEntitiesOnTop();
-                }
-                if (entity.isPassenger() || !entity.isAlive() || !entitiesOnTop.contains(entity)) {
-                    iterator.remove();
-                } else if (ticksPassed > useTime) {
-                    ItemStack targetAttunementStack = getTargetAttunementStack();
-                    nextRoundRobinAttunementSlot++;
-                    Waystone targetWaystone = WaystonesAPI.getBoundWaystone(null, targetAttunementStack).orElse(null);
-                    if (targetWaystone != null && targetWaystone.isValid()) {
-                        teleportToTarget(entity, targetWaystone, targetAttunementStack);
+            } else if (hasPotentialWarpTarget()) {
+                final var useTime = getWarpPlateUseTime();
+                boolean hasActiveEntity = false;
+                for (final var entity : entitiesOnTop) {
+                    final var teleportingEntity = (WaystoneTeleportedEntity) entity;
+                    if (entity.isPassenger() || !entity.isAlive() || WaystonePermissionManager.isEntityDeniedTeleports(entity)) {
+                        resetTicksPassedOnWarpPlate(teleportingEntity);
+                        continue;
+                    }
+                    if (isOnWarpPlateCooldown(teleportingEntity)) {
+                        continue;
                     }
 
-                    if (entity instanceof Player) {
-                        if (targetWaystone == null) {
-                            var chatComponent = Component.translatable("chat.waystones.warp_plate_has_no_target");
-                            chatComponent.withStyle(ChatFormatting.DARK_RED);
-                            ((Player) entity).sendOverlayMessage(chatComponent);
-                        } else if (!targetWaystone.isValid()) {
-                            var chatComponent = Component.translatable("chat.waystones.warp_plate_has_invalid_target");
-                            chatComponent.withStyle(ChatFormatting.DARK_RED);
-                            ((Player) entity).sendOverlayMessage(chatComponent);
+                    hasActiveEntity = true;
+                    startTrackingEntity(teleportingEntity);
+                    final var ticksPassed = teleportingEntity.waystones$getTicksPassedOnWarpPlate();
+                    if (ticksPassed > useTime) {
+                        ItemStack targetAttunementStack = getTargetAttunementStack();
+                        nextRoundRobinAttunementSlot++;
+                        Waystone targetWaystone = WaystonesAPI.getBoundWaystone(null, targetAttunementStack).orElse(null);
+                        if (targetWaystone != null && targetWaystone.isValid()) {
+                            teleportToTarget(entity, targetWaystone, targetAttunementStack);
                         }
-                    }
 
-                    iterator.remove();
-                } else if (ticksPassed != -1) {
-                    entry.setValue(ticksPassed + 1);
+                        if (entity instanceof Player) {
+                            if (targetWaystone == null) {
+                                var chatComponent = Component.translatable("chat.waystones.warp_plate_has_no_target");
+                                chatComponent.withStyle(ChatFormatting.DARK_RED);
+                                ((Player) entity).sendOverlayMessage(chatComponent);
+                            } else if (!targetWaystone.isValid()) {
+                                var chatComponent = Component.translatable("chat.waystones.warp_plate_has_invalid_target");
+                                chatComponent.withStyle(ChatFormatting.DARK_RED);
+                                ((Player) entity).sendOverlayMessage(chatComponent);
+                            }
+                        }
+
+                        resetTicksPassedOnWarpPlate(teleportingEntity);
+                    } else {
+                        teleportingEntity.waystones$setTicksPassedOnWarpPlate(ticksPassed + 1);
+                    }
+                }
+
+                if (!hasActiveEntity) {
+                    level.setBlock(worldPosition, getIdleState(), Block.UPDATE_ALL);
                 }
             }
         }
@@ -296,7 +305,67 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     }
 
     public void markEntityForCooldown(Entity entity) {
-        ticksPassedPerEntity.put(entity, -1);
+        final var teleportingEntity = (WaystoneTeleportedEntity) entity;
+        teleportingEntity.waystones$setLastWarpPlate(getEffectiveWaystoneUid());
+        teleportingEntity.waystones$setTicksPassedOnWarpPlate(0);
+        teleportingEntity.waystones$setTicksPassedSinceWarpPlate(getWarpPlateCooldownTime());
+    }
+
+    public static void tickEntityWarpPlateState(Entity entity, WaystoneTeleportedEntity teleportingEntity) {
+        if (entity.level().isClientSide()) {
+            return;
+        }
+
+        final var lastWarpPlateUid = teleportingEntity.waystones$getLastWarpPlate();
+        if (lastWarpPlateUid == null) {
+            teleportingEntity.waystones$setTicksPassedOnWarpPlate(0);
+            return;
+        }
+
+        if (entity.level().getBlockEntity(entity.blockPosition()) instanceof WarpPlateBlockEntity warpPlate
+                && lastWarpPlateUid.equals(warpPlate.getEffectiveWaystoneUid())
+                && warpPlate.getEntitiesOnTop().contains(entity)) {
+            if (teleportingEntity.waystones$getTicksPassedSinceWarpPlate() > 0) {
+                teleportingEntity.waystones$setTicksPassedSinceWarpPlate(getWarpPlateCooldownTime());
+            }
+        } else {
+            teleportingEntity.waystones$setTicksPassedOnWarpPlate(0);
+            decrementWarpPlateCooldown(teleportingEntity);
+        }
+    }
+
+    private void startTrackingEntity(WaystoneTeleportedEntity teleportingEntity) {
+        final var waystoneUid = getEffectiveWaystoneUid();
+        if (!waystoneUid.equals(teleportingEntity.waystones$getLastWarpPlate())) {
+            teleportingEntity.waystones$setLastWarpPlate(waystoneUid);
+            teleportingEntity.waystones$setTicksPassedOnWarpPlate(0);
+            teleportingEntity.waystones$setTicksPassedSinceWarpPlate(0);
+        }
+    }
+
+    private void resetTicksPassedOnWarpPlate(WaystoneTeleportedEntity teleportingEntity) {
+        if (getEffectiveWaystoneUid().equals(teleportingEntity.waystones$getLastWarpPlate())) {
+            teleportingEntity.waystones$setTicksPassedOnWarpPlate(0);
+        }
+    }
+
+    private boolean isOnWarpPlateCooldown(WaystoneTeleportedEntity teleportingEntity) {
+        return getEffectiveWaystoneUid().equals(teleportingEntity.waystones$getLastWarpPlate())
+                && teleportingEntity.waystones$getTicksPassedSinceWarpPlate() > 0;
+    }
+
+    private static void decrementWarpPlateCooldown(WaystoneTeleportedEntity teleportingEntity) {
+        final var ticksPassedSinceWarpPlate = teleportingEntity.waystones$getTicksPassedSinceWarpPlate();
+        if (ticksPassedSinceWarpPlate > 1) {
+            teleportingEntity.waystones$setTicksPassedSinceWarpPlate(ticksPassedSinceWarpPlate - 1);
+        } else if (ticksPassedSinceWarpPlate == 1) {
+            teleportingEntity.waystones$setTicksPassedSinceWarpPlate(0);
+            teleportingEntity.waystones$setLastWarpPlate(null);
+        }
+    }
+
+    private static int getWarpPlateCooldownTime() {
+        return 20;
     }
 
     public void setShardItem(ItemStack itemStack) {
