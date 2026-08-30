@@ -16,6 +16,16 @@ dependencies {
 apply from: rootProject.file('repositories.gradle')
 apply from: 'dependencies.gradle'
 
+fabricApi {
+    configureTests {
+        createSourceSet = true
+        modId = "waystones-test"
+        enableGameTests = true
+        enableClientGameTests = false
+        eula = true
+    }
+}
+
 loom {
     def aw = project(":common").file("src/main/resources/${mod_id}.classtweaker")
     if (aw.exists()) {
