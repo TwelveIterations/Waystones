@@ -8,11 +8,7 @@ import net.blay09.mods.waystones.fabric.gametest.mixin.ChunkMapAccessor;
 import net.blay09.mods.waystones.fabric.gametest.mixin.ServerChunkCacheAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.server.level.TicketType;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
-
-import java.util.List;
 
 public class WaystonesTestHelper {
 
@@ -22,7 +18,7 @@ public class WaystonesTestHelper {
     }
 
     public static WarpPlateBlockEntity setWarpPlate(GameTestHelper helper, BlockPos pos) {
-        helper.setBlock(pos, ModBlocks.warpPlate.value());
+        helper.setBlock(pos, ModBlocks.warpPlate.asBlock());
         final var warpPlate = helper.getBlockEntity(pos, WarpPlateBlockEntity.class);
         warpPlate.initializeWaystone(helper.getLevel(), null, WaystoneOrigin.PLAYER);
         return warpPlate;

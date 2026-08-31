@@ -8,11 +8,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class WarpPlateGameTest {
@@ -23,15 +22,15 @@ public class WarpPlateGameTest {
         WaystonesTestHelper.setWarpPlate(helper, warpPlatePos);
 
         helper.assertBlockEntityData(warpPlatePos, WarpPlateBlockEntity.class,
-                warpPlate -> warpPlate.getShardItem().is(ModItems.dormantShard),
+                warpPlate -> warpPlate.getShardItem().is(ModItems.dormantShard.asItem()),
                 () -> Component.literal("Warp Plate should start with a dormant shard"));
-        helper.assertItemEntityNotPresent(ModItems.attunedShard.value(), warpPlatePos, 1);
+        helper.assertItemEntityNotPresent(ModItems.attunedShard.asItem(), warpPlatePos, 1);
 
         helper.runAtTickTime(35, () -> {
             helper.assertBlockEntityData(warpPlatePos, WarpPlateBlockEntity.class,
                     warpPlate -> warpPlate.getShardItem().isEmpty(),
                     () -> Component.literal("Warp Plate should eject its attuned shard"));
-            helper.assertItemEntityCountIs(ModItems.attunedShard.value(), warpPlatePos, 1, 1);
+            helper.assertItemEntityCountIs(ModItems.attunedShard.asItem(), warpPlatePos, 1, 1);
             helper.succeed();
         });
     }
@@ -52,12 +51,12 @@ public class WarpPlateGameTest {
 
         helper.runAtTickTime(35, () -> {
             helper.assertItemEntityNotPresent(Items.DIAMOND, sourcePos, 1);
-            helper.assertEntitiesPresent(EntityType.ITEM, 1);
+            helper.assertEntitiesPresent(EntityTypes.ITEM, 1);
             helper.assertEntityInstancePresent(itemEntity, targetPos, 1);
         });
         helper.runAtTickTime(75, () -> {
             helper.assertItemEntityNotPresent(Items.DIAMOND, sourcePos, 1);
-            helper.assertEntitiesPresent(EntityType.ITEM, 1);
+            helper.assertEntitiesPresent(EntityTypes.ITEM, 1);
             helper.assertEntityInstancePresent(itemEntity, targetPos, 1);
             helper.succeed();
         });
@@ -137,12 +136,12 @@ public class WarpPlateGameTest {
 
         helper.runAtTickTime(35, () -> {
             helper.assertItemEntityNotPresent(Items.DIAMOND, sourcePos, 1);
-            helper.assertEntitiesPresent(EntityType.ITEM, 1);
+            helper.assertEntitiesPresent(EntityTypes.ITEM, 1);
             helper.assertEntityInstancePresent(itemEntity, targetPos, 1);
         });
         helper.runAtTickTime(75, () -> {
             helper.assertItemEntityNotPresent(Items.DIAMOND, sourcePos, 1);
-            helper.assertEntitiesPresent(EntityType.ITEM, 1);
+            helper.assertEntitiesPresent(EntityTypes.ITEM, 1);
             helper.assertEntityInstancePresent(itemEntity, targetPos, 1);
             helper.succeed();
         });
@@ -164,25 +163,25 @@ public class WarpPlateGameTest {
         secondItemEntity.tickCount = 39;
 
         helper.assertItemEntityCountIs(Items.DIAMOND, sourcePos, 1, 2);
-        helper.assertEntitiesPresent(EntityType.ITEM, sourcePos, 2, 1);
+        helper.assertEntitiesPresent(EntityTypes.ITEM, sourcePos, 2, 1);
         helper.assertItemEntityNotPresent(Items.DIAMOND, targetPos, 1);
 
         helper.runAtTickTime(1, () -> {
             helper.assertItemEntityCountIs(Items.DIAMOND, sourcePos, 1, 2);
-            helper.assertEntitiesPresent(EntityType.ITEM, sourcePos, 1, 1);
-            helper.assertEntityData(sourcePos, EntityType.ITEM, itemEntity -> itemEntity.getItem().getCount() == 2);
+            helper.assertEntitiesPresent(EntityTypes.ITEM, sourcePos, 1, 1);
+            helper.assertEntityData(sourcePos, EntityTypes.ITEM, itemEntity -> itemEntity.getItem().getCount() == 2);
         });
         helper.runAtTickTime(35, () -> {
             helper.assertItemEntityNotPresent(Items.DIAMOND, sourcePos, 1);
             helper.assertItemEntityCountIs(Items.DIAMOND, targetPos, 1, 2);
-            helper.assertEntitiesPresent(EntityType.ITEM, targetPos, 1, 1);
-            helper.assertEntityData(targetPos, EntityType.ITEM, itemEntity -> itemEntity.getItem().getCount() == 2);
+            helper.assertEntitiesPresent(EntityTypes.ITEM, targetPos, 1, 1);
+            helper.assertEntityData(targetPos, EntityTypes.ITEM, itemEntity -> itemEntity.getItem().getCount() == 2);
         });
         helper.runAtTickTime(75, () -> {
             helper.assertItemEntityNotPresent(Items.DIAMOND, sourcePos, 1);
             helper.assertItemEntityCountIs(Items.DIAMOND, targetPos, 1, 2);
-            helper.assertEntitiesPresent(EntityType.ITEM, targetPos, 1, 1);
-            helper.assertEntityData(targetPos, EntityType.ITEM, itemEntity -> itemEntity.getItem().getCount() == 2);
+            helper.assertEntitiesPresent(EntityTypes.ITEM, targetPos, 1, 1);
+            helper.assertEntityData(targetPos, EntityTypes.ITEM, itemEntity -> itemEntity.getItem().getCount() == 2);
             helper.succeed();
         });
     }
