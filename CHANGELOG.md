@@ -1,3 +1,4 @@
 - Added button to hide waystones if they can't be deleted
 - Fixed custom reach distance being ignored in distance validity checks
 - Fixed warp modifiers not being applied to waystones
+- Fixed crash when rendering warp requirements that have no renderer 
