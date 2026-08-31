@@ -158,6 +158,10 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
         return level.getEntities((Entity) null, boundsAbove, EntitySelector.ENTITY_STILL_ALIVE);
     }
 
+    public boolean isEntityOnTop(Entity entity) {
+        return getEntitiesOnTop().contains(entity);
+    }
+
     public void serverTick() {
         attuneShard();
 
@@ -322,9 +326,12 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
             return;
         }
 
-        if (entity.level().getBlockEntity(entity.blockPosition()) instanceof WarpPlateBlockEntity warpPlate
-                && lastWarpPlateUid.equals(warpPlate.getEffectiveWaystoneUid())
-                && warpPlate.getEntitiesOnTop().contains(entity)) {
+        final var lastWarpPlate = new WaystoneProxy(entity.level().getServer(), lastWarpPlateUid);
+        final var isEntityOnLastWarpPlate = lastWarpPlate.isValid()
+                && lastWarpPlate.getDimension() == entity.level().dimension()
+                && entity.level().getBlockEntity(lastWarpPlate.getPos()) instanceof WarpPlateBlockEntity warpPlate
+                && warpPlate.isEntityOnTop(entity);
+        if (isEntityOnLastWarpPlate) {
             if (teleportingEntity.waystones$getTicksPassedSinceWarpPlate() > 0) {
                 teleportingEntity.waystones$setTicksPassedSinceWarpPlate(getWarpPlateCooldownTime());
             }
