@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.datagen;
 
-import net.blay09.mods.balm.tags.BalmItemTags;
+import net.blay09.mods.balm.tags.ConventionalItemTags;
 import net.blay09.mods.waystones.api.PortstoneTypes;
 import net.blay09.mods.waystones.api.SharestoneTypes;
 import net.blay09.mods.waystones.api.WarpStoneTypes;
@@ -113,7 +113,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("GAG")
                         .pattern("PPP")
                         .define('I', Items.INK_SAC)
-                        .define('G', BalmItemTags.GOLD_NUGGETS)
+                        .define('G', ConventionalItemTags.GOLD_NUGGETS)
                         .define('A', Items.AMETHYST_SHARD)
                         .define('P', Items.PAPER)
                         .unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
@@ -142,7 +142,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("GFG")
                         .pattern("PPP")
                         .define('F', Items.FEATHER)
-                        .define('G', BalmItemTags.GOLD_NUGGETS)
+                        .define('G', ConventionalItemTags.GOLD_NUGGETS)
                         .define('P', Items.PAPER)
                         .unlockedBy("has_paper", has(Items.PAPER))
                         .save(exporter);
@@ -151,7 +151,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("GIG")
                         .pattern("PPP")
                         .define('I', Items.INK_SAC)
-                        .define('G', BalmItemTags.GOLD_NUGGETS)
+                        .define('G', ConventionalItemTags.GOLD_NUGGETS)
                         .define('P', Items.PAPER)
                         .unlockedBy("has_paper", has(Items.PAPER))
                         .save(exporter);
@@ -160,7 +160,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("GGG")
                         .pattern("ADA")
                         .pattern("GGG")
-                        .define('G', BalmItemTags.GOLD_NUGGETS)
+                        .define('G', ConventionalItemTags.GOLD_NUGGETS)
                         .define('A', Items.AMETHYST_SHARD)
                         .define('D', Items.DEEPSLATE)
                         .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
