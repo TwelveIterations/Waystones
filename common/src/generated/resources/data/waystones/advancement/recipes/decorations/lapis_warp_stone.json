@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:lapis_warp_stone"
+        "recipes": "waystones:lapis_warp_stone"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

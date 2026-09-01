@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:mud_bricks_waystone"
+        "recipes": "waystones:mud_bricks_waystone"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

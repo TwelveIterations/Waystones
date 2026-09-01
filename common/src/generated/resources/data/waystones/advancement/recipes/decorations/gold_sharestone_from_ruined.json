@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:gold_sharestone_from_ruined"
+        "recipes": "waystones:gold_sharestone_from_ruined"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:epitaph"
+        "recipes": "waystones:epitaph"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

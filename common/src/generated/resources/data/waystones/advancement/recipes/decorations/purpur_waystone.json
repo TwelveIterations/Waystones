@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:purpur_waystone"
+        "recipes": "waystones:purpur_waystone"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

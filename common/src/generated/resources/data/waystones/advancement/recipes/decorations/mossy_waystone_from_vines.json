@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:mossy_waystone_from_vines"
+        "recipes": "waystones:mossy_waystone_from_vines"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

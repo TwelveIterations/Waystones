@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:sandstone_waystone"
+        "recipes": "waystones:sandstone_waystone"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

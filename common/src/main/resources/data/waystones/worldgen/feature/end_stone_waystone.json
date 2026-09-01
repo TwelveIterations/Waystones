@@ -1,6 +1,4 @@
 {
   "type": "waystones:waystone",
-  "state": {
-    "Name": "waystones:end_stone_waystone"
-  }
+  "state": "waystones:end_stone_waystone"
 }
