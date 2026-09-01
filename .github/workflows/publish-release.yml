@@ -40,12 +40,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Verify latest Balm version
-        uses: TwelveIterations/validate-latest-version@3443e0f4ebbc5319bd7a1e33a65bda00d443120b
+        uses: TwelveIterations/validate-latest-version@5f116c8a25a9352d34dc7b437afafbbedceedeb4
         with:
           versionKey: balm
           artifactId: balm-common
       - name: Verify latest Shogi version
-        uses: TwelveIterations/validate-latest-version@3443e0f4ebbc5319bd7a1e33a65bda00d443120b
+        uses: TwelveIterations/validate-latest-version@5f116c8a25a9352d34dc7b437afafbbedceedeb4
         with:
           versionKey: shogi
           artifactId: shogi-common
