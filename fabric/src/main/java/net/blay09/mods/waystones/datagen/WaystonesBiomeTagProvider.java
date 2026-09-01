@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biomes;
 
 import java.util.concurrent.CompletableFuture;
@@ -17,15 +16,31 @@ public class WaystonesBiomeTagProvider extends BiomeTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        final var hasMossyWaystones = tag(ModBiomeTags.HAS_STRUCTURE_MOSSY_WAYSTONE);
-        hasMossyWaystones.add(Biomes.SWAMP, Biomes.MANGROVE_SWAMP, Biomes.MUSHROOM_FIELDS);
-        hasMossyWaystones.addOptionalTag(BiomeTags.IS_JUNGLE.location())
-                .addOptionalTag(new ResourceLocation("waystones", "is_mushroom")) // backwards compatiblity
-                .addOptionalTag(new ResourceLocation("waystones", "is_swamp")); // backwards compatiblity
+        tag(ModBiomeTags.HAS_STRUCTURE_MOSSY_WAYSTONE).add(
+                Biomes.SWAMP,
+                Biomes.MANGROVE_SWAMP,
+                Biomes.MUSHROOM_FIELDS,
+                Biomes.BAMBOO_JUNGLE,
+                Biomes.JUNGLE,
+                Biomes.SPARSE_JUNGLE
+        ).addOptionalTag(new ResourceLocation("waystones", "is_mushroom")) // backwards compatibility
+                .addOptionalTag(new ResourceLocation("waystones", "is_swamp")); // backwards compatibility
         tag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE).add(Biomes.DESERT)
-                .addOptionalTag(new ResourceLocation("waystones", "is_desert")); // backwards compatiblity
-        tag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE).addOptionalTag(BiomeTags.IS_NETHER.location());
-        tag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE).addOptionalTag(BiomeTags.IS_END.location());
+                .addOptionalTag(new ResourceLocation("waystones", "is_desert")); // backwards compatibility
+        tag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE).add(
+                Biomes.NETHER_WASTES,
+                Biomes.SOUL_SAND_VALLEY,
+                Biomes.CRIMSON_FOREST,
+                Biomes.WARPED_FOREST,
+                Biomes.BASALT_DELTAS
+        );
+        tag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE).add(
+                Biomes.THE_END,
+                Biomes.END_HIGHLANDS,
+                Biomes.END_MIDLANDS,
+                Biomes.SMALL_END_ISLANDS,
+                Biomes.END_BARRENS
+        );
 
         final var hasWaystones = tag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE);
         hasWaystones.add(
@@ -48,9 +63,6 @@ public class WaystonesBiomeTagProvider extends BiomeTagsProvider {
                 Biomes.WINDSWEPT_GRAVELLY_HILLS,
                 Biomes.WINDSWEPT_FOREST,
                 Biomes.WINDSWEPT_SAVANNA,
-                Biomes.JUNGLE,
-                Biomes.SPARSE_JUNGLE,
-                Biomes.BAMBOO_JUNGLE,
                 Biomes.BADLANDS,
                 Biomes.ERODED_BADLANDS,
                 Biomes.WOODED_BADLANDS,
