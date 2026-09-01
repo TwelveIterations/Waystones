@@ -180,7 +180,7 @@ publishing {
             artifactId = mod_id + "-forge"
             version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
 
-            artifact jar
+            artifact reobfJar
         }
     }
 
