@@ -37,6 +37,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class ModWorldGen {
@@ -65,7 +66,12 @@ public class ModWorldGen {
         waystonePlacement = worldGen.registerPlacementModifier(id("waystone"), () -> () -> WaystonePlacement.CODEC);
 
         final var waystonesCommonConfig = new ResourceLocation(Waystones.MOD_ID, "common");
+        final var configLoaded = new AtomicBoolean();
         final Runnable configLoadHandler = () -> {
+            if (!configLoaded.compareAndSet(false, true)) {
+                return;
+            }
+
             worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE),
                     GenerationStep.Decoration.VEGETAL_DECORATION,
                     getWaystoneFeature(WorldGenStyle.SANDY));
