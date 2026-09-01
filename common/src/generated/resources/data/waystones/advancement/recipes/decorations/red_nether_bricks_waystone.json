@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:red_nether_bricks_waystone"
+        "recipes": "waystones:red_nether_bricks_waystone"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

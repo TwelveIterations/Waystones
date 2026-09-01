@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:diamond_portstone"
+        "recipes": "waystones:diamond_portstone"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

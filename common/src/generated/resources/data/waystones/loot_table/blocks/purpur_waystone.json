@@ -2,48 +2,28 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "conditions": [
-        {
-          "block": "waystones:purpur_waystone",
-          "condition": "minecraft:block_state_property",
-          "properties": {
-            "half": "lower"
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:match_block",
+            "blocks": "waystones:purpur_waystone",
+            "state": {
+              "half": "lower"
+            }
+          },
+          {
+            "type": "minecraft:survives_explosion"
           }
-        },
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
+        ]
+      },
       "entries": [
         {
           "type": "minecraft:item",
           "name": "waystones:purpur_waystone"
         }
       ],
-      "functions": [
-        {
-          "conditions": [
-            {
-              "condition": "minecraft:match_tool",
-              "predicate": {
-                "predicates": {
-                  "minecraft:enchantments": [
-                    {
-                      "enchantments": "minecraft:silk_touch",
-                      "levels": {
-                        "min": 1
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          ],
-          "function": "minecraft:copy_components",
-          "source": "block_entity"
-        }
-      ],
-      "rolls": 1.0
+      "rolls": 1
     }
   ]
 }

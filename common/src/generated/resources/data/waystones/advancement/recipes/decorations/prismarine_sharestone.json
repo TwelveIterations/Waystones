@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:prismarine_sharestone"
+        "recipes": "waystones:prismarine_sharestone"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:amethyst_sharestone"
+        "recipes": "waystones:amethyst_sharestone"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

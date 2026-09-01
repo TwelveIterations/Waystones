@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:emerald_warp_stone"
+        "recipes": "waystones:emerald_warp_stone"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

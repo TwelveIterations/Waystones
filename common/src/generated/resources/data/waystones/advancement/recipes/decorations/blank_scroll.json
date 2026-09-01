@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:blank_scroll"
+        "recipes": "waystones:blank_scroll"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

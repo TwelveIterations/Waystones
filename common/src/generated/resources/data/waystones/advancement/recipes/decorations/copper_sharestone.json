@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:copper_sharestone"
+        "recipes": "waystones:copper_sharestone"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

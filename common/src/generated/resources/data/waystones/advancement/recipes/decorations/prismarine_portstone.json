@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "waystones:prismarine_portstone"
+        "recipes": "waystones:prismarine_portstone"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
