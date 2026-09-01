@@ -1,7 +1,5 @@
 package net.blay09.mods.waystones.block;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.SharestoneType;
 import net.blay09.mods.waystones.api.Waystone;
@@ -13,7 +11,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,10 +22,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
 public class SharestoneBlock extends WaystoneBlockBase {
-
-    public static final MapCodec<SharestoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(SharestoneType.CODEC.fieldOf("type")
-                    .forGetter(SharestoneBlock::getType), propertiesCodec())
-            .apply(instance, SharestoneBlock::new));
 
     private static final VoxelShape LOWER_SHAPE = Shapes.or(
             box(0.0, 0.0, 0.0, 16.0, 3.0, 16.0),
@@ -83,8 +76,4 @@ public class SharestoneBlock extends WaystoneBlockBase {
         return type;
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 }

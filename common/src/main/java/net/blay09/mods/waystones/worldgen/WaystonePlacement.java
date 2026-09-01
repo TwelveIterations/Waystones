@@ -12,12 +12,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
-import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 import java.util.Random;
-import java.util.stream.Stream;
+import java.util.function.Consumer;
 
-public class WaystonePlacement extends PlacementModifier {
+public class WaystonePlacement implements PlacementModifier {
 
     public static final MapCodec<WaystonePlacement> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(Heightmap.Types.CODEC.fieldOf("heightmap").forGetter((placement) -> placement.heightmap)).apply(builder, WaystonePlacement::new));
 
@@ -32,7 +31,7 @@ public class WaystonePlacement extends PlacementModifier {
     }
 
     @Override
-    public Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos pos) {
+    public void modify(PlacementContext context, RandomSource random, BlockPos pos, Consumer<BlockPos> output) {
         if (isWaystoneChunk(context, pos)) {
             if (context.getLevel().getLevel().dimension() == Level.NETHER) {
                 BlockPos.MutableBlockPos mutablePos = pos.mutable();
@@ -48,21 +47,24 @@ public class WaystonePlacement extends PlacementModifier {
                     }
                     stateAbove = state;
                 }
-                return mutablePos.getY() > 0 ? Stream.of(mutablePos) : Stream.empty();
+                if (mutablePos.getY() > 0) {
+                    output.accept(mutablePos);
+                }
+                return;
             }
 
             int x = pos.getX();
             int z = pos.getZ();
             int y = context.getHeight(heightmap, x, z);
-            return y > context.getMinY() ? Stream.of(new BlockPos(x, y, z)) : Stream.of();
-        } else {
-            return Stream.empty();
+            if (y > context.getMinY()) {
+                output.accept(new BlockPos(x, y, z));
+            }
         }
     }
 
     @Override
-    public PlacementModifierType<?> type() {
-        return ModWorldGen.waystonePlacement.value();
+    public MapCodec<? extends PlacementModifier> codec() {
+        return CODEC;
     }
 
     private boolean isWaystoneChunk(PlacementContext world, BlockPos pos) {

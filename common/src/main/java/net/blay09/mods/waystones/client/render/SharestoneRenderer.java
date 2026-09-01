@@ -97,14 +97,14 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
 
         poseStack.pushPose();
         poseStack.translate(0.5f, 0f, 0.5f);
-        poseStack.mulPose(Axis.YP.rotationDegrees(renderState.facing.toYRot()));
+        poseStack.rotateDegrees(Axis.YP, renderState.facing.toYRot());
         poseStack.translate(-0.5f, 0f, -0.5f);
         renderState.runes.submit(poseStack, submitNodeCollector, renderState.glow ? LightCoordsUtil.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, 0);
         poseStack.popPose();
 
         poseStack.pushPose();
         poseStack.translate(0.5f, 1f + renderState.itemOffsetY, 0.5f);
-        poseStack.mulPose(Axis.YN.rotationDegrees(renderState.itemYaw));
+        poseStack.rotateDegrees(Axis.YN, renderState.itemYaw);
         poseStack.scale(0.5f, 0.5f, 0.5f);
         renderState.item.submit(poseStack, submitNodeCollector, renderState.lightCoords, OverlayTexture.NO_OVERLAY, 0);
         poseStack.popPose();

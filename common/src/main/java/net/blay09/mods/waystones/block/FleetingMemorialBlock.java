@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.block;
 
-import com.mojang.serialization.MapCodec;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.FleetingMemorialBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
@@ -12,7 +11,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,7 +24,6 @@ import java.util.Map;
 
 public class FleetingMemorialBlock extends WaystoneBlockBase {
 
-    public static final MapCodec<FleetingMemorialBlock> CODEC = simpleCodec(FleetingMemorialBlock::new);
     private static final Map<Direction, VoxelShape> SHAPES = Shapes.rotateHorizontal(Shapes.or(
             box(3.0, 2.0, 8.0, 13.0, 14.0, 9.0),
             box(5.0, 1.0, 8.0, 12.0, 2.0, 9.0),
@@ -86,8 +83,4 @@ public class FleetingMemorialBlock extends WaystoneBlockBase {
         return false;
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 }

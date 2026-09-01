@@ -88,7 +88,7 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
         poseStack.pushPose();
         if (renderState.showRunes) {
             poseStack.translate(0.5f, 0f, 0.5f);
-            poseStack.mulPose(Axis.YP.rotationDegrees(renderState.facing.toYRot()));
+            poseStack.rotateDegrees(Axis.YP, renderState.facing.toYRot());
             poseStack.translate(-0.5f, 0f, -0.5f);
             renderState.runes.submit(poseStack, submitNodeCollector, renderState.glow ? LightCoordsUtil.FULL_BRIGHT : renderState.lightCoords, OverlayTexture.NO_OVERLAY, 0);
         }

@@ -97,7 +97,7 @@ public class FleetingMemorialRenderer implements BlockEntityRenderer<FleetingMem
         poseStack.translate(0f, renderState.bobOffset, 0f);
         renderState.model.submit(poseStack, submitNodeCollector, renderState.lightCoords, OverlayTexture.NO_OVERLAY, 0);
         if (renderState.breakProgress != null) {
-            submitNodeCollector.submitBreakingBlockModel(poseStack, renderState.breakingParts, renderState.breakProgress.progress());
+            submitNodeCollector.submitBreakingBlockModel(poseStack, renderState.breakingParts, renderState.breakProgress.progress(), false);
         }
         submitOwnerName(renderState, poseStack, submitNodeCollector);
         poseStack.popPose();
@@ -113,7 +113,7 @@ public class FleetingMemorialRenderer implements BlockEntityRenderer<FleetingMem
 
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.55f, 0.5f);
-        poseStack.mulPose(Axis.YP.rotationDegrees(renderState.facing.toYRot()));
+        poseStack.rotateDegrees(Axis.YP, renderState.facing.toYRot());
         poseStack.translate(0f, 0f, 1/16f);
         poseStack.scale(TEXT_SCALE, -TEXT_SCALE, TEXT_SCALE);
         for (int i = 0; i < lines.size(); i++) {

@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.block;
 
-import com.mojang.serialization.MapCodec;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
@@ -25,7 +24,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -43,8 +41,6 @@ import java.util.Locale;
 import java.util.UUID;
 
 public class WarpPlateBlock extends WaystoneBlockBase {
-
-    public static final MapCodec<WarpPlateBlock> CODEC = simpleCodec(WarpPlateBlock::new);
 
     public enum WarpPlateStatus implements StringRepresentable {
         EMPTY,
@@ -210,11 +206,6 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     @Override
     protected boolean shouldOpenMenuWhenPlaced() {
         return false;
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Nullable

@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.component.BlankScrollComponent;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +35,7 @@ public class BlankScrollItem extends Item {
                     if ((emptySlot != -1 || stackableSlot != -1) || (!player.hasInfiniteMaterials() && context.getItemInHand().getCount() == 1)) {
                         context.getItemInHand().consume(1, player);
                         if (!player.addItem(boundScrollStack)) {
-                            player.drop(boundScrollStack, false);
+                            player.drop(boundScrollStack, false, Prediction.SERVER_ONLY);
                         }
                         return InteractionResult.SUCCESS;
                     }
