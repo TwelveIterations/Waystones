@@ -39,9 +39,9 @@ public class FleetingMemorialRenderer implements BlockEntityRenderer<FleetingMem
     public void render(FleetingMemorialBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         final var blockState = blockEntity.getBlockState();
         final var level = blockEntity.getLevel();
-        final var gameTime = level != null ? level.getGameTime() + partialTicks : partialTicks;
-        final var phase = (blockEntity.getBlockPos().asLong() & 0xffff) * 0.01f;
-        final var bobOffset = isTargeted(blockEntity) ? BOB_HEIGHT : BOB_HEIGHT + Mth.sin(gameTime * BOB_SPEED + phase) * BOB_AMPLITUDE;
+        final double gameTime = (level != null ? level.getGameTime() : 0L) + (double) partialTicks;
+        final double phase = (blockEntity.getBlockPos().asLong() & 0xffff) * 0.01;
+        final var bobOffset = isTargeted(blockEntity) ? BOB_HEIGHT : BOB_HEIGHT + (float) Math.sin(gameTime * BOB_SPEED + phase) * BOB_AMPLITUDE;
 
         poseStack.pushPose();
         poseStack.translate(0f, bobOffset, 0f);

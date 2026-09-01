@@ -57,8 +57,8 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
             level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolder(Enchantments.UNBREAKING).ifPresent(it -> warpStoneItem.enchant(it, 1));
         }
 
-        float angle = gameTime / 2f % 360;
-        float offsetY = (float) Math.sin(gameTime / 8f) * 0.025f;
+        float angle = ((gameTime % 720L) + partialTicks) / 2f;
+        float offsetY = (float) Math.sin((gameTime + (double) partialTicks) / 8.0) * 0.025f;
         poseStack.pushPose();
         poseStack.translate(0.5f, 1f + offsetY, 0.5f);
         poseStack.mulPose(Axis.YN.rotationDegrees(angle));
