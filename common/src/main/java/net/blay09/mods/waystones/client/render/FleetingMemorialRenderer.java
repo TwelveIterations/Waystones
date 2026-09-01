@@ -79,9 +79,9 @@ public class FleetingMemorialRenderer implements BlockEntityRenderer<FleetingMem
         renderState.ownerName = blockEntity.getOwnerName();
 
         final var level = blockEntity.getLevel();
-        final var gameTime = level != null ? level.getGameTime() + delta : delta;
-        final var phase = (blockEntity.getBlockPos().asLong() & 0xffff) * 0.01f;
-        final var targetBobOffset = BOB_HEIGHT + Mth.sin(gameTime * BOB_SPEED + phase) * BOB_AMPLITUDE;
+        final double gameTime = (level != null ? level.getGameTime() : 0L) + (double) delta;
+        final double phase = (blockEntity.getBlockPos().asLong() & 0xffff) * 0.01;
+        final var targetBobOffset = BOB_HEIGHT + (float) Math.sin(gameTime * BOB_SPEED + phase) * BOB_AMPLITUDE;
         renderState.bobOffset = isTargeted(blockEntity) ? Mth.lerp(TARGETED_BOB_LERP, renderState.bobOffset, BOB_HEIGHT) : targetBobOffset;
     }
 
