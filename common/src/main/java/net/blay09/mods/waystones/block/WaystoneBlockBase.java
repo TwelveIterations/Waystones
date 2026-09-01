@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -43,7 +44,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     public static final EnumProperty<WaystoneOrigin> ORIGIN = EnumProperty.create("origin", WaystoneOrigin.class);
 
     public WaystoneBlockBase(Properties properties) {
-        super(properties.pushReaction(PushReaction.BLOCK));
+        super(properties.pushReaction(PushReaction.IMMOVEABLE));
         this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false).setValue(ORIGIN, WaystoneOrigin.UNKNOWN));
     }
 
@@ -69,7 +70,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     }
 
     @Override
-    public void playerDestroy(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack stack) {
+    public void playerDestroy(ServerLevel world, ServerPlayer player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack stack) {
         if (isDoubleBlock(state)) {
             super.playerDestroy(world, player, pos, Blocks.AIR.defaultBlockState(), blockEntity, stack);
         } else {

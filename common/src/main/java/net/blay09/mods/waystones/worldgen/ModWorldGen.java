@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.structure.pools.LegacySinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
@@ -56,14 +56,14 @@ public class ModWorldGen {
     private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(Registries.PROCESSOR_LIST,
             Identifier.fromNamespaceAndPath("minecraft", "empty"));
 
-    public static Holder<PlacementModifierType<?>> waystonePlacement;
+    public static Holder<MapCodec<? extends PlacementModifier>> waystonePlacement;
 
     public static void initializeFeatures(BalmRegistrar.Scoped<MapCodec<? extends Feature>> registrar) {
         registrar.register(waystone.getPath(), (id) -> WaystoneFeature.CODEC);
     }
 
-    public static void initializePlacementModifierTypes(BalmRegistrar.Scoped<PlacementModifierType<?>> registrar) {
-        waystonePlacement = registrar.register("waystone", (id) -> (PlacementModifierType<WaystonePlacement>) () -> WaystonePlacement.CODEC);
+    public static void initializePlacementModifierTypes(BalmRegistrar.Scoped<MapCodec<? extends PlacementModifier>> registrar) {
+        waystonePlacement = registrar.register("waystone", (id) -> WaystonePlacement.CODEC);
     }
 
     public static void initializePoiTypes(BalmPoiTypeRegistrar registrar) {

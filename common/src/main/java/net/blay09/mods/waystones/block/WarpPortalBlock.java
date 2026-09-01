@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.block;
 
-import com.mojang.serialization.MapCodec;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WarpPortalBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -28,7 +27,6 @@ import org.jspecify.annotations.Nullable;
 
 public class WarpPortalBlock extends BaseEntityBlock {
 
-    public static final MapCodec<WarpPortalBlock> CODEC = simpleCodec(WarpPortalBlock::new);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
 
@@ -42,11 +40,6 @@ public class WarpPortalBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING, HALF);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

@@ -1,7 +1,5 @@
 package net.blay09.mods.waystones.block;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.PortstoneType;
 import net.blay09.mods.waystones.api.TeleportFlags;
@@ -16,7 +14,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,10 +29,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.Set;
 
 public class PortstoneBlock extends WaystoneBlockBase {
-
-    public static final MapCodec<PortstoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(PortstoneType.CODEC.fieldOf("type")
-                    .forGetter(PortstoneBlock::getType), propertiesCodec())
-            .apply(instance, PortstoneBlock::new));
 
     private static final VoxelShape[] LOWER_SHAPES = new VoxelShape[]{
             // South
@@ -145,8 +138,4 @@ public class PortstoneBlock extends WaystoneBlockBase {
         return false;
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 }

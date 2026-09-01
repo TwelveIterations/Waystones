@@ -1,7 +1,5 @@
 package net.blay09.mods.waystones.block;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneType;
@@ -24,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,10 +37,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public class WaystoneBlock extends WaystoneBlockBase {
-
-    public static final MapCodec<WaystoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(WaystoneType.CODEC.fieldOf("type")
-                    .forGetter(WaystoneBlock::getType), propertiesCodec())
-            .apply(instance, WaystoneBlock::new));
 
     public static final BooleanProperty SEEN = BooleanProperty.create("seen");
 
@@ -183,8 +176,4 @@ public class WaystoneBlock extends WaystoneBlockBase {
         return false;
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 }

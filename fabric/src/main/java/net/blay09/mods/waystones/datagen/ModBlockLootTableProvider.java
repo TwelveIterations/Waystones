@@ -13,8 +13,8 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.predicates.MatchBlock;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -41,7 +41,7 @@ public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
 
         return LootTable.lootTable()
                 .withPool(applyExplosionCondition(block, LootPool.lootPool()
-                        .setRolls(ConstantValue.exactly(1f))
+                        .setRolls(ContextIntProviders.exactly(1))
                         .add(LootItem.lootTableItem(block))
                         .apply(CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY))
                                 .when(hasSilkTouch())));
@@ -50,10 +50,10 @@ public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
     private LootTable.Builder createDoubleBlockWaystoneLoot(DeferredBlock block) {
         return LootTable.lootTable()
                 .withPool(applyExplosionCondition(block, LootPool.lootPool()
-                        .setRolls(ConstantValue.exactly(1f))
+                        .setRolls(ContextIntProviders.exactly(1))
                         .add(LootItem.lootTableItem(block))
-                        .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block.asBlock())
-                                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(WaystoneBlockBase.HALF, DoubleBlockHalf.LOWER)))
+                        .when(MatchBlock.blockMatches(blocks, block.asBlock(),
+                                StatePropertiesPredicate.Builder.properties().hasProperty(WaystoneBlockBase.HALF, DoubleBlockHalf.LOWER)))
                         .apply(CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
                                 .when(hasSilkTouch()))));
     }

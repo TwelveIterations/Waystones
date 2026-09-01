@@ -10,8 +10,11 @@ public class ClientEpitaphActivationHandler {
 
     public static void playEffects() {
         final var minecraft = Minecraft.getInstance();
+        final var player = minecraft.player;
         minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.TOTEM_USE, 1f, 1f));
-        minecraft.gameRenderer.displayItemActivation(new ItemStack(ModItems.epitaph.asItem()));
+        if (player != null) {
+            player.displayItemActivation(new ItemStack(ModItems.epitaph.asItem()));
+        }
     }
 
 }
