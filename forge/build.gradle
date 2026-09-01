@@ -1,145 +1,113 @@
-buildscript {
-    repositories {
-        maven { url = "https://repo.spongepowered.org/maven" }
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.neoforged.moddev.legacyforge'
     id 'maven-publish'
     id 'idea'
-    id 'net.darkhax.curseforgegradle' version '1.3.33'
-    id "com.modrinth.minotaur" version "2.+"
+    id 'net.darkhax.curseforgegradle'
+    id "com.modrinth.minotaur"
 }
 
-apply plugin: "org.spongepowered.mixin"
+base {
+    archivesName = "${mod_id}-forge-${minecraft_version}"
+}
 
-archivesBaseName = "${mod_id}-forge-${minecraft_version}"
+mixin {
+    add(sourceSets.main, "${mod_id}.refmap.json")
 
-minecraft {
-    mappings channel: 'official', version: minecraft_version
+    if (forge_mixins.toBoolean()) {
+        config("${mod_id}.mixins.json")
+    }
+}
 
-    copyIdeResources = true
+legacyForge {
+    version = "${minecraft_version}-${forge_version}"
+
+    validateAccessTransformers = true
+
+    def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers = ["src/main/resources/META-INF/accesstransformer.cfg"]
+    }
 
     runs {
         client {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName "Client"
+            client()
 
             if (forge_mixins.toBoolean()) {
-                arg "-mixin.config=${mod_id}.mixins.json"
+                programArgument "-mixin.config=${mod_id}.mixins.json"
             }
 
-            property "mixin.env.disableRefMap", "true"
-            property "mixin.debug.export", "true"
-            property "mixin.debug.export.decompile", "false"
-            property "mixin.debug.verbose", "true"
-            property "mixin.debug.dumpTargetOnFailure", "true"
-            property "mixin.checks", "true"
-            property "mixin.hotSwap", "true"
-
-            property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', mod_id
-
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
+            systemProperty "mixin.env.disableRefMap", "true"
+            systemProperty "mixin.debug.export", "true"
+            systemProperty "mixin.debug.export.decompile", "false"
+            systemProperty "mixin.debug.verbose", "true"
+            systemProperty "mixin.debug.dumpTargetOnFailure", "true"
+            systemProperty "mixin.checks", "true"
+            systemProperty "mixin.hotSwap", "true"
+            systemProperty 'forge.logging.console.level', 'debug'
+            systemProperty 'forge.enabledGameTestNamespaces', mod_id
         }
 
         server {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName "Server"
+            server()
 
             if (forge_mixins.toBoolean()) {
-                arg "-mixin.config=${mod_id}.mixins.json"
+                programArgument "-mixin.config=${mod_id}.mixins.json"
             }
 
-            property "mixin.env.disableRefMap", "true"
-            property "mixin.debug.export", "true"
-            property "mixin.debug.export.decompile", "false"
-            property "mixin.debug.verbose", "true"
-            property "mixin.debug.dumpTargetOnFailure", "true"
-            property "mixin.checks", "true"
-            property "mixin.hotSwap", "true"
-
-            property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', mod_id
-
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
+            systemProperty "mixin.env.disableRefMap", "true"
+            systemProperty "mixin.debug.export", "true"
+            systemProperty "mixin.debug.export.decompile", "false"
+            systemProperty "mixin.debug.verbose", "true"
+            systemProperty "mixin.debug.dumpTargetOnFailure", "true"
+            systemProperty "mixin.checks", "true"
+            systemProperty "mixin.hotSwap", "true"
+            systemProperty 'forge.logging.console.level', 'debug'
+            systemProperty 'forge.enabledGameTestNamespaces', mod_id
         }
 
         gameTestServer {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName "GameTest"
+            type = "gameTestServer"
 
             if (forge_mixins.toBoolean()) {
-                arg "-mixin.config=${mod_id}.mixins.json"
+                programArgument "-mixin.config=${mod_id}.mixins.json"
             }
 
-            property "mixin.env.disableRefMap", "true"
-            property "mixin.debug.export", "true"
-            property "mixin.debug.export.decompile", "false"
-            property "mixin.debug.verbose", "true"
-            property "mixin.debug.dumpTargetOnFailure", "true"
-            property "mixin.checks", "true"
-            property "mixin.hotSwap", "true"
-
-            property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', mod_id
-
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
+            systemProperty "mixin.env.disableRefMap", "true"
+            systemProperty "mixin.debug.export", "true"
+            systemProperty "mixin.debug.export.decompile", "false"
+            systemProperty "mixin.debug.verbose", "true"
+            systemProperty "mixin.debug.dumpTargetOnFailure", "true"
+            systemProperty "mixin.checks", "true"
+            systemProperty "mixin.hotSwap", "true"
+            systemProperty 'forge.logging.console.level', 'debug'
+            systemProperty 'forge.enabledGameTestNamespaces', mod_id
         }
 
         data {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName "Data"
+            data()
 
-            property 'forge.logging.console.level', 'debug'
+            systemProperty 'forge.logging.console.level', 'debug'
+            systemProperty 'forge.enabledGameTestNamespaces', mod_id
 
             if (forge_mixins.toBoolean()) {
-                arg "-mixin.config=${mod_id}.mixins.json"
+                programArgument "-mixin.config=${mod_id}.mixins.json"
             }
 
-            property "mixin.env.disableRefMap", "true"
-            property "mixin.debug.export", "true"
-            property "mixin.debug.export.decompile", "false"
-            property "mixin.debug.verbose", "true"
-            property "mixin.debug.dumpTargetOnFailure", "true"
-            property "mixin.checks", "true"
-            property "mixin.hotSwap", "true"
+            systemProperty "mixin.env.disableRefMap", "true"
+            systemProperty "mixin.debug.export", "true"
+            systemProperty "mixin.debug.export.decompile", "false"
+            systemProperty "mixin.debug.verbose", "true"
+            systemProperty "mixin.debug.dumpTargetOnFailure", "true"
+            systemProperty "mixin.checks", "true"
+            systemProperty "mixin.hotSwap", "true"
 
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+    }
 
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
         }
     }
 }
@@ -149,34 +117,36 @@ sourceSets {
         resources {
             srcDirs 'src/generated/resources'
         }
-        ext.refMap = "${mod_id}.refmap.json"
     }
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     compileOnly project(":common")
 
-    implementation fg.deobf("net.blay09.mods:balm-forge:${balm_version}") {
+    modImplementation "net.blay09.mods:balm-forge:${balm_version}", {
         changing = balm_version.endsWith("SNAPSHOT")
     }
 
     compileOnly "org.jetbrains:annotations:22.0.0"
 
-    compileOnly fg.deobf("mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version")
+    compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
     if (jei_minecraft_version == minecraft_version) {
-        runtimeOnly fg.deobf("mezz.jei:jei-$jei_minecraft_version-forge:$jei_version")
+        runtimeOnly "mezz.jei:jei-$jei_minecraft_version-forge:$jei_version"
     }
 
-    compileOnly fg.deobf("curse.maven:jade-324717:$jade_forge_version")
-    compileOnly fg.deobf("mcp.mobius.waila:wthit-api:forge-$wthit_version")
-    compileOnly fg.deobf("curse.maven:the-one-probe-245211:$theoneprobe_version")
+    compileOnly("me.shedaniel.cloth:cloth-config:$cloth_config_version") {
+        transitive = false
+    }
+
+    compileOnly "curse.maven:jade-324717:$jade_forge_version"
+    compileOnly "mcp.mobius.waila:wthit-api:forge-$wthit_version"
+    compileOnly "curse.maven:the-one-probe-245211:$theoneprobe_version"
 }
 
 apply from: 'dependencies.gradle'
 
-tasks.withType(JavaCompile) {
+tasks.named('compileJava', JavaCompile) {
     source(project(":common").sourceSets.main.allSource)
 }
 
@@ -203,8 +173,6 @@ jar {
         rename { "${it}_${mod_id}" }
     }
 }
-
-jar.finalizedBy('reobfJar')
 
 publishing {
     publications {
@@ -234,7 +202,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 
     apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
 
-    def mainFile = upload(curseforge_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
+    def mainFile = upload(curseforge_project_id, file("${project.buildDir}/libs/${base.archivesName.get()}-${version}.jar"))
     mainFile.changelog = rootProject.file('CHANGELOG.md').text
     mainFile.changelogType = "markdown"
     mainFile.addRequirement("balm")

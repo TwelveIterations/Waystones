@@ -1,12 +1,14 @@
 plugins {
-	id 'fabric-loom' version '1.9-SNAPSHOT'
+	id 'fabric-loom'
 	id 'maven-publish'
 	id 'idea'
-	id 'net.darkhax.curseforgegradle' version '1.3.33'
-	id "com.modrinth.minotaur" version "2.+"
+	id 'net.darkhax.curseforgegradle'
+	id "com.modrinth.minotaur"
 }
 
-archivesBaseName = "${mod_id}-fabric-${minecraft_version}"
+base {
+	archivesName = "${mod_id}-fabric-${minecraft_version}"
+}
 
 dependencies {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
@@ -82,7 +84,7 @@ processResources {
 	}
 }
 
-tasks.withType(JavaCompile) {
+tasks.named('compileJava', JavaCompile) {
 	source(project(":common").sourceSets.main.allSource)
 }
 
@@ -120,7 +122,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 
 	apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
 
-	def mainFile = upload(curseforge_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
+	def mainFile = upload(curseforge_project_id, file("${project.buildDir}/libs/${base.archivesName.get()}-${version}.jar"))
 	mainFile.changelog = rootProject.file('CHANGELOG.md').text
 	mainFile.changelogType = "markdown"
 	mainFile.addRequirement("balm")
