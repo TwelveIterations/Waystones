@@ -1,11 +1,11 @@
 [versions]
 balm = "26.3.0.1-SNAPSHOT"
-minecraft = "26.3-snapshot-1"
-neoForm = "26.3-snapshot-1-1"
+minecraft = "26.3-pre-1"
+neoForm = "26.3-pre-1-1"
 neoForge = "26.2.0.0-beta"
 forge = "63.0.2"
-fabricApi = "0.153.1+26.3"
-fabricLoader = "0.19.3"
+fabricApi = "0.159.1+26.3"
+fabricLoader = "0.19.5"
 journeyMapApi = "26.2-2.0.0"
 unbreakables = "26.1.0.2"
 shogi = "26.3.0.1-SNAPSHOT"
@@ -37,7 +37,7 @@ mixin = { module = "org.spongepowered:mixin", version = "0.8.7" }
 
 [plugins]
 fabricLoom = { id = "net.fabricmc.fabric-loom", version = "1.14-SNAPSHOT" }
-modDevGradle = { id = "net.neoforged.moddev", version = "2.0.141" }
+modDevGradle = { id = "net.neoforged.moddev", version = "2.0.146" }
 forgeGradle = { id = "net.minecraftforge.gradle", version = "[6.0.25,6.2)" }
 mixin = { id = "org.spongepowered.mixin", version = "0.7-SNAPSHOT" }
 curseForgeGradle = { id = "net.darkhax.curseforgegradle", version = "1.1.26" }
