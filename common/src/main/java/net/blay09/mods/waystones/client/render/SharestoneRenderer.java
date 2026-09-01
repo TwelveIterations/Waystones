@@ -85,8 +85,8 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
         }
 
         itemModelResolver.updateForTopItem(renderState.item, warpStoneItem, ItemDisplayContext.FIXED, level, null, (int) renderState.blockPos.asLong());
-        renderState.itemYaw = gameTime / 2f % 360;
-        renderState.itemOffsetY = (float) Math.sin(gameTime / 8f) * 0.025f;
+        renderState.itemYaw = ((gameTime % 720L) + delta) / 2f;
+        renderState.itemOffsetY = (float) Math.sin((gameTime + (double) delta) / 8.0) * 0.025f;
     }
 
     @Override
