@@ -4,6 +4,7 @@
   "package": "net.blay09.mods.waystones.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ChunkMapAccessor",
     "JigsawPlacementPlacerMixin",
     "SinglePoolElementMixin",
     "StructureTemplatePoolAccessor"

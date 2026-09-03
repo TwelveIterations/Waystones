@@ -363,6 +363,13 @@ public class PlayerWaystoneManager {
         List<Entity> teleportedEntities = teleportEntityAndAttached(context.getEntity(), context);
         context.getAdditionalEntities().forEach(additionalEntity -> teleportedEntities.addAll(teleportEntityAndAttached(additionalEntity, context)));
 
+        // Passengers travel along with their vehicle without being teleported themselves, so they have to be
+        // included here or they'd keep their stale tracker.
+        teleportedEntities.stream()
+                .flatMap(Entity::getSelfAndPassengers)
+                .distinct()
+                .forEach(EntityTrackingRefresher::refresh);
+
         ServerLevel sourceWorld = (ServerLevel) context.getEntity().level();
         BlockPos sourcePos = context.getEntity().blockPosition();
 
@@ -450,23 +457,22 @@ public class PlayerWaystoneManager {
 
             entity.setYHeadRot(yaw);
         } else {
+            // This is what the /tp command uses. Its dimensional branch is identical to doing it by hand, but
+            // unlike a plain moveTo it also drags the entity's passengers along instead of leaving them behind
+            // at the source position until their vehicle happens to tick again.
             float pitch = Mth.clamp(entity.getXRot(), -90.0F, 90.0F);
-            if (targetWorld == entity.level()) {
-                entity.moveTo(x, y, z, yaw, pitch);
-                entity.setYHeadRot(yaw);
-            } else {
-                entity.unRide();
-                Entity oldEntity = entity;
-                entity = entity.getType().create(targetWorld);
-                if (entity == null) {
-                    return oldEntity;
+            if (!entity.teleportTo(targetWorld, x, y, z, Collections.emptySet(), yaw, pitch)) {
+                return entity;
+            }
+
+            if (entity.isRemoved()) {
+                // A dimensional teleport replaces the entity with a copy of it in the target level.
+                final var recreatedEntity = targetWorld.getEntity(entity.getUUID());
+                if (recreatedEntity == null) {
+                    return entity;
                 }
 
-                entity.restoreFrom(oldEntity);
-                entity.moveTo(x, y, z, yaw, pitch);
-                entity.setYHeadRot(yaw);
-                oldEntity.setRemoved(Entity.RemovalReason.CHANGED_DIMENSION);
-                targetWorld.addDuringTeleport(entity);
+                entity = recreatedEntity;
             }
         }
 
