@@ -363,7 +363,12 @@ public class PlayerWaystoneManager {
         List<Entity> teleportedEntities = teleportEntityAndAttached(context.getEntity(), context);
         context.getAdditionalEntities().forEach(additionalEntity -> teleportedEntities.addAll(teleportEntityAndAttached(additionalEntity, context)));
 
-        teleportedEntities.forEach(PlayerWaystoneManager::forceEntityTrackingRefresh);
+        // Passengers travel along with their vehicle without being teleported themselves, so they have to be
+        // included here or they'd keep their stale tracker.
+        teleportedEntities.stream()
+                .flatMap(Entity::getSelfAndPassengers)
+                .distinct()
+                .forEach(PlayerWaystoneManager::forceEntityTrackingRefresh);
 
         ServerLevel sourceWorld = (ServerLevel) context.getEntity().level();
         BlockPos sourcePos = context.getEntity().blockPosition();
@@ -451,12 +456,14 @@ public class PlayerWaystoneManager {
         // isn't ticking yet has already been untracked, and would end up with a second tracker that throws as
         // soon as the destination chunk starts ticking.
         final var isTracked = level.isPositionEntityTicking(entity.blockPosition());
-        logger.info("Waystones teleport: refreshing tracking for {} at {} in {} (tracked: {}, passengers: {})",
+        final var vehicle = entity.getVehicle();
+        logger.info("Waystones teleport: refreshing tracking for {} at {} in {} (tracked: {}, passengers: {}, vehicle: {})",
                 entity.getType().toShortString(),
                 entity.blockPosition(),
                 level.dimension().location(),
                 isTracked,
-                entity.getPassengers().size());
+                entity.getPassengers().size(),
+                vehicle != null ? vehicle.getType().toShortString() : "none");
         if (isTracked) {
             final var chunkSource = level.getChunkSource();
             chunkSource.removeEntity(entity);
@@ -485,23 +492,22 @@ public class PlayerWaystoneManager {
 
             entity.setYHeadRot(yaw);
         } else {
+            // This is what the /tp command uses. Its dimensional branch is identical to doing it by hand, but
+            // unlike a plain moveTo it also drags the entity's passengers along instead of leaving them behind
+            // at the source position until their vehicle happens to tick again.
             float pitch = Mth.clamp(entity.getXRot(), -90.0F, 90.0F);
-            if (targetWorld == entity.level()) {
-                entity.moveTo(x, y, z, yaw, pitch);
-                entity.setYHeadRot(yaw);
-            } else {
-                entity.unRide();
-                Entity oldEntity = entity;
-                entity = entity.getType().create(targetWorld);
-                if (entity == null) {
-                    return oldEntity;
+            if (!entity.teleportTo(targetWorld, x, y, z, Collections.emptySet(), yaw, pitch)) {
+                return entity;
+            }
+
+            if (entity.isRemoved()) {
+                // A dimensional teleport replaces the entity with a copy of it in the target level.
+                final var recreatedEntity = targetWorld.getEntity(entity.getUUID());
+                if (recreatedEntity == null) {
+                    return entity;
                 }
 
-                entity.restoreFrom(oldEntity);
-                entity.moveTo(x, y, z, yaw, pitch);
-                entity.setYHeadRot(yaw);
-                oldEntity.setRemoved(Entity.RemovalReason.CHANGED_DIMENSION);
-                targetWorld.addDuringTeleport(entity);
+                entity = recreatedEntity;
             }
         }
 
