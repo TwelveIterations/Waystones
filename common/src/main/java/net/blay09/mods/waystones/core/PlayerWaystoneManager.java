@@ -363,6 +363,8 @@ public class PlayerWaystoneManager {
         List<Entity> teleportedEntities = teleportEntityAndAttached(context.getEntity(), context);
         context.getAdditionalEntities().forEach(additionalEntity -> teleportedEntities.addAll(teleportEntityAndAttached(additionalEntity, context)));
 
+        teleportedEntities.forEach(PlayerWaystoneManager::forceEntityTrackingRefresh);
+
         ServerLevel sourceWorld = (ServerLevel) context.getEntity().level();
         BlockPos sourcePos = context.getEntity().blockPosition();
 
@@ -427,6 +429,39 @@ public class PlayerWaystoneManager {
         }
 
         return teleportedEntities;
+    }
+
+    /**
+     * Vanilla only re-evaluates which players are able to see an entity when that entity's own chunk section
+     * changes. A teleport can therefore drop the entity from a client that stayed within tracking range without
+     * ever sending it again, leaving the entity alive on the server but missing on the client. Recreating the
+     * tracker forces the destination area to be resynced.
+     * <p>
+     * This is not specific to this mod. It can be reproduced in Vanilla by having two players far away from each
+     * other, spawning some donkeys, and running {@code /tp @e[type=donkey] @s} on the other one.
+     */
+    private static void forceEntityTrackingRefresh(Entity entity) {
+        // Players stay in sync through their own connection. Removing them from the chunk map would also drop the
+        // chunk tickets and player map entries their connection depends on.
+        if (entity instanceof ServerPlayer || entity.isRemoved() || !(entity.level() instanceof ServerLevel level)) {
+            return;
+        }
+
+        // Only re-register entities that Vanilla is currently tracking. An entity that arrived in a chunk which
+        // isn't ticking yet has already been untracked, and would end up with a second tracker that throws as
+        // soon as the destination chunk starts ticking.
+        final var isTracked = level.isPositionEntityTicking(entity.blockPosition());
+        logger.info("Waystones teleport: refreshing tracking for {} at {} in {} (tracked: {}, passengers: {})",
+                entity.getType().toShortString(),
+                entity.blockPosition(),
+                level.dimension().location(),
+                isTracked,
+                entity.getPassengers().size());
+        if (isTracked) {
+            final var chunkSource = level.getChunkSource();
+            chunkSource.removeEntity(entity);
+            chunkSource.addEntity(entity);
+        }
     }
 
     private static Entity teleportEntity(Entity entity, ServerLevel targetWorld, Vec3 targetPos3d, Direction direction) {
