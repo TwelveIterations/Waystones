@@ -63,7 +63,7 @@ public class ModWorldGen {
     }
 
     public static void initializePlacementModifierTypes(BalmRegistrar.Scoped<MapCodec<? extends PlacementModifier>> registrar) {
-        waystonePlacement = registrar.register("waystone", (id) -> WaystonePlacement.CODEC);
+        waystonePlacement = registrar.register("waystone", (id) -> WaystonePlacement.CODEC).asHolder();
     }
 
     public static void initializePoiTypes(BalmPoiTypeRegistrar registrar) {
