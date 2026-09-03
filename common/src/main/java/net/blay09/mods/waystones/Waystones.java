@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.command.ModCommands;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.core.EntityTrackingRefresher;
 import net.blay09.mods.waystones.handler.ModEventHandlers;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.ModMenus;
@@ -24,6 +25,7 @@ public class Waystones {
         WaystonesConfig.initialize();
         ModStats.initialize();
         ModEventHandlers.initialize();
+        EntityTrackingRefresher.initialize();
         ModNetworking.initialize(Balm.getNetworking());
         ModBlocks.initialize(Balm.getBlocks());
         ModBlockEntities.initialize(Balm.getBlockEntities());
