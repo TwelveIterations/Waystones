@@ -23,6 +23,11 @@
           "name": "waystones:mud_bricks_waystone"
         }
       ],
+      "modifier": {
+        "type": "minecraft:copy_components",
+        "condition": "minecraft:tool/can_silk_touch",
+        "source": "block_entity"
+      },
       "rolls": 1
     }
   ]

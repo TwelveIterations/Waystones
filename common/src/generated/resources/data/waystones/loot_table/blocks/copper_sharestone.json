@@ -23,6 +23,11 @@
           "name": "waystones:copper_sharestone"
         }
       ],
+      "modifier": {
+        "type": "minecraft:copy_components",
+        "condition": "minecraft:tool/can_silk_touch",
+        "source": "block_entity"
+      },
       "rolls": 1
     }
   ]

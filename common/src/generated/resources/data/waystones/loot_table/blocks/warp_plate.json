@@ -3,7 +3,13 @@
   "pools": [
     {
       "condition": {
-        "type": "minecraft:survives_explosion"
+        "type": "minecraft:all_of",
+        "terms": [
+          "minecraft:tool/can_silk_touch",
+          {
+            "type": "minecraft:survives_explosion"
+          }
+        ]
       },
       "entries": [
         {
@@ -11,6 +17,10 @@
           "name": "waystones:warp_plate"
         }
       ],
+      "modifier": {
+        "type": "minecraft:copy_components",
+        "source": "block_entity"
+      },
       "rolls": 1
     }
   ]
