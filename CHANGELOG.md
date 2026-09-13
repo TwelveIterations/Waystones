@@ -1,5 +1,1 @@
-- Fixed setting waystones to activation visibility no longer working when default visibility is set to global
-- Fixed silk-touched waystones still showing up in global/team index
-- Fixed unseen, unnamed waystones showing up when default visibility is global
-- Fixed world gen features being registered multiple times in some cases, resulting in feature cycle order crashes
-- Fixed animations becoming choppy as time passes
+- Fixed crash when activating waystone in multiplayer
