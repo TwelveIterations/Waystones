@@ -46,8 +46,9 @@ public class PlayerWaystoneManager {
                 mutableWaystone.setOwnerUid(player.getUUID());
                 mutableWaystone.setOwnerUsername(player.getGameProfile().getName());
                 mutableWaystone.setVisibility(WaystoneVisibility.fromWaystoneType(waystone.getWaystoneType()));
-                if (waystone.getVisibility() == WaystoneVisibility.GLOBAL || waystone.getVisibility() == WaystoneVisibility.TEAM) {
-                    WaystoneIndexManager.visibilityChanged(player.getServer(), waystone, previousVisibility);
+                final var server = player.getServer();
+                if (server != null && (waystone.getVisibility() == WaystoneVisibility.GLOBAL || waystone.getVisibility() == WaystoneVisibility.TEAM)) {
+                    WaystoneIndexManager.visibilityChanged(server, waystone, previousVisibility);
                 }
             }
         }
