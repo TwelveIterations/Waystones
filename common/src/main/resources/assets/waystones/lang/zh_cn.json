@@ -255,7 +255,6 @@
   "commands.waystones.forget.all.success.multiple": "已为%d名玩家取消激活了所有传送石碑",
   "commands.waystones.cooldown.reset.all.success.single": "已清空%s所有传送冷却",
   "commands.waystones.cooldown.reset.all.success.multiple": "已清空%d名玩家所有传送冷却",
-  "commands.waystones.cooldown.reset.invalid_identifier": "无效标识符：%s",
   "commands.waystones.cooldown.reset.success.single": "已重置%2$s对%1$s的冷却时间",
   "commands.waystones.cooldown.reset.success.multiple": "已重置%2$d名玩家的%s冷却时间",
   "commands.waystones.twinbound.success": "已为 %s 和 %s 绑定双生羽毛",

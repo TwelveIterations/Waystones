@@ -177,7 +177,6 @@
   "commands.waystones.forget.all.success.multiple": "Desativados todos os obeliscos para %d jogadores",
   "commands.waystones.cooldown.reset.all.success.single": "Resetadas todas as recargas para %s",
   "commands.waystones.cooldown.reset.all.success.multiple": "Resetadas todas as recargas para %d jogadores",
-  "commands.waystones.cooldown.reset.invalid_identifier": "Identificador inválido: %s",
   "commands.waystones.cooldown.reset.success.single": "Resetada recarga %s para %s",
   "commands.waystones.cooldown.reset.success.multiple": "Resetada recarga %s para %d jogadores",
   "commands.waystones.waystone_not_found": "Obelisco não encontrado nesta posição",

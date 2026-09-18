@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.command;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.blay09.mods.balm.api.command.BalmCommands;
 import net.blay09.mods.waystones.Waystones;
@@ -17,6 +18,7 @@ import net.blay09.mods.waystones.item.TwinboundFeatherItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.network.chat.ClickEvent;
@@ -265,7 +267,7 @@ public class ModCommands {
                                             }
                                             return targets.size();
                                         }))
-                                        .then(argument("identifier", StringArgumentType.word())
+                                        .then(argument("identifier", ResourceLocationArgument.id())
                                                 .suggests((context, builder) -> {
                                                     try {
                                                         final var targets = EntityArgument.getPlayers(context, "targets");
@@ -282,12 +284,7 @@ public class ModCommands {
                                                 })
                                                 .executes(context -> {
                                                     final var targets = EntityArgument.getPlayers(context, "targets");
-                                                    final var identifierStr = StringArgumentType.getString(context, "identifier");
-                                                    final var cooldownKey = ResourceLocation.tryParse(identifierStr);
-                                                    if (cooldownKey == null) {
-                                                        context.getSource().sendFailure(Component.translatable("commands.waystones.cooldown.reset.invalid_identifier", identifierStr));
-                                                        return 0;
-                                                    }
+                                                    final var cooldownKey = ResourceLocationArgument.getId(context, "identifier");
 
                                                     for (final var player : targets) {
                                                         PlayerWaystoneManager.setCooldownUntil(player, cooldownKey, 0);
@@ -302,7 +299,54 @@ public class ModCommands {
                                                                 cooldownKey.toString(), targets.size()), true);
                                                     }
                                                     return targets.size();
-                                                })))))
+                                                })))
+                                .then(Commands.literal("add")
+                                        .then(argument("identifier", ResourceLocationArgument.id())
+                                                .then(argument("seconds", IntegerArgumentType.integer())
+                                                        .executes(context -> {
+                                                            final var targets = EntityArgument.getPlayers(context, "targets");
+                                                            final var cooldownKey = ResourceLocationArgument.getId(context, "identifier");
+
+                                                            final var seconds = IntegerArgumentType.getInteger(context, "seconds");
+                                                            final var now = System.currentTimeMillis();
+                                                            for (final var player : targets) {
+                                                                final var cooldownUntil = Math.max(now, PlayerWaystoneManager.getCooldownUntil(player, cooldownKey));
+                                                                PlayerWaystoneManager.setCooldownUntil(player, cooldownKey, cooldownUntil + seconds * 1000L);
+                                                                WaystoneSyncManager.sendWaystoneCooldowns(player);
+                                                            }
+
+                                                            if (targets.size() == 1) {
+                                                                context.getSource().sendSuccess(() -> Component.translatable("commands.waystones.cooldown.add.success.single",
+                                                                        seconds, cooldownKey.toString(), targets.iterator().next().getDisplayName()), true);
+                                                            } else {
+                                                                context.getSource().sendSuccess(() -> Component.translatable("commands.waystones.cooldown.add.success.multiple",
+                                                                        seconds, cooldownKey.toString(), targets.size()), true);
+                                                            }
+                                                            return targets.size();
+                                                        }))))
+                                .then(Commands.literal("set")
+                                        .then(argument("identifier", ResourceLocationArgument.id())
+                                                .then(argument("seconds", IntegerArgumentType.integer(0))
+                                                        .executes(context -> {
+                                                            final var targets = EntityArgument.getPlayers(context, "targets");
+                                                            final var cooldownKey = ResourceLocationArgument.getId(context, "identifier");
+
+                                                            final var seconds = IntegerArgumentType.getInteger(context, "seconds");
+                                                            final var cooldownUntil = System.currentTimeMillis() + seconds * 1000L;
+                                                            for (final var player : targets) {
+                                                                PlayerWaystoneManager.setCooldownUntil(player, cooldownKey, cooldownUntil);
+                                                                WaystoneSyncManager.sendWaystoneCooldowns(player);
+                                                            }
+
+                                                            if (targets.size() == 1) {
+                                                                context.getSource().sendSuccess(() -> Component.translatable("commands.waystones.cooldown.set.success.single",
+                                                                        cooldownKey.toString(), seconds, targets.iterator().next().getDisplayName()), true);
+                                                            } else {
+                                                                context.getSource().sendSuccess(() -> Component.translatable("commands.waystones.cooldown.set.success.multiple",
+                                                                        cooldownKey.toString(), seconds, targets.size()), true);
+                                                            }
+                                                            return targets.size();
+                                                        }))))))
         ));
     }
 
