@@ -43,7 +43,10 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
                         it.setWarpHand(hand);
                     })
                     .ifLeft(context -> WaystonesAPI.tryTeleportAsync(context)
-                            .thenAccept(result -> result.ifLeft(ignored -> stack.consume(1, player))))
+                            .thenAccept(result -> result
+                                    .ifLeft(ignored -> stack.consume(1, player))
+                                    .ifRight(error -> player.displayClientMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED), true))))
+                    .ifRight(error -> player.displayClientMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED), true))
             );
         }
 
