@@ -121,6 +121,7 @@ public class WaystoneTeleportManager {
         final var targetWaystone = context.getTargetWaystone();
         final var targetLevel = server.getLevel(targetWaystone.getDimension());
         if (targetLevel == null) {
+            Waystones.logger.debug("Discarding pending waystone teleport because the target dimension is not available.");
             return Either.right(new WaystoneTeleportError.InvalidDimension(targetWaystone.getDimension()));
         }
 
@@ -435,34 +436,41 @@ public class WaystoneTeleportManager {
         WaystoneTeleportEvent.Pre event = new WaystoneTeleportEvent.Pre(context);
         Balm.getEvents().fireEvent(event);
         if (event.isCanceled()) {
+            Waystones.logger.debug("Failed to teleport because it was canceled by an event.");
             return Either.right(new WaystoneTeleportError.CancelledByEvent());
         }
 
         final var entity = context.getEntity();
         if (!isPendingEntityStillValid(entity, entity.level())) {
+            Waystones.logger.debug("Failed to teleport because the source entity is no longer valid.");
             return Either.right(new WaystoneTeleportError.TeleportNoLongerValid());
         }
 
         if (!isSourceWaystoneInRange(context)) {
+            Waystones.logger.debug("Failed to teleport because the source waystone is out of range.");
             return Either.right(new WaystoneTeleportError.SourceWaystoneOutOfRange());
         }
 
         if (!isWarpItemStillPresent(context)) {
+            Waystones.logger.debug("Failed to teleport because the source item is missing.");
             return Either.right(new WaystoneTeleportError.SourceItemMissing());
         }
 
         if (!context.getLeashedEntities().isEmpty()) {
             if (WaystonesConfig.getActive().teleports.transportLeashed == WaystonesConfigData.TransportMobs.DISABLED) {
+                Waystones.logger.debug("Failed to teleport because leashed entities are not allowed.");
                 return Either.right(new WaystoneTeleportError.LeashedWarpDenied());
             }
 
             for (final var leashedEntity : context.getLeashedEntities()) {
                 if (WaystonePermissionManager.isEntityDeniedTeleports(leashedEntity)) {
+                    Waystones.logger.debug("Failed to teleport because leashed entity is not allowed: {}", leashedEntity);
                     return Either.right(new WaystoneTeleportError.SpecificLeashedWarpDenied(leashedEntity));
                 }
             }
 
             if (context.isDimensionalTeleport() && WaystonesConfig.getActive().teleports.transportLeashed == WaystonesConfigData.TransportMobs.SAME_DIMENSION) {
+                Waystones.logger.debug("Failed to teleport because leashed entities are not allowed inter-dimensionally.");
                 return Either.right(new WaystoneTeleportError.LeashedDimensionalWarpDenied());
             }
         }
@@ -472,6 +480,7 @@ public class WaystoneTeleportManager {
 
     private static Either<Void, WaystoneTeleportError> validateRequirements(WaystoneTeleportContext context) {
         if (context.getEntity() instanceof Player player && !context.getRequirements().canAfford(player) && !player.getAbilities().instabuild) {
+            Waystones.logger.info("Failed to teleport due to missing requirements: {}", context.getRequirements());
             return Either.right(new WaystoneTeleportError.NotEnoughXp());
         }
 
