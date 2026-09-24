@@ -18,6 +18,7 @@ public class WaystonesConfigData implements BalmConfigData {
             "[is_not_interdimensional] scaled_add_xp_cost(distance, 0.01)",
             "[is_interdimensional] add_xp_cost(27)",
             "[source_is_warp_plate] multiply_xp_cost(0)",
+            "[source_is_scroll] multiply_xp_cost(0)",
             "[target_is_global] multiply_xp_cost(0)",
             "[target_is_fleeting_memorial] multiply_xp_cost(0)",
             "min_xp_cost(0)",
