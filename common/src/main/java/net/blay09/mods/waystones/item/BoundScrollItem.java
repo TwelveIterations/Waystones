@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.api.trait.IFOVOnUse;
 import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
+import net.blay09.mods.waystones.component.BoundScrollComponent;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.WaystoneProxy;
@@ -55,30 +56,43 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
 
     @Override
     public Optional<Waystone> getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
+        final var boundScroll = itemStack.get(ModComponents.boundScroll.get());
+        if (boundScroll != null) {
+            return Optional.of(new WaystoneProxy(server, boundScroll.waystoneId()));
+        }
+
         return Optional.ofNullable(itemStack.get(ModComponents.attunement.get())).map(attunement -> new WaystoneProxy(server, attunement));
     }
 
     @Override
     public void setWaystoneAttunedTo(ItemStack itemStack, @Nullable Waystone waystone) {
         if (waystone != null) {
-            itemStack.set(ModComponents.attunement.get(), waystone.getWaystoneUid());
+            itemStack.set(ModComponents.boundScroll.get(), new BoundScrollComponent(waystone.getWaystoneUid(), waystone.getName()));
+            itemStack.remove(ModComponents.attunement.get());
         } else {
+            itemStack.remove(ModComponents.boundScroll.get());
             itemStack.remove(ModComponents.attunement.get());
         }
     }
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, List<Component> list, TooltipFlag flag) {
-        final var player = Balm.getProxy().getClientPlayer();
-        if (player == null) {
-            return;
-        }
-
-        final var boundTo = getWaystoneAttunedTo(player.getServer(), player, itemStack);
-        boundTo.ifPresent(it -> {
-            final var boundToValueComponent = it.getName().copy().withStyle(ChatFormatting.AQUA);
+        final var boundScroll = itemStack.get(ModComponents.boundScroll.get());
+        if (boundScroll != null) {
+            final var boundToValueComponent = boundScroll.waystoneName().copy().withStyle(ChatFormatting.AQUA);
             list.add(Component.translatable("tooltip.waystones.bound_to", boundToValueComponent).withStyle(ChatFormatting.GRAY));
-        });
+        } else {
+            final var player = Balm.getProxy().getClientPlayer();
+            if (player == null) {
+                return;
+            }
+
+            final var boundTo = getWaystoneAttunedTo(player.getServer(), player, itemStack);
+            boundTo.ifPresent(it -> {
+                final var boundToValueComponent = it.getName().copy().withStyle(ChatFormatting.AQUA);
+                list.add(Component.translatable("tooltip.waystones.bound_to", boundToValueComponent).withStyle(ChatFormatting.GRAY));
+            });
+        }
     }
 
     @Override
