@@ -1,1 +1,4 @@
-- Fixed crash when activating waystone in multiplayer
+- Added `/waystones cooldown <targets> add <identifier> <seconds>` and `/waystones cooldown <targets> set <identifier> <seconds>` commands
+- Fixed bound scrolls showing "invalid" for players who have not activated the target
+- Fixed lack of error message when warp requirement block scrolls from teleporting
+- Fixed scrolls costing XP when they shouldn't
