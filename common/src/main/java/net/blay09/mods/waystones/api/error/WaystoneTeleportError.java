@@ -107,9 +107,70 @@ public class WaystoneTeleportError {
         }
     }
 
+    /**
+     * @deprecated Use one of the specific {@link InvalidEntity} errors instead.
+     */
+    @Deprecated
     public static class TeleportNoLongerValid extends WaystoneTeleportError {
         public TeleportNoLongerValid() {
             super(Component.translatable("chat.waystones.teleport_no_longer_valid"));
+        }
+    }
+
+    public abstract static class InvalidEntity extends WaystoneTeleportError {
+        private final Entity entity;
+
+        protected InvalidEntity(Entity entity) {
+            super(Component.translatable("chat.waystones.teleport_no_longer_valid"));
+            this.entity = entity;
+        }
+
+        public Entity getEntity() {
+            return entity;
+        }
+    }
+
+    public static class EntityNotAlive extends InvalidEntity {
+        public EntityNotAlive(Entity entity) {
+            super(entity);
+        }
+    }
+
+    public static class EntityRemoved extends InvalidEntity {
+        private final Entity.RemovalReason reason;
+
+        public EntityRemoved(Entity entity, Entity.RemovalReason reason) {
+            super(entity);
+            this.reason = reason;
+        }
+
+        public Entity.RemovalReason getReason() {
+            return reason;
+        }
+    }
+
+    public static class EntityChangedLevel extends InvalidEntity {
+        private final ResourceKey<Level> expectedLevel;
+        private final ResourceKey<Level> actualLevel;
+
+        public EntityChangedLevel(Entity entity, ResourceKey<Level> expectedLevel, ResourceKey<Level> actualLevel) {
+            super(entity);
+            this.expectedLevel = expectedLevel;
+            this.actualLevel = actualLevel;
+        }
+
+        public ResourceKey<Level> getExpectedLevel() {
+            return expectedLevel;
+        }
+
+        public ResourceKey<Level> getActualLevel() {
+            return actualLevel;
+        }
+    }
+
+    public static class PlayerDisconnected extends InvalidEntity {
+        public PlayerDisconnected(Entity entity) {
+            super(entity);
         }
     }
 
