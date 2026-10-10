@@ -32,7 +32,7 @@ public class ModBlocks {
         blocks.enableBlockDescriptionPrefixForItems();
 
         final var waystoneTypes = WaystoneTypes.builtinValues().collect(Collectors.toSet());
-        waystones = blocks.registerDiscriminated(waystoneTypes, type -> DiscriminatedBlocks.prefix(type, "waystone"), WaystoneBlock::new, (type, properties) -> properties.sound(type.soundType()).strength(5f, 2000f))
+        waystones = blocks.registerDiscriminated(waystoneTypes, type -> DiscriminatedBlocks.prefix(type, "waystone"), WaystoneBlock::new, (type, properties) -> properties.sound(type.soundType()).strength(5f, 2000f).lightLevel(state -> state.getValue(WaystoneBlock.SEEN) ? 10 : 0))
                 .withItems(WaystoneBlockItem::new)
                 .asDiscriminatedBlocks();
         warpPlate = blocks.register("warp_plate", WarpPlateBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withDefaultItem().asDeferredBlock();
