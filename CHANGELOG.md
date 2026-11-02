@@ -1,1 +1,2 @@
-- Updated to Minecraft 26.3
+- Changed waystones to emit light once activated
+- Fixed player profiles being fetched on main thread causing lags and timeouts
