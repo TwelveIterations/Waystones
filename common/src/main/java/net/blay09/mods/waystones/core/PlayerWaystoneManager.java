@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.core;
 
-import com.mojang.authlib.GameProfile;
 import net.blay09.mods.balm.platform.BalmEnvironment;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.MutableWaystone;
@@ -25,6 +24,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -133,8 +133,8 @@ public class PlayerWaystoneManager {
 
         // Legacy worlds did not store owner usernames, so we try to look it up from the server's cache as a fallback
         return waystone.getOwnerUid()
-                .flatMap(ownerUid -> server.services().profileResolver().fetchById(ownerUid))
-                .map(GameProfile::name);
+                .flatMap(ownerUid -> server.services().nameToIdCache().get(ownerUid))
+                .map(NameAndId::name);
     }
 
     public static Optional<Component> getWaystoneAlias(Player player, UUID waystoneUid) {
