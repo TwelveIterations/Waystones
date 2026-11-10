@@ -1,5 +1,7 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
+import net.blay09.mods.waystones.core.GroupValidation;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -18,7 +20,10 @@ public class CreateWaystoneGroupButton extends Button.Plain {
     public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         super.extractContents(graphics, mouseX, mouseY, partialTick);
         if (isHovered) {
-            graphics.setTooltipForNextFrame(Minecraft.getInstance().font, LABEL, mouseX, mouseY, null);
+            final var tooltip = active
+                    ? LABEL
+                    : Component.translatable("gui.waystones.manage_groups.limit_reached", GroupValidation.MAX_CUSTOM_GROUPS).withStyle(ChatFormatting.RED);
+            graphics.setTooltipForNextFrame(Minecraft.getInstance().font, tooltip, mouseX, mouseY, null);
         }
     }
 }
