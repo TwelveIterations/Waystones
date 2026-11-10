@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.api.WaystoneGroup;
+import net.blay09.mods.waystones.core.GroupValidation;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneGroupImpl;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
@@ -19,21 +20,22 @@ public record ServerboundEditWaystoneGroupPacket(ResourceLocation groupId, Strin
     public static final CustomPacketPayload.Type<ServerboundEditWaystoneGroupPacket> TYPE = new CustomPacketPayload.Type<>(id("edit_waystone_group"));
 
     public static void encode(FriendlyByteBuf buf, ServerboundEditWaystoneGroupPacket message) {
-        buf.writeResourceLocation(message.groupId);
-        buf.writeUtf(message.name);
-        buf.writeResourceLocation(message.icon);
+        buf.writeUtf(message.groupId.toString(), GroupValidation.MAX_IDENTIFIER_LENGTH);
+        buf.writeUtf(message.name, GroupValidation.MAX_NAME_LENGTH);
+        buf.writeUtf(message.icon.toString(), GroupValidation.MAX_IDENTIFIER_LENGTH);
         buf.writeInt(message.color);
         buf.writeBoolean(message.hidden);
     }
 
     public static ServerboundEditWaystoneGroupPacket decode(FriendlyByteBuf buf) {
-        final var groupId = buf.readResourceLocation();
-        final var name = buf.readUtf(128);
-        final var icon = buf.readResourceLocation();
+        final var groupId = ResourceLocation.parse(buf.readUtf(GroupValidation.MAX_IDENTIFIER_LENGTH));
+        final var name = buf.readUtf(GroupValidation.MAX_NAME_LENGTH);
+        final var icon = ResourceLocation.parse(buf.readUtf(GroupValidation.MAX_IDENTIFIER_LENGTH));
         final var color = buf.readInt();
         final var hidden = buf.readBoolean();
         return new ServerboundEditWaystoneGroupPacket(groupId, name, icon, color, hidden);
     }
+
 
     public static void handle(ServerPlayer player, ServerboundEditWaystoneGroupPacket message) {
         final var store = PlayerWaystoneManager.getPlayerWaystoneData(player.level());
@@ -47,6 +49,10 @@ public record ServerboundEditWaystoneGroupPacket(ResourceLocation groupId, Strin
                 existingGroupIndex = i;
                 break;
             }
+        }
+
+        if (existingGroup == null && GroupValidation.getCustomGroupCount(groups) >= GroupValidation.MAX_CUSTOM_GROUPS) {
+            return;
         }
 
         final var name = message.name.trim().isEmpty()

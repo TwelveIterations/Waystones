@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.api.WaystoneGroups;
 import net.blay09.mods.waystones.client.gui.widget.ColorButton;
 import net.blay09.mods.waystones.client.gui.widget.GroupColor;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneGroupIconButton;
+import net.blay09.mods.waystones.core.GroupValidation;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneGroupImpl;
 import net.blay09.mods.waystones.network.message.ServerboundEditWaystoneGroupPacket;
@@ -54,7 +55,7 @@ public class WaystoneGroupEditScreen extends WaystoneContainerScreen<AbstractCon
         var y = topPos + titleLabelY + 16;
 
         nameField = new EditBox(Minecraft.getInstance().font, leftPos, y + 1, 176, 19, nameField, Component.empty());
-        nameField.setMaxLength(128);
+        nameField.setMaxLength(GroupValidation.MAX_NAME_LENGTH);
         nameField.setValue(oldNameText);
         updateNameFieldColor();
         addRenderableWidget(nameField);
@@ -142,6 +143,9 @@ public class WaystoneGroupEditScreen extends WaystoneContainerScreen<AbstractCon
         final var groups = new ArrayList<>(PlayerWaystoneManager.getWaystoneGroupRegistry(playerInventory.player));
         final int existingGroupIndex = WaystoneGroups.indexOfGroup(groups, groupId);
         final var existingGroup = existingGroupIndex != -1 ? groups.get(existingGroupIndex) : null;
+        if (existingGroup == null && GroupValidation.getCustomGroupCount(groups) >= GroupValidation.MAX_CUSTOM_GROUPS) {
+            return;
+        }
         final var color = colorButton != null ? colorButton.getColor() : getInitialColor();
         final var icon = iconButton != null ? iconButton.getIcon() : getInitialIcon();
         final var group = existingGroup != null

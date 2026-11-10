@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.client.gui.widget.AbstractWaystoneList;
 import net.blay09.mods.waystones.client.gui.widget.BackToWaystoneSelectionButton;
 import net.blay09.mods.waystones.client.gui.widget.CreateWaystoneGroupButton;
 import net.blay09.mods.waystones.client.gui.widget.ManageWaystoneGroupsList;
+import net.blay09.mods.waystones.core.GroupValidation;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneGroupImpl;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
@@ -51,6 +52,7 @@ public class ManageWaystoneGroupsScreen extends WaystoneContainerScreen<Abstract
 
     private @Nullable ManageWaystoneGroupsList groupList;
     private @Nullable EditBox searchBox;
+    private @Nullable CreateWaystoneGroupButton createButton;
     private boolean isLocationHeaderHovered;
 
     public ManageWaystoneGroupsScreen(AbstractContainerMenu menu, Inventory playerInventory, Screen parent) {
@@ -90,7 +92,7 @@ public class ManageWaystoneGroupsScreen extends WaystoneContainerScreen<Abstract
         });
         addRenderableWidget(searchBox);
 
-        final var createButton = new CreateWaystoneGroupButton(
+        createButton = new CreateWaystoneGroupButton(
                 searchBox.getX() + searchBox.getWidth() + MARGIN,
                 searchBox.getY(),
                 button -> createGroup());
@@ -113,6 +115,10 @@ public class ManageWaystoneGroupsScreen extends WaystoneContainerScreen<Abstract
     }
 
     private void updateList() {
+        if (createButton != null) {
+            createButton.active = GroupValidation.getCustomGroupCount(groups) < GroupValidation.MAX_CUSTOM_GROUPS;
+        }
+
         final var normalizedSearchText = searchText.toLowerCase(Locale.ROOT);
         filteredGroups = groups.stream()
                 .filter(group -> group.name().getString().toLowerCase(Locale.ROOT).contains(normalizedSearchText)
@@ -225,6 +231,10 @@ public class ManageWaystoneGroupsScreen extends WaystoneContainerScreen<Abstract
     }
 
     private void createGroup() {
+        if (GroupValidation.getCustomGroupCount(groups) >= GroupValidation.MAX_CUSTOM_GROUPS) {
+            return;
+        }
+
         final var initialName = searchText;
         final var groupId = id("user/" + UUID.randomUUID());
         openSiblingScreen(new WaystoneGroupEditScreen(menu, playerInventory, this, groupId, initialName));
