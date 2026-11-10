@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.mixin;
 
-import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.WaystoneTeleportedEntity;
 import net.blay09.mods.waystones.network.message.ClientboundEntityPositionSyncMessage;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
@@ -23,8 +22,7 @@ public class ServerEntityMixin {
     @ModifyArg(method = "sendChanges", at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V"))
     private Object replaceTeleportEntityPacket(Object packet) {
         if (packet instanceof ClientboundTeleportEntityPacket) {
-            if (WaystonesConfig.getActive().compatibility.fixVanillaTeleportBug
-                    || ((WaystoneTeleportedEntity) entity).waystones$consumeTeleportedByWaystone()) {
+            if (((WaystoneTeleportedEntity) entity).waystones$consumeTeleportedByWaystone()) {
                 return new ClientboundCustomPayloadPacket(new ClientboundEntityPositionSyncMessage(entity));
             }
         }
