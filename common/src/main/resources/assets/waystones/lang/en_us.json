@@ -64,6 +64,7 @@
   "gui.waystones.manage_waystones.show_waystone": "Show Waystone",
   "gui.waystones.manage_groups.no_groups": "There are no groups available.",
   "gui.waystones.manage_groups.create": "Create Group",
+  "gui.waystones.manage_groups.limit_reached": "Group limit reached",
   "gui.waystones.manage_groups.hide_group": "Hide Inbuilt Group",
   "gui.waystones.manage_groups.show_group": "Unhide Inbuilt Group",
   "gui.waystones.manage_groups.save": "Save",

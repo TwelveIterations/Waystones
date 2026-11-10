@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.api.WaystoneGroup;
+import net.blay09.mods.waystones.core.GroupValidation;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneGroupImpl;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
@@ -20,11 +21,11 @@ public record ServerboundEditWaystoneGroupPacket(Identifier groupId, String name
 
     public static final CustomPacketPayload.Type<ServerboundEditWaystoneGroupPacket> TYPE = new CustomPacketPayload.Type<>(id("edit_waystone_group"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundEditWaystoneGroupPacket> STREAM_CODEC = StreamCodec.composite(
-            Identifier.STREAM_CODEC,
+            GroupValidation.IDENTIFIER_CODEC,
             ServerboundEditWaystoneGroupPacket::groupId,
-            ByteBufCodecs.STRING_UTF8,
+            ByteBufCodecs.stringUtf8(GroupValidation.MAX_NAME_LENGTH),
             ServerboundEditWaystoneGroupPacket::name,
-            Identifier.STREAM_CODEC,
+            GroupValidation.IDENTIFIER_CODEC,
             ServerboundEditWaystoneGroupPacket::icon,
             ByteBufCodecs.INT,
             ServerboundEditWaystoneGroupPacket::color,
@@ -45,6 +46,10 @@ public record ServerboundEditWaystoneGroupPacket(Identifier groupId, String name
                 existingGroupIndex = i;
                 break;
             }
+        }
+
+        if (existingGroup == null && GroupValidation.getCustomGroupCount(groups) >= GroupValidation.MAX_CUSTOM_GROUPS) {
+            return;
         }
 
         final var name = message.name.trim().isEmpty()
