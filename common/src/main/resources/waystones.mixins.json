@@ -9,6 +9,7 @@
     "JigsawPlacementPlacerMixin",
     "ServerScoreboardMixin",
     "SinglePoolElementMixin",
+    "StructureTemplateMixin",
     "StructureTemplatePoolAccessor"
   ],
   "client": [
