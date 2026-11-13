@@ -11,6 +11,7 @@ import net.blay09.mods.shogi.context.ShogiContext;
 import net.blay09.mods.shogi.scope.ShogiScope;
 import net.blay09.mods.shogi.coercion.Coercion;
 import net.blay09.mods.shogi.common.util.InventoryLookup;
+import net.blay09.mods.waystones.requirement.ModifierRequirement;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -18,7 +19,7 @@ import net.minecraft.core.registries.codec.HolderSetCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
-public record HasModifier(HolderSet<Item> item, ShogiEffect<?> count) implements ShogiEffect<Boolean> {
+public record HasModifier(HolderSet<Item> item, ShogiEffect<?> count) implements ShogiEffect<ModifierRequirement> {
 
     public static final Identifier IDENTIFIER = Identifier.fromNamespaceAndPath("waystones", "has_modifier");
 
@@ -30,11 +31,21 @@ public record HasModifier(HolderSet<Item> item, ShogiEffect<?> count) implements
     }
 
     @Override
-    public Either<Boolean, ?> apply(ShogiContext context) {
+    public Either<ModifierRequirement, ?> apply(ShogiContext context) {
         final int requestedCount = count.apply(context).mapLeft(Coercion.NON_NEGATIVE_INT).orThrow();
-        return Either.left(WaystoneRuleContext.getSourceModifierContainer(context)
-                .map(container -> InventoryLookup.countMatchingInContainer(container, stack -> stack.is(item)) >= requestedCount)
-                .orElse(false));
+        final var container = WaystoneRuleContext.getSourceModifierContainer(context);
+        final int available = container.map(it -> InventoryLookup.countMatchingInContainer(it, stack -> stack.is(item))).orElse(0);
+        final var requirement = new ModifierRequirement(item, available, requestedCount, false);
+        return container.isPresent() && available >= requestedCount ? Either.left(requirement) : Either.right(requirement);
+    }
+
+    @Override
+    public boolean test(ShogiContext context) {
+        try {
+            return apply(context).left().isPresent();
+        } catch (Throwable throwable) {
+            return false;
+        }
     }
 
     @Override
