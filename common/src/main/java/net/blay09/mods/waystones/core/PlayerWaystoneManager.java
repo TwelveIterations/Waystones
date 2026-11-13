@@ -16,6 +16,7 @@ import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -78,6 +79,15 @@ public class PlayerWaystoneManager {
 
     public static void deactivateWaystone(Player player, Waystone waystone) {
         getPlayerWaystoneData(player.level()).deactivateWaystone(player, waystone);
+        if (player.level() instanceof ServerLevel serverLevel
+                && waystone instanceof MutableWaystone mutableWaystone
+                && player.getUUID().equals(waystone.getOwnerUid())) {
+            mutableWaystone.setOwnerUid(null);
+            mutableWaystone.setOwnerUsername(null);
+            WaystoneIndexManager.visibilityChanged(serverLevel.getServer(), waystone, waystone.getVisibility());
+            WaystoneManagerImpl.get(serverLevel.getServer()).setDirty();
+            WaystoneSyncManager.sendWaystoneUpdateToAll(serverLevel.getServer(), waystone);
+        }
     }
 
     public static Map<ResourceLocation, Long> getCooldowns(Player player) {
