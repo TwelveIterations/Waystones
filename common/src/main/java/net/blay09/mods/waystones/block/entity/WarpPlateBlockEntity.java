@@ -43,7 +43,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
     private final Random random = new Random();
 
     private int nextRoundRobinAttunementSlot;
-
     protected int attunementTicks;
 
     public WarpPlateBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -70,7 +69,9 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
 
         WaystoneSyncManager.sendWaystoneUpdateToAll(level.getServer(), waystone);
 
-        initializeInventory();
+        if (!getStructureData().isStructurePlacement()) {
+            initializeInventory();
+        }
     }
 
     private void initializeInventory() {
