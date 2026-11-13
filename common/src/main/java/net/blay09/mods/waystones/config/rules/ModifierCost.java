@@ -5,7 +5,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.shogi.coercion.Coercion;
-import net.blay09.mods.shogi.common.effect.cost.ItemCostInformation;
+import net.blay09.mods.waystones.requirement.ModifierRequirement;
 import net.blay09.mods.shogi.common.util.InventoryLookup;
 import net.blay09.mods.shogi.context.ShogiContext;
 import net.blay09.mods.shogi.context.executor.aggregate.AggregateKey;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public record ModifierCost(HolderSet<Item> item, ShogiEffect<?> count) implements ShogiEffect<ItemCostInformation> {
+public record ModifierCost(HolderSet<Item> item, ShogiEffect<?> count) implements ShogiEffect<ModifierRequirement> {
 
     public static final Identifier IDENTIFIER = Identifier.fromNamespaceAndPath("waystones", "modifier_cost");
 
@@ -41,13 +41,13 @@ public record ModifierCost(HolderSet<Item> item, ShogiEffect<?> count) implement
     }
 
     @Override
-    public Either<ItemCostInformation, Object> apply(ShogiContext context) {
+    public Either<ModifierRequirement, Object> apply(ShogiContext context) {
         final int requestedCount = count.apply(context).mapLeft(Coercion.NON_NEGATIVE_INT).orThrow();
 
         // We only support the source waystone for this, since we do not have the target waystone chunk loaded at this point.
         final var container = WaystoneRuleContext.getSourceModifierContainer(context).orElse(null);
         if (container == null) {
-            return Either.right(new ItemCostInformation(item, 0, requestedCount));
+            return Either.right(new ModifierRequirement(item, 0, requestedCount, true));
         }
 
         Predicate<ItemStack> matcher = it -> it.is(item);
@@ -58,15 +58,16 @@ public record ModifierCost(HolderSet<Item> item, ShogiEffect<?> count) implement
         );
         final int available = InventoryLookup.countMatchingInContainer(container, matcher);
         if (consumed < requestedCount) {
-            return Either.right(new ItemCostInformation(
+            return Either.right(new ModifierRequirement(
                     item,
                     available,
-                    requestedCount
+                    requestedCount,
+                    true
             ));
         }
 
         context.consume(AGGREGATE_KEY, AggregatedModifierCost::consume);
-        return Either.left(new ItemCostInformation(item, available, requestedCount));
+        return Either.left(new ModifierRequirement(item, available, requestedCount, true));
     }
 
     @Override
