@@ -382,6 +382,11 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
     }
 
     public Collection<? extends Waystone> getAuxiliaryTargets() {
+        if (getBlockState().getValueOrElse(WaystoneBlockBase.HALF, DoubleBlockHalf.LOWER) == DoubleBlockHalf.UPPER
+                && level.getBlockEntity(worldPosition.below()) instanceof WaystoneBlockEntityBase base) {
+            return base.getAuxiliaryTargets();
+        }
+
         final var result = new ArrayList<Waystone>();
         final var baseContainer = getContainer();
         if (baseContainer != null) {
