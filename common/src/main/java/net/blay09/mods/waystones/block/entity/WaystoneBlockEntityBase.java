@@ -22,6 +22,8 @@ import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.blay09.mods.waystones.worldgen.StructureAwareBlockEntity;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentGetter;
@@ -55,7 +57,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
-public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnLoadHandler, BalmContainerProvider {
+public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnLoadHandler, BalmContainerProvider, StructureAwareBlockEntity {
 
     protected final DefaultContainer container = new DefaultContainer(5) {
         @Override
@@ -97,6 +99,11 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
     public WaystoneBlockEntityBase(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
+    }
+
+    @Override
+    public void saveStructureData(ValueOutput output, BlockPos origin, Vec3i size) {
+        output.discard("UUID");
     }
 
     @Override
