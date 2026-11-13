@@ -2,6 +2,8 @@ package net.blay09.mods.waystones.component;
 
 import net.blay09.mods.balm.core.component.BalmDataComponentTypeRegistrar;
 import net.minecraft.core.Holder;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
 
@@ -21,6 +23,8 @@ public class ModComponents {
     public static Holder<DataComponentType<ReturnScrollComponent>> returnScroll;
     public static Holder<DataComponentType<WaystoneReferenceComponent>> waystoneIdentity;
     public static Holder<DataComponentType<WaystoneReferenceComponent>> warpPlateAttunement;
+    public static Holder<DataComponentType<BlockPos>> relativePosAttunement;
+    public static Holder<DataComponentType<GlobalPos>> absolutePosAttunement;
     public static Holder<DataComponentType<UUID>> twinboundFeather;
     public static Holder<DataComponentType<TwinboundFeatherLinksComponent>> twinboundFeatherLinks;
 
@@ -34,6 +38,8 @@ public class ModComponents {
         returnScroll = components.register("return_scroll", ReturnScrollComponent.CODEC).asHolder();
         waystoneIdentity = components.register("waystone_identity", WaystoneReferenceComponent.CODEC).asHolder();
         warpPlateAttunement = components.register("waystone_attunement", WaystoneReferenceComponent.CODEC).asHolder();
+        relativePosAttunement = components.register("relative_pos_attunement", BlockPos.CODEC).asHolder();
+        absolutePosAttunement = components.register("absolute_pos_attunement", GlobalPos.CODEC).asHolder();
         twinboundFeather = components.register("twinbound_feather", UUIDUtil.CODEC).asHolder();
         twinboundFeatherLinks = components.register("twinbound_feather_links", TwinboundFeatherLinksComponent.CODEC).asHolder();
     }

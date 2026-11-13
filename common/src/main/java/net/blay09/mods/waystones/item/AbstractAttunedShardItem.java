@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.item;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
+import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.component.WaystoneReferenceComponent;
 import net.blay09.mods.waystones.core.WaystoneProxy;
@@ -44,6 +45,23 @@ public abstract class AbstractAttunedShardItem extends ShardItem implements IAtt
 
     @Override
     public Optional<Waystone> getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
+        final var absolutePos = itemStack.get(ModComponents.absolutePosAttunement.value());
+        if (absolutePos != null) {
+            final var level = server.getLevel(absolutePos.dimension());
+            if (level == null) {
+                return Optional.empty();
+            }
+
+            if (level.isLoaded(absolutePos.pos())) {
+                return level.getBlockEntity(absolutePos.pos()) instanceof WaystoneBlockEntityBase target
+                        ? Optional.of(target.getOrLoadWaystone()).filter(Waystone::isValid) : Optional.empty();
+            } else {
+                // TODO need a positional cache for waystones
+                return Optional.empty();
+                // return SavedDataWaystonesStore.get(server).getWaystoneAt(absolutePos);
+            }
+        }
+
         final var attunement = itemStack.get(ModComponents.warpPlateAttunement.value());
         if (attunement != null) {
             return Optional.of(new WaystoneProxy(server, attunement.waystoneId()));
@@ -59,6 +77,8 @@ public abstract class AbstractAttunedShardItem extends ShardItem implements IAtt
 
     @Override
     public void setWaystoneAttunedTo(ItemStack itemStack, @Nullable Waystone waystone) {
+        itemStack.remove(ModComponents.relativePosAttunement.value());
+        itemStack.remove(ModComponents.absolutePosAttunement.value());
         if (waystone != null) {
             itemStack.set(ModComponents.warpPlateAttunement.value(), new WaystoneReferenceComponent(waystone.getWaystoneUid(), waystone.getName()));
         } else {
