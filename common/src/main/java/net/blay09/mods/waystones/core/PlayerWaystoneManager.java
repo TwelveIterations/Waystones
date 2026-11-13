@@ -91,6 +91,15 @@ public class PlayerWaystoneManager {
 
     public static void deactivateWaystone(Player player, Waystone waystone) {
         getPlayerWaystoneData(player.level()).deactivateWaystone(player, waystone);
+        if (player.level() instanceof ServerLevel serverLevel
+                && waystone instanceof MutableWaystone mutableWaystone
+                && waystone.getOwnerUid().filter(player.getUUID()::equals).isPresent()) {
+            mutableWaystone.setOwnerUid(null);
+            mutableWaystone.setOwnerUsername(null);
+            WaystoneIndexManager.visibilityChanged(serverLevel.getServer(), waystone, waystone.getVisibility());
+            SavedDataWaystonesStore.get(serverLevel.getServer()).setDirty();
+            WaystoneSyncManager.sendWaystoneUpdateToAll(serverLevel.getServer(), waystone);
+        }
     }
 
     public static Optional<Waystone> getNearestWaystone(Player player) {

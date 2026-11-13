@@ -17,7 +17,7 @@ public interface MutableWaystone {
 
     void setPos(BlockPos pos);
 
-    void setOwnerUid(UUID ownerUid);
+    void setOwnerUid(@Nullable UUID ownerUid);
 
     void setOwnerUsername(@Nullable String username);
 
