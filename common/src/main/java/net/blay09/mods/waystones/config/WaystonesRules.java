@@ -40,6 +40,7 @@ public class WaystonesRules {
     public static final ShogiScope scope = Shogi.scope(id("rules"), it -> {
         it.setDefaultNamespaces(List.of("waystones", "shogi"));
 
+        it.registerEffect(HasModifier.IDENTIFIER, HasModifier.mapCodec(it), List.of("item", "count"));
         it.registerEffect(ModifierCost.IDENTIFIER, ModifierCost.mapCodec(it), List.of("item", "count"));
 
         it.registerEffect(Source.IDENTIFIER, Source.mapCodec(it), List.of("effect"));

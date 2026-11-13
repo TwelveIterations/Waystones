@@ -13,7 +13,6 @@ import net.blay09.mods.shogi.effect.ConstantEffect;
 import net.blay09.mods.shogi.effect.EffectArgumentCodecs;
 import net.blay09.mods.shogi.effect.ShogiEffect;
 import net.blay09.mods.shogi.scope.ShogiScope;
-import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -46,12 +45,7 @@ public record ModifierCost(HolderSet<Item> item, ShogiEffect<?> count) implement
         final int requestedCount = count.apply(context).mapLeft(Coercion.NON_NEGATIVE_INT).orThrow();
 
         // We only support the source waystone for this, since we do not have the target waystone chunk loaded at this point.
-        final var waystone = WaystoneRuleContext.getSourceWaystone(context).orElse(null);
-        final var level = context.level();
-        final var container = waystone != null && level != null && level.dimension().equals(waystone.getDimension())
-                && level.isLoaded(waystone.getPos())
-                && level.getBlockEntity(waystone.getPos()) instanceof WaystoneBlockEntityBase blockEntity
-                ? blockEntity.getContainer() : null;
+        final var container = WaystoneRuleContext.getSourceModifierContainer(context).orElse(null);
         if (container == null) {
             return Either.right(new ItemCostInformation(item, 0, requestedCount));
         }
