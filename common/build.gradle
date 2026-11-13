@@ -13,6 +13,7 @@ neoForge {
 }
 
 dependencies {
+    compileOnly libs.mixinExtras
     compileOnly libs.mixin
 }
 
