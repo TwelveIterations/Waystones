@@ -63,6 +63,10 @@ public class RequirementComponentResolvers {
             final var itemStack = requirement.item().stream().findFirst().map(Holder::value).map(Item::getDefaultInstance).orElse(ItemStack.EMPTY);
             return Component.translatable("gui.waystones.waystone_selection.item_requirement", requirement.required(), itemStack.getHoverName());
         });
+        register(ModifierRequirement.class, requirement -> {
+            final var itemStack = requirement.item().stream().findFirst().map(Holder::value).map(Item::getDefaultInstance).orElse(ItemStack.EMPTY);
+            return Component.translatable(requirement.translationKey(), requirement.required(), itemStack.getHoverName());
+        });
         register(RefusalInformation.class, RefusalInformation::message);
     }
 

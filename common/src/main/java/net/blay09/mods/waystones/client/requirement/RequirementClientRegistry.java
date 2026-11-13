@@ -6,6 +6,7 @@ import net.blay09.mods.shogi.common.effect.cost.ItemCostInformation;
 import net.blay09.mods.shogi.common.effect.failure.RefusalInformation;
 import net.blay09.mods.shogi.common.effect.server.cooldown.CooldownInformation;
 import net.blay09.mods.waystones.requirement.EpitaphRequirement;
+import net.blay09.mods.waystones.requirement.ModifierRequirement;
 import net.blay09.mods.waystones.requirement.TwinboundFeatherRequirement;
 
 import java.util.*;
@@ -90,6 +91,7 @@ public class RequirementClientRegistry {
         registerRenderer(CooldownInformation.class, new SoftCooldownRequirementRenderer());
         registerRenderer(ExperienceLevelCostInformation.class, new ExperienceLevelRequirementRenderer());
         registerRenderer(ExperiencePointsCostInformation.class, new ExperiencePointsRequirementRenderer());
+        registerRenderer(ModifierRequirement.class, new ModifierRequirementRenderer());
         registerRenderer(ItemCostInformation.class, new ItemRequirementRenderer());
         registerRenderer(EpitaphRequirement.class, new EpitaphRequirementRenderer());
         registerRenderer(TwinboundFeatherRequirement.class, new TwinboundFeatherRequirementRenderer());
@@ -102,6 +104,17 @@ public class RequirementClientRegistry {
                 Math.min(current.available(), incoming.available()),
                 current.required() + incoming.required()
         )));
+        registerMerger(ModifierRequirement.class, (current, incoming) -> {
+            if (!current.item().equals(incoming.item()) || current.consumed() != incoming.consumed()) {
+                return Optional.empty();
+            }
+            return Optional.of(new ModifierRequirement(
+                    current.item(),
+                    Math.min(current.available(), incoming.available()),
+                    current.consumed() ? current.required() + incoming.required() : Math.max(current.required(), incoming.required()),
+                    current.consumed()
+            ));
+        });
         registerMerger(ItemCostInformation.class, (current, incoming) -> {
             if (!current.item().equals(incoming.item())) {
                 return Optional.empty();
