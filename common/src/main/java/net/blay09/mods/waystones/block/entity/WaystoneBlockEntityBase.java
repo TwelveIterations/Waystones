@@ -22,6 +22,8 @@ import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.blay09.mods.waystones.worldgen.WaystoneStructureData;
 import net.minecraft.core.Vec3i;
 import net.blay09.mods.waystones.worldgen.StructureAwareBlockEntity;
 import net.minecraft.core.HolderLookup;
@@ -101,13 +103,25 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
         super(blockEntityType, blockPos, blockState);
     }
 
+    private final WaystoneStructureData structureData = new WaystoneStructureData();
+
+    public WaystoneStructureData getStructureData() {
+        return structureData;
+    }
+
     @Override
     public void saveStructureData(ValueOutput output, BlockPos origin, Vec3i size) {
-        output.discard("UUID");
+        structureData.saveForStructure(this, container, output, origin, size);
+    }
+
+    @Override
+    public void loadStructureData(StructurePlaceSettings settings) {
+        structureData.transform(settings, this, container);
     }
 
     @Override
     protected void saveAdditional(ValueOutput output) {
+        structureData.save(output);
         ContainerHelper.saveAllItems(output, container.getItems());
 
         output.storeNullable("UUID", UUIDUtil.CODEC, getEffectiveWaystoneUid());
@@ -115,6 +129,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
 
     @Override
     public void loadAdditional(ValueInput input) {
+        structureData.load(input);
         ContainerHelper.loadAllItems(input, container.getItems());
 
         input.read("UUID", UUIDUtil.CODEC).ifPresent(uuid -> waystoneUid = uuid);
@@ -385,7 +400,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
         if (state.getValueOrElse(WaystoneBlockBase.HALF, DoubleBlockHalf.LOWER) == DoubleBlockHalf.UPPER) {
             final var baseBlockEntity = level.getBlockEntity(worldPosition.below());
             if (baseBlockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-                return waystoneBlockEntity.container;
+                return waystoneBlockEntity.getContainer();
             }
         }
 
