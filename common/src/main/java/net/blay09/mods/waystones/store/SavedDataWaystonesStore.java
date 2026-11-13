@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.core.WaystoneIndexManager;
 import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.BlockGetter;
@@ -63,6 +64,11 @@ public class SavedDataWaystonesStore extends SavedData implements WaystonesStore
     @Override
     public Optional<Waystone> getWaystoneById(UUID waystoneUid) {
         return store.getWaystoneById(waystoneUid);
+    }
+
+    @Override
+    public Optional<Waystone> getWaystoneAt(GlobalPos position) {
+        return store.getWaystoneAt(position);
     }
 
     @Override

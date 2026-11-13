@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.store;
 
 import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockGetter;
 
@@ -19,6 +20,8 @@ public interface WaystonesStore {
     void removeWaystone(Waystone waystone);
 
     Optional<Waystone> getWaystoneAt(BlockGetter world, BlockPos pos);
+
+    Optional<Waystone> getWaystoneAt(GlobalPos position);
 
     Optional<Waystone> getWaystoneById(UUID waystoneUid);
 
