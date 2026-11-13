@@ -1,6 +1,8 @@
 package net.blay09.mods.waystones.store;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import net.blay09.mods.waystones.api.MutableWaystone;
@@ -9,6 +11,7 @@ import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockGetter;
 
@@ -18,6 +21,7 @@ public class InMemoryWaystonesStore implements WaystonesStore {
 
     private final List<Waystone> waystones = Collections.synchronizedList(new ArrayList<>());
     private final Map<UUID, Waystone> waystonesById = Collections.synchronizedMap(new HashMap<>());
+    private final BiMap<UUID, GlobalPos> positionByWaystoneId = HashBiMap.create();
     private final Multimap<Identifier, Waystone> waystonesByType = Multimaps.synchronizedMultimap(ArrayListMultimap.create());
 
     public InMemoryWaystonesStore(List<Waystone> waystones) {
@@ -25,30 +29,36 @@ public class InMemoryWaystonesStore implements WaystonesStore {
         for (final var waystone : waystones) {
             waystonesById.put(waystone.getWaystoneUid(), waystone);
             waystonesByType.put(waystone.getWaystoneKind(), waystone);
+            indexPosition(waystone);
         }
     }
 
     @Override
-    public void addWaystone(Waystone waystone) {
+    public synchronized void addWaystone(Waystone waystone) {
         waystones.add(waystone);
         waystonesById.put(waystone.getWaystoneUid(), waystone);
         waystonesByType.put(waystone.getWaystoneKind(), waystone);
+        indexPosition(waystone);
     }
 
     @Override
-    public void updateWaystone(Waystone waystone) {
+    public synchronized void updateWaystone(Waystone waystone) {
         final var backingWaystone = waystonesById.get(waystone.getWaystoneUid());
         if (backingWaystone instanceof MutableWaystone mutableWaystone) {
             mutableWaystone.setName(waystone.getName());
             mutableWaystone.setVisibility(waystone.getVisibility());
             mutableWaystone.setSeen(waystone.wasSeen());
+            mutableWaystone.setDimension(waystone.getDimension());
+            mutableWaystone.setPos(waystone.getPos());
+            indexPosition(backingWaystone);
         } else if (!(waystone instanceof WaystoneProxy) && waystone.isValid()) {
             addWaystone(waystone);
         }
     }
 
     @Override
-    public void removeWaystone(Waystone waystone) {
+    public synchronized void removeWaystone(Waystone waystone) {
+        positionByWaystoneId.remove(waystone.getWaystoneUid());
         final var removedWaystone = waystonesById.remove(waystone.getWaystoneUid());
         waystones.remove(removedWaystone);
         waystonesByType.get(waystone.getWaystoneKind()).remove(removedWaystone);
@@ -64,8 +74,20 @@ public class InMemoryWaystonesStore implements WaystonesStore {
     }
 
     @Override
+    public synchronized Optional<Waystone> getWaystoneAt(GlobalPos position) {
+        final var uid = positionByWaystoneId.inverse().get(position);
+        return uid != null ? getWaystoneById(uid).filter(Waystone::isValid) : Optional.empty();
+    }
+
+    @Override
     public Optional<Waystone> getWaystoneById(UUID waystoneUid) {
         return Optional.ofNullable(waystonesById.get(waystoneUid));
+    }
+
+    private void indexPosition(Waystone waystone) {
+        final var uid = waystone.getWaystoneUid();
+        final var position = GlobalPos.of(waystone.getDimension(), waystone.getPos().immutable());
+        positionByWaystoneId.forcePut(uid, position);
     }
 
     @Override
