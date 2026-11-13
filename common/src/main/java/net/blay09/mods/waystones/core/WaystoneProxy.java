@@ -141,7 +141,7 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
     }
 
     @Override
-    public void setOwnerUid(UUID ownerUid) {
+    public void setOwnerUid(@Nullable UUID ownerUid) {
         Waystone backingWaystone = getBackingWaystone();
         if (backingWaystone instanceof MutableWaystone) {
             ((MutableWaystone) backingWaystone).setOwnerUid(ownerUid);
