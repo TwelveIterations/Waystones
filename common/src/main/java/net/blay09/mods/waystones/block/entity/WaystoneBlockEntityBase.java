@@ -165,9 +165,13 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
     @Override
     public void onLoad() {
         final var backingWaystone = loadBackingWaystone();
-        if (backingWaystone instanceof WaystoneImpl && level != null) {
+        if (backingWaystone instanceof WaystoneImpl && level != null
+                && (!backingWaystone.getDimension().equals(level.dimension()) || !backingWaystone.getPos().equals(worldPosition))) {
             ((WaystoneImpl) backingWaystone).setDimension(level.dimension());
             ((WaystoneImpl) backingWaystone).setPos(worldPosition);
+            if (level instanceof ServerLevel serverLevel) {
+                SavedDataWaystonesStore.get(serverLevel.getServer()).updateWaystone(backingWaystone);
+            }
         }
         BalmBlockEntityUtils.sync(this);
     }
