@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.event.WaystoneRemovedEvent;
 import net.blay09.mods.waystones.api.event.WaystoneUpdatedEvent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockGetter;
 
@@ -38,6 +39,11 @@ public record EventfulWaystonesStore(WaystonesStore delegate) implements Wayston
     @Override
     public Optional<Waystone> getWaystoneById(UUID waystoneUid) {
         return delegate.getWaystoneById(waystoneUid);
+    }
+
+    @Override
+    public Optional<Waystone> getWaystoneAt(GlobalPos position) {
+        return delegate.getWaystoneAt(position);
     }
 
     @Override
