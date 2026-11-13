@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
@@ -56,6 +57,17 @@ public final class WaystoneRuleContext {
             return (Optional<Waystone>) optional;
         }
         return Optional.empty();
+    }
+
+    public static Optional<Container> getSourceModifierContainer(ShogiContext context) {
+        final var level = context.level();
+        return getSourceWaystone(context)
+                .filter(waystone -> level != null && level.dimension().equals(waystone.getDimension())
+                        && level.isLoaded(waystone.getPos()))
+                .map(waystone -> level.getBlockEntity(waystone.getPos()))
+                .filter(WaystoneBlockEntityBase.class::isInstance)
+                .map(WaystoneBlockEntityBase.class::cast)
+                .map(WaystoneBlockEntityBase::getContainer);
     }
 
     public static Optional<Waystone> getTargetWaystone(ShogiContext context) {
