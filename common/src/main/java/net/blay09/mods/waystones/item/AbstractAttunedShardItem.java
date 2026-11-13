@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.component.WaystoneReferenceComponent;
 import net.blay09.mods.waystones.core.WaystoneProxy;
+import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -56,9 +57,7 @@ public abstract class AbstractAttunedShardItem extends ShardItem implements IAtt
                 return level.getBlockEntity(absolutePos.pos()) instanceof WaystoneBlockEntityBase target
                         ? Optional.of(target.getOrLoadWaystone()).filter(Waystone::isValid) : Optional.empty();
             } else {
-                // TODO need a positional cache for waystones
-                return Optional.empty();
-                // return SavedDataWaystonesStore.get(server).getWaystoneAt(absolutePos);
+                return SavedDataWaystonesStore.get(server).getWaystoneAt(absolutePos);
             }
         }
 
