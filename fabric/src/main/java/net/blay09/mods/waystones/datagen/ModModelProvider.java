@@ -103,6 +103,7 @@ public class ModModelProvider extends FabricModelProvider {
     }
 
     private void createDoubleBlockWaystone(BlockModelGenerators blockStateModelGenerator, BuiltinWaystoneType type, Block block) {
+        createRunesModel(blockStateModelGenerator, type.identifier().withPath(path -> "block/" + path + "_runes"), "waystone_runes");
         final var itemModelTemplate = new ModelTemplate(Optional.of(id("waystone").withPrefix("item/")), Optional.empty(), TextureSlot.TEXTURE);
         final var topModelTemplate = new ModelTemplate(Optional.of(id("waystone_top").withPrefix("block/")), Optional.of("_top"), TextureSlot.TEXTURE, TextureSlot.PARTICLE);
         final var bottomModelTemplate = new ModelTemplate(Optional.of(id("waystone_bottom").withPrefix("block/")), Optional.of("_bottom"), TextureSlot.TEXTURE, TextureSlot.PARTICLE);
@@ -123,6 +124,7 @@ public class ModModelProvider extends FabricModelProvider {
     }
 
     private void createSharestone(BlockModelGenerators blockStateModelGenerator, SharestoneType type, DeferredBlock block) {
+        createRunesModel(blockStateModelGenerator, type.identifier().withPath(path -> "block/" + path + "_runes"), "sharestone_runes");
         final var topModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "block/sharestone_top");
         final var bottomModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "block/sharestone_bottom");
         final var generator = MultiVariantGenerator.dispatch(block.asBlock())
@@ -136,6 +138,7 @@ public class ModModelProvider extends FabricModelProvider {
     }
 
     private void createPortstone(BlockModelGenerators blockStateModelGenerator, PortstoneType type, DeferredBlock block) {
+        createRunesModel(blockStateModelGenerator, type.identifier().withPath(path -> "block/" + path + "_portstone_runes"), "portstone_runes");
         final var topModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_top");
         final var bottomModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_bottom");
         final var generator = MultiVariantGenerator.dispatch(block.asBlock())
@@ -146,6 +149,11 @@ public class ModModelProvider extends FabricModelProvider {
         blockStateModelGenerator.blockStateOutput.accept(generator);
         final var itemModelLocation = Identifier.fromNamespaceAndPath(Waystones.MOD_ID, "item/portstone");
         blockStateModelGenerator.registerSimpleTintedItemModel(block.asBlock(), itemModelLocation, new Constant(type.textColor()));
+    }
+
+    private void createRunesModel(BlockModelGenerators blockStateModelGenerator, Identifier modelLocation, String parent) {
+        final var template = new ModelTemplate(Optional.of(id("block/" + parent)), Optional.empty());
+        template.create(modelLocation, new TextureMapping(), blockStateModelGenerator.modelOutput);
     }
 
 }
