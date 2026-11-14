@@ -1,4 +1,7 @@
-- Added `/waystones cooldown <targets> add <identifier> <seconds>` and `/waystones cooldown <targets> set <identifier> <seconds>` commands
-- Fixed bound scrolls showing "invalid" for players who have not activated the target
-- Fixed lack of error message when warp requirement block scrolls from teleporting
-- Fixed scrolls costing XP when they shouldn't
+- Updated network version; make sure to update both clients and servers
+- Fixed waystone owners to be reset when it is deactivated for them
+- Added `waystone_runes` resource pack definitions to allow overriding rune modal colors in resource packs
+- Added individual waystone runes models to allow for easier resource pack overrides
+- Added a maximum limit of 64 custom groups
+- Removed `fixVanillaTeleportBug` option since its trigger is too broad and interferes with regular entity movement
+  - For waystone-initiated teleports, the Vanilla bug is still circumvented
