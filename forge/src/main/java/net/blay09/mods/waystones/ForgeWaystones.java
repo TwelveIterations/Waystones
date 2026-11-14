@@ -20,7 +20,7 @@ public class ForgeWaystones {
 
     public ForgeWaystones() {
         Balm.initialize(Waystones.MOD_ID, EmptyLoadContext.INSTANCE, Waystones::initialize);
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> BalmClient.initialize(Waystones.MOD_ID, EmptyLoadContext.INSTANCE, WaystonesClient::initialize));
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> BalmClient.initializeMod(Waystones.MOD_ID, EmptyLoadContext.INSTANCE, WaystonesClient::initialize));
 
         Balm.initializeIfLoaded(Compat.THEONEPROBE, "net.blay09.mods.waystones.compat.TheOneProbeIntegration");
 

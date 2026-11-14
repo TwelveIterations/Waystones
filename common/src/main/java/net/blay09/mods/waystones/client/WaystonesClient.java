@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.client;
 
 import net.blay09.mods.balm.api.client.BalmClient;
+import net.blay09.mods.balm.client.BalmClientRegistrars;
 import net.blay09.mods.waystones.InternalClientMethodsImpl;
 import net.blay09.mods.waystones.api.client.WaystonesClientAPI;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
@@ -10,7 +11,7 @@ import net.minecraft.client.ClientBrandRetriever;
 import java.util.Locale;
 
 public class WaystonesClient {
-    public static void initialize() {
+    public static void initialize(BalmClientRegistrars registrars) {
         WaystonesClientAPI.__internalMethods = new InternalClientMethodsImpl();
         RequirementClientRegistry.registerDefaults();
 
