@@ -60,18 +60,19 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
 
         renderState.facing = blockState.getValue(WaystoneBlock.FACING);
         final var type = blockState.getBlock() instanceof WaystoneBlock waystoneBlock ? waystoneBlock.getType() : WaystoneTypes.ANDESITE;
-        renderState.runeColor = type.runeColor();
+        final var runes = ModRenderers.getWaystoneRunes(type);
+        renderState.runeColor = runes.color();
         final var player = Minecraft.getInstance().player;
         boolean isActivated = player != null && PlayerWaystoneManager.isWaystoneActivated(player, blockEntity.getWaystone());
         renderState.showRunes = isActivated || blockState.getValue(WaystoneBlock.SEEN);
         if (!isActivated) {
-            renderState.runeColor = 0xFF444444;
+            renderState.runeColor = runes.inactiveColor();
         } else {
             renderState.glow = !WaystonesConfig.getActive().client.disableTextGlow;
         }
 
         if (renderState.showRunes) {
-            final var model = ModRenderers.waystoneRunesModels.getOrDefault(type, ModRenderers.waystoneRunesModel).asBlockStateModel();
+            final var model = runes.model().asBlockStateModel();
             final var modelParts = renderState.runes.setupModel(new Matrix4f(), false);
             final var random = renderState.runes.scratchRandomSource(blockState.getSeed(blockEntity.getBlockPos()));
             model.collectParts(random, modelParts);
