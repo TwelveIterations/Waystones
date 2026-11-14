@@ -33,6 +33,7 @@ dynmap = { module = "us.dynmap:DynmapCoreAPI", version = "3.7-beta-6" }
 unbreakablesCommon = { module = "net.blay09.mods:unbreakables-common", version.ref = "unbreakables" }
 
 mixin = { module = "org.spongepowered:mixin", version = "0.8.7" }
+mixinExtras = { module = "io.github.llamalad7:mixinextras-common", version = "0.5.2" }
 
 [plugins]
 fabricLoom = { id = "net.fabricmc.fabric-loom", version = "1.14-SNAPSHOT" }
