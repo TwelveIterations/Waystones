@@ -43,7 +43,7 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
             poseStack.translate(0.5f, 0f, 0.5f);
             poseStack.mulPose(Axis.YP.rotationDegrees(state.getValue(SharestoneBlock.FACING).toYRot()));
             poseStack.translate(-0.5f, 0f, -0.5f);
-            RuneRenderUtil.render(ModModels.sharestoneRunes.get(),
+            RuneRenderUtil.render(ModModels.sharestoneRunesModels.getOrDefault(state.getBlock(), ModModels.sharestoneRunes).get(),
                     poseStack,
                     buffer,
                     color.getTextureDiffuseColor(),

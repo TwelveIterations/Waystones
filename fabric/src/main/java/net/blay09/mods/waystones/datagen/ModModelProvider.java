@@ -15,6 +15,7 @@ import net.minecraft.data.models.blockstates.*;
 import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.data.models.model.ModelTemplate;
 import net.minecraft.data.models.model.ModelTemplates;
+import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -106,6 +107,7 @@ public class ModModelProvider extends FabricModelProvider {
     }
 
     private void createDoubleBlockWaystone(BlockModelGenerators blockStateModelGenerator, Block block) {
+        createRunesModel(blockStateModelGenerator, block, "waystone_runes");
         createDoubleBlockWaystone(blockStateModelGenerator, block, block);
     }
 
@@ -122,6 +124,7 @@ public class ModModelProvider extends FabricModelProvider {
     }
 
     private void createSharestone(BlockModelGenerators blockStateModelGenerator, Block block) {
+        createRunesModel(blockStateModelGenerator, block, "sharestone_runes");
         final var topModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/sharestone_top");
         final var bottomModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/sharestone_bottom");
         final var generator = MultiVariantGenerator.multiVariant(block)
@@ -134,6 +137,7 @@ public class ModModelProvider extends FabricModelProvider {
     }
 
     private void createPortstone(BlockModelGenerators blockStateModelGenerator, Block block) {
+        createRunesModel(blockStateModelGenerator, block, "portstone_runes");
         final var topModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_top");
         final var bottomModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_bottom");
         final var generator = MultiVariantGenerator.multiVariant(block)
@@ -143,6 +147,14 @@ public class ModModelProvider extends FabricModelProvider {
                         .select(DoubleBlockHalf.UPPER, Variant.variant().with(VariantProperties.MODEL, topModelLocation)));
         blockStateModelGenerator.blockStateOutput.accept(generator);
         blockStateModelGenerator.skipAutoItemBlock(block);
+    }
+
+    private void createRunesModel(BlockModelGenerators blockStateModelGenerator, Block block, String parent) {
+        final var modelLocation = ModelLocationUtils.getModelLocation(block, "_runes");
+        if (!modelLocation.equals(id("block/" + parent))) {
+            final var template = new ModelTemplate(Optional.of(id("block/" + parent)), Optional.empty());
+            template.create(modelLocation, new TextureMapping(), blockStateModelGenerator.modelOutput);
+        }
     }
 
 }

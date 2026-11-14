@@ -41,7 +41,7 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
         poseStack.mulPose(Axis.YP.rotationDegrees(state.getValue(WaystoneBlock.FACING).toYRot()));
         poseStack.translate(-0.5f, 0f, -0.5f);
         final var style = WaystoneStyles.getStyle(state.getBlock());
-        RuneRenderUtil.render(ModModels.waystoneRunes.get(),
+        RuneRenderUtil.render(ModModels.waystoneRunesModels.getOrDefault(state.getBlock(), ModModels.waystoneRunes).get(),
                 poseStack,
                 buffer,
                 style != null ? style.getRuneColor() : 0xFFFFFFFF,

@@ -37,7 +37,7 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
         poseStack.translate(0.5f, 0f, 0.5f);
         poseStack.mulPose(Axis.YP.rotationDegrees(facing.toYRot()));
         poseStack.translate(-0.5f, 0f, -0.5f);
-        RuneRenderUtil.render(ModModels.portstoneRunes.get(),
+        RuneRenderUtil.render(ModModels.portstoneRunesModels.getOrDefault(state.getBlock(), ModModels.portstoneRunes).get(),
                 poseStack,
                 buffer,
                 color.getTextureDiffuseColor(),
