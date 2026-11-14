@@ -1,11 +1,14 @@
 package net.blay09.mods.waystones.network;
 
 import net.blay09.mods.balm.network.BalmNetworking;
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.network.message.*;
 
 public class ModNetworking {
 
     public static void initialize(BalmNetworking networking) {
+        networking.defineNetworkVersion(Waystones.MOD_ID, "5");
+
         networking.registerServerboundPacket(ServerboundInventoryButtonPacket.TYPE, ServerboundInventoryButtonPacket.class, ServerboundInventoryButtonPacket.STREAM_CODEC, ServerboundInventoryButtonPacket::handle);
         networking.registerServerboundPacket(ServerboundEditWaystonePacket.TYPE, ServerboundEditWaystonePacket.class, ServerboundEditWaystonePacket.STREAM_CODEC, ServerboundEditWaystonePacket::handle);
         networking.registerServerboundPacket(ServerboundEditWaystoneGroupPacket.TYPE, ServerboundEditWaystoneGroupPacket.class, ServerboundEditWaystoneGroupPacket.STREAM_CODEC, ServerboundEditWaystoneGroupPacket::handle);
