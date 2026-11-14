@@ -68,8 +68,9 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
 
         renderState.facing = blockState.getValue(PortstoneBlock.FACING);
         renderState.glow = !WaystonesConfig.getActive().client.disableTextGlow;
-        renderState.runeColor = ((PortstoneBlock) blockEntity.getBlockState().getBlock()).getType().textureDiffuseColor();
-        final var model = ModRenderers.portstoneRunesModel.asBlockStateModel();
+        final var type = ((PortstoneBlock) blockState.getBlock()).getType();
+        renderState.runeColor = type.textureDiffuseColor();
+        final var model = ModRenderers.portstoneRunesModels.getOrDefault(type, ModRenderers.portstoneRunesModel).asBlockStateModel();
         final var modelParts = renderState.runes.setupModel(new Matrix4f(), false);
         final var random = renderState.runes.scratchRandomSource(blockState.getSeed(blockEntity.getBlockPos()));
         model.collectParts(random, modelParts);

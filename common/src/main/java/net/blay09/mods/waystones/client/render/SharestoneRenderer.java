@@ -71,9 +71,10 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
         long gameTime = level != null ? level.getGameTime() : 0;
 
         renderState.glow = !WaystonesConfig.getActive().client.disableTextGlow;
-        renderState.runeColor = ((SharestoneBlock) blockEntity.getBlockState().getBlock()).getType().textureDiffuseColor();
+        final var type = ((SharestoneBlock) blockState.getBlock()).getType();
+        renderState.runeColor = type.textureDiffuseColor();
         renderState.facing = blockState.getValue(SharestoneBlock.FACING);
-        final var model = ModRenderers.sharestoneRunesModel.asBlockStateModel();
+        final var model = ModRenderers.sharestoneRunesModels.getOrDefault(type, ModRenderers.sharestoneRunesModel).asBlockStateModel();
         final var modelParts = renderState.runes.setupModel(new Matrix4f(), false);
         final var random = renderState.runes.scratchRandomSource(blockState.getSeed(blockEntity.getBlockPos()));
         model.collectParts(random, modelParts);
