@@ -32,15 +32,15 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
         }
         final var facing = state.getValue(PortstoneBlock.FACING);
 
-        final var color = ((PortstoneBlock) state.getBlock()).getColor();
+        final var runes = ModModels.getPortstoneRunes((PortstoneBlock) state.getBlock());
         poseStack.pushPose();
         poseStack.translate(0.5f, 0f, 0.5f);
         poseStack.mulPose(Axis.YP.rotationDegrees(facing.toYRot()));
         poseStack.translate(-0.5f, 0f, -0.5f);
-        RuneRenderUtil.render(ModModels.portstoneRunesModels.getOrDefault(state.getBlock(), ModModels.portstoneRunes).get(),
+        RuneRenderUtil.render(runes.model().asBlockStateModel(),
                 poseStack,
                 buffer,
-                color.getTextureDiffuseColor(),
+                runes.color(),
                 combinedLightIn,
                 !WaystonesConfig.getActive().client.disableTextGlow);
         poseStack.popPose();

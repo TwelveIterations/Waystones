@@ -2,7 +2,6 @@ package net.blay09.mods.waystones.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.blay09.mods.waystones.api.WaystoneStyles;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.client.ModModels;
@@ -40,11 +39,11 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
         poseStack.translate(0.5f, 0f, 0.5f);
         poseStack.mulPose(Axis.YP.rotationDegrees(state.getValue(WaystoneBlock.FACING).toYRot()));
         poseStack.translate(-0.5f, 0f, -0.5f);
-        final var style = WaystoneStyles.getStyle(state.getBlock());
-        RuneRenderUtil.render(ModModels.waystoneRunesModels.getOrDefault(state.getBlock(), ModModels.waystoneRunes).get(),
+        final var runes = ModModels.getWaystoneRunes(state.getBlock());
+        RuneRenderUtil.render(runes.model().asBlockStateModel(),
                 poseStack,
                 buffer,
-                style != null ? style.getRuneColor() : 0xFFFFFFFF,
+                runes.color(),
                 combinedLightIn,
                 !WaystonesConfig.getActive().client.disableTextGlow);
         poseStack.popPose();

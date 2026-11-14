@@ -43,10 +43,11 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
             poseStack.translate(0.5f, 0f, 0.5f);
             poseStack.mulPose(Axis.YP.rotationDegrees(state.getValue(SharestoneBlock.FACING).toYRot()));
             poseStack.translate(-0.5f, 0f, -0.5f);
-            RuneRenderUtil.render(ModModels.sharestoneRunesModels.getOrDefault(state.getBlock(), ModModels.sharestoneRunes).get(),
+            final var runes = ModModels.getSharestoneRunes((SharestoneBlock) state.getBlock());
+            RuneRenderUtil.render(runes.model().asBlockStateModel(),
                     poseStack,
                     buffer,
-                    color.getTextureDiffuseColor(),
+                    runes.color(),
                     combinedLightIn,
                     !WaystonesConfig.getActive().client.disableTextGlow);
             poseStack.popPose();

@@ -1,45 +1,51 @@
 package net.blay09.mods.waystones.client;
 
-import net.blay09.mods.balm.api.DeferredObject;
-import net.blay09.mods.balm.api.client.rendering.BalmModels;
-import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.block.ModBlocks;
+import net.blay09.mods.balm.client.renderer.block.model.BalmBlockStateModelRegistrar;
+import net.blay09.mods.waystones.api.WaystoneStyles;
+import net.blay09.mods.waystones.block.PortstoneBlock;
+import net.blay09.mods.waystones.block.SharestoneBlock;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static net.blay09.mods.waystones.Waystones.id;
+
 public class ModModels {
-    public static DeferredObject<BakedModel> waystoneRunes;
-    public static DeferredObject<BakedModel> sharestoneRunes;
-    public static DeferredObject<BakedModel> portstoneRunes;
+    private static Map<ResourceLocation, RuneModelDefinition> runeDefinitions = Map.of();
+    private static final Map<Block, RuneModelDefinition> runesByBlock = new HashMap<>();
 
-    public static final Map<Block, DeferredObject<BakedModel>> waystoneRunesModels = new HashMap<>();
-    public static final Map<Block, DeferredObject<BakedModel>> sharestoneRunesModels = new HashMap<>();
-    public static final Map<Block, DeferredObject<BakedModel>> portstoneRunesModels = new HashMap<>();
-
-    public static void initialize(BalmModels models) {
-        waystoneRunes = models.loadModel(id("block/waystone_runes"));
-        sharestoneRunes = models.loadModel(id("block/sharestone_runes"));
-        portstoneRunes = models.loadModel(id("block/portstone_runes"));
-        waystoneRunesModels.put(ModBlocks.waystone, waystoneRunes);
-        for (final var block : new Block[]{ModBlocks.mossyWaystone, ModBlocks.sandyWaystone, ModBlocks.deepslateWaystone,
-                ModBlocks.blackstoneWaystone, ModBlocks.endStoneWaystone, ModBlocks.redNetherBricksWaystone,
-                ModBlocks.purpurWaystone, ModBlocks.prismarineWaystone, ModBlocks.mudBricksWaystone}) {
-            waystoneRunesModels.put(block, models.loadModel(BuiltInRegistries.BLOCK.getKey(block).withPath(path -> "block/" + path + "_runes")));
+    public static void initialize(BalmBlockStateModelRegistrar models) {
+        final var definitions = new HashMap<>(RuneModelDefinition.loadDefinitions(models, Minecraft.getInstance().getResourceManager()));
+        for (final var family : List.of("waystone", "portstone", "sharestone")) {
+            final var modelId = id("block/" + family + "_runes");
+            definitions.put(modelId, new RuneModelDefinition(models.register(modelId), 0xFFFFFFFF, 0xFF444444));
         }
-        for (final var block : ModBlocks.sharestones) {
-            sharestoneRunesModels.put(block, models.loadModel(BuiltInRegistries.BLOCK.getKey(block).withPath(path -> "block/" + path + "_runes")));
-        }
-        for (final var block : ModBlocks.portstones) {
-            portstoneRunesModels.put(block, models.loadModel(BuiltInRegistries.BLOCK.getKey(block).withPath(path -> "block/" + path + "_runes")));
-        }
+        runeDefinitions = Map.copyOf(definitions);
+        runesByBlock.clear();
     }
 
-    private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, path);
+    public static RuneModelDefinition getWaystoneRunes(Block block) {
+        return runesByBlock.computeIfAbsent(block, key -> {
+            final var style = WaystoneStyles.getStyle(key);
+            return resolveRunes(key, "waystone", style != null ? style.getRuneColor() : 0xFFFFFFFF);
+        });
+    }
+
+    public static RuneModelDefinition getSharestoneRunes(SharestoneBlock block) {
+        return runesByBlock.computeIfAbsent(block, key -> resolveRunes(key, "sharestone", block.getColor().getTextureDiffuseColor()));
+    }
+
+    public static RuneModelDefinition getPortstoneRunes(PortstoneBlock block) {
+        return runesByBlock.computeIfAbsent(block, key -> resolveRunes(key, "portstone", block.getColor().getTextureDiffuseColor()));
+    }
+
+    private static RuneModelDefinition resolveRunes(Block block, String family, int color) {
+        return runeDefinitions.getOrDefault(BuiltInRegistries.BLOCK.getKey(block),
+                new RuneModelDefinition(runeDefinitions.get(id("block/" + family + "_runes")).model(), color, 0xFF444444));
     }
 }
