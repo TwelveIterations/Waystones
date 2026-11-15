@@ -1,2 +1,12 @@
-- Changed waystones to emit light once activated
-- Fixed player profiles being fetched on main thread causing lags and timeouts
+- Updated network version; make sure to update both clients and servers
+- Fixed waystone owners to be reset when it is deactivated for them
+- Added `waystone_runes` resource pack definitions to allow overriding rune modal colors in resource packs
+- Added individual waystone runes models to allow for easier resource pack overrides
+- Added support for using warp plates in saved structures
+  - Warp plates inside a structure will store relative target locations instead of an explicit target
+  - Waystones will now also automatically reset their identity within saved structures, to avoid duplicate waystones
+- Added `has_modifier` which checks for a modifier item in the source waystone
+- Added `modifier_cost` which consumes an item from the waystone's modifiers
+- Added a maximum limit of 64 custom groups
+- Fixed backing waystone in registry not being updated when block entity dimension or position has changed
+- Fixed auxiliary targets in waystones not being present on the top half of a waystone
