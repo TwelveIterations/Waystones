@@ -21,13 +21,10 @@ import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
 import net.blay09.mods.waystones.store.SavedDataWaystonesStore;
 import net.blay09.mods.waystones.tag.ModItemTags;
-import net.minecraft.core.BlockPos;
+import net.minecraft.core.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.blay09.mods.waystones.worldgen.WaystoneStructureData;
-import net.minecraft.core.Vec3i;
 import net.blay09.mods.waystones.worldgen.StructureAwareBlockEntity;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
@@ -158,7 +155,7 @@ public abstract class WaystoneBlockEntityBase extends BlockEntity implements OnL
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+    public CompoundTag getUpdateTag(HolderGetter.Provider registries) {
         return BalmBlockEntityUtils.createUpdateTag(registries, output -> output.store("Waystone", WaystoneImpl.CODEC.codec(), getWaystone()));
     }
 

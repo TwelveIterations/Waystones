@@ -22,11 +22,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -163,12 +163,12 @@ public class ManageWaystoneGroupsScreen extends WaystoneContainerScreen<Abstract
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics) {
         Waystone fromWaystone = getWaystoneFrom();
         final int locationHeaderY = 20;
         guiGraphics.centeredText(font, getTitle(), imageWidth / 2, fromWaystone != null ? 0 : locationHeaderY, 0xFFFFFFFF);
         if (fromWaystone != null) {
-            drawLocationHeader(guiGraphics, fromWaystone, mouseX, mouseY, imageWidth / 2, locationHeaderY);
+            drawLocationHeader(guiGraphics, fromWaystone, imageWidth / 2, locationHeaderY);
         }
 
         if (groups.isEmpty()) {
@@ -180,7 +180,7 @@ public class ManageWaystoneGroupsScreen extends WaystoneContainerScreen<Abstract
         }
     }
 
-    private void drawLocationHeader(GuiGraphicsExtractor guiGraphics, Waystone waystone, int mouseX, int mouseY, int x, int y) {
+    private void drawLocationHeader(GuiGraphicsExtractor graphics, Waystone waystone, int x, int y) {
         Font font = Minecraft.getInstance().font;
 
         int locationPrefixWidth = font.width(Component.translatable("gui.waystones.waystone_selection.current_location", ""));
@@ -195,8 +195,8 @@ public class ManageWaystoneGroupsScreen extends WaystoneContainerScreen<Abstract
 
         int startX = leftPos + x - fullWidth / 2 + locationPrefixWidth;
         int startY = y + topPos;
-        isLocationHeaderHovered = mouseX >= startX && mouseX < startX + locationWidth + 16
-                && mouseY >= startY && mouseY < startY + font.lineHeight;
+        isLocationHeaderHovered = graphics.mouseX() >= startX && graphics.mouseX() < startX + locationWidth + 16
+                && graphics.mouseY() >= startY && graphics.mouseY() < startY + font.lineHeight;
 
         if (isLocationHeaderHovered) {
             effectiveName.withStyle(ChatFormatting.UNDERLINE);
@@ -204,10 +204,10 @@ public class ManageWaystoneGroupsScreen extends WaystoneContainerScreen<Abstract
 
         final var fullText = Component.translatable("gui.waystones.waystone_selection.current_location",
                 effectiveName.withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.YELLOW);
-        guiGraphics.text(font, fullText, x - fullWidth / 2, y, 0xFFFFFFFF);
+        graphics.text(font, fullText, x - fullWidth / 2, y, 0xFFFFFFFF);
 
         if (isLocationHeaderHovered) {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, EDIT_ICON, x + fullWidth / 2, y - 4, 16, 16);
+            graphics.blitSprite(GuiPipeline.TEXTURED, EDIT_ICON, x + fullWidth / 2, y - 4, 16, 16);
         }
     }
 

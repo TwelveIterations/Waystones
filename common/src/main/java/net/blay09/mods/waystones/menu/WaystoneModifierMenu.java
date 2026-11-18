@@ -23,20 +23,20 @@ public class WaystoneModifierMenu extends AbstractContainerMenu {
         this.container = container;
         this.waystone = waystone;
 
-        addSlot(new WaystoneModifierSlot(container, 0, 80, 45));
-        addSlot(new WaystoneModifierSlot(container, 1, 80, 17));
-        addSlot(new WaystoneModifierSlot(container, 2, 108, 45));
-        addSlot(new WaystoneModifierSlot(container, 3, 80, 73));
-        addSlot(new WaystoneModifierSlot(container, 4, 52, 45));
+        addSlot(new WaystoneModifierSlot(container, 0, 80, 45, Slot.Section.CONTAINER));
+        addSlot(new WaystoneModifierSlot(container, 1, 80, 17, Slot.Section.CONTAINER));
+        addSlot(new WaystoneModifierSlot(container, 2, 108, 45, Slot.Section.CONTAINER));
+        addSlot(new WaystoneModifierSlot(container, 3, 80, 73, Slot.Section.CONTAINER));
+        addSlot(new WaystoneModifierSlot(container, 4, 52, 45, Slot.Section.CONTAINER));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
-                addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 104 + i * 18));
+                addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 104 + i * 18, Slot.Section.INVENTORY));
             }
         }
 
         for (int j = 0; j < 9; ++j) {
-            addSlot(new Slot(playerInventory, j, 8 + j * 18, 162));
+            addSlot(new Slot(playerInventory, j, 8 + j * 18, 162, Slot.Section.HOTBAR));
         }
     }
 

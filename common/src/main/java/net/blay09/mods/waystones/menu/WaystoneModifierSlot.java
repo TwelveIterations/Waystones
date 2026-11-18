@@ -6,8 +6,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class WaystoneModifierSlot extends Slot {
-    public WaystoneModifierSlot(Container container, int slot, int x, int y) {
-        super(container, slot, x, y);
+    public WaystoneModifierSlot(Container container, int slot, int x, int y, Section section) {
+        super(container, slot, x, y, section);
     }
 
     @Override

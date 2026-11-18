@@ -106,8 +106,8 @@ public class WaystoneGroupEditScreen extends WaystoneContainerScreen<AbstractCon
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.extractContents(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractContents(GuiGraphicsExtractor guiGraphics) {
+        super.extractContents(guiGraphics);
 
         if (nameField != null && nameField.getValue().isEmpty()) {
             guiGraphics.text(Minecraft.getInstance().font,
@@ -119,7 +119,7 @@ public class WaystoneGroupEditScreen extends WaystoneContainerScreen<AbstractCon
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.centeredText(font, title, 176 / 2, titleLabelY, 0xFFFFFFFF);
     }
 

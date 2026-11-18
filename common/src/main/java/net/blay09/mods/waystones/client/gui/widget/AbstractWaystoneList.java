@@ -66,9 +66,9 @@ public abstract class AbstractWaystoneList<E extends AbstractWaystoneList.Entry<
         }
 
         @Override
-        public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
+        public void extractContent(GuiGraphicsExtractor graphics, boolean hovered) {
             for (AbstractWidget widget : widgets()) {
-                widget.extractRenderState(graphics, mouseX, mouseY, partialTick);
+                widget.extractRenderState(graphics);
             }
         }
 

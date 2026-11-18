@@ -16,7 +16,7 @@ public class CombinedRequirementRenderer implements RequirementRenderer<List<Obj
     }
 
     @Override
-    public void renderWidget(Player player, List<Object> requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
+    public void renderWidget(Player player, List<Object> requirement, GuiGraphicsExtractor guiGraphics, int x, int y) {
         final var mergedRequirements = RequirementClientRegistry.mergeRequirements(requirement);
         final var sortedChildren = mergedRequirements
                 .stream()
@@ -27,7 +27,7 @@ public class CombinedRequirementRenderer implements RequirementRenderer<List<Obj
         for (final var child : sortedChildren) {
             final var childRenderer = child.getSecond();
             if (childRenderer != null) {
-                childRenderer.renderWidget(player, child.getFirst(), guiGraphics, mouseX, mouseY, partialTicks, currentX, y);
+                childRenderer.renderWidget(player, child.getFirst(), guiGraphics, currentX, y);
                 currentX += 2 + childRenderer.getWidth(player, child.getFirst());
             }
         }

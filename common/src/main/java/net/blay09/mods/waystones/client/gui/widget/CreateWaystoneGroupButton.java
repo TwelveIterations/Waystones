@@ -17,13 +17,13 @@ public class CreateWaystoneGroupButton extends Button.Plain {
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractContents(graphics, mouseX, mouseY, partialTick);
+    public void extractContents(GuiGraphicsExtractor graphics) {
+        super.extractContents(graphics);
         if (isHovered) {
             final var tooltip = active
                     ? LABEL
                     : Component.translatable("gui.waystones.manage_groups.limit_reached", GroupValidation.MAX_CUSTOM_GROUPS).withStyle(ChatFormatting.RED);
-            graphics.setTooltipForNextFrame(Minecraft.getInstance().font, tooltip, mouseX, mouseY, null);
+            graphics.setTooltipForNextFrame(Minecraft.getInstance().font, tooltip, graphics.mouseX(), graphics.mouseY(), null);
         }
     }
 }

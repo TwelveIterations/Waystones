@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.api;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import org.jspecify.annotations.Nullable;
 
@@ -23,14 +22,14 @@ public class SharestoneType implements Comparable<SharestoneType> {
 
     private final Identifier identifier;
     private final Identifier kind;
-    private final DyeColor color;
+    private final int color;
     private final Supplier<Block> blockSupplier;
 
-    public SharestoneType(Identifier identifier, DyeColor color, Supplier<Block> blockSupplier) {
+    public SharestoneType(Identifier identifier, int color, Supplier<Block> blockSupplier) {
         this(identifier, identifier, color, blockSupplier);
     }
 
-    public SharestoneType(Identifier identifier, Identifier kind, DyeColor color, Supplier<Block> blockSupplier) {
+    public SharestoneType(Identifier identifier, Identifier kind, int color, Supplier<Block> blockSupplier) {
         this.identifier = identifier;
         this.kind = kind;
         this.color = color;
@@ -59,16 +58,18 @@ public class SharestoneType implements Comparable<SharestoneType> {
         return TYPES_BY_IDENTIFIER.get(identifier);
     }
 
-    public DyeColor color() {
+    public int color() {
         return color;
     }
 
+    @Deprecated
     public int textColor() {
-        return color.getTextColor();
+        return color;
     }
 
+    @Deprecated
     public int textureDiffuseColor() {
-        return color.getTextureDiffuseColor();
+        return color;
     }
 
     public Identifier identifier() {

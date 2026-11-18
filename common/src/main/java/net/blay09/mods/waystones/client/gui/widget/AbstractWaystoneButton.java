@@ -6,8 +6,8 @@ import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -48,7 +48,7 @@ public abstract class AbstractWaystoneButton extends Button.Plain {
     protected int renderDimensionOverlay(GuiGraphicsExtractor graphics) {
         final var dimensionOverlay = getDimensionOverlaySprite(waystone.getDimension());
         if (Minecraft.getInstance().getResourceManager().getResource(getSpriteResource(dimensionOverlay)).isPresent()) {
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED,
+            graphics.blitSprite(GuiPipeline.TEXTURED,
                     dimensionOverlay,
                     getX() + getWidth() - DIMENSION_OVERLAY_WIDTH,
                     getY(),

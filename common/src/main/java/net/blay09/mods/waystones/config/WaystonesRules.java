@@ -20,7 +20,6 @@ import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -234,7 +233,7 @@ public class WaystonesRules {
         return useTimeMultiplier;
     }).coerce(Coercion.FLOAT);
 
-    public static final ShogiValue<WarpPlateBlockEntity, Integer> warpPlateUseTime = scope.intValue(id("warp_plate_use_time"), context -> (int) (Mth.clamp(15 * warpPlateUseTimeMultiplier.getOrDefault(context), 1, 30)));
+    public static final ShogiValue<WarpPlateBlockEntity, Integer> warpPlateUseTime = scope.intValue(id("warp_plate_use_time"), context -> (int) (Math.clamp(15 * warpPlateUseTimeMultiplier.getOrDefault(context), 1, 30)));
     public static final ShogiValue<Entity, Integer> scrollUseTime = scope.intValue(id("scroll_use_time"), _ -> 32);
 
     public static final ShogiValue<ShogiContext, Boolean> mayManageGlobalWaystones = scope.maybe(id("may_manage_global_waystones"), (ShogiContext context) -> {

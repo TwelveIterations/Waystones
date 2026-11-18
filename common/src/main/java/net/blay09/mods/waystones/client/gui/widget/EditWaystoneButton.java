@@ -1,9 +1,9 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -30,9 +30,9 @@ public class EditWaystoneButton extends Button {
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics) {
         if (getBottom() > visibleRegionStart && getY() < visibleRegionStart + visibleRegionHeight) {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,
+            guiGraphics.blitSprite(GuiPipeline.TEXTURED,
                     SPRITE,
                     getX(),
                     getY(),

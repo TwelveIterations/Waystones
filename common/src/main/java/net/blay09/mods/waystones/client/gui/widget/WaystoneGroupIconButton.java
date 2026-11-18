@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -54,8 +54,8 @@ public class WaystoneGroupIconButton extends Button {
     }
 
     @Override
-    protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics) {
         extractDefaultSprite(guiGraphics);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon, getX() + 3, getY() + 3, 15, 15);
+        guiGraphics.blitSprite(GuiPipeline.TEXTURED, icon, getX() + 3, getY() + 3, 15, 15);
     }
 }

@@ -3,8 +3,6 @@ package net.blay09.mods.waystones.api;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.DyeColor;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Comparator;
@@ -21,10 +19,10 @@ public class PortstoneType implements Comparable<PortstoneType> {
     }, PortstoneType::identifier);
 
     private final Identifier identifier;
-    private final DyeColor color;
+    private final int color;
     private final Identifier kind;
 
-    public PortstoneType(Identifier identifier, DyeColor color, Identifier kind) {
+    public PortstoneType(Identifier identifier, int color, Identifier kind) {
         this.identifier = identifier;
         this.color = color;
         this.kind = kind;
@@ -52,12 +50,18 @@ public class PortstoneType implements Comparable<PortstoneType> {
         return TYPES_BY_IDENTIFIER.get(identifier);
     }
 
-    public int textColor() {
-        return color.getTextColor();
+    public int color() {
+        return color;
     }
 
+    @Deprecated
+    public int textColor() {
+        return color;
+    }
+
+    @Deprecated
     public int textureDiffuseColor() {
-        return color.getTextureDiffuseColor();
+        return color;
     }
 
     public Identifier identifier() {
@@ -69,7 +73,7 @@ public class PortstoneType implements Comparable<PortstoneType> {
     }
 
     @Override
-    public int compareTo(@NonNull PortstoneType o) {
+    public int compareTo(PortstoneType o) {
         return COMPARATOR.compare(this, o);
     }
 }

@@ -45,7 +45,7 @@ public class WarpRequirementListEditorEntry extends BalmConfigListEditorEntry<St
     }
 
     @Override
-    protected void extractEntryContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
+    protected void extractEntryContent(GuiGraphicsExtractor graphics) {
         final var value = Objects.requireNonNullElse(valueHolder.value(), "");
         final var textWidth = Math.max(1, getContentRightBeforeActions() - getContentLeftAfterDragHandle());
         final var label = context.font().plainSubstrByWidth(value, textWidth);
@@ -60,7 +60,7 @@ public class WarpRequirementListEditorEntry extends BalmConfigListEditorEntry<St
     protected void updateActionWidgets() {
         editButton.active = canEdit();
         deleteButton.active = canDelete();
-        resetButton.visible = canReset();
+        resetButton.setVisible(canReset());
         resetButton.active = canReset();
     }
 

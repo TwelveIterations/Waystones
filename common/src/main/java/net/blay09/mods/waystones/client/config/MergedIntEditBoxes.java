@@ -74,13 +74,13 @@ final class MergedIntEditBoxes extends AbstractContainerWidget {
     }
 
     @Override
-    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics) {
         first.active = active;
         second.active = active;
-        first.visible = visible;
-        second.visible = visible;
-        first.extractRenderState(graphics, mouseX, mouseY, partialTick);
-        second.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        first.setVisible(visible);
+        second.setVisible(visible);
+        first.extractRenderState(graphics);
+        second.extractRenderState(graphics);
     }
 
     @Override

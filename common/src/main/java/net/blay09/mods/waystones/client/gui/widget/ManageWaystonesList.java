@@ -137,13 +137,13 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
     }
 
     @Override
-    protected void extractListItems(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractListItems(GuiGraphicsExtractor graphics) {
         extractingDraggedEntry = false;
-        super.extractListItems(graphics, mouseX, mouseY, partialTick);
+        super.extractListItems(graphics);
 
         if (draggedEntry != null) {
             extractingDraggedEntry = true;
-            extractItem(graphics, mouseX, mouseY, partialTick, draggedEntry);
+            extractItem(graphics, draggedEntry);
             extractingDraggedEntry = false;
         }
     }
@@ -209,7 +209,7 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
         }
 
         @Override
-        public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
+        public void extractContent(GuiGraphicsExtractor graphics, boolean hovered) {
             if (ManageWaystonesList.this.isDragging(this)) {
                 if (!extractingDraggedEntry) {
                     return;
@@ -218,12 +218,12 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
                 final var pose = graphics.pose();
                 pose.pushMatrix();
                 pose.translate(0, (float) (dragMouseY - dragGrabOffsetY - getY()));
-                super.extractContent(graphics, mouseX, mouseY, hovered, partialTick);
+                super.extractContent(graphics, hovered);
                 pose.popMatrix();
                 return;
             }
 
-            super.extractContent(graphics, mouseX, mouseY, hovered, partialTick);
+            super.extractContent(graphics, hovered);
         }
 
         @Override

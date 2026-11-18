@@ -7,7 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import java.util.List;
 
 public interface RequirementRenderer<T> {
-    void renderWidget(Player player, T requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y);
+    void renderWidget(Player player, T requirement, GuiGraphicsExtractor guiGraphics, int x, int y);
 
     default int getWidth(Player player, T requirement) {
         return 16;

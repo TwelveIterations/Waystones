@@ -12,7 +12,7 @@ public class ManageWaystoneButton extends AbstractWaystoneButton {
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractContents(GuiGraphicsExtractor graphics) {
         extractDefaultSprite(graphics);
 
         final int rightPadding = renderDimensionOverlay(graphics);

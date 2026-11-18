@@ -12,7 +12,7 @@ import java.util.List;
 
 public class EpitaphRequirementRenderer implements RequirementRenderer<EpitaphRequirement> {
     @Override
-    public void renderWidget(Player player, EpitaphRequirement requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
+    public void renderWidget(Player player, EpitaphRequirement requirement, GuiGraphicsExtractor guiGraphics, int x, int y) {
         guiGraphics.item(new ItemStack(ModItems.epitaph.asItem()), x, y);
     }
 

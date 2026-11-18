@@ -161,13 +161,13 @@ public class ManageWaystoneGroupsList extends ContainerObjectSelectionList<Manag
     }
 
     @Override
-    protected void extractListItems(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractListItems(GuiGraphicsExtractor graphics) {
         extractingDraggedEntry = false;
-        super.extractListItems(graphics, mouseX, mouseY, partialTick);
+        super.extractListItems(graphics);
 
         if (draggedEntry != null) {
             extractingDraggedEntry = true;
-            extractItem(graphics, mouseX, mouseY, partialTick, draggedEntry);
+            extractItem(graphics, draggedEntry);
             extractingDraggedEntry = false;
         }
     }
@@ -244,7 +244,7 @@ public class ManageWaystoneGroupsList extends ContainerObjectSelectionList<Manag
         }
 
         @Override
-        public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
+        public void extractContent(GuiGraphicsExtractor graphics, boolean hovered) {
             if (ManageWaystoneGroupsList.this.isDragging(this)) {
                 if (!extractingDraggedEntry) {
                     return;
@@ -253,12 +253,12 @@ public class ManageWaystoneGroupsList extends ContainerObjectSelectionList<Manag
                 final var pose = graphics.pose();
                 pose.pushMatrix();
                 pose.translate(0, (float) (dragMouseY - dragGrabOffsetY - getY()));
-                widgets.forEach(widget -> widget.extractRenderState(graphics, mouseX, mouseY, partialTick));
+                widgets.forEach(widget -> widget.extractRenderState(graphics));
                 pose.popMatrix();
                 return;
             }
 
-            widgets.forEach(widget -> widget.extractRenderState(graphics, mouseX, mouseY, partialTick));
+            widgets.forEach(widget -> widget.extractRenderState(graphics));
         }
 
         @Override

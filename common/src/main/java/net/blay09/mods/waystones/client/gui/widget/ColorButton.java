@@ -48,7 +48,7 @@ public class ColorButton extends Button {
     }
 
     @Override
-    protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics) {
         extractDefaultSprite(guiGraphics);
         guiGraphics.fill(getX() + 5, getY() + 5, getX() + 16, getY() + 16, getColor());
         guiGraphics.outline(getX() + 4, getY() + 4, 13, 13, 0xFF000000);

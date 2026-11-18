@@ -15,7 +15,7 @@ public class BuiltinPortstoneType extends PortstoneType {
     private final String name;
     private final Supplier<Ingredient> ingredientSupplier;
 
-    public BuiltinPortstoneType(String name, DyeColor color, Identifier kind, Supplier<Ingredient> ingredientSupplier) {
+    public BuiltinPortstoneType(String name, int color, Identifier kind, Supplier<Ingredient> ingredientSupplier) {
         super(id(StringUtil.isBlank(name) ? "unscoped" : name), color, kind);
         this.name = name;
         this.ingredientSupplier = ingredientSupplier;

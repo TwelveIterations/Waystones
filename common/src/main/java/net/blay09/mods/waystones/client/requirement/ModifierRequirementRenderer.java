@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ModifierRequirementRenderer implements RequirementRenderer<ModifierRequirement> {
     @Override
-    public void renderWidget(Player player, ModifierRequirement requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
+    public void renderWidget(Player player, ModifierRequirement requirement, GuiGraphicsExtractor guiGraphics, int x, int y) {
         if (requirement.required() > 0) {
             final var font = Minecraft.getInstance().font;
             final var itemStack = requirement.item().stream().findFirst().map(Holder::value).map(Item::getDefaultInstance).orElse(ItemStack.EMPTY);

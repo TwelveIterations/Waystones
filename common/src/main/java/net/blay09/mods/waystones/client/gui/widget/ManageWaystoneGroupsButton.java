@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.client.gui.widget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -19,11 +19,11 @@ public class ManageWaystoneGroupsButton extends Button.Plain {
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.extractContents(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ICON, getX() + 2, getY() + 2, 16, 16);
+    public void extractContents(GuiGraphicsExtractor graphics) {
+        super.extractContents(graphics);
+        graphics.blitSprite(GuiPipeline.TEXTURED, ICON, getX() + 2, getY() + 2, 16, 16);
         if (isHovered) {
-            guiGraphics.setTooltipForNextFrame(Minecraft.getInstance().font, LABEL, mouseX, mouseY, null);
+            graphics.setTooltipForNextFrame(Minecraft.getInstance().font, LABEL, graphics.mouseX(), graphics.mouseY(), null);
         }
     }
 }

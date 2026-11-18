@@ -12,7 +12,7 @@ import java.util.List;
 
 public class TwinboundFeatherRequirementRenderer implements RequirementRenderer<TwinboundFeatherRequirement> {
     @Override
-    public void renderWidget(Player player, TwinboundFeatherRequirement requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
+    public void renderWidget(Player player, TwinboundFeatherRequirement requirement, GuiGraphicsExtractor guiGraphics, int x, int y) {
         guiGraphics.item(new ItemStack(ModItems.twinboundFeather.asItem()), x, y);
     }
 

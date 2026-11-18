@@ -8,7 +8,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import java.util.stream.Stream;
 
 public class PortstoneTypes {
-    public static final BuiltinPortstoneType UNSCOPED = register(new BuiltinPortstoneType("unscoped", DyeColor.WHITE, WaystoneKinds.WAYSTONE, () -> Ingredient.of(Items.AIR)));
+    public static final BuiltinPortstoneType UNSCOPED = register(new BuiltinPortstoneType("unscoped", 0xffffff, WaystoneKinds.WAYSTONE, () -> Ingredient.of(Items.AIR)));
     public static final BuiltinPortstoneType COPPER = register(new BuiltinPortstoneType("copper", SharestoneTypes.COPPER.color(), SharestoneTypes.COPPER.kind(), SharestoneTypes.COPPER::ingredient));
     public static final BuiltinPortstoneType PRISMARINE = register(new BuiltinPortstoneType("prismarine", SharestoneTypes.PRISMARINE.color(), SharestoneTypes.PRISMARINE.kind(), SharestoneTypes.PRISMARINE::ingredient));
     public static final BuiltinPortstoneType GOLD = register(new BuiltinPortstoneType("gold", SharestoneTypes.GOLD.color(), SharestoneTypes.GOLD.kind(), SharestoneTypes.GOLD::ingredient));

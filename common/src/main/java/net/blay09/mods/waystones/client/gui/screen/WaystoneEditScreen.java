@@ -132,8 +132,8 @@ public class WaystoneEditScreen extends WaystoneContainerScreen<WaystoneEditMenu
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.extractContents(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractContents(GuiGraphicsExtractor guiGraphics) {
+        super.extractContents(guiGraphics);
 
         if (nameField != null && menu.canEdit() && nameField.getValue().isEmpty()) {
             guiGraphics.text(Minecraft.getInstance().font,
@@ -145,7 +145,7 @@ public class WaystoneEditScreen extends WaystoneContainerScreen<WaystoneEditMenu
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.centeredText(font, title, 176 / 2, titleLabelY, 0xFFFFFFFF);
         final var error = menu.getError();
         if (error != null) {

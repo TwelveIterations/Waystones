@@ -14,7 +14,7 @@ import net.blay09.mods.waystones.item.WaystoneBlockItem;
 import net.blay09.mods.waystones.migration.MigrationUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.sounds.BlockSoundSets;
 
 import java.util.stream.Collectors;
 
@@ -29,20 +29,20 @@ public class ModBlocks {
 
     public static void initialize(BalmBlockRegistrar blocks) {
         final var waystoneTypes = WaystoneTypes.builtinValues().collect(Collectors.toSet());
-        waystones = blocks.registerDiscriminated(waystoneTypes, DiscriminatedBlocks.suffixWith("waystone"), WaystoneBlock::new, (type, properties) -> properties.sound(type.soundType()).strength(5f, 2000f).lightLevel(state -> state.getValue(WaystoneBlock.SEEN) ? 10 : 0))
+        waystones = blocks.registerDiscriminated(waystoneTypes, DiscriminatedBlocks.suffixWith("waystone"), WaystoneBlock::new, (type, properties) -> properties.sound(type.soundSet()).strength(5f, 2000f).lightLevel(state -> state.getValue(WaystoneBlock.SEEN) ? 10 : 0))
                 .withItems(WaystoneBlockItem::new)
                 .asDiscriminatedBlocks();
-        warpPlate = blocks.register("warp_plate", WarpPlateBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f)).withDefaultItem().asDeferredBlock();
+        warpPlate = blocks.register("warp_plate", WarpPlateBlock::new, it -> it.sound(BlockSoundSets.STONE).strength(5f, 2000f)).withDefaultItem().asDeferredBlock();
         warpPortal = blocks.register("warp_portal", WarpPortalBlock::new, it -> it.noLootTable().lightLevel(_ -> 10).strength(-1f, 3600000f)).asDeferredBlock();
-        fleetingMemorial = blocks.register("fleeting_memorial", FleetingMemorialBlock::new, it -> it.noLootTable().sound(SoundType.STONE).strength(2f, 6f).lightLevel(_ -> 6)).asDeferredBlock();
+        fleetingMemorial = blocks.register("fleeting_memorial", FleetingMemorialBlock::new, it -> it.noLootTable().sound(BlockSoundSets.STONE).strength(2f, 6f).lightLevel(_ -> 6)).asDeferredBlock();
 
         final var sharestoneTypes = SharestoneTypes.builtinValues().collect(Collectors.toSet());
         final var portstoneTypes = PortstoneTypes.builtinValues().collect(Collectors.toSet());
-        portstones = blocks.registerDiscriminated(portstoneTypes, type -> type != PortstoneTypes.UNSCOPED ? type + "_portstone" : "portstone", PortstoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f))
+        portstones = blocks.registerDiscriminated(portstoneTypes, type -> type != PortstoneTypes.UNSCOPED ? type + "_portstone" : "portstone", PortstoneBlock::new, it -> it.sound(BlockSoundSets.STONE).strength(5f, 2000f))
                 .withItems(PortstoneBlockItem::new, it -> it.component(ModComponents.description.value(), new DescriptionComponent(Component.translatable("tooltip.waystones.portstone").withStyle(ChatFormatting.GRAY))))
                 .asDiscriminatedBlocks();
 
-        sharestones = blocks.registerDiscriminated(sharestoneTypes, DiscriminatedBlocks.suffixWith("sharestone"), SharestoneBlock::new, it -> it.sound(SoundType.STONE).strength(5f, 2000f))
+        sharestones = blocks.registerDiscriminated(sharestoneTypes, DiscriminatedBlocks.suffixWith("sharestone"), SharestoneBlock::new, it -> it.sound(BlockSoundSets.STONE).strength(5f, 2000f))
                 .withItems(SharestoneBlockItem::new, (color, it) -> it.component(ModComponents.description.value(), new DescriptionComponent(Component.translatable("tooltip.waystones." + color + "_sharestone").withStyle(ChatFormatting.GRAY))))
                 .asDiscriminatedBlocks();
 

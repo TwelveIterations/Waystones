@@ -26,7 +26,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -328,16 +328,16 @@ public abstract class WaystoneSelectionScreenBase extends WaystoneContainerScree
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor graphics) {
         Waystone fromWaystone = menu.getWaystoneFrom();
         final int locationHeaderY = headerY + 20;
-        guiGraphics.centeredText(font, getTitle(), imageWidth / 2, fromWaystone != null ? headerY : locationHeaderY, 0xFFFFFFFF);
+        graphics.centeredText(font, getTitle(), imageWidth / 2, fromWaystone != null ? headerY : locationHeaderY, 0xFFFFFFFF);
         if (fromWaystone != null) {
-            drawLocationHeader(guiGraphics, fromWaystone, mouseX, mouseY, imageWidth / 2, locationHeaderY);
+            drawLocationHeader(graphics, fromWaystone, graphics.mouseX(), graphics.mouseY(), imageWidth / 2, locationHeaderY);
         }
 
         if (waystones.isEmpty()) {
-            guiGraphics.centeredText(font,
+            graphics.centeredText(font,
                     getNoWaystonesMessage(),
                     imageWidth / 2,
                     layoutImageHeight / 2 - 20,
@@ -386,7 +386,7 @@ public abstract class WaystoneSelectionScreenBase extends WaystoneContainerScree
         guiGraphics.text(font, fullText, x - fullWidth / 2, y, 0xFFFFFFFF);
 
         if (isLocationHeaderHovered) {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, EDIT_ICON, x + fullWidth / 2, y - 4, 16, 16);
+            guiGraphics.blitSprite(GuiPipeline.TEXTURED, EDIT_ICON, x + fullWidth / 2, y - 4, 16, 16);
         }
     }
 

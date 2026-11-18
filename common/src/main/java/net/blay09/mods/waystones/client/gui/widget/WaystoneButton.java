@@ -29,10 +29,10 @@ public class WaystoneButton extends AbstractWaystoneButton {
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractContents(GuiGraphicsExtractor graphics) {
         extractDefaultSprite(graphics);
 
-        final int leftPadding = renderRequirements(graphics, mouseX, mouseY, partialTicks);
+        final int leftPadding = renderRequirements(graphics);
         final int rightPadding = renderRightContent(graphics);
         final int labelLeft = getX() + leftPadding + TEXT_MARGIN;
         final int labelRight = getX() + getWidth() - TEXT_MARGIN - rightPadding;
@@ -66,17 +66,17 @@ public class WaystoneButton extends AbstractWaystoneButton {
         return 0;
     }
 
-    private int renderRequirements(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    private int renderRequirements(GuiGraphicsExtractor graphics) {
         final var font = Minecraft.getInstance().font;
         final var player = Objects.requireNonNull(Minecraft.getInstance().player);
         final var requirement = Either.unwrap(warpRequirements);
         final var renderer = warpRequirements.right().isPresent() ? RequirementClientRegistry.getErrorListRenderer() : RequirementClientRegistry.getListRenderer();
-        renderer.renderWidget(player, requirement, guiGraphics, mouseX, mouseY, partialTicks, getX() + 2, getY() + 2);
+        renderer.renderWidget(player, requirement, graphics, getX() + 2, getY() + 2);
 
-        if (isHovered && mouseX < getX() + 2 + renderer.getWidth(player, requirement)) {
+        if (isHovered && graphics.mouseX() < getX() + 2 + renderer.getWidth(player, requirement)) {
             final List<Component> tooltip = new ArrayList<>();
             renderer.appendHoverText(player, requirement, tooltip);
-            guiGraphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), mouseX, mouseY + font.lineHeight);
+            graphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), graphics.mouseX(), graphics.mouseY() + font.lineHeight);
         }
 
         return renderer.getWidth(player, requirement) + 5;

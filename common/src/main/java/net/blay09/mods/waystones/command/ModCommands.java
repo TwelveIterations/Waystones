@@ -12,17 +12,18 @@ import net.blay09.mods.waystones.core.TwinboundFeatherTargets;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.item.TwinboundFeatherItem;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
+import net.minecraft.commands.suggestions.SuggestionContext;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
-import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
@@ -53,9 +54,10 @@ public class ModCommands {
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_COOLDOWN, Permissions.COMMANDS_GAMEMASTER);
         BalmCommands.registerPermission(PERMISSION_WAYSTONES_TWINBOUND, Permissions.COMMANDS_GAMEMASTER);
         commands.register(dispatcher -> dispatcher.register(Commands.literal("waystones")
-                .requires(BalmCommands.requireAnyPermission(PERMISSION_WAYSTONES_ACTIVATE, PERMISSION_WAYSTONES_FORGET, PERMISSION_WAYSTONES_COUNT, PERMISSION_WAYSTONES_LIST, PERMISSION_WAYSTONES_GUI, PERMISSION_WAYSTONES_PLACE, PERMISSION_WAYSTONES_COOLDOWN, PERMISSION_WAYSTONES_TWINBOUND))
+                // TODO .requires(BalmCommands.requireAnyPermission(PERMISSION_WAYSTONES_ACTIVATE, PERMISSION_WAYSTONES_FORGET, PERMISSION_WAYSTONES_COUNT, PERMISSION_WAYSTONES_LIST, PERMISSION_WAYSTONES_GUI, PERMISSION_WAYSTONES_PLACE, PERMISSION_WAYSTONES_COOLDOWN, PERMISSION_WAYSTONES_TWINBOUND))
                 .then(Commands.literal("activate")
-                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_ACTIVATE))
+                        // TODO .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_ACTIVATE))
+                        .requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
                         .then(argument("targets", EntityArgument.players())
                                 .then(argument("pos", BlockPosArgument.blockPos()).executes(context -> {
                                     final var targets = EntityArgument.getPlayers(context, "targets");
@@ -82,7 +84,8 @@ public class ModCommands {
                                     return targets.size();
                                 }))))
                 .then(Commands.literal("forget")
-                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_FORGET))
+                        // TODO .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_FORGET))
+                        .requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
                         .then(argument("targets", EntityArgument.players())
                                 .then(argument("pos", BlockPosArgument.blockPos()).executes(context -> {
                                     final var targets = EntityArgument.getPlayers(context, "targets");
@@ -132,10 +135,11 @@ public class ModCommands {
                                 }))))
 
                 .then(Commands.literal("place")
-                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_PLACE))
+                        // TODO .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_PLACE))
+                        .requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
                         .then(argument("pos", BlockPosArgument.blockPos())
                                 .then(argument("type", StringArgumentType.word())
-                                        .suggests((_, builder) -> SharedSuggestionProvider.suggest(
+                                        .suggests((_, builder) -> SuggestionContext.suggest(
                                                 WaystoneType.values()
                                                         .map(WaystoneType::identifier)
                                                         .map(id -> id.getNamespace().equals(Waystones.MOD_ID) ? id.getPath() : id.toString()),
@@ -165,10 +169,12 @@ public class ModCommands {
                                                     return 1;
                                                 })))))
                 .then(Commands.literal("count")
-                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_COUNT))
+                        // TODO .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_COUNT))
+                        .requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
                         .then(argument("player", EntityArgument.player()).executes(new CountWaystonesCommand())))
                 .then(Commands.literal("list")
-                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_LIST))
+                        // TODO .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_LIST))
+                        .requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
                         .then(argument("player", EntityArgument.player()).executes(ctx -> {
                                     final var caller = ctx.getSource().getPlayerOrException();
                                     final var target = ctx.getArgument("player", EntitySelector.class).findSinglePlayer(ctx.getSource());
@@ -202,10 +208,12 @@ public class ModCommands {
                                     return waystones.size();
                                 }))))
                 .then(Commands.literal("gui")
-                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_GUI))
+                        // TODO .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_GUI))
+                        .requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
                         .then(argument("player", EntityArgument.player()).executes(new OpenPlayerWaystonesGuiCommand())))
                 .then(Commands.literal("twinbound")
-                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_TWINBOUND))
+                        // TODO .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_TWINBOUND))
+                        .requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
                         .then(argument("first", EntityArgument.player())
                                 .then(argument("second", EntityArgument.player())
                                         .executes(context -> {
@@ -243,7 +251,8 @@ public class ModCommands {
                                             return linked ? 1 : 0;
                                         }))))
                 .then(Commands.literal("cooldown")
-                        .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_COOLDOWN))
+                        // TODO .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_COOLDOWN))
+                        .requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
                         .then(argument("targets", EntityArgument.players())
                                 .then(Commands.literal("reset")
                                         .then(Commands.literal("all").executes(context -> {
@@ -271,7 +280,7 @@ public class ModCommands {
                                                                 keys.add(key.toString());
                                                             }
                                                         }
-                                                        return SharedSuggestionProvider.suggest(keys, builder);
+                                                        return SuggestionContext.suggest(keys, builder);
                                                     } catch (Exception e) {
                                                         return builder.buildFuture();
                                                     }

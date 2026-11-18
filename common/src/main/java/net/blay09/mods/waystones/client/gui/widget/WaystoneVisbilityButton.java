@@ -7,7 +7,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -48,9 +48,9 @@ public class WaystoneVisbilityButton extends Button {
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
-        final var sprite = getSprites().get(this.isActive(), this.isHoveredOrFocused());
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getX(), getY(), 21, 21);
+    public void extractContents(GuiGraphicsExtractor guiGraphics) {
+        final var sprite = getSprites().get(this.isActive(), this.isHighlighted());
+        guiGraphics.blitSprite(GuiPipeline.TEXTURED, sprite, getX(), getY(), 21, 21);
     }
 
     private void updateTooltip() {

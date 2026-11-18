@@ -4,7 +4,7 @@ import net.blay09.mods.waystones.api.WaystoneGroup;
 import net.blay09.mods.waystones.client.WaystoneGroupIcons;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.network.chat.Component;
 
 public class ManageWaystoneGroupButton extends Button.Plain {
@@ -23,12 +23,12 @@ public class ManageWaystoneGroupButton extends Button.Plain {
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractContents(GuiGraphicsExtractor graphics) {
         extractDefaultSprite(graphics);
 
         final int iconLeft = getX() + 3;
         final int iconTop = getY() + 2;
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, WaystoneGroupIcons.getIcon(group), iconLeft, iconTop, 16, 16);
+        graphics.blitSprite(GuiPipeline.TEXTURED, WaystoneGroupIcons.getIcon(group), iconLeft, iconTop, 16, 16);
 
         final int labelLeft = getX() + TEXT_MARGIN + 18;
         final int labelRight = getX() + getWidth() - TEXT_MARGIN;

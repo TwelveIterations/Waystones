@@ -11,7 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -43,12 +43,12 @@ public class WaystoneInventoryButton extends Button {
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractContents(GuiGraphicsExtractor graphics) {
         visible = visiblePredicate.get();
         if (visible) {
             setX(((AbstractContainerScreenAccessor) parentScreen).getLeftPos() + xPosition.get());
             setY(((AbstractContainerScreenAccessor) parentScreen).getTopPos() + yPosition.get());
-            isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + width && mouseY < getY() + height;
+            isHovered = graphics.mouseX() >= getX() && graphics.mouseY() >= getY() && graphics.mouseX() < getX() + width && graphics.mouseY() < getY() + height;
 
             final var player = Objects.requireNonNull(Minecraft.getInstance().player);
             final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
@@ -56,10 +56,10 @@ public class WaystoneInventoryButton extends Button {
             final var requirements = WaystonesRules.inventoryButtonWarpRequirements.get(context);
             if (requirements.left().isPresent()) {
                 ItemStack icon = isHovered ? iconItemHovered : iconItem;
-                guiGraphics.item(icon, getX(), getY());
-                guiGraphics.itemDecorations(Minecraft.getInstance().font, icon, getX(), getY());
+                graphics.item(icon, getX(), getY());
+                graphics.itemDecorations(Minecraft.getInstance().font, icon, getX(), getY());
             } else {
-                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, INVENTORY_BUTTON_SPRITE, getX(), getY(), 16, 16, 0x80FFFFFF);
+                graphics.blitSprite(GuiPipeline.TEXTURED, INVENTORY_BUTTON_SPRITE, getX(), getY(), 16, 16, 0x80FFFFFF);
             }
         }
     }

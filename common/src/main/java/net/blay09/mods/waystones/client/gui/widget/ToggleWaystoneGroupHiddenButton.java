@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.client.gui.widget;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -33,10 +33,10 @@ public class ToggleWaystoneGroupHiddenButton extends Button {
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics) {
         if (getBottom() > visibleRegionStart && getY() < visibleRegionStart + visibleRegionHeight) {
             final var sprite = hidden ? HIDDEN_SPRITE : VISIBLE_SPRITE;
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getX(), getY(), 13, 13, isHovered ? 0xFFFFFFFF : 0xFFC0C0C0);
+            guiGraphics.blitSprite(GuiPipeline.TEXTURED, sprite, getX(), getY(), 13, 13, isHovered ? 0xFFFFFFFF : 0xFFC0C0C0);
         }
     }
 }

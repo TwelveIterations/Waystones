@@ -158,8 +158,8 @@ public class PersonalWaystoneSettingsScreen extends WaystoneContainerScreen<Abst
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.extractContents(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractContents(GuiGraphicsExtractor guiGraphics) {
+        super.extractContents(guiGraphics);
 
         if (aliasField != null && aliasField.getValue().isEmpty()) {
             guiGraphics.text(Minecraft.getInstance().font,
@@ -171,7 +171,7 @@ public class PersonalWaystoneSettingsScreen extends WaystoneContainerScreen<Abst
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.centeredText(font, title, 176 / 2, titleLabelY, 0xFFFFFFFF);
     }
 

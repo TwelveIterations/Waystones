@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -54,14 +54,14 @@ public class SortWaystonesButton extends Button.Plain {
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractContents(graphics, mouseX, mouseY, partialTick);
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, mode.icon, getX() + 2, getY() + 2, 16, 16);
+    public void extractContents(GuiGraphicsExtractor graphics) {
+        super.extractContents(graphics);
+        graphics.blitSprite(GuiPipeline.TEXTURED, mode.icon, getX() + 2, getY() + 2, 16, 16);
         if (isHovered) {
             graphics.setTooltipForNextFrame(Minecraft.getInstance().font,
                     Component.translatable("gui.waystones.waystone_selection.sort", mode.label()),
-                    mouseX,
-                    mouseY,
+                    graphics.mouseX(),
+                    graphics.mouseY(),
                     null);
         }
     }

@@ -1,9 +1,9 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -50,8 +50,8 @@ public class DragHandleButton extends Button {
     }
 
     @Override
-    protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractContents(GuiGraphicsExtractor graphics) {
         final var icon = list.isDragging(entry) || isHovered ? HIGHLIGHTED_ICON : ICON;
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon, getX(), getY() + 2, 16, 16);
+        graphics.blitSprite(GuiPipeline.TEXTURED, icon, getX(), getY() + 2, 16, 16);
     }
 }

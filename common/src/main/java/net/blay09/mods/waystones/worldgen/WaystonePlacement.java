@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.InclusiveRange;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -33,14 +34,14 @@ public class WaystonePlacement implements PlacementModifier {
     @Override
     public void modify(PlacementContext context, RandomSource random, BlockPos pos, Consumer<BlockPos> output) {
         if (isWaystoneChunk(context, pos)) {
-            if (context.getLevel().getLevel().dimension() == Level.NETHER) {
+            if (context.level().getLevel().dimension() == Level.NETHER) {
                 BlockPos.MutableBlockPos mutablePos = pos.mutable();
                 int topMostY = context.getHeight(heightmap, pos.getX(), pos.getZ());
                 mutablePos.setY(topMostY);
-                BlockState stateAbove = context.getLevel().getBlockState(mutablePos);
+                BlockState stateAbove = context.level().getBlockState(mutablePos);
                 for (int i = mutablePos.getY(); i >= 1; i--) {
                     mutablePos.setY(mutablePos.getY() - 1);
-                    BlockState state = context.getLevel().getBlockState(mutablePos);
+                    BlockState state = context.level().getBlockState(mutablePos);
                     if (!state.isAir() && state.getFluidState().isEmpty() && stateAbove.isAir() && !state.is(Blocks.BEDROCK)) {
                         mutablePos.setY(mutablePos.getY() + 1);
                         break;
@@ -63,6 +64,12 @@ public class WaystonePlacement implements PlacementModifier {
     }
 
     @Override
+    public InclusiveRange<Integer> modifyXzDomain(InclusiveRange<Integer> inclusiveRange) {
+        // TODO look into this further
+        return inclusiveRange;
+    }
+
+    @Override
     public MapCodec<? extends PlacementModifier> codec() {
         return CODEC;
     }
@@ -73,7 +80,7 @@ public class WaystonePlacement implements PlacementModifier {
             return false;
         }
 
-        Identifier dimension = world.getLevel().getLevel().dimension().identifier();
+        Identifier dimension = world.level().getLevel().dimension().identifier();
         final var dimensionAllowList = WaystonesConfig.getActive().worldGen.wildWaystonesDimensionAllowList;
         final var dimensionDenyList = WaystonesConfig.getActive().worldGen.wildWaystonesDimensionDenyList;
         if (!dimensionAllowList.isEmpty() && !dimensionAllowList.contains(dimension)) {
@@ -87,7 +94,7 @@ public class WaystonePlacement implements PlacementModifier {
         int chunkZ = pos.getZ() / 16;
         int devGridX = pos.getX() / 16 * maxDeviation;
         int devGridZ = pos.getZ() / 16 * maxDeviation;
-        long seed = world.getLevel().getSeed();
+        long seed = world.level().getSeed();
         Random random = new Random(seed * devGridX * devGridZ);
         int chunkOffsetX = random.nextInt(maxDeviation);
         int chunkOffsetZ = random.nextInt(maxDeviation);

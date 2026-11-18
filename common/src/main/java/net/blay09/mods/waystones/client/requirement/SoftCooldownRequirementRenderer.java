@@ -11,7 +11,7 @@ import java.util.List;
 
 public class SoftCooldownRequirementRenderer implements RequirementRenderer<CooldownInformation> {
     @Override
-    public void renderWidget(Player player, CooldownInformation requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
+    public void renderWidget(Player player, CooldownInformation requirement, GuiGraphicsExtractor guiGraphics, int x, int y) {
         final var timeLeftStr = CooldownRenderUtils.formatTimeLeft(requirement);
         if (timeLeftStr == null) return;
         final var font = Minecraft.getInstance().font;

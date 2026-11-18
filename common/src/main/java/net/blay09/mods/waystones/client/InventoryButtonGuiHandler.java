@@ -89,9 +89,9 @@ public class InventoryButtonGuiHandler {
             BalmScreenUtils.addRenderableWidget(screen, warpButton);
         });
 
-        ScreenCallback.Render.AFTER.register((screen, guiGraphics, mouseX, mouseY, delta) -> {
+        ScreenCallback.Render.AFTER.register((screen, graphics) -> {
             // Render the inventory button tooltip when it's hovered
-            if ((screen instanceof InventoryScreen || screen instanceof CreativeModeInventoryScreen) && warpButton != null && warpButton.isHoveredOrFocused()) {
+            if ((screen instanceof InventoryScreen || screen instanceof CreativeModeInventoryScreen) && warpButton != null && warpButton.isHighlighted()) {
                 InventoryButtonMode inventoryButtonMode = WaystonesConfig.getActive().getInventoryButtonMode();
                 List<Component> tooltip = new ArrayList<>();
                 Player player = Minecraft.getInstance().player;
@@ -123,7 +123,7 @@ public class InventoryButtonGuiHandler {
 
                 final var font = Minecraft.getInstance().font;
                 final var visualTooltip = tooltip.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();
-                guiGraphics.tooltip(font, visualTooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null, false);
+                graphics.tooltip(font, visualTooltip, graphics.mouseX(), graphics.mouseY(), DefaultTooltipPositioner.INSTANCE, null, false);
             }
         });
     }

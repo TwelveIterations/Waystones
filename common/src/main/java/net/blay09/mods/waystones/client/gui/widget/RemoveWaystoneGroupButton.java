@@ -5,7 +5,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -41,7 +41,7 @@ public class RemoveWaystoneGroupButton extends Button {
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics) {
         boolean shiftDown = Kuma.hasShiftDown();
         if (!shiftDown) {
             shiftGuard = false;
@@ -50,7 +50,7 @@ public class RemoveWaystoneGroupButton extends Button {
         setTooltip(active ? activeTooltip : tooltip);
 
         if (getBottom() > visibleRegionStart && getY() < visibleRegionStart + visibleRegionHeight) {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SPRITE, getX(), getY(), 13, 13, isHovered && active ? 0xFFFFFFFF : 0x80808080);
+            guiGraphics.blitSprite(GuiPipeline.TEXTURED, SPRITE, getX(), getY(), 13, 13, isHovered && active ? 0xFFFFFFFF : 0x80808080);
         }
     }
 }

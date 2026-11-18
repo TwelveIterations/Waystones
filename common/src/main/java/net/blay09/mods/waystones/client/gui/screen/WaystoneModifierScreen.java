@@ -5,7 +5,7 @@ import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -20,14 +20,14 @@ public class WaystoneModifierScreen extends AbstractContainerScreen<WaystoneModi
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-        super.extractBackground(graphics, mouseX, mouseY, a);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, WARP_PLATE_GUI_TEXTURES, leftPos, topPos, 0f, 0f, imageWidth, imageHeight, 256, 256);
+    public void extractBackground(GuiGraphicsExtractor graphics) {
+        super.extractBackground(graphics);
+        graphics.blit(GuiPipeline.TEXTURED, WARP_PLATE_GUI_TEXTURES, leftPos, topPos, 0f, 0f, imageWidth, imageHeight, 256, 256);
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
-        super.extractLabels(guiGraphics, x, y);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics) {
+        super.extractLabels(guiGraphics);
 
         Component galacticName = WarpPlateBlock.getGalacticName(menu.getWaystone().getWaystoneUid());
         int width = font.width(galacticName);

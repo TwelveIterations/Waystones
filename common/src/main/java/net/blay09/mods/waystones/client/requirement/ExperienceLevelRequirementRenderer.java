@@ -5,7 +5,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -24,12 +24,12 @@ public class ExperienceLevelRequirementRenderer implements RequirementRenderer<E
             Identifier.withDefaultNamespace("container/enchanting_table/level_3_disabled")};
 
     @Override
-    public void renderWidget(Player player, ExperienceLevelCostInformation requirement, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
+    public void renderWidget(Player player, ExperienceLevelCostInformation requirement, GuiGraphicsExtractor guiGraphics, int x, int y) {
         final var levels = WaystonesConfig.getActive().rules.enableXpCosts ? requirement.required() : 0;
         if (levels > 0) {
             final var canAfford = requirement.available() >= requirement.required();
             final var spriteIndex = Math.max(0, Math.min(levels, 3) - 1);
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, canAfford ? ENABLED_LEVEL_SPRITES[spriteIndex] : DISABLED_LEVEL_SPRITES[spriteIndex], x, y, 16, 16);
+            guiGraphics.blitSprite(GuiPipeline.TEXTURED, canAfford ? ENABLED_LEVEL_SPRITES[spriteIndex] : DISABLED_LEVEL_SPRITES[spriteIndex], x, y, 16, 16);
 
             final var font = Minecraft.getInstance().font;
             if (levels > 3) {

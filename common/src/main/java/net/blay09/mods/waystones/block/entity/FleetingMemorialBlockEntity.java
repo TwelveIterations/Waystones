@@ -4,6 +4,7 @@ import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.waystones.api.WaystoneKinds;
 import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -34,7 +35,7 @@ public class FleetingMemorialBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+    public CompoundTag getUpdateTag(HolderGetter.Provider registries) {
         return BalmBlockEntityUtils.createUpdateTag(registries, output -> {
             output.store("Waystone", WaystoneImpl.CODEC.codec(), getWaystone());
             output.store("OwnerName", ComponentSerialization.CODEC, ownerName);
