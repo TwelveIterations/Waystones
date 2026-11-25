@@ -94,7 +94,7 @@ public class InventoryButtonGuiHandler {
                         Balm.networking().sendToServer(ServerboundInventoryButtonPacket.INSTANCE);
                     }
                 } else {
-                    mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 0.5f));
+                    mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1f, 0.5f));
                 }
             }, () -> {
                 if (screen instanceof CreativeModeInventoryScreen creativeModeInventoryScreen) {
@@ -139,7 +139,7 @@ public class InventoryButtonGuiHandler {
 
                 final var font = Minecraft.getInstance().font;
                 final var visualTooltip = tooltip.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();
-                graphics.tooltip(font, visualTooltip, graphics.mouseX(), graphics.mouseY(), DefaultTooltipPositioner.INSTANCE, null, false);
+                graphics.tooltip(font, visualTooltip, graphics.mouseX(), graphics.mouseY(), DefaultTooltipPositioner.INSTANCE, null, 0);
             }
         });
     }

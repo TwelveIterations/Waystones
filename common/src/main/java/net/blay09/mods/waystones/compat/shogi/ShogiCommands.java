@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.compat.shogi;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import net.blay09.mods.balm.commands.BalmCommands;
 import net.blay09.mods.shogi.common.effect.server.cooldown.ShogiCooldowns;
 import net.blay09.mods.waystones.Waystones;
@@ -8,7 +7,10 @@ import net.blay09.mods.waystones.api.*;
 import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.StringArgument;
 import net.minecraft.commands.suggestions.SuggestionContext;
+import net.minecraft.commands.suggestions.SuggestionProviders;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.permissions.Permissions;
@@ -41,10 +43,13 @@ public class ShogiCommands {
                                             }
                                             return targets.size();
                                         }))
-                                        .then(argument("identifier", StringArgumentType.word())
-                                                .suggests((context, builder) -> {
+                                        .then(argument("identifier", StringArgument.word())
+                                                .suggests(SuggestionProviders.serverOnly((server, context, builder) -> {
                                                     try {
-                                                        final var targets = EntityArgument.getPlayers(context, "targets");
+                                                        final var targets = EntityArgument.getSuggestedEntities(server, context, "targets")
+                                                                .filter(ServerPlayer.class::isInstance)
+                                                                .map(ServerPlayer.class::cast)
+                                                                .toList();
                                                         final var keys = new HashSet<String>();
                                                         for (final var player : targets) {
                                                             for (final var key : ShogiCooldowns.get(player).getCooldownIds()) {
@@ -55,10 +60,10 @@ public class ShogiCommands {
                                                     } catch (Exception e) {
                                                         return builder.buildFuture();
                                                     }
-                                                })
+                                                }))
                                                 .executes(context -> {
                                                     final var targets = EntityArgument.getPlayers(context, "targets");
-                                                    final var identifierStr = StringArgumentType.getString(context, "identifier");
+                                                    final var identifierStr = StringArgument.getString(context, "identifier");
                                                     final var cooldownKey = Identifier.tryParse(identifierStr);
                                                     if (cooldownKey == null) {
                                                         context.getSource().sendFailure(Component.translatable("commands.waystones.cooldown.reset.invalid_identifier", identifierStr));

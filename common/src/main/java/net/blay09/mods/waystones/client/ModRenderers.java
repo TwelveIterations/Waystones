@@ -3,17 +3,21 @@ package net.blay09.mods.waystones.client;
 import net.blay09.mods.balm.client.color.block.BalmBlockColorRegistrar;
 import net.blay09.mods.balm.client.renderer.block.model.BalmBlockStateModelRegistrar;
 import net.blay09.mods.balm.client.renderer.blockentity.BalmBlockEntityRendererRegistrar;
-import net.blay09.mods.waystones.api.WaystoneType;
 import net.blay09.mods.waystones.api.PortstoneType;
 import net.blay09.mods.waystones.api.SharestoneType;
+import net.blay09.mods.waystones.api.WaystoneType;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.PortstoneBlock;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
-import net.blay09.mods.waystones.client.render.*;
-import net.minecraft.client.color.block.BlockTintSources;
+import net.blay09.mods.waystones.client.render.FleetingMemorialRenderer;
+import net.blay09.mods.waystones.client.render.PortstoneRenderer;
+import net.blay09.mods.waystones.client.render.SharestoneRenderer;
+import net.blay09.mods.waystones.client.render.WaystoneRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockTintSources;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,12 +33,16 @@ public class ModRenderers {
     private static final Map<PortstoneType, RuneModelDefinition> portstoneRunes = new HashMap<>();
 
     public static void initialize(BalmBlockStateModelRegistrar models) {
-        final var definitions = new HashMap<>(RuneModelDefinition.loadDefinitions(models, Minecraft.getInstance().getResourceManager()));
-        for (final var family : List.of("waystone", "portstone", "sharestone")) {
-            final var modelId = id("block/" + family + "_runes");
-            definitions.put(modelId, new RuneModelDefinition(models.register(modelId), 0xFFFFFFFF, 0xFF444444));
+        ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+        //noinspection ConstantValue // necessary right now since early Fabric releases skip model loading
+        if (resourceManager != null) {
+            final var definitions = new HashMap<>(RuneModelDefinition.loadDefinitions(models, resourceManager));
+            for (final var family : List.of("waystone", "portstone", "sharestone")) {
+                final var modelId = id("block/" + family + "_runes");
+                definitions.put(modelId, new RuneModelDefinition(models.register(modelId), 0xFFFFFFFF, 0xFF444444));
+            }
+            runeDefinitions = Map.copyOf(definitions);
         }
-        runeDefinitions = Map.copyOf(definitions);
         waystoneRunes.clear();
         sharestoneRunes.clear();
         portstoneRunes.clear();

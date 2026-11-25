@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.command;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.blay09.mods.balm.commands.BalmCommands;
 import net.blay09.mods.waystones.Waystones;
@@ -14,9 +13,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.StringArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.commands.suggestions.SuggestionContext;
+import net.minecraft.commands.suggestions.SuggestionProviders;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -133,18 +134,18 @@ public class ModCommands {
                         // TODO .requires(BalmCommands.requirePermission(PERMISSION_WAYSTONES_PLACE))
                         .requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
                         .then(argument("pos", BlockPosArgument.blockPos())
-                                .then(argument("type", StringArgumentType.word())
-                                        .suggests((_, builder) -> SuggestionContext.suggest(
+                                .then(argument("type", StringArgument.word())
+                                        .suggests(SuggestionProviders.serverOnly((_, _, builder) -> SuggestionContext.suggest(
                                                 WaystoneType.values()
                                                         .map(WaystoneType::identifier)
                                                         .map(id -> id.getNamespace().equals(Waystones.MOD_ID) ? id.getPath() : id.toString()),
                                                 builder
-                                        ))
-                                        .then(argument("name", StringArgumentType.greedyString())
+                                        )))
+                                        .then(argument("name", StringArgument.greedyString())
                                                 .executes(context -> {
                                                     final var pos = BlockPosArgument.getLoadedBlockPos(context, "pos");
-                                                    final var typeArg = StringArgumentType.getString(context, "type");
-                                                    final var name = StringArgumentType.getString(context, "name");
+                                                    final var typeArg = StringArgument.getString(context, "type");
+                                                    final var name = StringArgument.getString(context, "name");
                                                     final var level = context.getSource().getLevel();
 
                                                     Identifier typeId;
