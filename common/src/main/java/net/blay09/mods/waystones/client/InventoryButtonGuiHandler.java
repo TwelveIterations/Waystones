@@ -1,18 +1,16 @@
 package net.blay09.mods.waystones.client;
 
+import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.client.gui.screens.BalmScreenUtils;
+import net.blay09.mods.balm.client.platform.event.callback.ClientLifecycleCallback;
+import net.blay09.mods.balm.client.platform.event.callback.ClientTickCallback;
 import net.blay09.mods.balm.client.platform.event.callback.ScreenCallback;
-import net.blay09.mods.shogi.coercion.Coercion;
-import net.blay09.mods.waystones.api.TeleportFlags;
-import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.config.WaystonesRules;
-import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.message.ServerboundInventoryButtonPacket;
 import net.blay09.mods.waystones.network.message.ServerboundRequestInventoryButtonPacket;
@@ -36,9 +34,33 @@ import java.util.function.Supplier;
 public class InventoryButtonGuiHandler {
 
     private static @Nullable WaystoneInventoryButton warpButton;
+    private static int refreshTicks;
+    private static Either<List<Object>, List<Object>> requirements = Either.right(List.of());
+
+    public static void updateRequirements(Either<List<Object>, List<Object>> requirements) {
+        InventoryButtonGuiHandler.requirements = requirements;
+    }
+
+    public static Either<List<Object>, List<Object>> getRequirements() {
+        return requirements;
+    }
 
     public static void initialize() {
+        ClientLifecycleCallback.DisconnectedFromServer.EVENT.register(_ -> {
+            requirements = Either.right(List.of());
+            warpButton = null;
+            refreshTicks = 0;
+        });
+        ClientTickCallback.AFTER.register(client -> {
+            final var screen = client.gui.screen();
+            if ((screen instanceof InventoryScreen || screen instanceof CreativeModeInventoryScreen) && client.player != null
+                    && WaystonesConfig.getActive().getInventoryButtonMode().isEnabled() && --refreshTicks <= 0) {
+                Balm.networking().sendToServer(ServerboundRequestInventoryButtonPacket.INSTANCE);
+                refreshTicks = 20;
+            }
+        });
         ScreenCallback.Init.After.EVENT.register(screen -> {
+            warpButton = null;
             if (!(screen instanceof InventoryScreen) && !(screen instanceof CreativeModeInventoryScreen)) {
                 return;
             }
@@ -53,8 +75,6 @@ public class InventoryButtonGuiHandler {
                 return;
             }
 
-            Balm.networking().sendToServer(ServerboundRequestInventoryButtonPacket.INSTANCE);
-
             Supplier<Integer> xPosition = screen instanceof CreativeModeInventoryScreen ? () -> WaystonesConfig.getActive().inventoryButton.creativeInventoryButtonX : () -> WaystonesConfig.getActive().inventoryButton.inventoryButtonX;
             Supplier<Integer> yPosition = screen instanceof CreativeModeInventoryScreen ? () -> WaystonesConfig.getActive().inventoryButton.creativeInventoryButtonY : () -> WaystonesConfig.getActive().inventoryButton.inventoryButtonY;
             warpButton = new WaystoneInventoryButton((AbstractContainerScreen<?>) screen, _ -> {
@@ -63,9 +83,6 @@ public class InventoryButtonGuiHandler {
                     return;
                 }
 
-                final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
-                final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).addFlag(TeleportFlags.INVENTORY_BUTTON);
-                final var requirements = WaystonesRules.inventoryButtonWarpRequirements.get(context);
                 if (requirements.left().isPresent()) {
                     if (inventoryButtonMode.hasNamedTarget()) {
                         mc.gui.setScreen(new InventoryButtonReturnConfirmScreen(inventoryButtonMode.getNamedTarget()));
@@ -87,6 +104,8 @@ public class InventoryButtonGuiHandler {
                 return true;
             }, xPosition, yPosition);
             BalmScreenUtils.addRenderableWidget(screen, warpButton);
+            refreshTicks = 20;
+            Balm.networking().sendToServer(ServerboundRequestInventoryButtonPacket.INSTANCE);
         });
 
         ScreenCallback.Render.AFTER.register((screen, graphics) -> {
@@ -99,9 +118,6 @@ public class InventoryButtonGuiHandler {
                     return;
                 }
 
-                final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
-                final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).addFlag(TeleportFlags.INVENTORY_BUTTON);
-                final var requirements = WaystonesRules.inventoryButtonWarpRequirements.get(context);
                 if (inventoryButtonMode.hasNamedTarget()) {
                     tooltip.add(Component.translatable("gui.waystones.inventory.return_to_waystone").withStyle(ChatFormatting.YELLOW));
                     final var targetComponent = Component.literal(inventoryButtonMode.getNamedTarget()).withStyle(ChatFormatting.DARK_AQUA);
@@ -119,7 +135,7 @@ public class InventoryButtonGuiHandler {
                     }
                 }
 
-                requirements.mapRight(Coercion.LIST).ifRight(failures -> RequirementClientRegistry.getErrorListRenderer().appendHoverText(player, (List<Object>) failures, tooltip));
+                requirements.ifRight(failures -> RequirementClientRegistry.getErrorListRenderer().appendHoverText(player, failures, tooltip));
 
                 final var font = Minecraft.getInstance().font;
                 final var visualTooltip = tooltip.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();

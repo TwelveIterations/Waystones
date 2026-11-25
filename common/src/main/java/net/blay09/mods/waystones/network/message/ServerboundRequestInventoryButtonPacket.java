@@ -1,9 +1,12 @@
 package net.blay09.mods.waystones.network.message;
 
+import net.blay09.mods.balm.Balm;
+
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.config.WaystonesRules;
+import net.blay09.mods.waystones.config.rules.WaystonesEffectExecutors;
+import net.blay09.mods.waystones.core.WaystoneTeleportContextImpl;
 import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -29,7 +32,10 @@ public class ServerboundRequestInventoryButtonPacket implements CustomPacketPayl
 
         final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
         final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).addFlag(TeleportFlags.INVENTORY_BUTTON);
-        WaystonesRules.inventoryButtonWarpRequirements.get(context);
+        if (context instanceof WaystoneTeleportContextImpl impl) {
+            impl.setExecutor(WaystonesEffectExecutors.simulated());
+        }
+        Balm.networking().sendTo(player, new ClientboundInventoryButtonPacket(context.getRequirements()));
     }
 
     @Override

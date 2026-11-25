@@ -141,7 +141,6 @@ public class WaystonesRules {
     });
 
     public static final ShogiValue<WaystoneTeleportContext, List<?>> warpRequirements = scope.maybe(id("warp_requirements"), (WaystoneTeleportContext _) -> Either.left(List.of())).coerce(Coercion.LIST);
-    public static final ShogiValue<WaystoneTeleportContext, List<?>> inventoryButtonWarpRequirements = scope.maybe(id("inventory_button_warp_requirements"), (WaystoneTeleportContext _) -> Either.left(List.of())).coerce(Coercion.LIST).networked();
     public static final ShogiValue<ShogiContext, List<?>> afterWarpEffects = scope.maybe(id("after_warp_effects"), (ShogiContext context) -> {
         if (!WaystonesConfig.getActive().rules.enableModifiers) {
             return Either.left(Collections.emptyList());

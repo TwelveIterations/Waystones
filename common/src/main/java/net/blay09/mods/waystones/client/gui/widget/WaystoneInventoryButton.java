@@ -1,11 +1,7 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import net.blay09.mods.balm.mixin.AbstractContainerScreenAccessor;
-import net.blay09.mods.waystones.api.TeleportFlags;
-import net.blay09.mods.waystones.api.WaystonesAPI;
-import net.blay09.mods.waystones.config.WaystonesRules;
-import net.blay09.mods.waystones.core.InvalidWaystone;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.client.InventoryButtonGuiHandler;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -16,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.Objects;
 import java.util.function.Supplier;
 
 import static net.blay09.mods.waystones.Waystones.id;
@@ -50,11 +45,7 @@ public class WaystoneInventoryButton extends Button {
             setY(((AbstractContainerScreenAccessor) parentScreen).getTopPos() + yPosition.get());
             isHovered = graphics.mouseX() >= getX() && graphics.mouseY() >= getY() && graphics.mouseX() < getX() + width && graphics.mouseY() < getY() + height;
 
-            final var player = Objects.requireNonNull(Minecraft.getInstance().player);
-            final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
-            final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).addFlag(TeleportFlags.INVENTORY_BUTTON);
-            final var requirements = WaystonesRules.inventoryButtonWarpRequirements.get(context);
-            if (requirements.left().isPresent()) {
+            if (InventoryButtonGuiHandler.getRequirements().left().isPresent()) {
                 ItemStack icon = isHovered ? iconItemHovered : iconItem;
                 graphics.item(icon, getX(), getY());
                 graphics.itemDecorations(Minecraft.getInstance().font, icon, getX(), getY());
