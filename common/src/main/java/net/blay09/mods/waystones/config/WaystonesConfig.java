@@ -4,6 +4,7 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.platform.config.reflection.Comment;
 import net.blay09.mods.balm.platform.config.reflection.Config;
 import net.blay09.mods.balm.platform.config.reflection.NestedType;
+import net.blay09.mods.balm.platform.config.reflection.Range;
 import net.blay09.mods.balm.platform.config.reflection.Synced;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
@@ -63,6 +64,8 @@ public class WaystonesConfig {
     }
 
     public Rules rules = new Rules();
+    @Comment("Note: If Shogi is installed, config/waystones.rules.json may take precedence over these tuning values.")
+    public Costs costs = new Costs();
     public InventoryButton inventoryButton = new InventoryButton();
     public WorldGen worldGen = new WorldGen();
     public Client client = new Client();
@@ -106,6 +109,42 @@ public class WaystonesConfig {
 
         @Comment("Set to true to enable warp modifier items for applying status effects on teleports.")
         public boolean enableModifiers = true;
+    }
+
+    public static class Costs {
+        @Synced
+        @Range(min = "0", max = "107374182")
+        @Comment("Cooldown in seconds. Set to 0 to disable the cooldown.")
+        public int inventoryButtonCooldown = 300;
+
+        @Synced
+        @Range(min = "0", max = "2147483647")
+        @Comment("Approximate number of uses of a fully repaired warp stone. Set to 0 for unlimited uses.")
+        public int warpStoneUses = 125;
+
+        @Synced
+        @Range(min = "0", max = "2147483647")
+        @Comment("XP point cost for interdimensional travel, regardless of minimum or maximum XP Cost.")
+        public int dimensionalXpCost = 27;
+
+        @Synced
+        @Range(min = "0", max = "1.7976931348623157E308")
+        @Comment("XP point cost per block of travel within the same dimension. Limited by minimum and maximum XP Cost.")
+        public double xpCostPerBlock = 0.01;
+
+        @Synced
+        @Range(min = "0", max = "2147483647")
+        @Comment("Minimum XP point cost for travel within the same dimension.")
+        public int minXpCost = 0;
+
+        @Synced
+        @Range(min = "0", max = "2147483647")
+        @Comment("Maximum XP point cost for travel within the same dimension.")
+        public int maxXpCost = 27;
+
+        @Synced
+        @Comment("Start at Maximum XP Cost and reduce the cost by distance times XP Cost per Block, down to Minimum XP Cost. Only applies to travel within the same dimension.")
+        public boolean inverseXpCost = false;
     }
 
     public static class InventoryButton {

@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -22,7 +23,6 @@ import static net.blay09.mods.waystones.Waystones.id;
 
 public class DefaultWarpRequirements {
     private static final String INVENTORY_COOLDOWN = "WaystonesInventoryButtonCooldown";
-    private static final int INVENTORY_COOLDOWN_TICKS = 300 * 20;
 
     public static Either<List<?>, List<?>> resolve(WaystoneTeleportContext context) {
         if (!(context.getEntity() instanceof Player player)) {
@@ -62,8 +62,16 @@ public class DefaultWarpRequirements {
     }
 
     private static int getExperienceCost(WaystoneTeleportContext context) {
+        final var config = WaystonesConfig.getActive().costs;
+        if (context.isDimensionalTeleport()) {
+            return Math.max(0, config.dimensionalXpCost);
+        }
         final double distance = Math.sqrt(context.getEntity().distanceToSqr(Vec3.atCenterOf(context.getTargetWaystone().getPos())));
-        return context.isDimensionalTeleport() ? 27 : (int) Math.clamp(distance * 0.01, 0, 27);
+        final int maximum = Math.max(0, config.maxXpCost);
+        final int minimum = Math.clamp(config.minXpCost, 0, maximum);
+        final double distanceCost = distance * Math.max(0, config.xpCostPerBlock);
+        final double cost = config.inverseXpCost ? maximum - distanceCost : distanceCost;
+        return (int) Math.clamp(cost, minimum, maximum);
     }
 
     private static long getAvailableExperience(Player player) {
@@ -79,16 +87,30 @@ public class DefaultWarpRequirements {
             return;
         }
 
+        final int cooldownTicks = getInventoryButtonCooldownTicks();
+        if (cooldownTicks <= 0) {
+            return;
+        }
+
         final var data = Balm.hooks().getPersistentData(player);
         final long now = player.level().getGameTime();
         final long remaining = Math.max(0L, data.getLongOr(INVENTORY_COOLDOWN, 0L) - now);
-        final var requirement = new CooldownRequirement(id("inventory_button"), remaining, INVENTORY_COOLDOWN_TICKS, System.currentTimeMillis(), 50_000_000L);
+        final var requirement = new CooldownRequirement(id("inventory_button"), remaining, cooldownTicks, System.currentTimeMillis(), 50_000_000L);
         requirements.add(requirement);
         if (remaining > 0) {
             missing.add(requirement);
         } else if (!player.getAbilities().instabuild) {
-            context.execute(id("inventory_button_cooldown"), () -> data.putLong(INVENTORY_COOLDOWN, player.level().getGameTime() + INVENTORY_COOLDOWN_TICKS));
+            context.execute(id("inventory_button_cooldown"), () -> data.putLong(INVENTORY_COOLDOWN, player.level().getGameTime() + cooldownTicks));
         }
+    }
+
+    private static int getInventoryButtonCooldownTicks() {
+        return (int) Math.clamp((long) WaystonesConfig.getActive().costs.inventoryButtonCooldown * 20, 0L, Integer.MAX_VALUE);
+    }
+
+    private static int getDurabilityCost(ItemStack warpItem) {
+        final int uses = WaystonesConfig.getActive().costs.warpStoneUses;
+        return uses <= 0 ? 0 : (int) Math.ceil((double) warpItem.getMaxDamage() / uses);
     }
 
     private static void applyDurabilityCost(WaystoneTeleportContext context, Player player) {
@@ -99,12 +121,17 @@ public class DefaultWarpRequirements {
             return;
         }
 
+        final int damage = getDurabilityCost(warpItem);
+        if (damage <= 0) {
+            return;
+        }
+
         context.execute(id("damage_warp_stone"), () -> {
             final var hand = context.getWarpHand();
             if (hand != null) {
-                warpItem.hurtAndBreak(80, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+                warpItem.hurtAndBreak(damage, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
             } else {
-                warpItem.hurtAndBreak(80, serverPlayer.level(), serverPlayer, _ -> {});
+                warpItem.hurtAndBreak(damage, serverPlayer.level(), serverPlayer, _ -> {});
             }
         });
     }
