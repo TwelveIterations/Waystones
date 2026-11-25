@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.client;
 
 import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.server.packs.resources.BalmClientResourceReloadListenerRegistrar;
 
 import net.blay09.mods.balm.client.color.block.BalmBlockColorRegistrar;
 import net.blay09.mods.balm.client.gui.screens.inventory.BalmMenuScreenRegistrar;
@@ -29,6 +30,11 @@ public class WaystonesClient implements BalmClientModule {
     @Override
     public void registerBlockStateModels(BalmBlockStateModelRegistrar models) {
         ModRenderers.initialize(models);
+    }
+
+    @Override
+    public void registerClientReloadListeners(BalmClientResourceReloadListenerRegistrar resourceReloadListeners) {
+        resourceReloadListeners.register("rune_definitions", new ModRenderers.RuneDefinitionsReloadListener());
     }
 
     @Override

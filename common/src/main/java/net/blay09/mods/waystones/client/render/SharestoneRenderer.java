@@ -75,7 +75,7 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
         final var runes = ModRenderers.getSharestoneRunes(type);
         renderState.runeColor = runes.color();
         renderState.facing = blockState.getValue(SharestoneBlock.FACING);
-        final var model = runes.model().asBlockStateModel();
+        final var model = ModRenderers.getRuneModel(runes.model());
         final var modelParts = renderState.runes.setupModel(new Matrix4f(), false);
         final var random = renderState.runes.scratchRandomSource(blockState.getSeed(blockEntity.getBlockPos()));
         model.collectParts(random, modelParts);

@@ -72,7 +72,7 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
         }
 
         if (renderState.showRunes) {
-            final var model = runes.model().asBlockStateModel();
+            final var model = ModRenderers.getRuneModel(runes.model());
             final var modelParts = renderState.runes.setupModel(new Matrix4f(), false);
             final var random = renderState.runes.scratchRandomSource(blockState.getSeed(blockEntity.getBlockPos()));
             model.collectParts(random, modelParts);

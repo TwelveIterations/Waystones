@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.client;
 
 import net.blay09.mods.balm.client.color.block.BalmBlockColorRegistrar;
 import net.blay09.mods.balm.client.renderer.block.model.BalmBlockStateModelRegistrar;
+import net.blay09.mods.balm.client.renderer.block.model.DeferredBlockStateModel;
 import net.blay09.mods.balm.client.renderer.blockentity.BalmBlockEntityRendererRegistrar;
 import net.blay09.mods.waystones.api.PortstoneType;
 import net.blay09.mods.waystones.api.SharestoneType;
@@ -16,8 +17,11 @@ import net.blay09.mods.waystones.client.render.SharestoneRenderer;
 import net.blay09.mods.waystones.client.render.WaystoneRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockTintSources;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,37 +31,57 @@ import static net.blay09.mods.waystones.Waystones.id;
 
 public class ModRenderers {
     private static Map<Identifier, RuneModelDefinition> runeDefinitions = Map.of();
+    private static final Map<Identifier, DeferredBlockStateModel> runeModels = new HashMap<>();
 
     private static final Map<WaystoneType, RuneModelDefinition> waystoneRunes = new HashMap<>();
     private static final Map<SharestoneType, RuneModelDefinition> sharestoneRunes = new HashMap<>();
     private static final Map<PortstoneType, RuneModelDefinition> portstoneRunes = new HashMap<>();
 
     public static void initialize(BalmBlockStateModelRegistrar models) {
-        ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-        //noinspection ConstantValue // necessary right now since early Fabric releases skip model loading
-        if (resourceManager != null) {
-            final var definitions = new HashMap<>(RuneModelDefinition.loadDefinitions(models, resourceManager));
-            for (final var family : List.of("waystone", "portstone", "sharestone")) {
-                final var modelId = id("block/" + family + "_runes");
-                definitions.put(modelId, new RuneModelDefinition(models.register(modelId), 0xFFFFFFFF, 0xFF444444));
-            }
-            runeDefinitions = Map.copyOf(definitions);
+        runeModels.clear();
+        for (final var family : List.of("waystone", "portstone", "sharestone")) {
+            final var modelId = id("block/" + family + "_runes");
+            runeModels.put(modelId, models.register(modelId));
         }
-        waystoneRunes.clear();
-        sharestoneRunes.clear();
-        portstoneRunes.clear();
+
+        final var resources = Minecraft.getInstance().getResourceManager();
+        //noinspection ConstantValue // temporarily needed because Balm's noop runs this too early
+        if (resources != null) {
+            RuneModelDefinition.loadDefinitions(resources).values().forEach(definition ->
+                    runeModels.computeIfAbsent(definition.model(), models::register));
+        }
+    }
+
+    public static BlockStateModel getRuneModel(Identifier modelId) {
+        final var model = runeModels.get(modelId);
+        return model != null ? model.asBlockStateModel() : Minecraft.getInstance().getModelManager().getBlockStateModelSet().missingModel();
+    }
+
+    public static class RuneDefinitionsReloadListener extends SimplePreparableReloadListener<Map<Identifier, RuneModelDefinition>> {
+        @Override
+        protected Map<Identifier, RuneModelDefinition> prepare(ResourceManager resources, ProfilerFiller profiler) {
+            return RuneModelDefinition.loadDefinitions(resources);
+        }
+
+        @Override
+        protected void apply(Map<Identifier, RuneModelDefinition> definitions, ResourceManager resources, ProfilerFiller profiler) {
+            runeDefinitions = definitions;
+            waystoneRunes.clear();
+            sharestoneRunes.clear();
+            portstoneRunes.clear();
+        }
     }
 
     public static RuneModelDefinition getWaystoneRunes(WaystoneType type) {
-        return waystoneRunes.computeIfAbsent(type, key -> resolveRunes(key.identifier(), new RuneModelDefinition(runeDefinitions.get(id("block/waystone_runes")).model(), key.runeColor(), 0xFF444444)));
+        return waystoneRunes.computeIfAbsent(type, key -> resolveRunes(key.identifier(), new RuneModelDefinition(id("block/waystone_runes"), key.runeColor(), 0xFF444444)));
     }
 
     public static RuneModelDefinition getSharestoneRunes(SharestoneType type) {
-        return sharestoneRunes.computeIfAbsent(type, key -> resolveRunes(key.identifier(), new RuneModelDefinition(runeDefinitions.get(id("block/sharestone_runes")).model(), key.textureDiffuseColor(), 0xFF444444)));
+        return sharestoneRunes.computeIfAbsent(type, key -> resolveRunes(key.identifier(), new RuneModelDefinition(id("block/sharestone_runes"), key.textureDiffuseColor(), 0xFF444444)));
     }
 
     public static RuneModelDefinition getPortstoneRunes(PortstoneType type) {
-        return portstoneRunes.computeIfAbsent(type, key -> resolveRunes(key.identifier().withSuffix("_portstone"), new RuneModelDefinition(runeDefinitions.get(id("block/portstone_runes")).model(), key.textureDiffuseColor(), 0xFF444444)));
+        return portstoneRunes.computeIfAbsent(type, key -> resolveRunes(key.identifier().withSuffix("_portstone"), new RuneModelDefinition(id("block/portstone_runes"), key.textureDiffuseColor(), 0xFF444444)));
     }
 
     private static RuneModelDefinition resolveRunes(Identifier id, RuneModelDefinition fallback) {

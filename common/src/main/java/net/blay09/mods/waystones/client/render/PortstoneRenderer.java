@@ -71,7 +71,7 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
         final var type = ((PortstoneBlock) blockState.getBlock()).getType();
         final var runes = ModRenderers.getPortstoneRunes(type);
         renderState.runeColor = runes.color();
-        final var model = runes.model().asBlockStateModel();
+        final var model = ModRenderers.getRuneModel(runes.model());
         final var modelParts = renderState.runes.setupModel(new Matrix4f(), false);
         final var random = renderState.runes.scratchRandomSource(blockState.getSeed(blockEntity.getBlockPos()));
         model.collectParts(random, modelParts);

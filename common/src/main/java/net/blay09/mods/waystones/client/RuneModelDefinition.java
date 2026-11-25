@@ -1,8 +1,6 @@
 package net.blay09.mods.waystones.client;
 
 import com.google.gson.JsonParser;
-import net.blay09.mods.balm.client.renderer.block.model.BalmBlockStateModelRegistrar;
-import net.blay09.mods.balm.client.renderer.block.model.DeferredBlockStateModel;
 import net.blay09.mods.waystones.Waystones;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -11,8 +9,8 @@ import net.minecraft.util.GsonHelper;
 import java.util.HashMap;
 import java.util.Map;
 
-public record RuneModelDefinition(DeferredBlockStateModel model, int color, int inactiveColor) {
-    public static Map<Identifier, RuneModelDefinition> loadDefinitions(BalmBlockStateModelRegistrar models, ResourceManager resources) {
+public record RuneModelDefinition(Identifier model, int color, int inactiveColor) {
+    public static Map<Identifier, RuneModelDefinition> loadDefinitions(ResourceManager resources) {
         final var definitions = new HashMap<Identifier, RuneModelDefinition>();
         resources.listResources("waystone_runes", location -> location.getPath().endsWith(".json")).forEach((location, resource) -> {
             final var definitionId = location.withPath(path -> path.substring("waystone_runes/".length(), path.length() - ".json".length()));
@@ -21,7 +19,7 @@ public record RuneModelDefinition(DeferredBlockStateModel model, int color, int 
                 final var modelId = Identifier.parse(GsonHelper.getAsString(json, "model"));
                 final var color = parseColor(GsonHelper.getAsString(json, "color"));
                 final var inactiveColor = json.has("inactive_color") ? parseColor(GsonHelper.getAsString(json, "inactive_color")) : 0xFF444444;
-                definitions.put(definitionId, new RuneModelDefinition(models.register(modelId), color, inactiveColor));
+                definitions.put(definitionId, new RuneModelDefinition(modelId, color, inactiveColor));
             } catch (Exception e) {
                 Waystones.logger.error("Failed to load rune definition {}; using defaults", location, e);
             }
