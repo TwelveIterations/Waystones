@@ -92,6 +92,31 @@ public class ManageWaystonesList extends AbstractWaystoneList<ManageWaystonesLis
     }
 
     @Override
+    public void moveUp(Object entry) {
+        moveBy(entry, -1);
+    }
+
+    @Override
+    public void moveDown(Object entry) {
+        moveBy(entry, 1);
+    }
+
+    private void moveBy(Object entry, int offset) {
+        if (!(entry instanceof WaystoneEntry listEntry)) {
+            return;
+        }
+        final int currentIndex = children().indexOf(listEntry);
+        final int targetIndex = currentIndex + offset;
+        if (currentIndex == -1 || targetIndex < 0 || targetIndex >= children().size()) {
+            return;
+        }
+
+        final var targetEntry = children().get(targetIndex);
+        screen.reorderWaystone(listEntry.waystone, targetEntry.waystone);
+        swap(currentIndex, targetIndex);
+    }
+
+    @Override
     public void moveToTop(Object entry) {
         if (!(entry instanceof WaystoneEntry waystoneEntry)) {
             return;

@@ -101,6 +101,32 @@ public class ManageWaystoneGroupsList extends ContainerObjectSelectionList<Manag
     }
 
     @Override
+    public void moveUp(Object entry) {
+        moveBy(entry, -1);
+    }
+
+    @Override
+    public void moveDown(Object entry) {
+        moveBy(entry, 1);
+    }
+
+    private void moveBy(Object entry, int offset) {
+        if (!(entry instanceof GroupEntry listEntry)) {
+            return;
+        }
+        final int currentIndex = entries.indexOf(listEntry);
+        final int targetIndex = currentIndex + offset;
+        if (currentIndex == -1 || targetIndex < 0 || targetIndex >= entries.size()) {
+            return;
+        }
+
+        final var targetEntry = entries.get(targetIndex);
+        screen.reorderGroup(listEntry.group, targetEntry.group);
+        Collections.swap(entries, currentIndex, targetIndex);
+        replaceEntries(entries);
+    }
+
+    @Override
     public void moveToTop(Object entry) {
         if (!(entry instanceof GroupEntry groupEntry)) {
             return;

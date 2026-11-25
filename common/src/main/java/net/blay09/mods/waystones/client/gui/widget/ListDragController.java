@@ -7,6 +7,10 @@ public interface ListDragController {
 
     void stopDragging();
 
+    void moveUp(Object entry);
+
+    void moveDown(Object entry);
+
     void moveToTop(Object entry);
 
     void moveToBottom(Object entry);
