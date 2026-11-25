@@ -31,7 +31,6 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesRules;
 import net.blay09.mods.waystones.handler.ModEventHandlers;
 import net.blay09.mods.waystones.item.ModItems;
-import net.blay09.mods.waystones.migration.ConfigMigration;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.network.ModNetworking;
 import net.blay09.mods.waystones.requirement.EpitaphRequirement;
@@ -75,13 +74,7 @@ public class Waystones implements BalmModule {
 
     @Override
     public void registerConfig(BalmConfig config) {
-        final var schema = config.registerConfig(WaystonesConfig.class);
-        config.onConfigAvailable(schema, _ -> {
-            final var waystonesConfig = config.getActiveConfig(WaystonesConfig.class);
-            if (waystonesConfig != null && ConfigMigration.needsWarpRequirementsDefaultMigration(waystonesConfig)) {
-                config.updateLocalConfig(WaystonesConfig.class, ConfigMigration::migrateWarpRequirementsDefault);
-            }
-        });
+        config.registerConfig(WaystonesConfig.class);
     }
 
     @Override
@@ -157,7 +150,7 @@ public class Waystones implements BalmModule {
         ShogiStreamCodecs.register(id("epitaph"), EpitaphRequirement.class, EpitaphRequirement.STREAM_CODEC);
         ShogiStreamCodecs.register(id("twinbound_feather"), TwinboundFeatherRequirement.class, TwinboundFeatherRequirement.STREAM_CODEC);
         RequirementComponentResolvers.registerDefaults();
-        WaystonesRules.initialize();
+        Balm.initializeIfLoaded("shogi", "net.blay09.mods.waystones.compat.shogi.ShogiIntegration");
 
         final var hudInfo = Balm.modSupport().hudInfo();
         ModBlocks.waystones.forEach((_, block) -> hudInfo.registerBlockInfo(block.asResourceKey().identifier(), block, new WaystoneBlockInfoProvider()));

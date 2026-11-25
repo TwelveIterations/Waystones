@@ -246,8 +246,6 @@
   "waystones.configuration.rules.enableDurability.tooltip": "设为 false 可关闭所有耐久消耗，可在 传送要求 中精细调控",
   "waystones.configuration.rules.enableCooldowns": "启用冷却时间",
   "waystones.configuration.rules.enableCooldowns.tooltip": "设置为 false 可以无冷却时间传送，可通过 传送要求 进行详细设置",
-  "waystones.configuration.rules.warpRequirements": "传送要求",
-  "waystones.configuration.rules.warpRequirements.tooltip": "传送要求列表，括号中的参数以逗号分隔，条件可定义为方括号中以逗号分隔的列表，将按顺序应用",
   "waystones.configuration.rules.transportPets": "传送宠物",
   "waystones.configuration.rules.transportPets.tooltip": "设置为 ENABLED 时附近的宠物会一起传送，设为 SAME_DIMENSION 时相同维度下附近的宠物才会一起传送，设为 DISABLED 时禁止",
   "waystones.configuration.rules.transportLeashed": "栓绳传送",

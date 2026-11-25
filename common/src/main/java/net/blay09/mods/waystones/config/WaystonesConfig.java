@@ -19,23 +19,6 @@ import java.util.Set;
 @Config(Waystones.MOD_ID)
 public class WaystonesConfig {
 
-    public static final List<String> DEFAULT_WARP_SETTINGS = List.of(
-            "$xp_per_block = 0.01",
-            "$min_xp_cost = 0",
-            "$max_xp_cost = 27",
-            "$interdimensional_xp_cost = 27",
-            "$inventory_button_cooldown = '300s'"
-    );
-
-    public static final List<String> DEFAULT_WARP_REQUIREMENTS = List.of(
-            "$uses_xp #= and(any(source(is_waystone), source(is_warp_stone)), not(target(is_fleeting_memorial)))",
-            "$uses_xp -> $xp_points_cost = $distance * $xp_per_block",
-            "$uses_xp + is_interdimensional -> $xp_points_cost = $interdimensional_xp_cost",
-            "$uses_xp -> $xp_points_cost = clamp($xp_points_cost, 0, $max_xp_cost)",
-            "is_warp_stone -> damage_item(80)",
-            "is_inventory_button -> cooldown_cost('inventory_button', $inventory_button_cooldown)"
-    );
-
     public enum TransportMobs implements StringRepresentable {
         ENABLED,
         SAME_DIMENSION,
@@ -108,16 +91,6 @@ public class WaystonesConfig {
         @Synced
         @Comment("Set to false to simply disable all cooldowns. See rules for more fine-grained control.")
         public boolean enableCooldowns = true;
-
-        @Synced
-        @NestedType(String.class)
-        @Comment("List of variables used in the warpRequirements configuration.")
-        public List<String> warpSettings = DEFAULT_WARP_SETTINGS;
-
-        @Synced
-        @NestedType(String.class)
-        @Comment("List of warp requirements in Shogi format.")
-        public List<String> warpRequirements = DEFAULT_WARP_REQUIREMENTS;
 
         @Synced
         @Comment("Set to \"enabled\" to have nearby pets teleport with you. Set to \"same_dimension\" to have nearby pets teleport with you only if you're not changing dimensions. Set to \"disabled\" to disable.")

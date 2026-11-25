@@ -1,5 +1,7 @@
 package net.blay09.mods.waystones.client;
 
+import net.blay09.mods.balm.Balm;
+
 import net.blay09.mods.balm.client.color.block.BalmBlockColorRegistrar;
 import net.blay09.mods.balm.client.gui.screens.inventory.BalmMenuScreenRegistrar;
 import net.blay09.mods.balm.client.platform.config.BalmConfigScreenRegistrar;
@@ -55,6 +57,7 @@ public class WaystonesClient implements BalmClientModule {
         InventoryButtonGuiHandler.initialize();
 
         RequirementClientRegistry.registerDefaults();
+        Balm.initializeIfLoaded("shogi", "net.blay09.mods.waystones.compat.shogi.ShogiClientIntegration");
     }
 
     public static WaystonesStore getWaystonesStore() {

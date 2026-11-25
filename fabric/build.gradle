@@ -75,7 +75,6 @@ tasks.register('curseforge', TaskPublishCurseForge) {
         mainFile.changelog = rootProject.file('CHANGELOG.md').text
         mainFile.addRequirement("fabric-api")
         mainFile.addRequirement("balm")
-        mainFile.addRequirement("shogi")
         mainFile.addGameVersion(libs.minecraft.get().version)
         mainFile.releaseType = "release"
         project.findProperty("curseforge_environments")?.split(",")?.toList()?.each { mainFile.addEnvironment(it) }
@@ -94,6 +93,5 @@ modrinth {
     dependencies {
         required.project "fabric-api"
         required.project "balm"
-        required.project "shogi"
     }
 }

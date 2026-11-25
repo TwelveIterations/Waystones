@@ -3,7 +3,8 @@ dependencies {
         changing = libs.versions.balm.get().contains("SNAPSHOT")
     }
     api(libs.shogiApi)
-    implementation(libs.shogiFabric) {
+    include(libs.shogiApi)
+    compileOnly(libs.shogiFabric) {
         changing = libs.versions.shogi.get().contains("SNAPSHOT")
     }
     compileOnly(libs.journeyMapApiCommon)

@@ -1,8 +1,10 @@
 dependencies {
+    api(libs.shogiApi)
+    jarJar(libs.shogiApi)
     implementation(libs.balmForge) {
         changing = libs.versions.balm.get().contains("SNAPSHOT")
     }
-    implementation(libs.shogiForge) {
+    compileOnly(libs.shogiForge) {
         changing = libs.versions.shogi.get().contains("SNAPSHOT")
     }
     compileOnly(libs.journeyMapApiCommon)

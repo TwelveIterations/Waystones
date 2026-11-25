@@ -4,7 +4,9 @@ It can be used in Survival Mode, for Adventure Maps or on Multiplayer Servers as
 
 This mod requires [Balm](https://www.curseforge.com/minecraft/mc-mods/balm), which must be installed alongside the mod.
 
-On Minecraft 26.1 and above, it also requires [Shogi](https://www.curseforge.com/minecraft/mc-mods/shogi), which powers the highly configurable warp requirements and many other rule-based configurations across my mods.
+On Minecraft 26.1, 26.2 and 26.3, it also requires [Shogi](https://www.curseforge.com/minecraft/mc-mods/shogi), which powers the highly configurable warp requirements and many other rule-based configurations across my mods.
+
+On Minecraft 26.4, Shogi becomes optional - you only need to install it if you'd like to customize the warp requirements beyond the tuning values offered by Waystones.
 
 [![Waystones on Bedrock](https://twelveiterations.com/files/brand/waystones_be.jpg)](https://www.minecraft.net/en-us/marketplace/pdp?id=eeddd615-218c-4aea-9ac9-b10c39ce2b67)
 

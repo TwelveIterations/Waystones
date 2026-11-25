@@ -33,9 +33,3 @@ mandatory=true
 versionRange="[${balm_version},)"
 ordering="NONE"
 side="BOTH"
-[[dependencies.waystones]]
-modId="shogi"
-mandatory=true
-versionRange="[${shogi_version},)"
-ordering="NONE"
-side="BOTH"

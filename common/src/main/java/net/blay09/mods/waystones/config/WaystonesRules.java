@@ -3,11 +3,9 @@ package net.blay09.mods.waystones.config;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.platform.capabilities.CommonCapabilities;
-import net.blay09.mods.balm.platform.event.callback.ConfigCallback;
 import net.blay09.mods.shogi.Shogi;
 import net.blay09.mods.shogi.ShogiValue;
 import net.blay09.mods.shogi.coercion.Coercion;
-import net.blay09.mods.shogi.common.CachedShogiRule;
 import net.blay09.mods.shogi.context.ShogiContext;
 import net.blay09.mods.shogi.scope.ShogiScope;
 import net.blay09.mods.waystones.api.TeleportFlags;
@@ -38,9 +36,6 @@ public class WaystonesRules {
 
     public static final ShogiScope scope = Shogi.scope(id("rules"), it -> {
         it.setDefaultNamespaces(List.of("waystones", "shogi"));
-
-        it.registerEffect(HasModifier.IDENTIFIER, HasModifier.mapCodec(it), List.of("item", "count"));
-        it.registerEffect(ModifierCost.IDENTIFIER, ModifierCost.mapCodec(it), List.of("item", "count"));
 
         it.registerEffect(Source.IDENTIFIER, Source.mapCodec(it), List.of("effect"));
         it.registerEffect(Target.IDENTIFIER, Target.mapCodec(it), List.of("effect"));
@@ -145,8 +140,8 @@ public class WaystonesRules {
         }
     });
 
-    public static final ShogiValue<WaystoneTeleportContext, List<?>> warpRequirements = scope.maybe(id("warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST);
-    public static final ShogiValue<WaystoneTeleportContext, List<?>> inventoryButtonWarpRequirements = scope.maybe(id("inventory_button_warp_requirements"), WaystonesRules::resolveWarpRequirements).coerce(Coercion.LIST).networked();
+    public static final ShogiValue<WaystoneTeleportContext, List<?>> warpRequirements = scope.maybe(id("warp_requirements"), (WaystoneTeleportContext _) -> Either.left(List.of())).coerce(Coercion.LIST);
+    public static final ShogiValue<WaystoneTeleportContext, List<?>> inventoryButtonWarpRequirements = scope.maybe(id("inventory_button_warp_requirements"), (WaystoneTeleportContext _) -> Either.left(List.of())).coerce(Coercion.LIST).networked();
     public static final ShogiValue<ShogiContext, List<?>> afterWarpEffects = scope.maybe(id("after_warp_effects"), (ShogiContext context) -> {
         if (!WaystonesConfig.getActive().rules.enableModifiers) {
             return Either.left(Collections.emptyList());
@@ -266,27 +261,4 @@ public class WaystonesRules {
         return Either.left(true);
     }).coerce(Coercion.BOOLEAN);
 
-    private static final CachedShogiRule cachedWarpRequirements = CachedShogiRule.ofRules(scope, WaystonesRules::getWarpRequirementsWithSettings);
-
-    public static void initialize() {
-        ConfigCallback.Reloaded.EVENT.register(schema -> {
-            if (schema.identifier().equals(id("common"))) {
-                cachedWarpRequirements.invalidate();
-            }
-        });
-    }
-
-    private static Either<?, ?> resolveWarpRequirements(WaystoneTeleportContext context) {
-        return cachedWarpRequirements.get(context).apply(context);
-    }
-
-    private static List<String> getWarpRequirementsWithSettings() {
-        final var rules = WaystonesConfig.getActive().rules;
-        final var warpSettings = rules.warpSettings;
-        final var warpRequirements = rules.warpRequirements;
-        final var result = new ArrayList<String>(warpSettings.size() + warpRequirements.size());
-        result.addAll(warpSettings);
-        result.addAll(warpRequirements);
-        return result;
-    }
 }

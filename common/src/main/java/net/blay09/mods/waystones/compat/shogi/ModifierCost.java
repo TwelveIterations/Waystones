@@ -1,4 +1,6 @@
-package net.blay09.mods.waystones.config.rules;
+package net.blay09.mods.waystones.compat.shogi;
+
+import net.blay09.mods.waystones.config.rules.WaystoneRuleContext;
 
 import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Either;

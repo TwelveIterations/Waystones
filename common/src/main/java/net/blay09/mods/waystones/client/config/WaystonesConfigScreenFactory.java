@@ -2,7 +2,6 @@ package net.blay09.mods.waystones.client.config;
 
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.client.platform.config.screen.BalmConfigScreen;
-import net.blay09.mods.balm.client.platform.config.screen.BalmConfigScreenSearch;
 import net.blay09.mods.balm.platform.config.schema.BalmConfigSchema;
 import net.blay09.mods.balm.platform.config.schema.ConfiguredProperty;
 import net.blay09.mods.waystones.Waystones;
@@ -24,8 +23,6 @@ public class WaystonesConfigScreenFactory {
         final var journeyMapEnabled = booleanProperty(schema, "journeyMap", "enabled");
         final var blueMapEnabled = booleanProperty(schema, "blueMap", "enabled");
 
-        final var warpRequirements = stringListProperty(schema, "rules", "warpRequirements");
-
         return BalmConfigScreen.builder(Waystones.MOD_ID)
                 .section(section("gameplay"), it -> it.properties(List.of(
                         property(schema, "rules", "defaultVisibility"),
@@ -34,10 +31,7 @@ public class WaystonesConfigScreenFactory {
                 .section(section("costs"), it -> it.properties(List.of(
                                 property(schema, "rules", "enableXpCosts"),
                                 property(schema, "rules", "enableDurability"),
-                                property(schema, "rules", "enableCooldowns"),
-                                property(schema, "rules", "warpSettings")))
-                        .customEntry(warpRequirements, (screen, _) -> new WarpRequirementsConfigEntry(screen, warpRequirements),
-                                filter -> BalmConfigScreenSearch.propertyMatches(warpRequirements, filter)))
+                                property(schema, "rules", "enableCooldowns"))))
                 .section(section("entities"), it -> it.properties(List.of(
                         property(schema, "rules", "transportPets"),
                         property(schema, "rules", "transportLeashed"),
@@ -84,11 +78,6 @@ public class WaystonesConfigScreenFactory {
     @SuppressWarnings("unchecked")
     private static ConfiguredProperty<Integer> intProperty(BalmConfigSchema schema, String category, String property) {
         return (ConfiguredProperty<Integer>) schema.findProperty(category, property);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static ConfiguredProperty<List<String>> stringListProperty(BalmConfigSchema schema, String category, String property) {
-        return (ConfiguredProperty<List<String>>) schema.findProperty(category, property);
     }
 
     @SuppressWarnings("unchecked")

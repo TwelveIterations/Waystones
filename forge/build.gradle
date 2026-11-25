@@ -39,6 +39,7 @@ dependencies {
     implementation minecraft.dependency("net.minecraftforge:forge:$mcVersion-$forgeVersion")
     annotationProcessor 'net.minecraftforge:eventbus-validator:7.0.0'
 }
+jarJar.enable()
 apply from: 'dependencies.gradle'
 
 tasks.withType(JavaCompile).configureEach {
@@ -66,10 +67,9 @@ tasks.register('curseforge', TaskPublishCurseForge) {
         projectId != null
     }
     if (projectId) {
-        def mainFile = upload(findProperty("curseforge_project_id"), jar.archiveFile.get().asFile)
+        def mainFile = upload(findProperty("curseforge_project_id"), tasks.jarJar.archiveFile.get().asFile)
         mainFile.changelog = rootProject.file('CHANGELOG.md').text
         mainFile.addRequirement("balm")
-        mainFile.addRequirement("shogi")
         mainFile.addGameVersion(libs.minecraft.get().version)
         mainFile.releaseType = "release"
         project.findProperty("curseforge_environments")?.split(",")?.toList()?.each { mainFile.addEnvironment(it) }
@@ -81,13 +81,12 @@ modrinth {
     projectId = findProperty("modrinth_project_id")
     versionType = "release"
     versionNumber = project.version + "+forge-" + libs.minecraft.get().version
-    uploadFile = jar
+    uploadFile = tasks.jarJar
     changelog = rootProject.file("CHANGELOG.md").text
     gameVersions = [libs.minecraft.get().version]
     loaders = ['forge']
     dependencies {
         required.project "balm"
-        required.project "shogi"
     }
 }
 
@@ -96,3 +95,6 @@ sourceSets.each {
     it.output.resourcesDir = dir
     it.java.destinationDirectory = dir
 }
+
+tasks.named("jar") { archiveClassifier = "slim" }
+tasks.named("jarJar") { archiveClassifier = null }

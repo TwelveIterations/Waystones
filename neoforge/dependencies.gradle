@@ -3,7 +3,8 @@ dependencies {
         changing = libs.versions.balm.get().contains("SNAPSHOT")
     }
     api(libs.shogiApi)
-    implementation(libs.shogiNeoForge) {
+    jarJar(libs.shogiApi)
+    compileOnly(libs.shogiNeoForge) {
         changing = libs.versions.shogi.get().contains("SNAPSHOT")
     }
     compileOnly(libs.journeyMapApiCommon)

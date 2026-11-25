@@ -102,8 +102,6 @@
   "waystones.configuration.rules.enableXpCosts.tooltip": "Establecer a false para simplemente desactivar todos los costes de xp. Ver warpRequirements para un control más preciso.",
   "waystones.configuration.rules.enableCooldowns": "Activar Cooldowns",
   "waystones.configuration.rules.enableCooldowns.tooltip": "Establecer a false para simplemente desactivar todos los cooldowns. Ver warpRequirements para un control más preciso.",
-  "waystones.configuration.rules.warpRequirements": "Requisitos de Teletransporte",
-  "waystones.configuration.rules.warpRequirements.tooltip": "Lista de requisitos de teletransporte con parámetros separados por comas entre paréntesis. Las condiciones pueden definirse como una lista separada por comas entre corchetes. Se aplicarán por orden.",
   "waystones.configuration.rules.transportPets": "Transporte de Mascotas",
   "waystones.configuration.rules.transportPets.tooltip": "Ajústalo a ENABLED para que las mascotas cercanas se teletransporten contigo. Establece SAME_DIMENSION para que las mascotas cercanas se teletransporten contigo sólo si no cambias de dimensión. Establecer en DISABLED para desactivar.",
   "waystones.configuration.rules.transportLeashed": "Transporte con Riendas",
