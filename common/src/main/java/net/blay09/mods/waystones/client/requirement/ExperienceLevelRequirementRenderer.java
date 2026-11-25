@@ -25,7 +25,7 @@ public class ExperienceLevelRequirementRenderer implements RequirementRenderer<E
 
     @Override
     public void renderWidget(Player player, ExperienceLevelCostInformation requirement, GuiGraphicsExtractor guiGraphics, int x, int y) {
-        final var levels = WaystonesConfig.getActive().rules.enableXpCosts ? requirement.required() : 0;
+        final var levels = WaystonesConfig.getActive().costs.enableXpCosts ? requirement.required() : 0;
         if (levels > 0) {
             final var canAfford = requirement.available() >= requirement.required();
             final var spriteIndex = Math.max(0, Math.min(levels, 3) - 1);
@@ -40,7 +40,7 @@ public class ExperienceLevelRequirementRenderer implements RequirementRenderer<E
 
     @Override
     public void appendHoverText(Player player, ExperienceLevelCostInformation requirement, List<Component> tooltip) {
-        if (requirement.required() > 0 && WaystonesConfig.getActive().rules.enableXpCosts) {
+        if (requirement.required() > 0 && WaystonesConfig.getActive().costs.enableXpCosts) {
             tooltip.add(Component.translatable("gui.waystones.waystone_selection.level_requirement", requirement.required()).withStyle(ChatFormatting.GREEN));
         }
     }

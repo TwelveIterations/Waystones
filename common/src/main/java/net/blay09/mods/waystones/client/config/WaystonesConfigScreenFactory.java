@@ -28,10 +28,7 @@ public class WaystonesConfigScreenFactory {
                         property(schema, "rules", "defaultVisibility"),
                         property(schema, "rules", "allowEveryoneToManageGlobalWaystones"),
                         property(schema, "rules", "enableModifiers"))))
-                .section(section("costs"), it -> it.properties(List.of(
-                                property(schema, "rules", "enableXpCosts"),
-                                property(schema, "rules", "enableDurability"),
-                                property(schema, "rules", "enableCooldowns"))))
+                .section(category("costs"), it -> it.properties(categoryProperties(schema, "costs")))
                 .section(section("entities"), it -> it.properties(List.of(
                         property(schema, "rules", "transportPets"),
                         property(schema, "rules", "transportLeashed"),

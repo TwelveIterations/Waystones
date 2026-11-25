@@ -84,18 +84,6 @@ public class WaystonesConfig {
         public boolean allowEveryoneToManageGlobalWaystones = false;
 
         @Synced
-        @Comment("Set to false to simply disable all xp costs. See rules for more fine-grained control.")
-        public boolean enableXpCosts = true;
-
-        @Synced
-        @Comment("Set to false to simply disable all durability costs. See rules for more fine-grained control.")
-        public boolean enableDurability = true;
-
-        @Synced
-        @Comment("Set to false to simply disable all cooldowns. See rules for more fine-grained control.")
-        public boolean enableCooldowns = true;
-
-        @Synced
         @Comment("Set to \"enabled\" to have nearby pets teleport with you. Set to \"same_dimension\" to have nearby pets teleport with you only if you're not changing dimensions. Set to \"disabled\" to disable.")
         public TransportMobs transportPets = TransportMobs.DISABLED;
 
@@ -112,6 +100,18 @@ public class WaystonesConfig {
     }
 
     public static class Costs {
+        @Synced
+        @Comment("Set to false to simply disable all xp costs. See rules for more fine-grained control.")
+        public boolean enableXpCosts = true;
+
+        @Synced
+        @Comment("Set to false to simply disable all durability costs. See rules for more fine-grained control.")
+        public boolean enableDurability = true;
+
+        @Synced
+        @Comment("Set to false to simply disable all cooldowns. See rules for more fine-grained control.")
+        public boolean enableCooldowns = true;
+
         @Synced
         @Range(min = "0", max = "107374182")
         @Comment("Cooldown in seconds. Set to 0 to disable the cooldown.")

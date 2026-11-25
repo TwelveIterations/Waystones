@@ -11,7 +11,7 @@ public final class CooldownRenderUtils {
     }
 
     public static long getMillisLeft(CooldownInformation requirement) {
-        if (!WaystonesConfig.getActive().rules.enableCooldowns) {
+        if (!WaystonesConfig.getActive().costs.enableCooldowns) {
             return 0L;
         }
 
@@ -31,7 +31,7 @@ public final class CooldownRenderUtils {
     }
 
     public static @Nullable String formatTimeLeft(CooldownInformation requirement) {
-        if (!WaystonesConfig.getActive().rules.enableCooldowns) {
+        if (!WaystonesConfig.getActive().costs.enableCooldowns) {
             return null;
         }
 

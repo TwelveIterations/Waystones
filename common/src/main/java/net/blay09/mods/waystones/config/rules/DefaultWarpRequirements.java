@@ -38,7 +38,7 @@ public class DefaultWarpRequirements {
     }
 
     private static void resolveExperienceRequirement(WaystoneTeleportContext context, Player player, List<Object> requirements, List<Object> missing) {
-        if (!WaystonesConfig.getActive().rules.enableXpCosts || !shouldCostExperience(context)) {
+        if (!WaystonesConfig.getActive().costs.enableXpCosts || !shouldCostExperience(context)) {
             return;
         }
 
@@ -83,7 +83,7 @@ public class DefaultWarpRequirements {
     }
 
     private static void resolveInventoryCooldownRequirement(WaystoneTeleportContext context, Player player, List<Object> requirements, List<Object> missing) {
-        if (!WaystonesConfig.getActive().rules.enableCooldowns || !context.hasFlag(TeleportFlags.INVENTORY_BUTTON)) {
+        if (!WaystonesConfig.getActive().costs.enableCooldowns || !context.hasFlag(TeleportFlags.INVENTORY_BUTTON)) {
             return;
         }
 
@@ -115,7 +115,7 @@ public class DefaultWarpRequirements {
 
     private static void applyDurabilityCost(WaystoneTeleportContext context, Player player) {
         final var warpItem = context.getWarpItem();
-        if (player.getAbilities().instabuild || !WaystonesConfig.getActive().rules.enableDurability
+        if (player.getAbilities().instabuild || !WaystonesConfig.getActive().costs.enableDurability
                 || !warpItem.is(ModItemTags.WARP_STONES) || !warpItem.isDamageableItem()
                 || !(player instanceof ServerPlayer serverPlayer)) {
             return;

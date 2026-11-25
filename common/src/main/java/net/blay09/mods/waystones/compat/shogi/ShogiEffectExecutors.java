@@ -11,39 +11,39 @@ public class ShogiEffectExecutors {
 
     public static EffectExecutor applyConfigurationOverrides(EffectExecutor executor) {
         executor.overrideConsume(DamageItem.IDENTIFIER, (operation, value) -> {
-            if (WaystonesConfig.getActive().rules.enableDurability) {
+            if (WaystonesConfig.getActive().costs.enableDurability) {
                 operation.accept(value);
             }
         });
 
         executor.overrideAggregate(ExperienceLevelCost.IDENTIFIER, (operation, value) -> {
-            if (WaystonesConfig.getActive().rules.enableXpCosts) {
+            if (WaystonesConfig.getActive().costs.enableXpCosts) {
                 return operation.apply(value);
             }
             return 0;
         });
 
         executor.overrideConsume(ExperienceLevelCost.IDENTIFIER, (operation, value) -> {
-            if (WaystonesConfig.getActive().rules.enableXpCosts) {
+            if (WaystonesConfig.getActive().costs.enableXpCosts) {
                 operation.accept(value);
             }
         });
 
         executor.overrideAggregate(ExperiencePointsCost.IDENTIFIER, (operation, value) -> {
-            if (WaystonesConfig.getActive().rules.enableXpCosts) {
+            if (WaystonesConfig.getActive().costs.enableXpCosts) {
                 return operation.apply(value);
             }
             return 0;
         });
 
         executor.overrideConsume(ExperiencePointsCost.IDENTIFIER, (operation, value) -> {
-            if (WaystonesConfig.getActive().rules.enableXpCosts) {
+            if (WaystonesConfig.getActive().costs.enableXpCosts) {
                 operation.accept(value);
             }
         });
 
         executor.overrideConsume(CooldownCost.IDENTIFIER, (operation, value) -> {
-            if (WaystonesConfig.getActive().rules.enableCooldowns) {
+            if (WaystonesConfig.getActive().costs.enableCooldowns) {
                 operation.accept(value);
             }
         });
