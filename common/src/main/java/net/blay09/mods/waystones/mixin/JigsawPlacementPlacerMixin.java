@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.mixin;
 
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -20,7 +21,7 @@ public class JigsawPlacementPlacerMixin {
 
     @Final
     @Shadow
-    private Registry<StructureTemplatePool> pools;
+    private HolderGetter<StructureTemplatePool> pools;
 
     @Unique
     private boolean waystones$hasWaystone;
@@ -30,7 +31,7 @@ public class JigsawPlacementPlacerMixin {
         return WaystonesConfig.getActive().worldGen.spawnInVillages == WaystonesConfig.VillageWaystoneGeneration.FREQUENT;
     }
 
-    @ModifyArg(method = "tryPlacingChildren(Lnet/minecraft/world/level/levelgen/structure/PoolElementStructurePiece;Lorg/apache/commons/lang3/mutable/MutableObject;IZLnet/minecraft/world/level/LevelHeightAccessor;Lnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/levelgen/structure/pools/alias/PoolAliasLookup;Lnet/minecraft/world/level/levelgen/structure/templatesystem/LiquidSettings;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/Registry;get(Lnet/minecraft/resources/ResourceKey;)Ljava/util/Optional;"))
+    @ModifyArg(method = "tryPlacingChildren(Lnet/minecraft/world/level/levelgen/structure/PoolElementStructurePiece;Lorg/apache/commons/lang3/mutable/MutableObject;IZLnet/minecraft/world/level/LevelHeightAccessor;Lnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/levelgen/structure/pools/alias/PoolAliasLookup;Lnet/minecraft/world/level/levelgen/structure/templatesystem/LiquidSettings;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/HolderGetter;get(Lnet/minecraft/resources/ResourceKey;)Ljava/util/Optional;"))
     private ResourceKey<StructureTemplatePool> forceWaystonePool(ResourceKey<StructureTemplatePool> resourceKey) {
         if (!waystones$shouldForceWaystone() || waystones$hasWaystone) {
             return resourceKey;
