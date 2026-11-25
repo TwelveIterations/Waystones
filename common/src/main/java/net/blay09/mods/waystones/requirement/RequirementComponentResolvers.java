@@ -51,6 +51,8 @@ public class RequirementComponentResolvers {
     }
 
     public static void registerDefaults() {
+        register(ExperiencePointsRequirement.class, requirement -> Component.translatable("gui.waystones.waystone_selection.xp_requirement", requirement.required()));
+        register(CooldownRequirement.class, requirement -> Component.translatable("tooltip.waystones.cooldown_left", Math.max(0L, requirement.remainingTicks()) / 20));
         register(ModifierRequirement.class, requirement -> {
             final var itemStack = requirement.item().stream().findFirst().map(Holder::value).map(Item::getDefaultInstance).orElse(ItemStack.EMPTY);
             return Component.translatable(requirement.translationKey(), requirement.required(), itemStack.getHoverName());

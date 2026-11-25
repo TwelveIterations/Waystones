@@ -35,6 +35,8 @@ import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.network.ModNetworking;
 import net.blay09.mods.waystones.requirement.EpitaphRequirement;
 import net.blay09.mods.waystones.requirement.ModifierRequirement;
+import net.blay09.mods.waystones.requirement.ExperiencePointsRequirement;
+import net.blay09.mods.waystones.requirement.CooldownRequirement;
 import net.blay09.mods.waystones.requirement.RequirementComponentResolvers;
 import net.blay09.mods.waystones.requirement.TwinboundFeatherRequirement;
 import net.blay09.mods.waystones.resources.ForceSpawnInVillagesCondition;
@@ -146,6 +148,8 @@ public class Waystones implements BalmModule {
     @Override
     public void initialize() {
         ModEventHandlers.initialize();
+        ShogiStreamCodecs.register(id("xp_points"), ExperiencePointsRequirement.class, ExperiencePointsRequirement.STREAM_CODEC);
+        ShogiStreamCodecs.register(id("cooldown"), CooldownRequirement.class, CooldownRequirement.STREAM_CODEC);
         ShogiStreamCodecs.register(id("modifier"), ModifierRequirement.class, ModifierRequirement.STREAM_CODEC);
         ShogiStreamCodecs.register(id("epitaph"), EpitaphRequirement.class, EpitaphRequirement.STREAM_CODEC);
         ShogiStreamCodecs.register(id("twinbound_feather"), TwinboundFeatherRequirement.class, TwinboundFeatherRequirement.STREAM_CODEC);

@@ -2,6 +2,8 @@ package net.blay09.mods.waystones.client.requirement;
 
 import net.blay09.mods.waystones.requirement.EpitaphRequirement;
 import net.blay09.mods.waystones.requirement.ModifierRequirement;
+import net.blay09.mods.waystones.requirement.ExperiencePointsRequirement;
+import net.blay09.mods.waystones.requirement.CooldownRequirement;
 import net.blay09.mods.waystones.requirement.TwinboundFeatherRequirement;
 
 import java.util.*;
@@ -82,6 +84,9 @@ public class RequirementClientRegistry {
     }
 
     public static void registerDefaults() {
+        registerRenderer(ExperiencePointsRequirement.class, new BuiltinExperiencePointsRequirementRenderer());
+        registerRenderer(CooldownRequirement.class, new BuiltinCooldownRequirementRenderer());
+        registerMerger(ExperiencePointsRequirement.class, (current, incoming) -> Optional.of(new ExperiencePointsRequirement(Math.min(current.available(), incoming.available()), current.required() + incoming.required())));
         registerRenderer(ModifierRequirement.class, new ModifierRequirementRenderer());
         registerRenderer(EpitaphRequirement.class, new EpitaphRequirementRenderer());
         registerRenderer(TwinboundFeatherRequirement.class, new TwinboundFeatherRequirementRenderer());
